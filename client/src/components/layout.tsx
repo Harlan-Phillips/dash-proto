@@ -96,9 +96,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
            <div className="flex items-center gap-6">
              <button className="text-sm text-muted-foreground hover:text-foreground transition-colors">Help</button>
              <button className="text-sm text-muted-foreground hover:text-foreground transition-colors">Documentation</button>
-             <div className="h-8 w-8 bg-secondary rounded-full flex items-center justify-center text-xs font-medium">
-               JD
-             </div>
+             <Link href="/settings">
+               <button className="h-8 w-8 bg-secondary rounded-full flex items-center justify-center text-xs font-medium hover:bg-secondary/70 transition-colors" title="Settings">
+                 JD
+               </button>
+             </Link>
            </div>
         </header>
 
