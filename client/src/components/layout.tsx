@@ -5,6 +5,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { 
   CheckCircle2, 
   RefreshCw,
@@ -18,6 +26,7 @@ import {
   TrendingUp,
   Check,
   ChevronDown,
+  ChevronsUpDown,
   Settings,
   FileText,
   Users,
@@ -97,6 +106,31 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         {/* Header */}
         <header className="h-16 px-8 flex items-center justify-between bg-white border-b border-border sticky top-0 z-10">
            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+             <DropdownMenu>
+               <DropdownMenuTrigger asChild>
+                 <button className="flex items-center gap-2 px-3 py-1.5 hover:bg-gray-100 rounded-md transition-colors outline-none group">
+                   <div className="h-6 w-6 bg-gray-900 text-white rounded flex items-center justify-center text-xs font-serif font-bold">K</div>
+                   <span className="font-medium text-foreground text-sm">KOQ LLC</span>
+                   <ChevronsUpDown className="h-3 w-3 text-muted-foreground group-hover:text-black" />
+                 </button>
+               </DropdownMenuTrigger>
+               <DropdownMenuContent align="start" className="w-56">
+                 <DropdownMenuLabel className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Switch Organization</DropdownMenuLabel>
+                 <DropdownMenuSeparator />
+                 <DropdownMenuItem className="gap-2 cursor-pointer">
+                   <div className="h-5 w-5 bg-gray-900 text-white rounded flex items-center justify-center text-[10px] font-serif font-bold">K</div>
+                   <span className="font-medium">KOQ LLC</span>
+                   <Check className="h-3 w-3 ml-auto" />
+                 </DropdownMenuItem>
+                 <DropdownMenuItem className="gap-2 cursor-pointer">
+                   <div className="h-5 w-5 bg-gray-200 text-gray-500 rounded flex items-center justify-center text-[10px] font-serif font-bold">M</div>
+                   <span className="font-medium">Munch Demo</span>
+                 </DropdownMenuItem>
+               </DropdownMenuContent>
+             </DropdownMenu>
+
+             <div className="h-4 w-px bg-border" />
+
              <Popover>
                <PopoverTrigger asChild>
                  <button className="flex items-center gap-2 px-3 py-1.5 hover:bg-gray-100 rounded-md transition-colors group">
