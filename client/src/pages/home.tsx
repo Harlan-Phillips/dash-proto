@@ -119,28 +119,31 @@ export default function Home() {
         </div>
 
         {/* One Big Question Interface */}
-        <div className="max-w-3xl mx-auto text-center space-y-4">
-           <div className="relative">
-              <input 
-                type="text" 
-                placeholder="Ask anything about your restaurant..." 
-                className="w-full text-center text-lg py-4 px-6 border border-border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all font-serif placeholder:text-muted-foreground/60"
-              />
-              <div className="absolute right-4 top-1/2 -translate-y-1/2">
-                 <button className="bg-black text-white p-2 rounded-full hover:bg-gray-800 transition-colors">
-                    <ArrowUpRight className="h-4 w-4" />
-                 </button>
+        <div className="max-w-4xl mx-auto text-center space-y-6">
+           <div className="relative group">
+              <div className="absolute -inset-1 bg-gradient-to-r from-emerald-100 via-sky-100 to-amber-100 rounded-xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+              <div className="relative">
+                <input 
+                  type="text" 
+                  placeholder="Ask anything about your restaurant..." 
+                  className="w-full text-center text-xl py-6 px-8 bg-white border border-gray-200 rounded-xl shadow-xl focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all font-serif placeholder:text-muted-foreground/50"
+                />
+                <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                   <button className="bg-black text-white p-3 rounded-full hover:bg-gray-800 transition-colors shadow-lg hover:scale-105 active:scale-95">
+                      <ArrowUpRight className="h-5 w-5" />
+                   </button>
+                </div>
               </div>
            </div>
            
-           <div className="flex flex-wrap justify-center gap-2">
-              <button className="text-xs text-muted-foreground hover:text-foreground bg-gray-50 border border-border px-3 py-1.5 rounded-full transition-colors">
+           <div className="flex flex-wrap justify-center gap-3">
+              <button className="text-sm font-medium text-muted-foreground hover:text-black hover:bg-white hover:shadow-sm hover:border-black/20 bg-gray-50/80 border border-border/60 px-4 py-2 rounded-full transition-all">
                  "Who's my top performer this week?"
               </button>
-              <button className="text-xs text-muted-foreground hover:text-foreground bg-gray-50 border border-border px-3 py-1.5 rounded-full transition-colors">
+              <button className="text-sm font-medium text-muted-foreground hover:text-black hover:bg-white hover:shadow-sm hover:border-black/20 bg-gray-50/80 border border-border/60 px-4 py-2 rounded-full transition-all">
                  "Am I overstaffed tonight?"
               </button>
-              <button className="text-xs text-muted-foreground hover:text-foreground bg-gray-50 border border-border px-3 py-1.5 rounded-full transition-colors">
+              <button className="text-sm font-medium text-muted-foreground hover:text-black hover:bg-white hover:shadow-sm hover:border-black/20 bg-gray-50/80 border border-border/60 px-4 py-2 rounded-full transition-all">
                  "Why did labor spike on Tuesday?"
               </button>
            </div>
