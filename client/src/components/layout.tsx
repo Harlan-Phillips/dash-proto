@@ -61,7 +61,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             M
           </div>
           <span className="ml-3 font-serif text-xl font-bold opacity-0 w-0 group-hover:w-auto group-hover:opacity-100 overflow-hidden whitespace-nowrap transition-all duration-500 delay-100">
-            Mosaic
+            Munch Insights
           </span>
         </div>
         
