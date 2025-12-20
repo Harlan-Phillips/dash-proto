@@ -118,6 +118,34 @@ export default function Home() {
            </div>
         </div>
 
+        {/* One Big Question Interface */}
+        <div className="max-w-3xl mx-auto text-center space-y-4">
+           <div className="relative">
+              <input 
+                type="text" 
+                placeholder="Ask anything about your restaurant..." 
+                className="w-full text-center text-lg py-4 px-6 border border-border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all font-serif placeholder:text-muted-foreground/60"
+              />
+              <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                 <button className="bg-black text-white p-2 rounded-full hover:bg-gray-800 transition-colors">
+                    <ArrowUpRight className="h-4 w-4" />
+                 </button>
+              </div>
+           </div>
+           
+           <div className="flex flex-wrap justify-center gap-2">
+              <button className="text-xs text-muted-foreground hover:text-foreground bg-gray-50 border border-border px-3 py-1.5 rounded-full transition-colors">
+                 "Who's my top performer this week?"
+              </button>
+              <button className="text-xs text-muted-foreground hover:text-foreground bg-gray-50 border border-border px-3 py-1.5 rounded-full transition-colors">
+                 "Am I overstaffed tonight?"
+              </button>
+              <button className="text-xs text-muted-foreground hover:text-foreground bg-gray-50 border border-border px-3 py-1.5 rounded-full transition-colors">
+                 "Why did labor spike on Tuesday?"
+              </button>
+           </div>
+        </div>
+
         {/* 3. Top Actions for Today */}
         <div>
            <h3 className="font-serif text-lg font-medium mb-6 flex items-center gap-2">
