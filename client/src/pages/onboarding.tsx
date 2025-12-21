@@ -51,7 +51,7 @@ export default function Onboarding() {
   };
 
   const prevStep = () => {
-    const steps: Step[] = ["restaurant_info", "pos_connect", "accounting_connect", "goals", "team_invite"];
+    const steps: Step[] = ["restaurant_info", "goals", "pos_connect", "accounting_connect", "team_invite"];
     const currentIndex = steps.indexOf(currentStep);
     if (currentIndex > 0) {
       setCurrentStep(steps[currentIndex - 1]);
@@ -59,7 +59,7 @@ export default function Onboarding() {
   };
 
   const renderStepIndicator = () => {
-    const steps = ["restaurant_info", "pos_connect", "accounting_connect", "goals", "team_invite"];
+    const steps = ["restaurant_info", "goals", "pos_connect", "accounting_connect", "team_invite"];
     const currentIndex = steps.indexOf(currentStep);
     
     return (
@@ -129,7 +129,7 @@ export default function Onboarding() {
                 </div>
 
                 <button 
-                  onClick={() => nextStep("pos_connect")}
+                  onClick={() => nextStep("goals")}
                   disabled={!restaurantName}
                   className="w-full bg-black text-white py-2.5 rounded-md font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
@@ -240,14 +240,14 @@ export default function Onboarding() {
 
                 <div className="space-y-3">
                    <button 
-                     onClick={() => nextStep("goals")}
+                     onClick={() => nextStep("team_invite")}
                      disabled={!accountingSystem}
                      className="w-full bg-black text-white py-2.5 rounded-md font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                    >
                       {isLoading ? "Connecting..." : "Connect " + (accountingSystem || "Software")}
                    </button>
                    <button 
-                     onClick={() => nextStep("goals")}
+                     onClick={() => nextStep("team_invite")}
                      className="w-full bg-white text-muted-foreground py-2.5 rounded-md text-sm hover:text-foreground transition-colors"
                    >
                       Skip and use demo data
@@ -355,7 +355,7 @@ export default function Onboarding() {
                 </div>
 
                 <button 
-                  onClick={() => nextStep("team_invite")}
+                  onClick={() => nextStep("pos_connect")}
                   className="w-full bg-black text-white py-2.5 rounded-md font-medium hover:bg-gray-800 transition-colors flex items-center justify-center gap-2"
                 >
                    Continue <ArrowRight className="h-4 w-4" />
