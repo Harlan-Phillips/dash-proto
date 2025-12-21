@@ -12,10 +12,12 @@ import {
   Check,
   CheckCircle2,
   ChevronRight,
-  Calculator
+  Star,
+  MapPin,
+  Sparkles
 } from "lucide-react";
 
-type Step = "restaurant_info" | "pos_connect" | "accounting_connect" | "goals" | "team_invite";
+type Step = "restaurant_info" | "analyzing" | "confirm_restaurant" | "pos_connect" | "accounting_connect" | "goals" | "team_invite";
 
 export default function Onboarding() {
   const [, setLocation] = useLocation();
@@ -51,16 +53,31 @@ export default function Onboarding() {
   };
 
   const prevStep = () => {
-    const steps: Step[] = ["restaurant_info", "goals", "pos_connect", "accounting_connect", "team_invite"];
+    const steps: Step[] = ["restaurant_info", "analyzing", "confirm_restaurant", "goals", "pos_connect", "accounting_connect", "team_invite"];
     const currentIndex = steps.indexOf(currentStep);
+    
+    // Skip analyzing step when going back
+    if (currentStep === "confirm_restaurant") {
+      setCurrentStep("restaurant_info");
+      return;
+    }
+
     if (currentIndex > 0) {
       setCurrentStep(steps[currentIndex - 1]);
     }
   };
 
   const renderStepIndicator = () => {
+    // Only show dots for main steps
     const steps = ["restaurant_info", "goals", "pos_connect", "accounting_connect", "team_invite"];
-    const currentIndex = steps.indexOf(currentStep);
+    
+    // Map intermediate steps to the correct progress
+    let activeStep = currentStep;
+    if (currentStep === "analyzing" || currentStep === "confirm_restaurant") {
+      activeStep = "restaurant_info";
+    }
+
+    const currentIndex = steps.indexOf(activeStep as any);
     
     return (
       <div className="flex items-center gap-2 mb-8">
@@ -75,6 +92,18 @@ export default function Onboarding() {
         ))}
       </div>
     );
+  };
+
+  const handleRestaurantSubmit = () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setCurrentStep("analyzing");
+      setIsLoading(false);
+      // Auto-advance after "analysis"
+      setTimeout(() => {
+        setCurrentStep("confirm_restaurant");
+      }, 2500);
+    }, 600);
   };
 
   return (
@@ -129,7 +158,7 @@ export default function Onboarding() {
                 </div>
 
                 <button 
-                  onClick={() => nextStep("goals")}
+                  onClick={handleRestaurantSubmit}
                   disabled={!restaurantName}
                   className="w-full bg-black text-white py-2.5 rounded-md font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
