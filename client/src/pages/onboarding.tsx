@@ -23,6 +23,7 @@ export default function Onboarding() {
   const [, setLocation] = useLocation();
   const [currentStep, setCurrentStep] = useState<Step>("restaurant_info");
   const [isLoading, setIsLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   // Form State
   const [restaurantName, setRestaurantName] = useState("");
@@ -96,12 +97,26 @@ export default function Onboarding() {
 
   const handleRestaurantSubmit = () => {
     setIsLoading(true);
+    setProgress(0);
+    
+    // Animate progress
+    const interval = setInterval(() => {
+      setProgress(prev => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          return 100;
+        }
+        return prev + 2;
+      });
+    }, 50);
+
     setTimeout(() => {
       setCurrentStep("analyzing");
       setIsLoading(false);
       // Auto-advance after "analysis"
       setTimeout(() => {
         setCurrentStep("confirm_restaurant");
+        clearInterval(interval);
       }, 2500);
     }, 600);
   };
@@ -169,7 +184,7 @@ export default function Onboarding() {
 
            {/* --- Analyzing State --- */}
            {currentStep === "analyzing" && (
-             <div className="bg-white rounded-xl border border-gray-200 p-12 shadow-sm animate-in fade-in zoom-in-95 duration-500 flex flex-col items-center text-center max-w-md w-full">
+             <div className="bg-white rounded-xl border border-gray-200 p-12 shadow-sm animate-in fade-in zoom-in-95 duration-500 flex flex-col items-center text-center w-full">
                 <div className="relative mb-8">
                   <div className="absolute inset-0 bg-emerald-100 rounded-full animate-ping opacity-75"></div>
                   <div className="relative h-16 w-16 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center border border-emerald-100">
@@ -180,7 +195,10 @@ export default function Onboarding() {
                 <p className="text-muted-foreground mb-6">We're scanning public data to understand what your customers love (and what they don't).</p>
                 
                 <div className="w-full bg-gray-100 rounded-full h-2 mb-2 overflow-hidden">
-                  <div className="bg-emerald-500 h-full rounded-full animate-[progress_2s_ease-in-out_infinite]" style={{width: '70%'}}></div>
+                  <div 
+                    className="bg-emerald-500 h-full rounded-full transition-all duration-75 ease-out" 
+                    style={{width: `${progress}%`}}
+                  ></div>
                 </div>
                 <p className="text-xs text-muted-foreground">Gathering insights from Google, Yelp, and TripAdvisor</p>
              </div>
@@ -188,7 +206,7 @@ export default function Onboarding() {
 
            {/* --- Confirm Restaurant & Analysis --- */}
            {currentStep === "confirm_restaurant" && (
-             <div className="bg-white rounded-xl border border-gray-200 p-0 shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500 overflow-hidden w-full max-w-lg">
+             <div className="bg-white rounded-xl border border-gray-200 p-0 shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500 overflow-hidden w-full">
                 <div className="h-32 bg-gray-100 relative">
                   <img 
                     src="https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=2070&auto=format&fit=crop" 
