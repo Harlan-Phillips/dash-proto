@@ -258,12 +258,19 @@ export default function Onboarding() {
 
                    <div className="space-y-2">
                       <label className="text-sm font-medium">What is your role?</label>
-                      <input 
+                      <select
                         value={role}
                         onChange={(e) => setRole(e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500" 
-                        placeholder="e.g. Owner, General Manager" 
-                      />
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 bg-white"
+                      >
+                         <option value="">Select a role...</option>
+                         <option value="owner">Owner / Operator</option>
+                         <option value="gm">General Manager</option>
+                         <option value="manager">Manager</option>
+                         <option value="accountant">Accountant / Controller</option>
+                         <option value="chef">Chef / Kitchen Manager</option>
+                         <option value="other">Other</option>
+                      </select>
                    </div>
 
                    <div className="space-y-2">
