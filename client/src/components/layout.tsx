@@ -1,5 +1,5 @@
 import React from "react";
-import { useLocation } from "wouter";
+import { Link, useLocation } from "wouter";
 import { 
   Popover,
   PopoverContent,
@@ -41,8 +41,8 @@ function SidebarItem({ icon: Icon, label, href }: { icon: any, label: string, hr
   const active = location === href;
 
   return (
-    <div onClick={() => setLocation(href)} className={cn(
-        "cursor-pointer",
+    <Link href={href}>
+      <a className={cn(
         "h-10 flex items-center transition-all duration-300 mb-2 rounded-md mx-2 px-2.5",
         "justify-start",
         "w-10 group-hover:w-[calc(100%-1rem)]", 
@@ -52,7 +52,8 @@ function SidebarItem({ icon: Icon, label, href }: { icon: any, label: string, hr
         <span className="ml-3 whitespace-nowrap overflow-hidden opacity-0 w-0 group-hover:w-auto group-hover:opacity-100 transition-all duration-300 delay-75 text-sm font-medium">
           {label}
         </span>
-    </div>
+      </a>
+    </Link>
   );
 }
 
@@ -179,12 +180,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
            
            <div className="flex items-center gap-6">
              <button className="text-sm text-muted-foreground hover:text-foreground transition-colors">Help</button>
-             <button 
-               onClick={() => setLocation("/settings")}
-               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-             >
-               Settings
-             </button>
+             <Link href="/settings">
+                <button className="text-sm text-muted-foreground hover:text-foreground transition-colors">Settings</button>
+             </Link>
              
              <DropdownMenu>
                 <DropdownMenuTrigger asChild>

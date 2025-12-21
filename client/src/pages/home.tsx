@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useLocation } from "wouter";
+import Layout from "@/components/layout";
 import { cn } from "@/lib/utils";
 import { 
   DollarSign, 
@@ -74,7 +75,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <Layout>
       <div className="p-8 max-w-7xl mx-auto space-y-12">
         
         {/* 1. Top Navigation Context */}
@@ -398,6 +399,6 @@ export default function Home() {
          </div>
       </div>
 
-    </div>
+    </Layout>
   );
 }
