@@ -74,8 +74,8 @@ export default function Home() {
   };
 
   return (
-    <>
-    <div className="p-8 max-w-7xl mx-auto space-y-12">
+    <div className="min-h-screen bg-background">
+      <div className="p-8 max-w-7xl mx-auto space-y-12">
         
         {/* 1. Top Navigation Context */}
         <div className="flex items-center justify-between border-b border-border pb-4">
@@ -398,6 +398,6 @@ export default function Home() {
          </div>
       </div>
 
-    </>
+    </div>
   );
 }
