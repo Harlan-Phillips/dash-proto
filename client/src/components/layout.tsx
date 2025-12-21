@@ -37,7 +37,7 @@ import {
 import { cn } from "@/lib/utils";
 
 function SidebarItem({ icon: Icon, label, href }: { icon: any, label: string, href: string }) {
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
   const active = location === href;
 
   return (
@@ -69,6 +69,8 @@ function SidebarSection({ title, children }: { title: string, children: React.Re
 }
 
 export default function Layout({ children }: { children: React.ReactNode }) {
+  const [, setLocation] = useLocation(); // Hook for logout navigation
+
   return (
     <div className="min-h-screen bg-background flex font-sans text-foreground">
       {/* Sidebar */}
@@ -191,7 +193,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <DropdownMenuContent align="end" className="w-48">
                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
                    <DropdownMenuSeparator />
-                   <DropdownMenuItem className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50">
+                   <DropdownMenuItem 
+                      className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50"
+                      onClick={() => setLocation("/login")}
+                   >
                       <LogOut className="mr-2 h-4 w-4" />
                       <span>Log out</span>
                    </DropdownMenuItem>

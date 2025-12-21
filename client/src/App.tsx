@@ -8,12 +8,14 @@ import Dashboard from "@/pages/home";
 import Settings from "@/pages/settings";
 import GenericPage from "@/pages/generic";
 import Assistant from "@/pages/assistant";
+import Login from "@/pages/login";
 
 function Router() {
   return (
     <Switch>
       {/* Redirect root to the main dashboard view */}
-      <Route path="/" component={() => <Redirect to="/insight/home" />} />
+      <Route path="/" component={() => <Redirect to="/login" />} />
+      <Route path="/login" component={Login} />
       
       {/* Insight Module */}
       <Route path="/insight/home" component={Dashboard} />
