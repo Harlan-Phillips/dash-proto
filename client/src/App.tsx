@@ -10,6 +10,7 @@ import Settings from "@/pages/settings";
 import GenericPage from "@/pages/generic";
 import Assistant from "@/pages/assistant";
 import Login from "@/pages/login";
+import Onboarding from "@/pages/onboarding";
 import Layout from "@/components/layout";
 
 function PageTransition({ children }: { children: React.ReactNode }) {
@@ -76,6 +77,7 @@ function Router() {
     <Switch>
       <Route path="/" component={() => <Redirect to="/login" />} />
       <Route path="/login" component={Login} />
+      <Route path="/onboarding" component={Onboarding} />
       
       {/* Catch-all for authenticated routes to wrap them in Layout */}
       <Route path="/:rest*" component={AuthenticatedRoutes} />
