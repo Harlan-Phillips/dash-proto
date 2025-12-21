@@ -14,10 +14,13 @@ import {
   ChevronRight,
   Star,
   MapPin,
-  Sparkles
+  Sparkles,
+  Lightbulb,
+  ArrowUpRight,
+  Zap
 } from "lucide-react";
 
-type Step = "restaurant_info" | "analyzing" | "confirm_restaurant" | "pos_connect" | "accounting_connect" | "goals" | "team_invite";
+type Step = "restaurant_info" | "analyzing" | "confirm_restaurant" | "goals" | "strategic_plan" | "pos_connect" | "accounting_connect" | "team_invite";
 
 export default function Onboarding() {
   const [, setLocation] = useLocation();
@@ -54,7 +57,7 @@ export default function Onboarding() {
   };
 
   const prevStep = () => {
-    const steps: Step[] = ["restaurant_info", "analyzing", "confirm_restaurant", "goals", "pos_connect", "accounting_connect", "team_invite"];
+    const steps: Step[] = ["restaurant_info", "analyzing", "confirm_restaurant", "goals", "strategic_plan", "pos_connect", "accounting_connect", "team_invite"];
     const currentIndex = steps.indexOf(currentStep);
     
     // Skip analyzing step when going back
@@ -76,6 +79,9 @@ export default function Onboarding() {
     let activeStep = currentStep;
     if (currentStep === "analyzing" || currentStep === "confirm_restaurant") {
       activeStep = "restaurant_info";
+    }
+    if (currentStep === "strategic_plan") {
+      activeStep = "goals";
     }
 
     const currentIndex = steps.indexOf(activeStep as any);
@@ -493,11 +499,99 @@ export default function Onboarding() {
                 </div>
 
                 <button 
-                  onClick={() => nextStep("pos_connect")}
+                  onClick={() => nextStep("strategic_plan")}
                   className="w-full bg-black text-white py-2.5 rounded-md font-medium hover:bg-gray-800 transition-colors flex items-center justify-center gap-2"
                 >
-                   Continue <ArrowRight className="h-4 w-4" />
+                   Generate Plan <Sparkles className="h-4 w-4" />
                 </button>
+             </div>
+           )}
+
+           {/* --- Strategic Plan --- */}
+           {currentStep === "strategic_plan" && (
+             <div className="bg-white rounded-xl border border-gray-200 p-0 shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500 overflow-hidden w-full max-w-lg">
+                <div className="bg-[#1a4731] p-8 text-white relative overflow-hidden">
+                   <div className="absolute top-0 right-0 p-8 opacity-10">
+                      <Target className="h-32 w-32" />
+                   </div>
+                   <div className="relative z-10">
+                      <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-white/10 rounded-full text-xs font-medium backdrop-blur-sm border border-white/20 mb-4">
+                         <Sparkles className="h-3 w-3 text-emerald-300" />
+                         <span>AI Strategy Generated</span>
+                      </div>
+                      <h2 className="text-2xl font-serif font-medium mb-2">Your 90-Day Roadmap</h2>
+                      <p className="text-emerald-100/80 text-sm max-w-sm">
+                         Based on your goal to <span className="text-white font-medium">{mainFocus || "Increase Sales"}</span> and your current challenges.
+                      </p>
+                   </div>
+                </div>
+
+                <div className="p-6">
+                   <div className="space-y-6 mb-8">
+                      <div>
+                         <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">Key Initiatives</h3>
+                         <div className="space-y-3">
+                            <div className="flex gap-3 items-start">
+                               <div className="mt-1 h-5 w-5 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                                  <span className="text-xs font-bold">1</span>
+                               </div>
+                               <div>
+                                  <p className="text-sm font-medium text-gray-900">
+                                     {mainFocus === "Control Labor" ? "Optimize Schedule Efficiency" : 
+                                      mainFocus === "Control COGS" ? "Menu Engineering Audit" :
+                                      "Launch Weekend Happy Hour"}
+                                  </p>
+                                  <p className="text-xs text-muted-foreground mt-0.5">
+                                     {mainFocus === "Control Labor" ? "Align staff hours with peak sales periods identified in reviews." : 
+                                      mainFocus === "Control COGS" ? "Identify high-cost, low-margin items for removal or repricing." :
+                                      "Capitalize on positive brunch sentiment to drive off-peak traffic."}
+                                  </p>
+                               </div>
+                            </div>
+                            <div className="flex gap-3 items-start">
+                               <div className="mt-1 h-5 w-5 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                                  <span className="text-xs font-bold">2</span>
+                               </div>
+                               <div>
+                                  <p className="text-sm font-medium text-gray-900">Automate Variance Tracking</p>
+                                  <p className="text-xs text-muted-foreground mt-0.5">Set up daily alerts for labor/sales anomalies.</p>
+                               </div>
+                            </div>
+                         </div>
+                      </div>
+
+                      <div className="bg-amber-50 rounded-lg p-4 border border-amber-100">
+                         <div className="flex items-center gap-2 mb-2">
+                            <Lightbulb className="h-4 w-4 text-amber-600" />
+                            <h3 className="text-sm font-semibold text-amber-900">AI Insight</h3>
+                         </div>
+                         <p className="text-xs text-amber-800/80 leading-relaxed">
+                            "{biggestHeadache || "Labor costs"}" is often a symptom of reactive decision making. Our <strong>Smart Scheduler</strong> feature can predict staffing needs with 92% accuracy based on your historical POS data.
+                         </p>
+                      </div>
+
+                      <div>
+                         <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">Recommended Features</h3>
+                         <div className="grid grid-cols-2 gap-3">
+                            <div className="p-3 border rounded-lg bg-gray-50 flex flex-col gap-2">
+                               <ArrowUpRight className="h-4 w-4 text-gray-500" />
+                               <span className="text-xs font-medium">Daily P&L Flash</span>
+                            </div>
+                            <div className="p-3 border rounded-lg bg-gray-50 flex flex-col gap-2">
+                               <Zap className="h-4 w-4 text-gray-500" />
+                               <span className="text-xs font-medium">Labor Alerts</span>
+                            </div>
+                         </div>
+                      </div>
+                   </div>
+
+                   <button 
+                     onClick={() => nextStep("pos_connect")}
+                     className="w-full bg-black text-white py-2.5 rounded-md font-medium hover:bg-gray-800 transition-colors flex items-center justify-center gap-2"
+                   >
+                      Let's Execute This Plan <ArrowRight className="h-4 w-4" />
+                   </button>
+                </div>
              </div>
            )}
 
