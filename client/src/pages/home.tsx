@@ -13,6 +13,7 @@ import {
   Sparkles,
   Zap
 } from "lucide-react";
+import { BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, Cell, CartesianGrid } from "recharts";
 
 // --- Components ---
 
@@ -62,6 +63,17 @@ function MissionProgressBar({ value }: { value: number }) {
 export default function Home() {
   const [, setLocation] = useLocation();
   const [query, setQuery] = useState("");
+  const [summaryTab, setSummaryTab] = useState<"summary" | "key_analytics" | "bonus">("summary");
+
+  const dailyData = [
+    { day: 'Mon', sales: 2400, labor: 800 },
+    { day: 'Tue', sales: 1800, labor: 600 },
+    { day: 'Wed', sales: 3200, labor: 1100 },
+    { day: 'Thu', sales: 4100, labor: 1300 },
+    { day: 'Fri', sales: 5800, labor: 1800 },
+    { day: 'Sat', sales: 6200, labor: 2100 },
+    { day: 'Sun', sales: 4500, labor: 1500 },
+  ];
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -94,41 +106,177 @@ export default function Home() {
         </div>
 
         {/* 2. Hero / AI Command Feed */}
-        <div className="bg-gray-50 border border-border p-8 relative overflow-hidden">
+        <div className="bg-gray-50 border border-border p-8 relative overflow-hidden min-h-[320px]">
            <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none">
               <Sparkles size={200} />
            </div>
 
-           <div className="flex items-start gap-4 mb-6 relative z-10">
+           <div className="flex items-start gap-4 mb-2 relative z-10 w-full">
               <div className="h-8 w-8 bg-black text-white rounded-full flex items-center justify-center flex-shrink-0 mt-1">
                  <Sparkles className="h-4 w-4" />
               </div>
-              <div>
-                 <h2 className="font-serif text-xl font-medium mb-4">AI Summary</h2>
-                 <ul className="space-y-2 text-base text-foreground/80 mb-6 font-medium">
-                    <li className="flex items-center gap-2">
-                       <span className="h-1.5 w-1.5 bg-red-500 rounded-full" />
-                       Labor is <span className="font-bold text-red-600">+2.1%</span> over target → <span className="text-foreground">$312 risk tonight</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                       <span className="h-1.5 w-1.5 bg-amber-500 rounded-full" />
-                       Upsell compliance at <span className="font-bold text-amber-600">68%</span> → <span className="text-foreground">$420 missed revenue</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                       <span className="h-1.5 w-1.5 bg-emerald-500 rounded-full" />
-                       Bonus pool: <span className="font-bold text-emerald-600">$1,260</span> available this week
-                    </li>
-                    <li className="flex items-center gap-2">
-                       <span className="h-1.5 w-1.5 bg-blue-500 rounded-full" />
-                       Cash runway: <span className="font-bold text-blue-600">9 days</span> at current margin
-                    </li>
-                 </ul>
-                 
-                 <div className="flex gap-3">
-                    <ActionButton>Fix Labor Risk</ActionButton>
-                    <ActionButton variant="outline">Launch Bonus</ActionButton>
-                    <ActionButton variant="outline">Boost Upsell</ActionButton>
+              <div className="w-full">
+                 <div className="flex items-center justify-between mb-6">
+                    <h2 className="font-serif text-xl font-medium">AI Summary</h2>
+                    <div className="flex gap-6 border-b border-black/5">
+                        <button 
+                            onClick={() => setSummaryTab("summary")}
+                            className={cn(
+                                "pb-2 text-sm font-medium transition-colors relative",
+                                summaryTab === "summary" ? "text-black" : "text-muted-foreground hover:text-black"
+                            )}
+                        >
+                            Summary
+                            {summaryTab === "summary" && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-black" />}
+                        </button>
+                        <button 
+                            onClick={() => setSummaryTab("key_analytics")}
+                            className={cn(
+                                "pb-2 text-sm font-medium transition-colors relative",
+                                summaryTab === "key_analytics" ? "text-black" : "text-muted-foreground hover:text-black"
+                            )}
+                        >
+                            Key Analytics
+                            {summaryTab === "key_analytics" && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-black" />}
+                        </button>
+                        <button 
+                            onClick={() => setSummaryTab("bonus")}
+                            className={cn(
+                                "pb-2 text-sm font-medium transition-colors relative",
+                                summaryTab === "bonus" ? "text-black" : "text-muted-foreground hover:text-black"
+                            )}
+                        >
+                            Bonus
+                            {summaryTab === "bonus" && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-black" />}
+                        </button>
+                    </div>
                  </div>
+
+                 {/* Tab Content */}
+                 {summaryTab === "summary" && (
+                     <div className="animate-in fade-in slide-in-from-left-4 duration-300">
+                        <ul className="space-y-2 text-base text-foreground/80 mb-6 font-medium">
+                            <li className="flex items-center gap-2">
+                            <span className="h-1.5 w-1.5 bg-red-500 rounded-full" />
+                            Labor is <span className="font-bold text-red-600">+2.1%</span> over target → <span className="text-foreground">$312 risk tonight</span>
+                            </li>
+                            <li className="flex items-center gap-2">
+                            <span className="h-1.5 w-1.5 bg-amber-500 rounded-full" />
+                            Upsell compliance at <span className="font-bold text-amber-600">68%</span> → <span className="text-foreground">$420 missed revenue</span>
+                            </li>
+                            <li className="flex items-center gap-2">
+                            <span className="h-1.5 w-1.5 bg-emerald-500 rounded-full" />
+                            Bonus pool: <span className="font-bold text-emerald-600">$1,260</span> available this week
+                            </li>
+                            <li className="flex items-center gap-2">
+                            <span className="h-1.5 w-1.5 bg-blue-500 rounded-full" />
+                            Cash runway: <span className="font-bold text-blue-600">9 days</span> at current margin
+                            </li>
+                        </ul>
+                        
+                        <div className="flex gap-3">
+                            <ActionButton>Fix Labor Risk</ActionButton>
+                            <ActionButton variant="outline">Launch Bonus</ActionButton>
+                            <ActionButton variant="outline">Boost Upsell</ActionButton>
+                        </div>
+                     </div>
+                 )}
+
+                 {summaryTab === "key_analytics" && (
+                     <div className="animate-in fade-in slide-in-from-right-4 duration-300 w-full">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                            <div className="col-span-2 h-48">
+                                <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">Weekly Sales vs Labor</h4>
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <BarChart data={dailyData}>
+                                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                                        <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{fontSize: 12}} dy={10} />
+                                        <YAxis axisLine={false} tickLine={false} tick={{fontSize: 12}} tickFormatter={(value) => `$${value}`} />
+                                        <RechartsTooltip cursor={{fill: '#f3f4f6'}} contentStyle={{borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'}} />
+                                        <Bar dataKey="sales" name="Sales" fill="#000000" radius={[4, 4, 0, 0]} barSize={20} />
+                                        <Bar dataKey="labor" name="Labor" fill="#10b981" radius={[4, 4, 0, 0]} barSize={20} />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            </div>
+                            <div className="space-y-6">
+                                <div>
+                                    <div className="text-sm text-muted-foreground mb-1">Weekly Sales</div>
+                                    <div className="text-2xl font-serif font-medium">$28,000</div>
+                                    <div className="text-xs text-emerald-600 font-medium flex items-center gap-1">
+                                        <TrendingUp className="h-3 w-3" /> +12% vs last week
+                                    </div>
+                                </div>
+                                <div>
+                                    <div className="text-sm text-muted-foreground mb-1">Labor Cost</div>
+                                    <div className="text-2xl font-serif font-medium">28.4%</div>
+                                    <div className="text-xs text-red-600 font-medium flex items-center gap-1">
+                                        <AlertCircle className="h-3 w-3" /> +2.4% vs target
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="flex gap-3">
+                            <ActionButton>Download Report</ActionButton>
+                            <ActionButton variant="outline">Adjust Targets</ActionButton>
+                        </div>
+                     </div>
+                 )}
+
+                 {summaryTab === "bonus" && (
+                     <div className="animate-in fade-in slide-in-from-right-4 duration-300 w-full">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+                            <div className="space-y-4">
+                                <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Bonus Pool Status</h4>
+                                <div className="p-4 bg-white border border-border rounded-lg shadow-sm">
+                                    <div className="flex justify-between items-end mb-2">
+                                        <span className="text-sm font-medium">October Pool</span>
+                                        <span className="text-2xl font-serif font-medium">$1,260</span>
+                                    </div>
+                                    <div className="w-full bg-gray-100 rounded-full h-2 mb-2">
+                                        <div className="bg-emerald-500 h-2 rounded-full" style={{ width: "65%" }}></div>
+                                    </div>
+                                    <div className="flex justify-between text-xs text-muted-foreground">
+                                        <span>$820 earned</span>
+                                        <span>$440 remaining</span>
+                                    </div>
+                                </div>
+                                <div className="p-4 bg-white border border-border rounded-lg shadow-sm">
+                                    <div className="flex items-center gap-3 mb-3">
+                                        <div className="h-8 w-8 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-xs">SJ</div>
+                                        <div>
+                                            <div className="text-sm font-medium">Top Earner</div>
+                                            <div className="text-xs text-muted-foreground">Sarah Jenkins</div>
+                                        </div>
+                                        <div className="ml-auto font-medium text-emerald-600">+$145</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="space-y-4">
+                                <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Active Boosts</h4>
+                                <ul className="space-y-3">
+                                    <li className="flex items-center justify-between p-3 bg-white border border-border rounded-lg">
+                                        <div className="flex items-center gap-3">
+                                            <div className="h-2 w-2 rounded-full bg-emerald-500"></div>
+                                            <span className="text-sm font-medium">Dessert Upsell</span>
+                                        </div>
+                                        <span className="text-xs font-bold px-2 py-1 bg-gray-100 rounded">$50 Bounty</span>
+                                    </li>
+                                    <li className="flex items-center justify-between p-3 bg-white border border-border rounded-lg">
+                                        <div className="flex items-center gap-3">
+                                            <div className="h-2 w-2 rounded-full bg-blue-500"></div>
+                                            <span className="text-sm font-medium">Perfect Closing</span>
+                                        </div>
+                                        <span className="text-xs font-bold px-2 py-1 bg-gray-100 rounded">$25 Bounty</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div className="flex gap-3">
+                            <ActionButton>Add Funds</ActionButton>
+                            <ActionButton variant="outline">Create Mission</ActionButton>
+                        </div>
+                     </div>
+                 )}
               </div>
            </div>
         </div>
