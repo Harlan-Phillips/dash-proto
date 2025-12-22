@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import Dashboard from "@/pages/home";
+import Dashboards from "@/pages/dashboards";
 import Settings from "@/pages/settings";
 import GenericPage from "@/pages/generic";
 import Assistant from "@/pages/assistant";
@@ -22,7 +23,7 @@ function Router() {
       {/* Insight Module */}
       <Route path="/insight/home" component={Dashboard} />
       <Route path="/insight/assistant" component={Assistant} />
-      <Route path="/insight/dashboards" component={() => <GenericPage title="Dashboards" />} />
+      <Route path="/insight/dashboards" component={Dashboards} />
       
       {/* Operate Module */}
       <Route path="/operate/schedule" component={() => <GenericPage title="Schedule" />} />
