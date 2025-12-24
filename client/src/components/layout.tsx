@@ -32,7 +32,12 @@ import {
   Users,
   Search,
   ArrowUpRight,
-  LogOut
+  LogOut,
+  Calculator,
+  Gift,
+  Receipt,
+  Truck,
+  Banknote
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -85,6 +90,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </div>
         
         <nav className="flex-1 flex flex-col w-full overflow-y-auto overflow-x-hidden scrollbar-hide">
+          <SidebarSection title="Accounting">
+            <SidebarItem icon={Calculator} label="Accounting Home" href="/accounting/home" />
+            <SidebarItem icon={FileText} label="PnL Release" href="/accounting/pnl" />
+            <SidebarItem icon={Gift} label="Bonus Release" href="/accounting/bonus" />
+            <SidebarItem icon={Receipt} label="Sales Journal" href="/accounting/sales" />
+            <SidebarItem icon={Truck} label="Delivery Journal" href="/accounting/delivery" />
+            <SidebarItem icon={Banknote} label="Payroll Journal" href="/accounting/payroll" />
+          </SidebarSection>
+
           <SidebarSection title="Insight">
             <SidebarItem icon={Home} label="Home" href="/insight/home" />
             <SidebarItem icon={Sparkles} label="Assistant" href="/insight/assistant" />

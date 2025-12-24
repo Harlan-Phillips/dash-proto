@@ -20,6 +20,14 @@ function Router() {
       <Route path="/login" component={Login} />
       <Route path="/onboarding" component={Onboarding} />
       
+      {/* Accounting Module */}
+      <Route path="/accounting/home" component={() => <GenericPage title="Accounting Home" />} />
+      <Route path="/accounting/pnl" component={() => <GenericPage title="PnL Release" />} />
+      <Route path="/accounting/bonus" component={() => <GenericPage title="Bonus Release" />} />
+      <Route path="/accounting/sales" component={() => <GenericPage title="Sales Journal" />} />
+      <Route path="/accounting/delivery" component={() => <GenericPage title="Delivery Journal" />} />
+      <Route path="/accounting/payroll" component={() => <GenericPage title="Payroll Journal" />} />
+
       {/* Insight Module */}
       <Route path="/insight/home" component={Dashboard} />
       <Route path="/insight/assistant" component={Assistant} />
