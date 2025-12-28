@@ -39,6 +39,51 @@ const laborData = [
 
 // --- Components ---
 
+function ActionButton({ children, variant = "default" }: { children: React.ReactNode, variant?: "default" | "outline" | "ghost" }) {
+  const variants = {
+    default: "bg-black text-white hover:bg-gray-800",
+    outline: "border border-border bg-white hover:bg-gray-50 text-foreground",
+    ghost: "text-muted-foreground hover:text-foreground hover:bg-gray-50",
+  };
+  
+  return (
+    <button className={cn("px-4 py-2 text-sm font-medium transition-colors font-sans", variants[variant])}>
+      {children}
+    </button>
+  );
+}
+
+function QuickOverview() {
+  return (
+    <div className="bg-white border border-gray-200 p-8 relative overflow-hidden min-h-[180px] rounded-xl mb-8 shadow-sm">
+       <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none">
+          <Sparkles size={200} />
+       </div>
+
+       <div className="flex items-start gap-4 mb-2 relative z-10 w-full">
+          <div className="h-8 w-8 bg-black text-white rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+             <Sparkles className="h-4 w-4" />
+          </div>
+          <div className="w-full">
+             <div className="flex items-center justify-between mb-6">
+                <h2 className="font-serif text-xl font-medium">Quick Overview</h2>
+             </div>
+
+             <div className="animate-in fade-in slide-in-from-left-4 duration-300">
+                <h1 className="text-3xl md:text-4xl font-serif font-medium leading-tight mb-8">
+                   Revenue is tracking <span className="bg-emerald-50 text-emerald-700 px-1 border border-emerald-100 rounded">12% ahead of forecast</span>, but labor costs are <span className="bg-red-50 text-red-700 px-1 border border-red-100 rounded">trending high</span> for the dinner shift.
+                </h1>
+                
+                <div className="flex gap-3">
+                    <ActionButton>Fix Labor Risk</ActionButton>
+                </div>
+             </div>
+          </div>
+       </div>
+    </div>
+  );
+}
+
 function MetricCard({ title, value, trend, trendValue, icon: Icon, color = "emerald" }: any) {
   const colors = {
     emerald: "text-emerald-600 bg-emerald-50 border-emerald-100",
@@ -293,6 +338,9 @@ export default function Dashboards() {
                     </button>
                  </div>
               </div>
+
+              {/* Quick Overview Component */}
+              <QuickOverview />
 
               {/* Dynamic Content Based on Layout */}
               {currentDashboard.layout === "profit" && (
