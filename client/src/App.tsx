@@ -12,6 +12,7 @@ import Assistant from "@/pages/assistant";
 import Login from "@/pages/login";
 import Onboarding from "@/pages/onboarding";
 import Journals from "@/pages/journals";
+import PnlRelease from "@/pages/pnl-release";
 
 function Router() {
   return (
@@ -24,7 +25,7 @@ function Router() {
       {/* Accounting Module */}
       <Route path="/accounting/home" component={() => <GenericPage title="Accounting Home" />} />
       <Route path="/accounting/journals" component={Journals} />
-      <Route path="/accounting/pnl" component={() => <GenericPage title="PnL Release" />} />
+      <Route path="/accounting/pnl" component={PnlRelease} />
       <Route path="/accounting/bonus" component={() => <GenericPage title="Bonus Release" />} />
 
       {/* Insight Module */}

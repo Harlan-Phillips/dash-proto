@@ -1,0 +1,93 @@
+---
+
+**Build the P&L Release flow for accountants. Three steps: Select & Sync → Review AI Package → Release.**
+
+---
+
+**Step 1: Select & Sync**
+
+- Location dropdown (if multi-unit, otherwise hidden)
+- Month/Year picker for period selection (e.g., "October 2024")
+- "Sync P&L" primary button
+- Loading state while analyzing: "Analyzing P&L..." with subtle progress indicator
+- Fallback: "Upload manually" link if no accounting integration connected
+- On success, auto-advance to Step 2
+
+---
+
+**Step 2: Review AI Package**
+
+This is the main screen. Accountant sees a preview of what the owner will receive, fully editable.
+
+**Header:**
+- Title: "October 2024 P&L" (period selected)
+- Location name as subtitle
+- "Save Draft" secondary button, "Preview as Owner" secondary button, "Release" primary button (top right)
+
+**Section A: AI Headline (editable)**
+- Large text, same style owner will see
+- Pre-filled by AI: "Net margin improved to 9.2%, driven by labor savings. But food costs crept up 1.4%."
+- Click to edit inline, or edit icon button
+- Character limit indicator if needed
+
+**Section B: Key Insights (editable, reorderable)**
+- 3-5 AI-generated bullet points
+- Each insight is a card with:
+  - Insight text (editable)
+  - Category tag (Labor, COGS, Revenue, etc.)
+  - Delete button (×)
+  - Drag handle for reordering
+- "Add Insight" button at bottom to add custom bullet
+- Empty state if AI found nothing notable: "No significant variances detected. Add your own insights."
+
+**Section C: Accountant's Note (optional)**
+- Label: "Add a note for the owner"
+- Textarea, placeholder: "Any strategic context or recommendations..."
+- This appears in the final package attributed to the accountant (e.g., "Note from Henry at Chubby Group")
+
+**Section D: Visualizations**
+- Three toggleable visualization cards:
+  1. **Category Breakdown** — pie or horizontal bar (Labor, COGS, Rent, Other)
+  2. **Monthly Trend** — line chart (net margin or net income over last 6 months)
+  3. **Variance Highlights** — table showing top 5 line items that changed most vs. prior period (amount + %)
+- Each card has a toggle: "Include in release" (default on)
+- Visualizations render live preview
+
+**Section E: Full P&L Table (collapsed by default)**
+- Expandable section: "View full P&L details"
+- Standard P&L line items with current period, prior period, variance columns
+- This is what the owner can drill into via chat on their side
+
+---
+
+**Step 3: Release Confirmation**
+
+On clicking "Release":
+- Modal confirmation: "Release October 2024 P&L to Little Mo BK?"
+- Subtext: "The owner will receive a notification and can view this on their home page."
+- Buttons: "Cancel" (secondary), "Release P&L" (primary)
+
+On success:
+- Toast notification: "P&L released. Owner will see it on their home page."
+- Redirect to Released P&Ls history or back to Select & Sync for next release
+
+---
+
+**Sidebar or Tab: Released P&Ls History**
+
+- List of past releases: Period, Location, Release Date, Status
+- Status: "Viewed" (owner opened it) or "Not viewed"
+- Click to view what was sent (read-only)
+
+---
+
+**Design principles:**
+
+- Accountant is in control. AI pre-fills, accountant approves.
+- Preview fidelity: what they see here is exactly what the owner sees.
+- Minimal clicks to release. If AI did a good job, it's: Sync → glance → Release.
+- Make the accountant look good. Final output should feel premium, hand-crafted.
+
+---
+
+Ready for Claude Code.
