@@ -169,60 +169,60 @@ export default function Journals() {
 
         {/* Table Content */}
         <div className="flex-1 overflow-auto p-8">
-          <div className="bg-black text-white rounded-lg shadow-sm border border-gray-800 overflow-hidden">
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
              <table className="w-full text-sm text-left">
-                <thead className="bg-gray-900 text-gray-400 font-medium border-b border-gray-800">
+                <thead className="bg-gray-50 text-gray-500 font-medium border-b border-gray-200">
                    <tr>
                       <th className="px-6 py-4 w-12">
                          <input 
                            type="checkbox" 
                            checked={selectedEntries.size === data.length && data.length > 0}
                            onChange={toggleAll}
-                           className="rounded bg-gray-800 border-gray-600 text-emerald-500 focus:ring-emerald-500 focus:ring-offset-gray-900"
+                           className="rounded border-gray-300 text-black focus:ring-black"
                          />
                       </th>
-                      <th className="px-6 py-4">Date ↓</th>
-                      <th className="px-6 py-4">Is Balanced?</th>
-                      <th className="px-6 py-4 text-right">Total Debit</th>
-                      <th className="px-6 py-4 text-right">Total Credit</th>
-                      <th className="px-6 py-4">Exported At</th>
+                      <th className="px-6 py-4 font-semibold text-gray-900">Date ↓</th>
+                      <th className="px-6 py-4 font-semibold text-gray-900">Is Balanced?</th>
+                      <th className="px-6 py-4 text-right font-semibold text-gray-900">Total Debit</th>
+                      <th className="px-6 py-4 text-right font-semibold text-gray-900">Total Credit</th>
+                      <th className="px-6 py-4 font-semibold text-gray-900">Exported At</th>
                       <th className="px-6 py-4"></th>
                    </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-800">
+                <tbody className="divide-y divide-gray-100">
                    {data.map((entry) => (
-                     <tr key={entry.id} className="hover:bg-gray-900/50 transition-colors group">
+                     <tr key={entry.id} className="hover:bg-gray-50 transition-colors group">
                         <td className="px-6 py-4">
                            <input 
                              type="checkbox" 
                              checked={selectedEntries.has(entry.id)}
                              onChange={() => toggleSelection(entry.id)}
-                             className="rounded bg-gray-800 border-gray-600 text-emerald-500 focus:ring-emerald-500 focus:ring-offset-gray-900"
+                             className="rounded border-gray-300 text-black focus:ring-black"
                            />
                         </td>
-                        <td className="px-6 py-4 font-mono text-gray-300">{entry.date}</td>
+                        <td className="px-6 py-4 font-mono text-gray-600">{entry.date}</td>
                         <td className="px-6 py-4">
                            {entry.isBalanced ? (
-                             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-950/30 text-emerald-400 text-xs font-medium border border-emerald-900/50">
+                             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-medium border border-emerald-100">
                                <CheckCircle2 className="h-3 w-3" /> Yes
                              </span>
                            ) : (
-                             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-950/30 text-red-400 text-xs font-medium border border-red-900/50">
+                             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-50 text-red-700 text-xs font-medium border border-red-100">
                                <AlertCircle className="h-3 w-3" /> No
                              </span>
                            )}
                         </td>
-                        <td className="px-6 py-4 text-right font-mono text-gray-300">{entry.totalDebit.toFixed(2)}</td>
-                        <td className="px-6 py-4 text-right font-mono text-gray-300">{entry.totalCredit.toFixed(2)}</td>
-                        <td className="px-6 py-4 text-gray-400">
+                        <td className="px-6 py-4 text-right font-mono text-gray-600">{entry.totalDebit.toFixed(2)}</td>
+                        <td className="px-6 py-4 text-right font-mono text-gray-600">{entry.totalCredit.toFixed(2)}</td>
+                        <td className="px-6 py-4 text-gray-500">
                            {entry.exportedAt ? (
                              entry.exportedAt
                            ) : (
-                             <span className="text-gray-600 italic">Not exported</span>
+                             <span className="text-gray-400 italic">Not exported</span>
                            )}
                         </td>
                         <td className="px-6 py-4 text-right">
-                           <button className="opacity-0 group-hover:opacity-100 p-2 hover:bg-gray-800 rounded-md transition-all text-gray-400 hover:text-white">
+                           <button className="opacity-0 group-hover:opacity-100 p-2 hover:bg-gray-100 rounded-md transition-all text-gray-400 hover:text-black">
                               <ArrowUpRight className="h-4 w-4" />
                            </button>
                         </td>
