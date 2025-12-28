@@ -15,6 +15,7 @@ import Journals from "@/pages/journals";
 import PnlRelease from "@/pages/pnl-release";
 
 import BonusRelease from "@/pages/bonus-release";
+import AccountingHome from "@/pages/accounting-home";
 
 function Router() {
   return (
@@ -25,7 +26,7 @@ function Router() {
       <Route path="/onboarding" component={Onboarding} />
       
       {/* Accounting Module */}
-      <Route path="/accounting/home" component={() => <GenericPage title="Accounting Home" />} />
+      <Route path="/accounting/home" component={AccountingHome} />
       <Route path="/accounting/journals" component={Journals} />
       <Route path="/accounting/pnl" component={PnlRelease} />
       <Route path="/finance/pnl-release" component={PnlRelease} />
