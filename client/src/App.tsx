@@ -26,6 +26,7 @@ function Router() {
       <Route path="/accounting/home" component={() => <GenericPage title="Accounting Home" />} />
       <Route path="/accounting/journals" component={Journals} />
       <Route path="/accounting/pnl" component={PnlRelease} />
+      <Route path="/finance/pnl-release" component={PnlRelease} />
       <Route path="/accounting/bonus" component={() => <GenericPage title="Bonus Release" />} />
 
       {/* Insight Module */}
