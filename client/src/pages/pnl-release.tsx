@@ -22,7 +22,8 @@ import {
   TrendingUp, 
   X,
   ArrowLeft,
-  Share
+  Share,
+  ArrowRight
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { 
@@ -290,6 +291,139 @@ function VisualizationCard({ title, children, active, onToggle }: { title: strin
   );
 }
 
+// --- Chat Component for Owner View ---
+function OwnerChat({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  const [messages, setMessages] = useState<{ id: string; role: "user" | "assistant"; content: string }[]>([]);
+  const [input, setInput] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const scrollRef = React.useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages, isTyping]);
+
+  const handleSend = async (text: string) => {
+    if (!text.trim()) return;
+    
+    const userMsg = { id: Date.now().toString(), role: "user" as const, content: text };
+    setMessages(prev => [...prev, userMsg]);
+    setInput("");
+    setIsTyping(true);
+
+    // Simulate AI response
+    await new Promise(r => setTimeout(r, 1500));
+    
+    let responseText = "I can analyze that for you. Based on the data, the main driver was the reduction in overtime hours during the weekdays.";
+    
+    if (text.toLowerCase().includes("food cost")) {
+       responseText = "Food costs rose primarily due to a 15% price increase in avocados and limes from our main supplier. We might want to look into alternative vendors for next month.";
+    } else if (text.toLowerCase().includes("labor")) {
+       responseText = "Labor is trending well! We saved about 40 hours this month by optimizing the Tuesday/Wednesday dinner shifts.";
+    }
+
+    const aiMsg = { id: (Date.now() + 1).toString(), role: "assistant" as const, content: responseText };
+    setMessages(prev => [...prev, aiMsg]);
+    setIsTyping(false);
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-y-0 right-0 w-[400px] bg-white border-l border-gray-200 shadow-2xl z-40 flex flex-col animate-in slide-in-from-right duration-300">
+       <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+          <div className="flex items-center gap-2">
+             <div className="h-8 w-8 bg-black text-white rounded-full flex items-center justify-center">
+                <Sparkles className="h-4 w-4" />
+             </div>
+             <div>
+                <h3 className="font-serif font-medium text-sm">Munch Assistant</h3>
+                <p className="text-xs text-muted-foreground">Ask anything about this report</p>
+             </div>
+          </div>
+          <button onClick={onClose} className="p-2 hover:bg-gray-200 rounded-full text-gray-500">
+             <X className="h-4 w-4" />
+          </button>
+       </div>
+
+       <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/30" ref={scrollRef}>
+          {messages.length === 0 && (
+             <div className="mt-8 px-4 text-center">
+                <p className="text-sm text-gray-500 mb-6">Here are a few things you can ask me:</p>
+                <div className="space-y-3">
+                   <button onClick={() => handleSend("Why did food costs go up?")} className="w-full text-left p-3 bg-white border border-gray-200 rounded-xl hover:border-emerald-500 hover:shadow-sm transition-all text-sm group">
+                      <span className="font-medium text-gray-900 group-hover:text-emerald-700">Why did food costs go up?</span>
+                      <span className="block text-xs text-gray-500 mt-1">Analyze COGS variance</span>
+                   </button>
+                   <button onClick={() => handleSend("Show me the daily labor breakdown")} className="w-full text-left p-3 bg-white border border-gray-200 rounded-xl hover:border-emerald-500 hover:shadow-sm transition-all text-sm group">
+                      <span className="font-medium text-gray-900 group-hover:text-emerald-700">Daily labor breakdown</span>
+                      <span className="block text-xs text-gray-500 mt-1">View staffing efficiency</span>
+                   </button>
+                   <button onClick={() => handleSend("Draft an email to the team about this")} className="w-full text-left p-3 bg-white border border-gray-200 rounded-xl hover:border-emerald-500 hover:shadow-sm transition-all text-sm group">
+                      <span className="font-medium text-gray-900 group-hover:text-emerald-700">Draft team email</span>
+                      <span className="block text-xs text-gray-500 mt-1">Celebrate the wins</span>
+                   </button>
+                </div>
+             </div>
+          )}
+
+          {messages.map((msg) => (
+             <div key={msg.id} className={cn("flex gap-3", msg.role === "assistant" ? "" : "flex-row-reverse")}>
+                <div className={cn(
+                   "h-8 w-8 rounded-full flex items-center justify-center flex-shrink-0 mt-1",
+                   msg.role === "assistant" ? "bg-black text-white" : "bg-gray-200 text-gray-600"
+                )}>
+                   {msg.role === "assistant" ? <Sparkles className="h-4 w-4" /> : <div className="font-bold text-xs">You</div>}
+                </div>
+                <div className={cn(
+                   "max-w-[85%] py-2 px-3 rounded-2xl text-sm leading-relaxed",
+                   msg.role === "user" ? "bg-gray-100 text-gray-900 rounded-tr-none" : "bg-transparent text-gray-900 px-0"
+                )}>
+                   {msg.content}
+                </div>
+             </div>
+          ))}
+          
+          {isTyping && (
+             <div className="flex gap-3">
+                <div className="h-8 w-8 bg-black text-white rounded-full flex items-center justify-center flex-shrink-0">
+                   <Sparkles className="h-4 w-4" />
+                </div>
+                <div className="flex items-center gap-1 mt-2">
+                   <div className="h-1.5 w-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                   <div className="h-1.5 w-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                   <div className="h-1.5 w-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                </div>
+             </div>
+          )}
+       </div>
+
+       <div className="p-4 bg-white border-t border-gray-200">
+          <form 
+             onSubmit={(e) => { e.preventDefault(); handleSend(input); }}
+             className="relative flex items-center"
+          >
+             <input 
+                type="text" 
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Ask follow-up questions..."
+                className="w-full py-3 pl-4 pr-12 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-black focus:bg-white transition-all text-sm"
+             />
+             <button 
+                type="submit"
+                disabled={!input.trim() || isTyping}
+                className="absolute right-2 p-1.5 bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+             >
+                <Send className="h-3.5 w-3.5" />
+             </button>
+          </form>
+       </div>
+    </div>
+  );
+}
+
 // --- Main Page Component ---
 
 export default function PnlRelease() {
@@ -305,7 +439,8 @@ export default function PnlRelease() {
   const [isSyncing, setIsSyncing] = useState(false);
   const [locationName, setLocationName] = useState("Little Mo BK");
   const [period, setPeriod] = useState("October 2024");
-  
+  const [showChat, setShowChat] = useState(true); // Default show chat for owner view
+
   // Release Data State
   const [headline, setHeadline] = useState("Net margin improved to 9.2%, driven by labor savings. But food costs crept up 1.4%.");
   const [insights, setInsights] = useState([
@@ -375,39 +510,63 @@ export default function PnlRelease() {
   if (isOwnerView) {
      return (
         <Layout>
-           <div className="min-h-screen bg-gray-50 flex justify-center">
-              <div className="w-full max-w-3xl bg-white shadow-sm border-x border-gray-200 min-h-screen">
-                 {/* Email-like / Mobile-first Header */}
-                 <div className="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-gray-100 px-6 py-4 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                       <button onClick={() => setLocation("/")} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-                          <ArrowLeft className="h-5 w-5 text-gray-500" />
-                       </button>
-                       <div>
-                          <h1 className="font-serif text-lg font-bold text-gray-900">{period} Report</h1>
-                          <p className="text-xs text-muted-foreground">{locationName}</p>
+           <div className="min-h-screen bg-gray-50 flex overflow-hidden">
+              {/* Main Content Area - Shrinks when chat is open */}
+              <div className={cn(
+                  "flex-1 flex justify-center overflow-y-auto transition-all duration-300",
+                  showChat ? "mr-[400px]" : ""
+              )}>
+                 <div className="w-full max-w-3xl bg-white shadow-sm border-x border-gray-200 min-h-screen pb-32">
+                    {/* Email-like / Mobile-first Header */}
+                    <div className="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-gray-100 px-6 py-4 flex items-center justify-between">
+                       <div className="flex items-center gap-3">
+                          <button onClick={() => setLocation("/")} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                             <ArrowLeft className="h-5 w-5 text-gray-500" />
+                          </button>
+                          <div>
+                             <h1 className="font-serif text-lg font-bold text-gray-900">{period} Report</h1>
+                             <p className="text-xs text-muted-foreground">{locationName}</p>
+                          </div>
+                       </div>
+                       <div className="flex gap-2">
+                          <button 
+                             onClick={() => setShowChat(!showChat)}
+                             className={cn("p-2 rounded-full transition-colors", showChat ? "bg-black text-white" : "text-gray-400 hover:text-black hover:bg-gray-50")}
+                          >
+                             <Sparkles className="h-5 w-5" />
+                          </button>
+                          <button className="p-2 text-gray-400 hover:text-black hover:bg-gray-50 rounded-full">
+                             <Download className="h-5 w-5" />
+                          </button>
+                          <button className="p-2 text-gray-400 hover:text-black hover:bg-gray-50 rounded-full">
+                             <Share className="h-5 w-5" />
+                          </button>
                        </div>
                     </div>
-                    <div className="flex gap-2">
-                       <button className="p-2 text-gray-400 hover:text-black hover:bg-gray-50 rounded-full">
-                          <Download className="h-5 w-5" />
-                       </button>
-                       <button className="p-2 text-gray-400 hover:text-black hover:bg-gray-50 rounded-full">
-                          <Share className="h-5 w-5" />
-                       </button>
-                    </div>
-                 </div>
 
-                 <div className="p-6 md:p-8 space-y-8 pb-32">
-                    {/* Headline */}
-                    <div>
-                       <h2 className="text-3xl font-serif font-medium leading-tight text-gray-900">
-                          {headline}
-                       </h2>
-                    </div>
+                    <div className="p-6 md:p-8 space-y-8">
+                       {/* Headline */}
+                       <div>
+                          <h2 className="text-3xl font-serif font-medium leading-tight text-gray-900 mb-4">
+                             {headline}
+                          </h2>
+                          
+                          {/* CTA Prompt */}
+                          <div className="bg-gray-50 rounded-lg p-3 flex items-center justify-between border border-gray-100 cursor-pointer hover:border-emerald-200 hover:bg-emerald-50/30 transition-all group"
+                               onClick={() => setShowChat(true)}
+                          >
+                             <div className="flex items-center gap-3">
+                                <div className="h-8 w-8 bg-white rounded-full flex items-center justify-center text-emerald-600 shadow-sm border border-gray-100 group-hover:scale-105 transition-transform">
+                                   <Sparkles className="h-4 w-4" />
+                                </div>
+                                <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900">Why did food costs increase?</span>
+                             </div>
+                             <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-emerald-600 group-hover:translate-x-1 transition-all" />
+                          </div>
+                       </div>
 
-                    {/* Key Stats Grid */}
-                    <div className="grid grid-cols-3 gap-3">
+                       {/* Key Stats Grid */}
+                       <div className="grid grid-cols-3 gap-3">
                        <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
                           <div className="text-xs text-gray-500 uppercase tracking-wider mb-1">Net Revenue</div>
                           <div className="text-2xl font-serif text-gray-900">$124.5k</div>
@@ -579,6 +738,9 @@ export default function PnlRelease() {
                  </div>
               </div>
            </div>
+
+           {/* Split Screen Chat Interface */}
+           {showChat && <OwnerChat isOpen={showChat} onClose={() => setShowChat(false)} />}
         </Layout>
      );
   }
