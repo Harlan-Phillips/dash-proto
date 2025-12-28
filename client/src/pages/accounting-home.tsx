@@ -107,7 +107,7 @@ export default function AccountingHome() {
         {/* 1. Top Navigation Context */}
         <div className="flex items-center justify-between border-b border-border pb-4">
            <div className="flex items-center gap-6">
-              <span className="font-serif text-2xl font-medium">Little Mo BK</span>
+              <span className="font-serif text-2xl font-medium">Showing All Locations</span>
               <span className="text-sm text-muted-foreground bg-secondary px-3 py-1 rounded-full">Today, Oct 24</span>
            </div>
            
