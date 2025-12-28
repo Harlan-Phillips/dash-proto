@@ -401,9 +401,6 @@ export default function PnlRelease() {
                  <div className="p-6 md:p-8 space-y-8 pb-32">
                     {/* Headline */}
                     <div>
-                       <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full text-xs font-bold uppercase tracking-wider mb-4 border border-emerald-100">
-                          <Sparkles className="h-3 w-3" /> AI Summary
-                       </div>
                        <h2 className="text-3xl font-serif font-medium leading-tight text-gray-900">
                           {headline}
                        </h2>
@@ -766,6 +763,25 @@ export default function PnlRelease() {
                   className="w-full text-3xl md:text-4xl font-serif font-medium leading-tight border-none p-0 focus:ring-0 resize-none bg-transparent placeholder:text-gray-300"
                   rows={2}
                />
+            </div>
+            
+            {/* Stats Cards (Added to Draft View) */}
+            <div className="grid grid-cols-3 gap-6">
+                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                   <div className="text-xs text-gray-500 uppercase tracking-wider mb-2">Net Revenue</div>
+                   <div className="text-3xl font-serif text-gray-900">$124.5k</div>
+                   <div className="text-sm text-emerald-600 font-medium mt-1">↑ 5.3% vs forecast</div>
+                </div>
+                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                   <div className="text-xs text-gray-500 uppercase tracking-wider mb-2">Net Margin</div>
+                   <div className="text-3xl font-serif text-emerald-600">9.2%</div>
+                   <div className="text-sm text-emerald-600 font-medium mt-1">↑ 2.1% vs last month</div>
+                </div>
+                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                   <div className="text-xs text-gray-500 uppercase tracking-wider mb-2">Vs Last Month</div>
+                   <div className="text-3xl font-serif text-emerald-600">+$5.4k</div>
+                   <div className="text-sm text-gray-500 font-medium mt-1">Net Income Growth</div>
+                </div>
             </div>
 
             {/* Section B: Key Insights */}
