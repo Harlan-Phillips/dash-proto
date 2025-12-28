@@ -132,7 +132,7 @@ export default function Home() {
                     <span>{pnlPeriod} P&L available · Net margin: 9.2%</span>
                  </div>
                  <button 
-                   onClick={() => setLocation("/finance/pnl-release")}
+                   onClick={() => setLocation("/finance/pnl-release?view=owner")}
                    className="text-xs font-medium hover:text-gray-300 transition-colors flex items-center gap-1"
                  >
                     View <ArrowUpRight className="h-3 w-3" />

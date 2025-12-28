@@ -20,7 +20,9 @@ import {
   Sparkles, 
   Trash2, 
   TrendingUp, 
-  X 
+  X,
+  ArrowLeft,
+  Share
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { 
@@ -291,8 +293,12 @@ function VisualizationCard({ title, children, active, onToggle }: { title: strin
 // --- Main Page Component ---
 
 export default function PnlRelease() {
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
   const { toast } = useToast();
+  
+  // Check if we're in owner view mode
+  const searchParams = new URLSearchParams(window.location.search);
+  const isOwnerView = searchParams.get("view") === "owner";
   
   // State
   const [step, setStep] = useState<1 | 2 | 3>(1);
@@ -364,6 +370,185 @@ export default function PnlRelease() {
       setLocation("/");
     }, 1000);
   };
+
+  // --- Owner View (Customer Facing) ---
+  if (isOwnerView) {
+     return (
+        <Layout>
+           <div className="min-h-screen bg-gray-50 flex justify-center">
+              <div className="w-full max-w-3xl bg-white shadow-sm border-x border-gray-200 min-h-screen">
+                 {/* Email-like / Mobile-first Header */}
+                 <div className="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-gray-100 px-6 py-4 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                       <button onClick={() => setLocation("/")} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                          <ArrowLeft className="h-5 w-5 text-gray-500" />
+                       </button>
+                       <div>
+                          <h1 className="font-serif text-lg font-bold text-gray-900">{period} Report</h1>
+                          <p className="text-xs text-muted-foreground">{locationName}</p>
+                       </div>
+                    </div>
+                    <div className="flex gap-2">
+                       <button className="p-2 text-gray-400 hover:text-black hover:bg-gray-50 rounded-full">
+                          <Download className="h-5 w-5" />
+                       </button>
+                       <button className="p-2 text-gray-400 hover:text-black hover:bg-gray-50 rounded-full">
+                          <Share className="h-5 w-5" />
+                       </button>
+                    </div>
+                 </div>
+
+                 <div className="p-6 md:p-8 space-y-8 pb-32">
+                    {/* Headline */}
+                    <div>
+                       <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full text-xs font-bold uppercase tracking-wider mb-4 border border-emerald-100">
+                          <Sparkles className="h-3 w-3" /> AI Summary
+                       </div>
+                       <h2 className="text-3xl font-serif font-medium leading-tight text-gray-900">
+                          {headline}
+                       </h2>
+                    </div>
+
+                    {/* Key Stats Grid */}
+                    <div className="grid grid-cols-2 gap-4">
+                       <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                          <div className="text-xs text-gray-500 uppercase tracking-wider mb-1">Net Margin</div>
+                          <div className="text-2xl font-serif text-emerald-600">9.2%</div>
+                          <div className="text-xs text-emerald-600 font-medium mt-1">↑ 2.1% vs last month</div>
+                       </div>
+                       <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                          <div className="text-xs text-gray-500 uppercase tracking-wider mb-1">Total Revenue</div>
+                          <div className="text-2xl font-serif text-gray-900">$124.5k</div>
+                          <div className="text-xs text-emerald-600 font-medium mt-1">↑ 5.3% vs forecast</div>
+                       </div>
+                    </div>
+
+                    {/* Insights List */}
+                    <div className="space-y-4">
+                       <h3 className="font-bold text-sm text-gray-900 uppercase tracking-wider">Key Insights</h3>
+                       {insights.map((insight) => (
+                          <div key={insight.id} className="flex gap-4 p-4 bg-white border border-gray-100 rounded-xl shadow-sm">
+                             <div className={cn(
+                                "w-1 h-auto rounded-full flex-shrink-0",
+                                insight.tag === "Positive" ? "bg-emerald-500" : 
+                                insight.tag === "Negative" ? "bg-red-500" : "bg-gray-300"
+                             )} />
+                             <div>
+                                <p className="text-gray-800 leading-relaxed text-sm">{insight.text}</p>
+                             </div>
+                          </div>
+                       ))}
+                    </div>
+
+                    {/* Visualizations (Read Only) */}
+                    <div className="space-y-6">
+                       {visualizations.trend && (
+                          <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+                             <h3 className="font-medium text-sm text-gray-900 mb-6">Margin Trend (6 Mo)</h3>
+                             <div className="h-48 w-full">
+                                <ResponsiveContainer width="100%" height="100%">
+                                   <LineChart data={trendData}>
+                                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
+                                      <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{fontSize: 12}} />
+                                      <YAxis axisLine={false} tickLine={false} tickFormatter={(val) => `${val}%`} tick={{fontSize: 12}} />
+                                      <Tooltip />
+                                      <Line type="monotone" dataKey="margin" stroke="#10b981" strokeWidth={3} dot={{r: 4, fill: '#10b981'}} />
+                                   </LineChart>
+                                </ResponsiveContainer>
+                             </div>
+                          </div>
+                       )}
+                       
+                       {visualizations.breakdown && (
+                          <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+                             <h3 className="font-medium text-sm text-gray-900 mb-4">Cost Breakdown</h3>
+                             <div className="h-48 w-full flex items-center justify-center">
+                                <ResponsiveContainer width="100%" height="100%">
+                                   <RechartsPieChart>
+                                      <Pie
+                                         data={categoryData}
+                                         innerRadius={50}
+                                         outerRadius={70}
+                                         paddingAngle={5}
+                                         dataKey="value"
+                                      >
+                                         {categoryData.map((entry, index) => (
+                                            <Cell key={`cell-${index}`} fill={entry.color} />
+                                         ))}
+                                      </Pie>
+                                      <Tooltip />
+                                   </RechartsPieChart>
+                                </ResponsiveContainer>
+                                <div className="ml-4 space-y-2">
+                                   {categoryData.map((cat, i) => (
+                                      <div key={i} className="flex items-center gap-2 text-xs">
+                                         <div className="w-2 h-2 rounded-full" style={{ backgroundColor: cat.color }} />
+                                         <span className="text-gray-600">{cat.name}</span>
+                                         <span className="font-medium">{cat.value}%</span>
+                                      </div>
+                                   ))}
+                                </div>
+                             </div>
+                          </div>
+                       )}
+                    </div>
+
+                    {/* Note */}
+                    <div className="bg-emerald-50/50 p-6 rounded-xl border border-emerald-100 flex gap-4">
+                       <div className="h-10 w-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-800 font-bold font-serif flex-shrink-0">
+                          H
+                       </div>
+                       <div>
+                          <div className="font-bold text-sm text-emerald-900 mb-1">Note from Henry</div>
+                          <p className="text-emerald-800 text-sm leading-relaxed italic">
+                             "{note || "Great work keeping labor in check this month. Let's keep an eye on food costs next period."}"
+                          </p>
+                       </div>
+                    </div>
+
+                    {/* Full Table */}
+                    <div className="border-t border-gray-100 pt-8">
+                       <button 
+                          onClick={() => setShowFullPnl(!showFullPnl)}
+                          className="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 transition-colors rounded-lg border border-gray-200"
+                       >
+                          <span className="font-medium text-sm flex items-center gap-2">
+                             <FileText className="h-4 w-4 text-gray-500" /> Full P&L Detail
+                          </span>
+                          {showFullPnl ? <ChevronUp className="h-4 w-4 text-gray-500" /> : <ChevronDown className="h-4 w-4 text-gray-500" />}
+                       </button>
+                       
+                       {showFullPnl && (
+                          <div className="mt-4 border border-gray-200 rounded-lg overflow-hidden">
+                             <table className="w-full text-sm text-left">
+                                <thead className="bg-gray-50 border-b border-gray-200 text-xs uppercase text-gray-500 font-medium">
+                                   <tr>
+                                      <th className="px-4 py-3">Category</th>
+                                      <th className="px-4 py-3 text-right">Current</th>
+                                      <th className="px-4 py-3 text-right">Var</th>
+                                   </tr>
+                                </thead>
+                                <tbody className="divide-y divide-gray-100">
+                                   {pnlData.map((row) => (
+                                      <tr key={row.category} className={cn("hover:bg-gray-50", row.category === "Net Income" ? "bg-gray-50 font-bold" : "")}>
+                                         <td className="px-4 py-3 font-medium">{row.category}</td>
+                                         <td className="px-4 py-3 text-right">${row.current.toLocaleString()}</td>
+                                         <td className={cn("px-4 py-3 text-right font-medium", row.variance > 0 ? "text-emerald-600" : "text-red-600")}>
+                                            {row.variance > 0 ? "+" : ""}{row.variance.toLocaleString()}
+                                         </td>
+                                      </tr>
+                                   ))}
+                                </tbody>
+                             </table>
+                          </div>
+                       )}
+                    </div>
+                 </div>
+              </div>
+           </div>
+        </Layout>
+     );
+  }
 
   // --- Step 1: P&L List Table ---
   if (step === 1) {
