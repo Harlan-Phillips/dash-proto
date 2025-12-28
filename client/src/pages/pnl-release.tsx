@@ -23,8 +23,15 @@ import {
   X,
   ArrowLeft,
   Share,
-  ArrowRight
+  ArrowRight,
+  FileSpreadsheet,
+  File
 } from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { 
   BarChart, 
@@ -535,12 +542,26 @@ export default function PnlRelease() {
                           >
                              <Sparkles className="h-5 w-5" />
                           </button>
-                          <button className="p-2 text-gray-400 hover:text-black hover:bg-gray-50 rounded-full">
-                             <Download className="h-5 w-5" />
-                          </button>
-                          <button className="p-2 text-gray-400 hover:text-black hover:bg-gray-50 rounded-full">
-                             <Share className="h-5 w-5" />
-                          </button>
+                          
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <button className="p-2 text-gray-400 hover:text-black hover:bg-gray-50 rounded-full">
+                                 <Download className="h-5 w-5" />
+                              </button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-48 p-1" align="end">
+                              <div className="grid gap-1">
+                                <button className="flex items-center gap-2 w-full px-3 py-2 text-sm text-left hover:bg-gray-50 rounded-md transition-colors">
+                                  <File className="h-4 w-4 text-red-500" />
+                                  <span>Download PDF</span>
+                                </button>
+                                <button className="flex items-center gap-2 w-full px-3 py-2 text-sm text-left hover:bg-gray-50 rounded-md transition-colors">
+                                  <FileSpreadsheet className="h-4 w-4 text-emerald-600" />
+                                  <span>Download Excel</span>
+                                </button>
+                              </div>
+                            </PopoverContent>
+                          </Popover>
                        </div>
                     </div>
 
