@@ -245,7 +245,9 @@ export default function Home() {
 
         {/* 5. Relevant Stats */}
         <div>
-           <h3 className="font-serif text-lg font-medium mb-6">Relevant Stats</h3>
+           <h3 className="font-serif text-lg font-medium mb-6 flex items-center gap-2">
+              <Zap className="h-5 w-5 text-amber-500 fill-amber-500" /> Relevant Stats
+           </h3>
            <div className="bg-white border border-border p-8 flex flex-col md:flex-row gap-8 items-center justify-between">
               <div className="flex-1 w-full">
                  <div className="flex justify-between items-end mb-2">
