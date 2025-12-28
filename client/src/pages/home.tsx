@@ -126,8 +126,6 @@ export default function Home() {
                     
                     <div className="flex gap-3">
                         <ActionButton>Fix Labor Risk</ActionButton>
-                        <ActionButton variant="outline">Launch Bonus</ActionButton>
-                        <ActionButton variant="outline">Boost Upsell</ActionButton>
                     </div>
                  </div>
               </div>
