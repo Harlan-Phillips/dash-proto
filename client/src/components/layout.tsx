@@ -93,10 +93,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <SidebarSection title="Accounting">
             <SidebarItem icon={Calculator} label="Accounting Home" href="/accounting/home" />
             <SidebarItem icon={FileText} label="PnL Release" href="/accounting/pnl" />
+            <SidebarItem icon={Receipt} label="Journal Automations" href="/accounting/journals" />
             <SidebarItem icon={Gift} label="Bonus Release" href="/accounting/bonus" />
-            <SidebarItem icon={Receipt} label="Sales Journal" href="/accounting/sales" />
-            <SidebarItem icon={Truck} label="Delivery Journal" href="/accounting/delivery" />
-            <SidebarItem icon={Banknote} label="Payroll Journal" href="/accounting/payroll" />
           </SidebarSection>
 
           <SidebarSection title="Insight">

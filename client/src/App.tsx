@@ -11,6 +11,7 @@ import GenericPage from "@/pages/generic";
 import Assistant from "@/pages/assistant";
 import Login from "@/pages/login";
 import Onboarding from "@/pages/onboarding";
+import Journals from "@/pages/journals";
 
 function Router() {
   return (
@@ -22,11 +23,9 @@ function Router() {
       
       {/* Accounting Module */}
       <Route path="/accounting/home" component={() => <GenericPage title="Accounting Home" />} />
+      <Route path="/accounting/journals" component={Journals} />
       <Route path="/accounting/pnl" component={() => <GenericPage title="PnL Release" />} />
       <Route path="/accounting/bonus" component={() => <GenericPage title="Bonus Release" />} />
-      <Route path="/accounting/sales" component={() => <GenericPage title="Sales Journal" />} />
-      <Route path="/accounting/delivery" component={() => <GenericPage title="Delivery Journal" />} />
-      <Route path="/accounting/payroll" component={() => <GenericPage title="Payroll Journal" />} />
 
       {/* Insight Module */}
       <Route path="/insight/home" component={Dashboard} />
