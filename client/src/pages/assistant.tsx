@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import Layout from "@/components/layout";
-import { useLocation } from "wouter";
+import { useLocation } from "wouter"; // Import useLocation
 import { 
   Send, 
   User, 
@@ -12,9 +12,7 @@ import {
   TrendingUp,
   DollarSign,
   Award,
-  ChevronRight,
-  Sun,
-  X
+  ChevronRight
 } from "lucide-react";
 import { Wand } from "@/components/ui/wand";
 import { motion, AnimatePresence } from "framer-motion";
@@ -80,43 +78,6 @@ function PerformerArtifact() {
   );
 }
 
-function LaborAnalysisArtifact() {
-  return (
-    <div className="mt-4 bg-white border border-border rounded-lg shadow-sm overflow-hidden max-w-md">
-      <div className="bg-red-50/50 p-4 border-b border-border flex justify-between items-center">
-        <div className="flex items-center gap-3">
-           <div className="h-10 w-10 bg-red-100 text-red-700 rounded-full flex items-center justify-center font-serif text-lg font-bold">
-             LB
-           </div>
-           <div>
-             <h3 className="font-serif font-medium">Labor Variance</h3>
-             <p className="text-xs text-muted-foreground uppercase tracking-wider">Last Night • Dinner</p>
-           </div>
-        </div>
-        <div className="bg-white px-2 py-1 rounded text-xs font-bold border border-red-100 text-red-700 flex items-center gap-1">
-           <TrendingUp className="h-3 w-3" /> +8% Over
-        </div>
-      </div>
-      
-      <div className="p-4 space-y-4">
-         <div className="space-y-1">
-            <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Scheduled Hours</span>
-                <span className="font-medium">42.0 hrs</span>
-            </div>
-            <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Actual Hours</span>
-                <span className="font-medium text-red-600">45.5 hrs</span>
-            </div>
-         </div>
-         <div className="p-3 bg-gray-50 rounded border border-border text-sm">
-            <span className="font-medium">Insight:</span> 3 servers stayed 45m past cut time due to late table campers.
-         </div>
-      </div>
-    </div>
-  );
-}
-
 export default function Assistant() {
   const [location] = useLocation();
   const [input, setInput] = useState("");
@@ -132,7 +93,7 @@ export default function Assistant() {
     if (initialQuery && messages.length === 0) {
       handleSend(initialQuery);
     }
-  }, [location]);
+  }, [location]); // Depend on location to re-run when location changes
 
   // Auto-scroll
   useEffect(() => {
@@ -155,40 +116,27 @@ export default function Assistant() {
     setIsTyping(true);
 
     // --- Mock Simulation Flow ---
+    
+    // 1. Initial "Thinking" pause
     await new Promise(r => setTimeout(r, 1200));
 
-    let toolMsg: Message;
-    
-    // Simple routing logic for mock
-    if (text.toLowerCase().includes("labor") || text.toLowerCase().includes("break it down")) {
-        toolMsg = {
-            id: (Date.now() + 1).toString(),
-            role: "assistant",
-            content: "I'll analyze last night's labor variance.",
-            toolCall: {
-                state: "pending_confirmation",
-                toolName: "analyze_labor_variance",
-                args: { shift: "yesterday_dinner", metric: "hours_variance" }
-            }
-        };
-    } else {
-        toolMsg = {
-            id: (Date.now() + 1).toString(),
-            role: "assistant",
-            content: "I'll check the performance data for this week.",
-            toolCall: {
-                state: "pending_confirmation",
-                toolName: "analyze_staff_performance",
-                args: { timeRange: "this_week", metric: "sales_volume", staff_member: "Michael Richards" }
-            }
-        };
-    }
-
+    // 2. Assistant acknowledges and starts tool
+    const toolMsgId = (Date.now() + 1).toString();
+    const toolMsg: Message = {
+      id: toolMsgId,
+      role: "assistant",
+      content: "I'll check the performance data for this week.",
+      toolCall: {
+        state: "pending_confirmation",
+        toolName: "analyze_staff_performance",
+        args: { timeRange: "this_week", metric: "sales_volume", staff_member: "Michael Richards" }
+      }
+    };
     setMessages(prev => [...prev, toolMsg]);
     setIsTyping(false);
   };
 
-  const handleConfirmTool = async (msgId: string, toolName: string) => {
+  const handleConfirmTool = async (msgId: string) => {
     // Update to running
     setMessages(prev => prev.map(m => 
       m.id === msgId 
@@ -197,35 +145,25 @@ export default function Assistant() {
     ));
     setIsTyping(true);
 
-    // Tool "running" pause
+    // 3. Tool "running" pause
     await new Promise(r => setTimeout(r, 2000));
 
-    // Update tool to completed
+    // 4. Update tool to completed
     setMessages(prev => prev.map(m => 
       m.id === msgId 
-        ? { ...m, toolCall: { ...m.toolCall!, state: "completed", result: "Analysis complete." } }
+        ? { ...m, toolCall: { ...m.toolCall!, state: "completed", result: "Analysis complete. Top performer identified." } }
         : m
     ));
 
-    // Final Answer
+    // 5. Final Answer with Artifact
     await new Promise(r => setTimeout(r, 800));
     
-    let finalMsg: Message;
-    if (toolName === "analyze_labor_variance") {
-        finalMsg = {
-            id: (Date.now() + 2).toString(),
-            role: "assistant",
-            content: "Last night's dinner shift ran **8% over budget**. The primary driver was 3 servers clocking out 45 mins late.",
-            artifact: true // We'll hijack this flag to show labor artifact
-        };
-    } else {
-        finalMsg = {
-            id: (Date.now() + 2).toString(),
-            role: "assistant",
-            content: "Based on sales volume and upsell conversion rates, **Michael Richards** is your top performer this week. He consistently exceeds the check average target during dinner shifts.",
-            artifact: true
-        };
-    }
+    const finalMsg: Message = {
+      id: (Date.now() + 2).toString(),
+      role: "assistant",
+      content: "Based on sales volume and upsell conversion rates, **Michael Richards** is your top performer this week. He consistently exceeds the check average target during dinner shifts.",
+      artifact: true
+    };
     
     setMessages(prev => [...prev, finalMsg]);
     setIsTyping(false);
@@ -241,63 +179,35 @@ export default function Assistant() {
 
   return (
     <Layout>
-      <div className="flex h-[calc(100vh-64px)] overflow-hidden bg-gray-50/50">
+      <div className="flex h-[calc(100vh-64px)] overflow-hidden bg-white">
         
+        {/* Sidebar (History) */}
+        <div className="w-64 border-r border-border bg-gray-50/50 hidden md:flex flex-col">
+          <div className="p-4 border-b border-border">
+             <button className="w-full bg-white border border-border text-sm font-medium py-2 px-3 rounded-md shadow-sm hover:bg-gray-50 transition-colors flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-emerald-600" /> New Chat
+             </button>
+          </div>
+          <div className="flex-1 overflow-y-auto p-2 space-y-1">
+             <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider px-2 py-2">Recent</div>
+             <button className="w-full text-left text-sm p-2 rounded hover:bg-gray-100 truncate">Top performer this week</button>
+             <button className="w-full text-left text-sm p-2 rounded hover:bg-gray-100 truncate text-muted-foreground">Labor cost analysis</button>
+             <button className="w-full text-left text-sm p-2 rounded hover:bg-gray-100 truncate text-muted-foreground">Inventory check</button>
+          </div>
+        </div>
+
         {/* Main Chat Area */}
-        <div className="flex-1 flex flex-col max-w-3xl mx-auto w-full bg-white shadow-sm border-x border-border">
+        <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full">
            
            {/* Messages */}
            <div className="flex-1 overflow-y-auto p-4 md:p-8 space-y-8" ref={scrollRef}>
               {messages.length === 0 ? (
-                 <div className="h-full flex flex-col justify-center items-center max-w-lg mx-auto w-full">
-                    
-                    {/* Proactive Insight Card */}
-                    <div className="w-full bg-white border border-border rounded-xl shadow-sm overflow-hidden mb-12">
-                        <div className="p-8 pb-6">
-                            <div className="flex items-center gap-3 mb-6">
-                                <Sun className="h-6 w-6 text-amber-500 fill-amber-500" />
-                                <h2 className="font-serif text-2xl font-medium">Good morning, Little Mo BK.</h2>
-                            </div>
-                            <p className="text-lg text-foreground/80 leading-relaxed mb-6">
-                                I noticed labor ran <span className="font-medium text-red-600 bg-red-50 px-1 rounded">8% over</span> last night. Want me to break it down?
-                            </p>
-                            <div className="flex gap-3">
-                                <button 
-                                    onClick={() => handleSend("Yes, show me the labor breakdown")}
-                                    className="bg-black text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors shadow-sm"
-                                >
-                                    Yes, show me
-                                </button>
-                                <button className="text-muted-foreground px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-50 hover:text-foreground transition-colors">
-                                    Not now
-                                </button>
-                            </div>
-                        </div>
+                 <div className="h-full flex flex-col items-center justify-center text-center p-8 opacity-50">
+                    <div className="bg-gray-100 p-4 rounded-full mb-4">
+                       <Bot className="h-8 w-8 text-gray-400" />
                     </div>
-
-                    {/* Suggested Actions */}
-                    <div className="w-full space-y-6">
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground uppercase tracking-wider font-medium px-1">
-                            <span>Or ask me something</span>
-                            <div className="h-px bg-border flex-1" />
-                        </div>
-                        
-                        <div className="grid gap-3">
-                            <button onClick={() => handleSend("Who's my top performer this week?")} className="text-left px-5 py-4 bg-gray-50 hover:bg-white hover:shadow-md border border-border rounded-xl transition-all group flex justify-between items-center">
-                                <span className="font-medium text-gray-700 group-hover:text-black">"Who's my top performer this week?"</span>
-                                <ArrowRight className="h-4 w-4 text-gray-300 group-hover:text-black transition-colors" />
-                            </button>
-                            <button onClick={() => handleSend("Am I overstaffed tonight?")} className="text-left px-5 py-4 bg-gray-50 hover:bg-white hover:shadow-md border border-border rounded-xl transition-all group flex justify-between items-center">
-                                <span className="font-medium text-gray-700 group-hover:text-black">"Am I overstaffed tonight?"</span>
-                                <ArrowRight className="h-4 w-4 text-gray-300 group-hover:text-black transition-colors" />
-                            </button>
-                            <button onClick={() => handleSend("Compare this week vs last")} className="text-left px-5 py-4 bg-gray-50 hover:bg-white hover:shadow-md border border-border rounded-xl transition-all group flex justify-between items-center">
-                                <span className="font-medium text-gray-700 group-hover:text-black">"Compare this week vs last"</span>
-                                <ArrowRight className="h-4 w-4 text-gray-300 group-hover:text-black transition-colors" />
-                            </button>
-                        </div>
-                    </div>
-
+                    <h2 className="font-serif text-2xl font-medium mb-2">Munch Assistant</h2>
+                    <p className="max-w-md text-muted-foreground">Ask me anything about your restaurant's performance, staff, or inventory.</p>
                  </div>
               ) : (
                  messages.map((msg) => (
@@ -334,7 +244,7 @@ export default function Assistant() {
                                className="mt-2 mb-2"
                              >
                                 {msg.toolCall.state === "pending_confirmation" ? (
-                                    <div className="border border-border rounded-lg p-4 bg-white shadow-sm max-w-sm text-left">
+                                    <div className="border border-border rounded-lg p-4 bg-white shadow-sm max-w-sm">
                                       <div className="flex items-center justify-between mb-3">
                                           <div className="flex items-center gap-2">
                                             <Wand />
@@ -353,7 +263,7 @@ export default function Assistant() {
                                                <div key={key} className="flex flex-col gap-1">
                                                   <span className="text-xs text-muted-foreground">{key}</span>
                                                   {key === "staff_member" ? (
-                                                      <select className="text-sm border border-border rounded px-2 py-1 bg-white focus:ring-2 focus:ring-black/5 outline-none w-full">
+                                                      <select className="text-sm border border-border rounded px-2 py-1 bg-white focus:ring-2 focus:ring-black/5 outline-none">
                                                           <option>{value as string}</option>
                                                           <option>Sarah Jenkins</option>
                                                           <option>David Chen</option>
@@ -375,7 +285,7 @@ export default function Assistant() {
                                             Deny
                                           </button>
                                           <button 
-                                            onClick={() => handleConfirmTool(msg.id, msg.toolCall!.toolName)}
+                                            onClick={() => handleConfirmTool(msg.id)}
                                             className="flex-1 py-2 text-xs font-medium bg-black text-white rounded hover:bg-gray-800 transition-colors shadow-sm"
                                           >
                                             Allow
@@ -414,7 +324,7 @@ export default function Assistant() {
                                animate={{ opacity: 1, scale: 1 }}
                                transition={{ delay: 0.2 }}
                              >
-                               {msg.toolCall?.toolName === "analyze_labor_variance" ? <LaborAnalysisArtifact /> : <PerformerArtifact />}
+                               <PerformerArtifact />
                              </motion.div>
                           )}
                        </div>
@@ -437,7 +347,7 @@ export default function Assistant() {
 
            {/* Input Area */}
            <div className="p-6 bg-white border-t border-border">
-              <div className="relative max-w-3xl mx-auto">
+              <div className="relative max-w-4xl mx-auto">
                  <form 
                    onSubmit={(e) => { e.preventDefault(); handleSend(input); }}
                    className="relative flex items-center"
@@ -457,6 +367,9 @@ export default function Assistant() {
                        <Send className="h-4 w-4" />
                     </button>
                  </form>
+                 <div className="text-center mt-2 text-[10px] text-muted-foreground">
+                    Munch AI can make mistakes. Verify important data.
+                 </div>
               </div>
            </div>
 
