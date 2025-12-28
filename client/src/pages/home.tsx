@@ -168,37 +168,40 @@ export default function Home() {
            </div>
         </div>
 
-        {/* 3. Related Stats Section */}
+        {/* 3. Top Actions for Today */}
         <div>
-           <div className="flex items-center gap-2 mb-6">
-              <Sparkles className="h-4 w-4 text-emerald-600" />
-              <h3 className="font-serif text-lg font-medium">Stats related to tonight's labor risk</h3>
-           </div>
+           <h3 className="font-serif text-lg font-medium mb-6 flex items-center gap-2">
+              <Zap className="h-5 w-5 text-amber-500 fill-amber-500" /> Top Actions for Today
+           </h3>
            
            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-white border border-border p-6 shadow-sm">
-                 <div className="text-sm text-muted-foreground mb-1">Projected Labor %</div>
-                 <div className="text-3xl font-serif mb-2">28.4%</div>
-                 <div className="text-xs text-red-600 flex items-center gap-1">
-                    <TrendingUp className="h-3 w-3" /> vs 24% target
-                 </div>
+              
+              {/* Action 1 */}
+              <div className="bg-white border border-border p-6 shadow-sm hover:shadow-md transition-shadow relative group">
+                 <div className="absolute top-4 right-4 text-xs font-mono text-muted-foreground border border-border px-1.5 py-0.5 bg-secondary/50">HIGH CONFIDENCE</div>
+                 <div className="text-3xl font-serif mb-4 text-muted-foreground group-hover:text-black transition-colors">1.</div>
+                 <h4 className="font-medium text-lg mb-2">Cut 1 server at 3:30pm</h4>
+                 <p className="text-sm text-muted-foreground mb-6">Based on forecasted demand drop. Saves <span className="text-emerald-700 font-medium">$312</span> in labor.</p>
+                 <ActionButton>Apply Change</ActionButton>
               </div>
 
-              <div className="bg-white border border-border p-6 shadow-sm">
-                 <div className="text-sm text-muted-foreground mb-1">Overtime Risk</div>
-                 <div className="text-3xl font-serif mb-2 text-amber-600">4 hrs</div>
-                 <div className="text-xs text-amber-600 flex items-center gap-1">
-                    <AlertCircle className="h-3 w-3" /> 2 employees
-                 </div>
+              {/* Action 2 */}
+              <div className="bg-white border border-border p-6 shadow-sm hover:shadow-md transition-shadow relative group">
+                 <div className="absolute top-4 right-4 text-xs font-mono text-muted-foreground border border-border px-1.5 py-0.5 bg-secondary/50">ROI 3.2x</div>
+                 <div className="text-3xl font-serif mb-4 text-muted-foreground group-hover:text-black transition-colors">2.</div>
+                 <h4 className="font-medium text-lg mb-2">Launch Dessert Upsell Bonus</h4>
+                 <p className="text-sm text-muted-foreground mb-6">Team performance lagging. Projected impact <span className="text-emerald-700 font-medium">+$540</span> revenue.</p>
+                 <ActionButton>Assign Bonus</ActionButton>
               </div>
 
-              <div className="bg-white border border-border p-6 shadow-sm">
-                 <div className="text-sm text-muted-foreground mb-1">SPLH</div>
-                 <div className="text-3xl font-serif mb-2">$42</div>
-                 <div className="text-xs text-red-600 flex items-center gap-1">
-                    <TrendingDown className="h-3 w-3" /> vs $55 target
-                 </div>
+              {/* Action 3 */}
+              <div className="bg-white border border-border p-6 shadow-sm hover:shadow-md transition-shadow relative group">
+                 <div className="text-3xl font-serif mb-4 text-muted-foreground group-hover:text-black transition-colors">3.</div>
+                 <h4 className="font-medium text-lg mb-2">Vendor price variance</h4>
+                 <p className="text-sm text-muted-foreground mb-6">Sysco invoice #9921 shows chicken price hike. <span className="text-red-600 font-medium">$180</span> weekly leak.</p>
+                 <ActionButton>Review Details</ActionButton>
               </div>
+
            </div>
         </div>
 
@@ -275,6 +278,37 @@ export default function Home() {
 
         </div>
 
+        {/* 5. Active Bonus Missions (Gamified) */}
+        <div>
+           <h3 className="font-serif text-lg font-medium mb-6">🎯 Active Bonus Missions</h3>
+           <div className="bg-white border border-border p-8 flex flex-col md:flex-row gap-8 items-center justify-between">
+              <div className="flex-1 w-full">
+                 <div className="flex justify-between items-end mb-2">
+                    <h4 className="font-medium text-lg">Upsell Compliance</h4>
+                    <span className="text-2xl font-serif">68%</span>
+                 </div>
+                 <MissionProgressBar value={6.8} />
+                 <div className="flex gap-8 text-sm">
+                    <div>
+                       <span className="text-muted-foreground block text-xs uppercase tracking-wider mb-1">Reward</span>
+                       <span className="font-medium">$480</span>
+                    </div>
+                    <div>
+                       <span className="text-muted-foreground block text-xs uppercase tracking-wider mb-1">ROI</span>
+                       <span className="font-medium text-emerald-700">+$1,900</span>
+                    </div>
+                    <div>
+                       <span className="text-muted-foreground block text-xs uppercase tracking-wider mb-1">Eligible</span>
+                       <span className="font-medium">Servers (8)</span>
+                    </div>
+                 </div>
+              </div>
+              <div className="flex gap-3 flex-shrink-0">
+                 <ActionButton variant="outline">View Details</ActionButton>
+                 <ActionButton>Notify Team</ActionButton>
+              </div>
+           </div>
+        </div>
 
         {/* 6. Labor Intelligence & Upsell (2-col) */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
