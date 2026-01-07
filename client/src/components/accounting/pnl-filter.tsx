@@ -30,6 +30,9 @@ interface PnLFilterProps {
   
   selectedOwners: string[];
   onOwnerChange: (owners: string[]) => void;
+  
+  viewMode?: string;
+  onViewModeChange?: (mode: string) => void;
 }
 
 const PRESETS = [
@@ -94,34 +97,17 @@ export function PnLFilter({
     }
   };
 
-  const [viewMode, setViewMode] = React.useState("Monthly");
+  const [localViewMode, setLocalViewMode] = React.useState("Monthly");
+  const currentViewMode = props.viewMode || localViewMode;
+  const setViewMode = props.onViewModeChange || setLocalViewMode;
+  const [isViewModeOpen, setIsViewModeOpen] = React.useState(false);
 
   return (
     <div className="flex flex-wrap items-center gap-2">
       {/* 1. Calendar Features (View Mode + Date Range) */}
       <div className="flex items-center p-1 bg-gray-100/80 border border-gray-200 rounded-lg">
-        {/* View Mode Filters */}
-        <div className="flex items-center gap-0.5 mr-2">
-          {["Daily", "Weekly", "Monthly", "Yearly"].map((mode) => (
-            <button
-              key={mode}
-              onClick={() => setViewMode(mode)}
-              className={cn(
-                "px-3 py-1.5 text-xs font-medium rounded-md transition-all",
-                viewMode === mode
-                  ? "bg-white text-gray-900 shadow-sm ring-1 ring-black/5"
-                  : "text-gray-500 hover:text-gray-900 hover:bg-gray-200/50"
-              )}
-            >
-              {mode}
-            </button>
-          ))}
-        </div>
-
-        <div className="w-[1px] h-5 bg-gray-300 mx-1" />
-
         {/* Date Range Split Filter */}
-        <div className="flex items-center gap-1 ml-1">
+        <div className="flex items-center gap-1">
           <Popover open={isFromOpen} onOpenChange={setIsFromOpen}>
               <PopoverTrigger asChild>
                   <Button 
@@ -253,6 +239,48 @@ export function PnLFilter({
                   </div>
               </PopoverContent>
           </Popover>
+        </div>
+
+        <div className="w-[1px] h-5 bg-gray-300 mx-2" />
+
+        {/* View Mode Filters Dropdown */}
+        <div className="flex items-center">
+            <Popover open={isViewModeOpen} onOpenChange={setIsViewModeOpen}>
+                <PopoverTrigger asChild>
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        className={cn(
+                            "h-8 px-3 font-normal hover:bg-white hover:shadow-sm border border-transparent transition-all text-xs",
+                            isViewModeOpen && "bg-white shadow-sm border-gray-200 text-gray-900"
+                        )}
+                    >
+                        {currentViewMode} <ChevronDown className="ml-2 h-3.5 w-3.5 text-gray-500" />
+                    </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[140px] p-1" align="end">
+                    <div className="flex flex-col gap-0.5">
+                        {["Daily", "Weekly", "Monthly", "Yearly"].map((mode) => (
+                            <button
+                                key={mode}
+                                onClick={() => {
+                                    setViewMode(mode);
+                                    setIsViewModeOpen(false);
+                                }}
+                                className={cn(
+                                    "px-3 py-2 text-xs font-medium rounded-sm text-left transition-colors flex items-center justify-between",
+                                    currentViewMode === mode
+                                        ? "bg-gray-100 text-gray-900"
+                                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                                )}
+                            >
+                                {mode}
+                                {currentViewMode === mode && <Check className="h-3 w-3 text-gray-900" />}
+                            </button>
+                        ))}
+                    </div>
+                </PopoverContent>
+            </Popover>
         </div>
       </div>
 

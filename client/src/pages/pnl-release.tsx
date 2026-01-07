@@ -835,6 +835,8 @@ export default function PnlRelease() {
                     onStatusChange={setSelectedStatuses}
                     selectedOwners={selectedOwners}
                     onOwnerChange={setSelectedOwners}
+                    viewMode={viewMode}
+                    onViewModeChange={setViewMode}
                   />
 
                   <div className="ml-auto flex gap-3">
