@@ -25,7 +25,12 @@ import {
   Share,
   ArrowRight,
   FileSpreadsheet,
-  File
+  File,
+  Utensils,
+  Briefcase,
+  Users,
+  AlertCircle,
+  TrendingDown
 } from "lucide-react";
 import {
   Popover,
@@ -301,6 +306,311 @@ function VisualizationCard({ title, children, active, onToggle }: { title: strin
   );
 }
 
+// --- Curated View Components ---
+
+function MetricCard({ title, value, subtext, trend, trendVal, icon: Icon, alert }: any) {
+  return (
+    <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+      <div className="flex justify-between items-start mb-2">
+        <div className="text-xs font-bold text-gray-500 uppercase tracking-wider">{title}</div>
+        {Icon && <Icon className="h-4 w-4 text-gray-400" />}
+      </div>
+      <div className="flex items-baseline gap-2">
+        <div className="text-2xl font-serif text-gray-900">{value}</div>
+      </div>
+      <div className="mt-2 flex items-center justify-between">
+        <div className={cn(
+          "text-xs font-medium flex items-center gap-1",
+          trend === "up" ? "text-emerald-600" : trend === "down" ? "text-red-600" : "text-gray-500"
+        )}>
+          {trend === "up" ? <TrendingUp className="h-3 w-3" /> : trend === "down" ? <TrendingDown className="h-3 w-3" /> : null}
+          {trendVal}
+        </div>
+        <div className="text-xs text-gray-400">{subtext}</div>
+      </div>
+      {alert && (
+        <div className="mt-3 pt-3 border-t border-gray-100 flex items-center gap-2 text-xs text-amber-600 font-medium">
+          <AlertCircle className="h-3 w-3" />
+          {alert}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function CuratedView({ role, onRoleChange }: { role: string, onRoleChange: (r: string) => void }) {
+  const roles = [
+    { id: "Owner", icon: Briefcase, label: "Owner" },
+    { id: "General Manager", icon: Users, label: "General Manager" },
+    { id: "Executive Chef", icon: Utensils, label: "Executive Chef" }
+  ];
+
+  return (
+    <div className="space-y-8 animate-in fade-in duration-300">
+      {/* Role Selector */}
+      <div className="bg-white border border-gray-200 rounded-xl p-1 inline-flex items-center gap-1 shadow-sm">
+        {roles.map((r) => (
+          <button
+            key={r.id}
+            onClick={() => onRoleChange(r.id)}
+            className={cn(
+              "px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-all",
+              role === r.id 
+                ? "bg-black text-white shadow-sm" 
+                : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+            )}
+          >
+            <r.icon className="h-4 w-4" />
+            {r.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Role Specific Content */}
+      {role === "Owner" && (
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <MetricCard 
+              title="Net Income" 
+              value="$22,120" 
+              trend="up" 
+              trendVal="32.4%" 
+              subtext="vs last period" 
+              icon={Briefcase}
+            />
+             <MetricCard 
+              title="EBITDA Margin" 
+              value="18.2%" 
+              trend="up" 
+              trendVal="2.1%" 
+              subtext="vs last period" 
+              icon={PieChart}
+            />
+            <MetricCard 
+              title="Labor %" 
+              value="33.0%" 
+              trend="up" 
+              trendVal="-6.1%" 
+              subtext="of sales" 
+              icon={Users}
+            />
+            <MetricCard 
+              title="Food Cost %" 
+              value="31.0%" 
+              trend="down" 
+              trendVal="+8.8%" 
+              subtext="of sales" 
+              icon={Utensils}
+              alert="Exceeds 30% target"
+            />
+          </div>
+
+          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+             <h3 className="font-medium text-gray-900 mb-4">Profitability Trend (6 Months)</h3>
+             <div className="h-64 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                   <LineChart data={[
+                      { month: 'May', income: 15400 },
+                      { month: 'Jun', income: 18200 },
+                      { month: 'Jul', income: 14500 },
+                      { month: 'Aug', income: 21000 },
+                      { month: 'Sep', income: 19500 },
+                      { month: 'Oct', income: 22120 },
+                   ]}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
+                      <XAxis dataKey="month" axisLine={false} tickLine={false} />
+                      <YAxis axisLine={false} tickLine={false} tickFormatter={(val) => `$${val/1000}k`} />
+                      <Tooltip formatter={(value: number) => [`$${value.toLocaleString()}`, "Net Income"]} />
+                      <Line type="monotone" dataKey="income" stroke="#000000" strokeWidth={3} dot={{r: 4, fill: '#000000'}} />
+                   </LineChart>
+                </ResponsiveContainer>
+             </div>
+          </div>
+        </div>
+      )}
+
+      {role === "General Manager" && (
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <MetricCard 
+              title="Total Sales" 
+              value="$124,500" 
+              trend="up" 
+              trendVal="5.3%" 
+              subtext="vs forecast" 
+              icon={TrendingUp}
+            />
+            <MetricCard 
+              title="Prime Cost" 
+              value="64.0%" 
+              trend="up" 
+              trendVal="-1.2%" 
+              subtext="Labor + COGS" 
+              icon={PieChart}
+            />
+            <MetricCard 
+              title="Labor Hours" 
+              value="1,420" 
+              trend="up" 
+              trendVal="-40 hrs" 
+              subtext="vs last period" 
+              icon={Users}
+            />
+             <MetricCard 
+              title="Overtime" 
+              value="24 hrs" 
+              trend="down" 
+              trendVal="+8 hrs" 
+              subtext="vs target" 
+              icon={AlertCircle}
+              alert="Check closing shifts"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+             <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                <h3 className="font-medium text-gray-900 mb-4">Labor vs Sales (Daily)</h3>
+                <div className="h-64 w-full flex items-center justify-center text-gray-400 bg-gray-50 rounded-lg">
+                   {/* Placeholder for complex chart */}
+                   <span className="text-sm">Daily Labor/Sales Chart</span>
+                </div>
+             </div>
+             <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                <h3 className="font-medium text-gray-900 mb-4">Controllable Expenses Variance</h3>
+                <div className="space-y-4">
+                   {[
+                      { name: "Kitchen Supplies", val: 420, pct: 12 },
+                      { name: "Repairs & Maint.", val: -150, pct: -5 },
+                      { name: "Linen", val: 85, pct: 3 },
+                      { name: "Utilities", val: 210, pct: 6 }
+                   ].map((item, i) => (
+                      <div key={i} className="flex items-center justify-between text-sm">
+                         <span className="text-gray-600">{item.name}</span>
+                         <div className="flex items-center gap-3">
+                            <span className={item.val > 0 ? "text-red-600" : "text-emerald-600"}>
+                               {item.val > 0 ? "+" : ""}{item.val}
+                            </span>
+                            <div className="w-24 h-2 bg-gray-100 rounded-full overflow-hidden">
+                               <div 
+                                  className={cn("h-full rounded-full", item.val > 0 ? "bg-red-500" : "bg-emerald-500")} 
+                                  style={{ width: `${Math.abs(item.pct) * 5}%` }} 
+                               />
+                            </div>
+                         </div>
+                      </div>
+                   ))}
+                </div>
+             </div>
+          </div>
+        </div>
+      )}
+
+      {role === "Executive Chef" && (
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <MetricCard 
+              title="Food Cost" 
+              value="28.4%" 
+              trend="down" 
+              trendVal="+1.4%" 
+              subtext="vs target (27%)" 
+              icon={Utensils}
+              alert="Produce pricing up"
+            />
+            <MetricCard 
+              title="Pour Cost" 
+              value="18.2%" 
+              trend="up" 
+              trendVal="-0.5%" 
+              subtext="vs target (19%)" 
+              icon={Check}
+            />
+            <MetricCard 
+              title="Kitchen Labor" 
+              value="14.2%" 
+              trend="up" 
+              trendVal="-0.8%" 
+              subtext="of sales" 
+              icon={Users}
+            />
+             <MetricCard 
+              title="Waste Log" 
+              value="$420" 
+              trend="down" 
+              trendVal="+$85" 
+              subtext="vs last period" 
+              icon={Trash2}
+            />
+          </div>
+
+          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+             <h3 className="font-medium text-gray-900 mb-4">Category Breakdown</h3>
+             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="h-48 w-full">
+                   <ResponsiveContainer width="100%" height="100%">
+                      <RechartsPieChart>
+                         <Pie
+                            data={[
+                               { name: 'Meat', value: 35, color: '#ef4444' },
+                               { name: 'Produce', value: 25, color: '#10b981' },
+                               { name: 'Dairy', value: 15, color: '#f59e0b' },
+                               { name: 'Dry Goods', value: 15, color: '#6b7280' },
+                               { name: 'Other', value: 10, color: '#8b5cf6' },
+                            ]}
+                            innerRadius={40}
+                            outerRadius={60}
+                            paddingAngle={5}
+                            dataKey="value"
+                         >
+                            {[
+                               { name: 'Meat', value: 35, color: '#ef4444' },
+                               { name: 'Produce', value: 25, color: '#10b981' },
+                               { name: 'Dairy', value: 15, color: '#f59e0b' },
+                               { name: 'Dry Goods', value: 15, color: '#6b7280' },
+                               { name: 'Other', value: 10, color: '#8b5cf6' },
+                            ].map((entry, index) => (
+                               <Cell key={`cell-${index}`} fill={entry.color} />
+                            ))}
+                         </Pie>
+                         <Tooltip />
+                      </RechartsPieChart>
+                   </ResponsiveContainer>
+                </div>
+                <div className="col-span-2 space-y-4">
+                   {[
+                      { name: "Meat", val: 35, var: -2 },
+                      { name: "Produce", val: 25, var: +4 },
+                      { name: "Dairy", val: 15, var: 0 },
+                      { name: "Dry Goods", val: 15, var: +1 },
+                      { name: "Other", val: 10, var: -1 }
+                   ].map((item, i) => (
+                      <div key={i} className="flex items-center justify-between border-b border-gray-50 pb-2">
+                         <div className="flex items-center gap-2">
+                            <div className={cn("w-2 h-2 rounded-full", 
+                               item.name === "Meat" ? "bg-red-500" :
+                               item.name === "Produce" ? "bg-emerald-500" :
+                               item.name === "Dairy" ? "bg-amber-500" :
+                               "bg-gray-400"
+                            )} />
+                            <span className="text-sm font-medium text-gray-700">{item.name}</span>
+                         </div>
+                         <div className="flex items-center gap-6">
+                            <span className="text-sm text-gray-500">{item.val}% of Total</span>
+                            <span className={cn("text-sm font-medium w-12 text-right", item.var > 0 ? "text-red-600" : "text-emerald-600")}>
+                               {item.var > 0 ? "+" : ""}{item.var}%
+                            </span>
+                         </div>
+                      </div>
+                   ))}
+                </div>
+             </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // --- Chat Component for Owner View ---
 function OwnerChat({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const [messages, setMessages] = useState<{ id: string; role: "user" | "assistant"; content: string }[]>([]);
@@ -498,6 +808,8 @@ export default function PnlRelease() {
   });
   const [showFullPnl, setShowFullPnl] = useState(false);
   const [showReleaseModal, setShowReleaseModal] = useState(false);
+  const [activeView, setActiveView] = useState<"detailed" | "curated">("detailed");
+  const [userRole, setUserRole] = useState("Owner");
   
   // Handlers
   const handlePeriodClick = (p: typeof pnlPeriods[0]) => {
@@ -946,22 +1258,46 @@ export default function PnlRelease() {
       <div className="flex flex-col h-[calc(100vh-64px)] overflow-hidden bg-gray-50/50">
         
         {/* Header */}
-        <header className="bg-white border-b border-gray-200 px-8 py-4 flex items-center justify-between flex-shrink-0">
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-               <span className="text-xs font-bold bg-gray-100 text-gray-600 px-2 py-0.5 rounded uppercase tracking-wider">Draft</span>
-               <span className="text-xs text-muted-foreground">{locationName}</span>
+        <header className="bg-white border-b border-gray-200 px-8 py-4 flex flex-col gap-4 flex-shrink-0">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                 <span className="text-xs font-bold bg-gray-100 text-gray-600 px-2 py-0.5 rounded uppercase tracking-wider">Draft</span>
+                 <span className="text-xs text-muted-foreground">{locationName}</span>
+              </div>
+              <h1 className="font-serif text-2xl font-medium">{period} P&L</h1>
             </div>
-            <h1 className="font-serif text-2xl font-medium">{period} P&L</h1>
+            <div className="flex items-center gap-3">
+               <button className="text-sm text-muted-foreground hover:text-black font-medium px-3 py-2">Save Draft</button>
+               <button 
+                 onClick={handleRelease}
+                 className="text-sm text-white bg-black hover:bg-gray-800 font-medium px-6 py-2 rounded-md flex items-center gap-2 shadow-sm"
+               >
+                  Release <Send className="h-3 w-3" />
+               </button>
+            </div>
           </div>
-          <div className="flex items-center gap-3">
-             <button className="text-sm text-muted-foreground hover:text-black font-medium px-3 py-2">Save Draft</button>
-             <button 
-               onClick={handleRelease}
-               className="text-sm text-white bg-black hover:bg-gray-800 font-medium px-6 py-2 rounded-md flex items-center gap-2 shadow-sm"
-             >
-                Release <Send className="h-3 w-3" />
-             </button>
+
+          {/* View Switcher */}
+          <div className="flex items-center gap-6">
+            <button 
+                onClick={() => setActiveView('detailed')}
+                className={cn(
+                    "pb-2 text-sm font-medium transition-colors border-b-2 flex items-center gap-2", 
+                    activeView === 'detailed' ? "border-black text-black" : "border-transparent text-gray-500 hover:text-gray-900"
+                )}
+            >
+                <FileText className="h-4 w-4" /> Detailed View
+            </button>
+            <button 
+                onClick={() => setActiveView('curated')}
+                className={cn(
+                    "pb-2 text-sm font-medium transition-colors border-b-2 flex items-center gap-2", 
+                    activeView === 'curated' ? "border-black text-black" : "border-transparent text-gray-500 hover:text-gray-900"
+                )}
+            >
+                <LayoutDashboard className="h-4 w-4" /> Curated View
+            </button>
           </div>
         </header>
 
@@ -981,6 +1317,10 @@ export default function PnlRelease() {
         {/* Scrollable Content */}
         <div className="flex-1 overflow-y-auto p-8">
           <div className="max-w-4xl mx-auto space-y-8">
+            {activeView === 'curated' ? (
+               <CuratedView role={userRole} onRoleChange={setUserRole} />
+            ) : (
+               <>
             
             {/* Section A: Executive Summary */}
             <div>
@@ -1187,7 +1527,8 @@ export default function PnlRelease() {
             </div>
             
             <div className="h-12"></div> {/* Spacer */}
-
+            </>
+          )}
           </div>
         </div>
       </div>
