@@ -49,15 +49,18 @@ import {
 } from "recharts";
 import { useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
+import { PnLFilter, DateRange } from "@/components/accounting/pnl-filter";
+import { parse, isWithinInterval, startOfMonth, endOfMonth, startOfQuarter, startOfYear } from "date-fns";
 
 // --- Mock Data ---
 
 const pnlPeriods = [
-  { id: "oct-24", period: "October 2024", location: "Little Mo BK", status: "Ready to Sync", sentDate: null, viewed: false },
-  { id: "sep-24", period: "September 2024", location: "Little Mo BK", status: "Sent", sentDate: "Oct 15, 2024", viewed: true },
-  { id: "aug-24", period: "August 2024", location: "Little Mo BK", status: "Sent", sentDate: "Sep 12, 2024", viewed: true },
-  { id: "jul-24", period: "July 2024", location: "Little Mo BK", status: "Sent", sentDate: "Aug 14, 2024", viewed: true },
-  { id: "jun-24", period: "June 2024", location: "Little Mo BK", status: "Sent", sentDate: "Jul 10, 2024", viewed: false },
+  { id: "oct-24", period: "October 2024", location: "Little Mo BK", status: "Ready to Sync", sentDate: null, viewed: false, owner: "Accountant" },
+  { id: "sep-24", period: "September 2024", location: "Little Mo BK", status: "Sent", sentDate: "Oct 15, 2024", viewed: true, owner: "Manager" },
+  { id: "aug-24", period: "August 2024", location: "Little Mo BK", status: "Sent", sentDate: "Sep 12, 2024", viewed: true, owner: "Manager" },
+  { id: "jul-24", period: "July 2024", location: "Little Mo BK", status: "Sent", sentDate: "Aug 14, 2024", viewed: true, owner: "System" },
+  { id: "jun-24", period: "June 2024", location: "Little Mo BK", status: "Sent", sentDate: "Jul 10, 2024", viewed: false, owner: "Owner" },
+  { id: "may-24", period: "May 2024", location: "Little Mo BK", status: "Draft", sentDate: null, viewed: false, owner: "Accountant" },
 ];
 
 const pnlData = [
@@ -448,6 +451,37 @@ export default function PnlRelease() {
   const [period, setPeriod] = useState("October 2024");
   const [showChat, setShowChat] = useState(true); // Default show chat for owner view
 
+  // Filters
+  const [dateRange, setDateRange] = useState<DateRange | undefined>({
+      from: startOfQuarter(new Date("2024-10-01")),
+      to: endOfMonth(new Date("2024-10-01"))
+  });
+  const [datePreset, setDatePreset] = useState("This Month");
+  const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
+  const [selectedOwners, setSelectedOwners] = useState<string[]>([]);
+  
+  const filteredPeriods = pnlPeriods.filter(item => {
+    // Date Filter
+    const itemDate = parse(item.period, "MMMM yyyy", new Date());
+    let inDateRange = true;
+    if (dateRange?.from) {
+        if (dateRange.to) {
+            inDateRange = isWithinInterval(itemDate, { start: dateRange.from, end: dateRange.to });
+        } else {
+            // Assume single month selection matches that month
+             inDateRange = itemDate.getMonth() === dateRange.from.getMonth() && itemDate.getFullYear() === dateRange.from.getFullYear();
+        }
+    }
+
+    // Status Filter
+    const inStatus = selectedStatuses.length === 0 || selectedStatuses.includes(item.status);
+
+    // Owner Filter
+    const inOwner = selectedOwners.length === 0 || selectedOwners.includes(item.owner);
+    
+    return inDateRange && inStatus && inOwner;
+  });
+
   // Release Data State
   const [headline, setHeadline] = useState("Net margin improved to 9.2%, driven by labor savings. But food costs crept up 1.4%.");
   const [insights, setInsights] = useState([
@@ -792,16 +826,18 @@ export default function PnlRelease() {
 
                {/* Filters Bar */}
                <div className="flex flex-wrap gap-3 items-center">
-                  <button className="flex items-center gap-2 px-3 py-2 bg-white border border-gray-200 rounded-md text-sm hover:bg-gray-50 text-gray-700">
-                     <span>Little Mo BK</span>
-                     <ChevronDown className="h-3 w-3 opacity-50" />
-                  </button>
-                  
-                  <button className="flex items-center gap-2 px-3 py-2 bg-white border border-gray-200 rounded-md text-sm hover:bg-gray-50 text-gray-700">
-                     <Calendar className="h-4 w-4 text-gray-500" />
-                     <span>Last 6 Months</span>
-                     <ChevronDown className="h-3 w-3 opacity-50" />
-                  </button>
+                  <div className="bg-white border border-gray-200 rounded-md p-1">
+                      <PnLFilter 
+                        dateRange={dateRange}
+                        onDateRangeChange={setDateRange}
+                        activePreset={datePreset}
+                        onPresetChange={setDatePreset}
+                        selectedStatuses={selectedStatuses}
+                        onStatusChange={setSelectedStatuses}
+                        selectedOwners={selectedOwners}
+                        onOwnerChange={setSelectedOwners}
+                      />
+                  </div>
 
                   <div className="ml-auto flex gap-3">
                      <div className="relative">
@@ -831,7 +867,13 @@ export default function PnlRelease() {
                         </tr>
                      </thead>
                      <tbody className="divide-y divide-gray-100">
-                        {pnlPeriods.map((item) => (
+                        {filteredPeriods.length === 0 ? (
+                            <tr>
+                                <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
+                                    No periods found matching your filters.
+                                </td>
+                            </tr>
+                        ) : filteredPeriods.map((item) => (
                            <tr 
                               key={item.id} 
                               onClick={() => handlePeriodClick(item)}
@@ -844,6 +886,10 @@ export default function PnlRelease() {
                                     <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-medium border border-emerald-100">
                                        <Check className="h-3 w-3" /> Sent
                                     </span>
+                                 ) : item.status === "Draft" ? (
+                                     <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-medium border border-gray-200">
+                                       <FileText className="h-3 w-3" /> Draft
+                                     </span>
                                  ) : (
                                     <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 text-xs font-medium border border-amber-100">
                                        <Sparkles className="h-3 w-3" /> Ready to Sync
@@ -863,7 +909,9 @@ export default function PnlRelease() {
                                        <div className="h-1.5 w-1.5 rounded-full bg-gray-300" /> Unread
                                     </span>
                                  ) : (
-                                    <span className="text-gray-300">—</span>
+                                    <span className="text-xs text-gray-400 flex items-center gap-1">
+                                        <div className="h-1.5 w-1.5 rounded-full bg-gray-200" /> {item.owner}
+                                    </span>
                                  )}
                               </td>
                               <td className="px-6 py-4 text-right">
@@ -878,11 +926,11 @@ export default function PnlRelease() {
                </div>
                
                <div className="mt-4 flex justify-between text-xs text-gray-500 px-2">
-                  <span>Showing {pnlPeriods.length} entries</span>
+                  <span>Showing {filteredPeriods.length} entries</span>
                   <div className="flex gap-2">
-                     <button className="hover:text-gray-900 disabled:opacity-50">Previous</button>
+                     <button className="hover:text-gray-900 disabled:opacity-50" disabled>Previous</button>
                      <span>Page 1 of 1</span>
-                     <button className="hover:text-gray-900 disabled:opacity-50">Next</button>
+                     <button className="hover:text-gray-900 disabled:opacity-50" disabled>Next</button>
                   </div>
                </div>
             </div>
