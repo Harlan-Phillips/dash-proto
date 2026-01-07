@@ -459,6 +459,7 @@ export default function PnlRelease() {
   const [datePreset, setDatePreset] = useState("This Month");
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
   const [selectedOwners, setSelectedOwners] = useState<string[]>([]);
+  const [viewMode, setViewMode] = useState("Monthly");
   
   const filteredPeriods = pnlPeriods.filter(item => {
     // Date Filter

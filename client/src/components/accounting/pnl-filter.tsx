@@ -76,7 +76,9 @@ export function PnLFilter({
   selectedStatuses,
   onStatusChange,
   selectedOwners,
-  onOwnerChange
+  onOwnerChange,
+  viewMode,
+  onViewModeChange
 }: PnLFilterProps) {
   const [isFromOpen, setIsFromOpen] = React.useState(false);
   const [isToOpen, setIsToOpen] = React.useState(false);
@@ -98,8 +100,8 @@ export function PnLFilter({
   };
 
   const [localViewMode, setLocalViewMode] = React.useState("Monthly");
-  const currentViewMode = props.viewMode || localViewMode;
-  const setViewMode = props.onViewModeChange || setLocalViewMode;
+  const currentViewMode = viewMode || localViewMode;
+  const setViewMode = onViewModeChange || setLocalViewMode;
   const [isViewModeOpen, setIsViewModeOpen] = React.useState(false);
 
   return (
