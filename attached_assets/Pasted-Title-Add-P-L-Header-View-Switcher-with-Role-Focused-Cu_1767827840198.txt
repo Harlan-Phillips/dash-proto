@@ -1,0 +1,195 @@
+Title
+Add P&L Header View Switcher with Role-Focused Curated View (Owner, GM, Executive Chef)
+
+Context
+The /accounting/pnl page currently exposes a single Detailed View, which is table-heavy and optimized for accounting workflows. We want to introduce a Curated View that presents role-specific financial insights using snapshots and widgets, tailored to how different operators actually consume P&L data.
+
+The roles supported in v1 are intentionally limited to:
+
+Owner
+
+General Manager
+
+Executive Chef
+
+A clear header-level view switcher is required to separate Detailed View (full breakdown) from Curated View (role-focused insights).
+
+Objective
+
+Create a persistent header on /accounting/pnl that allows users to switch between:
+
+Detailed View — full P&L tables and drill-downs (current experience)
+
+Curated View — role-aware snapshots and widgets optimized for decision-making
+
+Scope / Requirements
+1. Header View Switcher
+
+Add a header control with two options:
+
+Detailed View
+
+Curated View
+
+Active view must be clearly indicated (tab, pill, or segmented control)
+
+Detailed View is the default
+
+Switching views should feel like changing “modes,” not applying a filter
+
+2. Detailed View (Existing)
+
+Maps to the current /accounting/pnl experience
+
+Shows:
+
+Full line-item P&L
+
+Section headers (Revenue, COGS, Labor, etc.)
+
+Drill-downs and reconciliation
+
+No behavioral or data regressions allowed
+
+Supports related enhancements:
+
+Hover TOC dropdown
+
+Calendar/status/owner filters
+
+3. Curated View (New)
+
+A read-optimized, widget-based P&L experience focused on clarity and action, not accounting mechanics.
+
+Supported Roles (Explicit)
+
+Owner
+
+General Manager
+
+Executive Chef
+
+Role Selection Behavior
+
+Role may be:
+
+Auto-detected from permissions (preferred), or
+
+Manually selectable via a role toggle in Curated View
+
+Role selection affects which widgets are shown and how data is framed
+
+Role selection persists across sessions
+
+4. Role-Specific Focus Areas
+Owner View
+
+Focus: Profitability & trends
+
+Revenue vs last period
+
+Net Income
+
+EBITDA / operating margin
+
+Labor % of sales
+
+Food cost %
+
+High-level trends and anomalies
+
+Minimal operational noise
+
+General Manager View
+
+Focus: Day-to-day performance & control
+
+Sales vs forecast
+
+Labor % and overtime flags
+
+Prime cost snapshot
+
+Category-level variance highlights
+
+Opportunities & risks (e.g. rising costs, declining sales)
+
+Action-oriented widgets
+
+Executive Chef View
+
+Focus: Food cost & kitchen efficiency
+
+Food COGS %
+
+Category-level food cost breakdown
+
+Price variance and waste signals
+
+Menu mix or ingredient cost trends
+
+Clear separation from labor/payroll noise
+
+5. Widgets & Layout (Curated View)
+
+Card-based layout
+
+Each widget:
+
+Has a clear metric
+
+Shows period-over-period comparison
+
+Can link back to Detailed View for drill-down
+
+Widgets are read-only by default
+
+No raw COA tables shown unless explicitly expanded
+
+6. Navigation & Routing
+
+View switching should:
+
+Update the URL (preferred):
+
+/accounting/pnl/detailed
+
+/accounting/pnl/curated
+
+Or persist via state if routing is constrained
+
+Filters (date range, etc.) should carry across views when applicable
+
+Permissions still gate access to underlying data
+
+Acceptance Criteria
+
+Header displays Detailed View and Curated View
+
+Active view is visually distinct
+
+Curated View supports exactly:
+
+Owner
+
+General Manager
+
+Executive Chef
+
+Each role sees a tailored widget set
+
+Switching views is fast and state-safe
+
+No regressions to existing P&L workflows
+
+Notes
+
+This establishes the foundation for:
+
+Executive reporting
+
+Read-only stakeholder access
+
+AI-generated insights layered on top of financials
+
+Future roles can be added, but v1 must stay constrained
