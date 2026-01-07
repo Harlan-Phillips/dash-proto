@@ -94,139 +94,166 @@ export function PnLFilter({
     }
   };
 
+  const [viewMode, setViewMode] = React.useState("Monthly");
+
   return (
     <div className="flex flex-wrap items-center gap-2">
-      {/* 1. Date Range Split Filter */}
-      <div className="flex items-center gap-1 bg-white rounded-md">
-        <Popover open={isFromOpen} onOpenChange={setIsFromOpen}>
-            <PopoverTrigger asChild>
-                <Button 
-                    variant="ghost" 
-                    className={cn(
-                        "h-9 px-3 font-normal hover:bg-gray-50 border border-transparent hover:border-gray-200 transition-all", 
-                        !dateRange?.from && "text-muted-foreground",
-                        isFromOpen && "border-blue-600 ring-1 ring-blue-600 bg-blue-50/50"
-                    )}
-                >
-                    <CalendarIcon className="mr-2 h-4 w-4 text-gray-500" />
-                    {dateRange?.from ? format(dateRange.from, "MM/dd/yyyy") : <span>Start Date</span>}
-                </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                    mode="single"
-                    selected={dateRange?.from}
-                    onSelect={(date) => {
-                        onDateRangeChange({ from: date, to: dateRange?.to });
+      {/* 1. Calendar Features (View Mode + Date Range) */}
+      <div className="flex items-center p-1 bg-gray-100/80 border border-gray-200 rounded-lg">
+        {/* View Mode Filters */}
+        <div className="flex items-center gap-0.5 mr-2">
+          {["Daily", "Weekly", "Monthly", "Yearly"].map((mode) => (
+            <button
+              key={mode}
+              onClick={() => setViewMode(mode)}
+              className={cn(
+                "px-3 py-1.5 text-xs font-medium rounded-md transition-all",
+                viewMode === mode
+                  ? "bg-white text-gray-900 shadow-sm ring-1 ring-black/5"
+                  : "text-gray-500 hover:text-gray-900 hover:bg-gray-200/50"
+              )}
+            >
+              {mode}
+            </button>
+          ))}
+        </div>
+
+        <div className="w-[1px] h-5 bg-gray-300 mx-1" />
+
+        {/* Date Range Split Filter */}
+        <div className="flex items-center gap-1 ml-1">
+          <Popover open={isFromOpen} onOpenChange={setIsFromOpen}>
+              <PopoverTrigger asChild>
+                  <Button 
+                      variant="ghost" 
+                      size="sm"
+                      className={cn(
+                          "h-8 px-3 font-normal hover:bg-white hover:shadow-sm border border-transparent transition-all", 
+                          !dateRange?.from && "text-muted-foreground",
+                          isFromOpen && "bg-white shadow-sm border-gray-200 text-gray-900"
+                      )}
+                  >
+                      <CalendarIcon className="mr-2 h-3.5 w-3.5 text-gray-500" />
+                      {dateRange?.from ? format(dateRange.from, "MM/dd/yyyy") : <span>Start Date</span>}
+                  </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                      mode="single"
+                      selected={dateRange?.from}
+                      onSelect={(date) => {
+                          onDateRangeChange({ from: date, to: dateRange?.to });
+                          setIsFromOpen(false);
+                          if (activePreset !== "Custom") onPresetChange?.("Custom");
+                      }}
+                      initialFocus
+                      captionLayout="dropdown"
+                      fromYear={2020}
+                      toYear={2030}
+                      className="p-3 pointer-events-auto"
+                      classNames={{
+                        caption_label: "hidden", // Hide the default caption label to use dropdowns
+                        dropdowns: "flex w-full items-center gap-1.5",
+                        dropdown: "flex h-8 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 appearance-none",
+                        dropdown_root: "relative flex items-center"
+                      }}
+                      formatters={{
+                        formatWeekdayName: (date) => date.toLocaleDateString("en-US", { weekday: "narrow" }),
+                      }}
+                  />
+                  <div className="flex items-center justify-between border-t border-border p-3">
+                    <Button
+                      variant="ghost"
+                      className="h-auto p-0 text-xs font-medium text-muted-foreground hover:bg-transparent hover:text-foreground"
+                      onClick={() => {
+                        onDateRangeChange({ from: undefined, to: dateRange?.to });
+                        setIsFromOpen(false);
+                      }}
+                    >
+                      Clear
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      className="h-auto p-0 text-xs font-medium text-blue-600 hover:bg-transparent hover:text-blue-700"
+                      onClick={() => {
+                        onDateRangeChange({ from: new Date(), to: dateRange?.to });
                         setIsFromOpen(false);
                         if (activePreset !== "Custom") onPresetChange?.("Custom");
-                    }}
-                    initialFocus
-                    captionLayout="dropdown"
-                    fromYear={2020}
-                    toYear={2030}
-                    className="p-3 pointer-events-auto"
-                    classNames={{
-                      caption_label: "hidden", // Hide the default caption label to use dropdowns
-                      dropdowns: "flex w-full items-center gap-1.5",
-                      dropdown: "flex h-8 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 appearance-none",
-                      dropdown_root: "relative flex items-center"
-                    }}
-                    formatters={{
-                      formatWeekdayName: (date) => date.toLocaleDateString("en-US", { weekday: "narrow" }),
-                    }}
-                />
-                <div className="flex items-center justify-between border-t border-border p-3">
-                  <Button
-                    variant="ghost"
-                    className="h-auto p-0 text-xs font-medium text-muted-foreground hover:bg-transparent hover:text-foreground"
-                    onClick={() => {
-                      onDateRangeChange({ from: undefined, to: dateRange?.to });
-                      setIsFromOpen(false);
-                    }}
-                  >
-                    Clear
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    className="h-auto p-0 text-xs font-medium text-blue-600 hover:bg-transparent hover:text-blue-700"
-                    onClick={() => {
-                      onDateRangeChange({ from: new Date(), to: dateRange?.to });
-                      setIsFromOpen(false);
-                      if (activePreset !== "Custom") onPresetChange?.("Custom");
-                    }}
-                  >
-                    Today
-                  </Button>
-                </div>
-            </PopoverContent>
-        </Popover>
+                      }}
+                    >
+                      Today
+                    </Button>
+                  </div>
+              </PopoverContent>
+          </Popover>
 
-        <span className="text-gray-300 px-1">-</span>
+          <span className="text-gray-400 px-0.5 text-sm">-</span>
 
-        <Popover open={isToOpen} onOpenChange={setIsToOpen}>
-            <PopoverTrigger asChild>
-                <Button 
-                    variant="ghost" 
-                    className={cn(
-                        "h-9 px-3 font-normal hover:bg-gray-50 border border-transparent hover:border-gray-200 transition-all", 
-                        !dateRange?.to && "text-muted-foreground",
-                        isToOpen && "border-blue-600 ring-1 ring-blue-600 bg-blue-50/50"
-                    )}
-                >
-                    <CalendarIcon className="mr-2 h-4 w-4 text-gray-500" />
-                    {dateRange?.to ? format(dateRange.to, "MM/dd/yyyy") : <span>End Date</span>}
-                </Button>
-            </PopoverTrigger>
-             <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                    mode="single"
-                    selected={dateRange?.to}
-                    onSelect={(date) => {
-                        onDateRangeChange({ from: dateRange?.from, to: date });
+          <Popover open={isToOpen} onOpenChange={setIsToOpen}>
+              <PopoverTrigger asChild>
+                  <Button 
+                      variant="ghost" 
+                      size="sm"
+                      className={cn(
+                          "h-8 px-3 font-normal hover:bg-white hover:shadow-sm border border-transparent transition-all", 
+                          !dateRange?.to && "text-muted-foreground",
+                          isToOpen && "bg-white shadow-sm border-gray-200 text-gray-900"
+                      )}
+                  >
+                      <CalendarIcon className="mr-2 h-3.5 w-3.5 text-gray-500" />
+                      {dateRange?.to ? format(dateRange.to, "MM/dd/yyyy") : <span>End Date</span>}
+                  </Button>
+              </PopoverTrigger>
+               <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                      mode="single"
+                      selected={dateRange?.to}
+                      onSelect={(date) => {
+                          onDateRangeChange({ from: dateRange?.from, to: date });
+                          setIsToOpen(false);
+                          if (activePreset !== "Custom") onPresetChange?.("Custom");
+                      }}
+                      initialFocus
+                      captionLayout="dropdown"
+                      fromYear={2020}
+                      toYear={2030}
+                      className="p-3 pointer-events-auto"
+                      classNames={{
+                        caption_label: "hidden", 
+                        dropdowns: "flex w-full items-center gap-1.5",
+                        dropdown: "flex h-8 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 appearance-none",
+                        dropdown_root: "relative flex items-center"
+                      }}
+                      formatters={{
+                        formatWeekdayName: (date) => date.toLocaleDateString("en-US", { weekday: "narrow" }),
+                      }}
+                  />
+                  <div className="flex items-center justify-between border-t border-border p-3">
+                    <Button
+                      variant="ghost"
+                      className="h-auto p-0 text-xs font-medium text-muted-foreground hover:bg-transparent hover:text-foreground"
+                      onClick={() => {
+                        onDateRangeChange({ from: dateRange?.from, to: undefined });
+                        setIsToOpen(false);
+                      }}
+                    >
+                      Clear
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      className="h-auto p-0 text-xs font-medium text-blue-600 hover:bg-transparent hover:text-blue-700"
+                      onClick={() => {
+                        onDateRangeChange({ from: dateRange?.from, to: new Date() });
                         setIsToOpen(false);
                         if (activePreset !== "Custom") onPresetChange?.("Custom");
-                    }}
-                    initialFocus
-                    captionLayout="dropdown"
-                    fromYear={2020}
-                    toYear={2030}
-                    className="p-3 pointer-events-auto"
-                    classNames={{
-                      caption_label: "hidden", 
-                      dropdowns: "flex w-full items-center gap-1.5",
-                      dropdown: "flex h-8 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 appearance-none",
-                      dropdown_root: "relative flex items-center"
-                    }}
-                    formatters={{
-                      formatWeekdayName: (date) => date.toLocaleDateString("en-US", { weekday: "narrow" }),
-                    }}
-                />
-                <div className="flex items-center justify-between border-t border-border p-3">
-                  <Button
-                    variant="ghost"
-                    className="h-auto p-0 text-xs font-medium text-muted-foreground hover:bg-transparent hover:text-foreground"
-                    onClick={() => {
-                      onDateRangeChange({ from: dateRange?.from, to: undefined });
-                      setIsToOpen(false);
-                    }}
-                  >
-                    Clear
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    className="h-auto p-0 text-xs font-medium text-blue-600 hover:bg-transparent hover:text-blue-700"
-                    onClick={() => {
-                      onDateRangeChange({ from: dateRange?.from, to: new Date() });
-                      setIsToOpen(false);
-                      if (activePreset !== "Custom") onPresetChange?.("Custom");
-                    }}
-                  >
-                    Today
-                  </Button>
-                </div>
-            </PopoverContent>
-        </Popover>
+                      }}
+                    >
+                      Today
+                    </Button>
+                  </div>
+              </PopoverContent>
+          </Popover>
+        </div>
       </div>
 
       <div className="h-4 w-[1px] bg-gray-200 mx-2" />
