@@ -826,18 +826,16 @@ export default function PnlRelease() {
 
                {/* Filters Bar */}
                <div className="flex flex-wrap gap-3 items-center">
-                  <div className="bg-white border border-gray-200 rounded-md p-1">
-                      <PnLFilter 
-                        dateRange={dateRange}
-                        onDateRangeChange={setDateRange}
-                        activePreset={datePreset}
-                        onPresetChange={setDatePreset}
-                        selectedStatuses={selectedStatuses}
-                        onStatusChange={setSelectedStatuses}
-                        selectedOwners={selectedOwners}
-                        onOwnerChange={setSelectedOwners}
-                      />
-                  </div>
+                  <PnLFilter 
+                    dateRange={dateRange}
+                    onDateRangeChange={setDateRange}
+                    activePreset={datePreset}
+                    onPresetChange={setDatePreset}
+                    selectedStatuses={selectedStatuses}
+                    onStatusChange={setSelectedStatuses}
+                    selectedOwners={selectedOwners}
+                    onOwnerChange={setSelectedOwners}
+                  />
 
                   <div className="ml-auto flex gap-3">
                      <div className="relative">
