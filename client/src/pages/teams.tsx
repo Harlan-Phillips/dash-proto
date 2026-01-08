@@ -172,6 +172,9 @@ export default function Teams() {
             <CardContent className="p-0">
               <div className="grid grid-cols-2 border-t">
                 <div className="border-r">
+                  <div className="px-6 py-3 border-b bg-gray-50">
+                    <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Departments</span>
+                  </div>
                   {departments.map((dept, index) => (
                     <button
                       key={dept.id}
@@ -194,6 +197,9 @@ export default function Teams() {
                 </div>
 
                 <div>
+                  <div className="px-6 py-3 border-b bg-gray-50">
+                    <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Jobs</span>
+                  </div>
                   {filteredJobs.map((job, index) => (
                     <label
                       key={job.id}
@@ -230,7 +236,7 @@ export default function Teams() {
               <div className="grid grid-cols-2 border-t">
                 <div className="border-r">
                   <div className="px-6 py-3 border-b bg-gray-50">
-                    <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Select Job</span>
+                    <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Jobs</span>
                   </div>
                   {jobRoles.map((job, index) => (
                     <button
