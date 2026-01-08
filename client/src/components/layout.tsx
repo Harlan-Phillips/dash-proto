@@ -157,7 +157,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
              <div className="h-4 w-px bg-border" />
 
-             <span className="text-sm text-muted-foreground">Thu, Jan 8</span>
+             <span className="text-sm text-foreground">Today, Thu Jan 8</span>
 
              <div className="h-4 w-px bg-border" />
 
