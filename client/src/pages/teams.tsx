@@ -17,14 +17,14 @@ export default function Teams() {
               <span className="text-sm text-muted-foreground bg-secondary px-3 py-1 rounded-full" data-testid="text-date">Today, Jan 8</span>
             </div>
             
-            <div className="flex gap-6 text-sm font-medium text-muted-foreground">
+            <div className="flex gap-6 text-sm font-medium">
               <button
                 onClick={() => setActiveTab("departments")}
                 className={cn(
                   "pb-1 transition-colors",
                   activeTab === "departments"
                     ? "text-foreground border-b-2 border-foreground"
-                    : "hover:text-foreground"
+                    : "text-muted-foreground hover:text-foreground"
                 )}
                 data-testid="tab-departments"
               >
@@ -36,7 +36,7 @@ export default function Teams() {
                   "pb-1 transition-colors",
                   activeTab === "staff"
                     ? "text-foreground border-b-2 border-foreground"
-                    : "hover:text-foreground"
+                    : "text-muted-foreground hover:text-foreground"
                 )}
                 data-testid="tab-staff"
               >
