@@ -104,7 +104,7 @@ const navCategories: NavCategory[] = [
 
 function NavCategoryItem({ category }: { category: NavCategory }) {
   const [location] = useLocation();
-  const [isHovered, setIsHovered] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   
   const isActiveCategory = category.items.some(item => location === item.href || location.startsWith(item.href.split('/').slice(0, 3).join('/')));
   const Icon = category.icon;
@@ -112,55 +112,55 @@ function NavCategoryItem({ category }: { category: NavCategory }) {
   return (
     <div 
       className="relative"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={() => setIsExpanded(true)}
+      onMouseLeave={() => setIsExpanded(false)}
     >
       <button
         className={cn(
-          "w-full h-11 flex items-center gap-3 px-4 rounded-lg transition-all duration-200 text-left",
+          "w-full h-10 flex items-center gap-3 px-3 rounded-lg transition-all duration-200 text-left",
           isActiveCategory 
             ? "bg-gray-900 text-white" 
-            : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+            : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
         )}
       >
-        <Icon className="h-5 w-5 flex-shrink-0" />
+        <Icon className="h-4.5 w-4.5 flex-shrink-0" />
         <span className="font-medium text-sm">{category.name}</span>
-        <ChevronRight className={cn(
-          "h-4 w-4 ml-auto transition-transform duration-200",
-          isHovered && "rotate-90"
-        )} />
       </button>
 
-      {/* Dropdown submenu */}
-      {isHovered && (
-        <div 
-          className="absolute left-full top-0 ml-2 w-56 bg-white rounded-xl border border-gray-200 shadow-lg py-2 z-50"
-          style={{ minWidth: '200px' }}
-        >
-          <div className="px-3 py-2 border-b border-gray-100 mb-1">
-            <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">{category.name}</span>
-          </div>
-          {category.items.map((item) => {
-            const ItemIcon = item.icon;
-            const isActive = location === item.href;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  "flex items-center gap-3 px-3 py-2.5 mx-2 rounded-lg transition-colors",
-                  isActive 
-                    ? "bg-gray-900 text-white" 
-                    : "text-gray-700 hover:bg-gray-100"
-                )}
-              >
-                <ItemIcon className="h-4 w-4" />
-                <span className="text-sm font-medium">{item.label}</span>
-              </Link>
-            );
-          })}
-        </div>
-      )}
+      {/* Dropdown submenu with animation */}
+      <div 
+        className={cn(
+          "absolute left-full top-0 ml-1 w-52 bg-white rounded-xl border border-gray-200 shadow-xl py-1.5 z-50 transition-all duration-200 origin-left",
+          isExpanded 
+            ? "opacity-100 scale-100 translate-x-0" 
+            : "opacity-0 scale-95 -translate-x-2 pointer-events-none"
+        )}
+      >
+        {category.items.map((item, index) => {
+          const ItemIcon = item.icon;
+          const isActive = location === item.href;
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={cn(
+                "flex items-center gap-2.5 px-3 py-2 mx-1.5 rounded-lg transition-all duration-150",
+                isActive 
+                  ? "bg-gray-900 text-white" 
+                  : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+              )}
+              style={{ 
+                transitionDelay: isExpanded ? `${index * 30}ms` : '0ms',
+                opacity: isExpanded ? 1 : 0,
+                transform: isExpanded ? 'translateX(0)' : 'translateX(-8px)'
+              }}
+            >
+              <ItemIcon className="h-4 w-4 flex-shrink-0" />
+              <span className="text-sm">{item.label}</span>
+            </Link>
+          );
+        })}
+      </div>
     </div>
   );
 }
