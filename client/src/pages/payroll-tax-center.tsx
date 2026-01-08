@@ -34,7 +34,8 @@ import {
   Calendar,
   Building2,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  ChevronsUpDown
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -211,12 +212,12 @@ export default function PayrollTaxCenter() {
   return (
     <Layout>
       <div className="p-8 max-w-7xl mx-auto">
-        <div className="flex items-center justify-between border-b border-border pb-4 mb-8">
-          <div className="flex items-center gap-6">
+        <div className="flex items-center border-b border-border pb-4 mb-8">
+          <div className="flex items-center gap-4">
             <Select value={selectedEntity} onValueChange={setSelectedEntity}>
-              <SelectTrigger className="border-0 bg-transparent p-0 h-auto gap-2 hover:opacity-70 transition-opacity" data-testid="select-entity">
+              <SelectTrigger className="border-0 bg-transparent p-0 h-auto gap-1 hover:bg-gray-100 px-2 py-1 -ml-2 rounded-md transition-colors" data-testid="select-entity">
                 <span className="font-serif text-2xl font-medium">{currentEntity?.name || "Select Location"}</span>
-                <ChevronDown className="h-5 w-5 text-muted-foreground" />
+                <ChevronsUpDown className="h-4 w-4 text-muted-foreground" />
               </SelectTrigger>
               <SelectContent>
                 {entities.map((ent) => (
@@ -224,7 +225,8 @@ export default function PayrollTaxCenter() {
                 ))}
               </SelectContent>
             </Select>
-            <span className="text-sm text-muted-foreground bg-secondary px-3 py-1 rounded-full" data-testid="text-date">Today, Jan 8</span>
+            <div className="h-6 w-px bg-border" />
+            <span className="text-sm text-muted-foreground bg-gray-100 px-3 py-1.5 rounded-md" data-testid="text-date">Today, Jan 8</span>
           </div>
         </div>
 
