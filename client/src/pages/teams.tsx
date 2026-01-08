@@ -263,7 +263,8 @@ export default function Teams() {
                       />
                     </div>
                   </div>
-                  {departments.filter(d => d.name.toLowerCase().includes(deptSearch.toLowerCase())).slice(0, 5).map((dept, index, arr) => (
+                  <div className="max-h-[280px] overflow-y-auto">
+                  {departments.filter(d => d.name.toLowerCase().includes(deptSearch.toLowerCase())).map((dept, index, arr) => (
                     <button
                       key={dept.id}
                       onClick={() => setSelectedDepartment(dept.id)}
@@ -282,11 +283,7 @@ export default function Teams() {
                       )}
                     </button>
                   ))}
-                  {departments.filter(d => d.name.toLowerCase().includes(deptSearch.toLowerCase())).length > 5 && (
-                    <div className="px-6 py-2 text-xs text-muted-foreground text-center border-t">
-                      +{departments.filter(d => d.name.toLowerCase().includes(deptSearch.toLowerCase())).length - 5} more
-                    </div>
-                  )}
+                  </div>
                 </div>
 
                 <div>
@@ -305,7 +302,8 @@ export default function Teams() {
                       />
                     </div>
                   </div>
-                  {filteredJobs.filter(j => j.name.toLowerCase().includes(deptJobSearch.toLowerCase())).slice(0, 5).map((job, index, arr) => (
+                  <div className="max-h-[280px] overflow-y-auto">
+                  {filteredJobs.filter(j => j.name.toLowerCase().includes(deptJobSearch.toLowerCase())).map((job, index, arr) => (
                     <label
                       key={job.id}
                       className={cn(
@@ -327,11 +325,7 @@ export default function Teams() {
                       No job roles found
                     </div>
                   )}
-                  {filteredJobs.filter(j => j.name.toLowerCase().includes(deptJobSearch.toLowerCase())).length > 5 && (
-                    <div className="px-6 py-2 text-xs text-muted-foreground text-center border-t">
-                      +{filteredJobs.filter(j => j.name.toLowerCase().includes(deptJobSearch.toLowerCase())).length - 5} more
-                    </div>
-                  )}
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -360,7 +354,8 @@ export default function Teams() {
                       />
                     </div>
                   </div>
-                  {jobRoles.filter(job => job.name.toLowerCase().includes(jobSearch.toLowerCase())).slice(0, 5).map((job, index, arr) => (
+                  <div className="max-h-[280px] overflow-y-auto">
+                  {jobRoles.filter(job => job.name.toLowerCase().includes(jobSearch.toLowerCase())).map((job, index, arr) => (
                     <button
                       key={job.id}
                       onClick={() => setSelectedJob(job.id)}
@@ -384,11 +379,7 @@ export default function Teams() {
                       )}
                     </button>
                   ))}
-                  {jobRoles.filter(job => job.name.toLowerCase().includes(jobSearch.toLowerCase())).length > 5 && (
-                    <div className="px-6 py-2 text-xs text-muted-foreground text-center border-t">
-                      +{jobRoles.filter(job => job.name.toLowerCase().includes(jobSearch.toLowerCase())).length - 5} more
-                    </div>
-                  )}
+                  </div>
                 </div>
 
                 <div>
@@ -407,7 +398,8 @@ export default function Teams() {
                       />
                     </div>
                   </div>
-                  {staff.filter(person => person.name.toLowerCase().includes(personnelSearch.toLowerCase())).slice(0, 5).map((person, index, arr) => {
+                  <div className="max-h-[280px] overflow-y-auto">
+                  {staff.filter(person => person.name.toLowerCase().includes(personnelSearch.toLowerCase())).map((person, index, arr) => {
                     const isAssigned = assignedToSelectedJob.includes(person.id);
                     const assignedElsewhere = isStaffAssignedElsewhere(person.id);
                     const assignedToJobId = Object.entries(assignedStaff).find(
@@ -457,11 +449,7 @@ export default function Teams() {
                       </div>
                     );
                   })}
-                  {staff.filter(person => person.name.toLowerCase().includes(personnelSearch.toLowerCase())).length > 5 && (
-                    <div className="px-6 py-2 text-xs text-muted-foreground text-center border-t">
-                      +{staff.filter(person => person.name.toLowerCase().includes(personnelSearch.toLowerCase())).length - 5} more
-                    </div>
-                  )}
+                  </div>
                 </div>
               </div>
             </CardContent>
