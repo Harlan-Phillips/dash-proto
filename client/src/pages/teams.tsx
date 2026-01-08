@@ -75,9 +75,13 @@ export default function Teams() {
   const [showAddDepartmentSheet, setShowAddDepartmentSheet] = useState(false);
   const [showAddJobSheet, setShowAddJobSheet] = useState(false);
   const [newDepartmentName, setNewDepartmentName] = useState("");
+  const [newDepartmentWageExpense, setNewDepartmentWageExpense] = useState("");
   const [newJobName, setNewJobName] = useState("");
   const [newJobDepartment, setNewJobDepartment] = useState("");
   const [newJobRate, setNewJobRate] = useState("");
+  const [newJobEarningCode, setNewJobEarningCode] = useState("");
+  const [newJobWorkersComp, setNewJobWorkersComp] = useState("");
+  const [newJobLaborCategory, setNewJobLaborCategory] = useState("");
 
   const filteredJobs = jobRoles.filter(
     (job) => job.departmentId === selectedDepartment
@@ -118,6 +122,7 @@ export default function Teams() {
       const newId = (departments.length + 1).toString();
       setDepartments([...departments, { id: newId, name: newDepartmentName.trim() }]);
       setNewDepartmentName("");
+      setNewDepartmentWageExpense("");
       setShowAddDepartmentSheet(false);
     }
   };
@@ -136,6 +141,9 @@ export default function Teams() {
       setNewJobName("");
       setNewJobDepartment("");
       setNewJobRate("");
+      setNewJobEarningCode("");
+      setNewJobWorkersComp("");
+      setNewJobLaborCategory("");
       setShowAddJobSheet(false);
     }
   };
@@ -381,7 +389,7 @@ export default function Teams() {
           <SheetHeader>
             <SheetTitle>Add Department</SheetTitle>
             <SheetDescription>
-              Create a new department to organize your team
+              Create a new department to organize your team and map to accounting
             </SheetDescription>
           </SheetHeader>
           <div className="py-6 space-y-4">
@@ -389,11 +397,22 @@ export default function Teams() {
               <Label htmlFor="department-name">Department Name</Label>
               <Input
                 id="department-name"
-                placeholder="e.g., Marketing"
+                placeholder="e.g., Front of House"
                 value={newDepartmentName}
                 onChange={(e) => setNewDepartmentName(e.target.value)}
                 data-testid="input-department-name"
               />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="department-wage-expense">Wage Expense Account</Label>
+              <Input
+                id="department-wage-expense"
+                placeholder="e.g., 6000 - Wages Expense"
+                value={newDepartmentWageExpense}
+                onChange={(e) => setNewDepartmentWageExpense(e.target.value)}
+                data-testid="input-department-wage-expense"
+              />
+              <p className="text-xs text-muted-foreground">Maps 1:1 to GL account for wage expenses</p>
             </div>
           </div>
           <SheetFooter>
@@ -412,7 +431,7 @@ export default function Teams() {
           <SheetHeader>
             <SheetTitle>Add Job Role</SheetTitle>
             <SheetDescription>
-              Create a new job role and assign it to a department
+              Create a new job role with pay rates and payroll mappings
             </SheetDescription>
           </SheetHeader>
           <div className="py-6 space-y-4">
@@ -420,11 +439,12 @@ export default function Teams() {
               <Label htmlFor="job-name">Job Title</Label>
               <Input
                 id="job-name"
-                placeholder="e.g., Software Engineer"
+                placeholder="e.g., Server, Line Cook"
                 value={newJobName}
                 onChange={(e) => setNewJobName(e.target.value)}
                 data-testid="input-job-name"
               />
+              <p className="text-xs text-muted-foreground">Appears on paystubs and labor reports</p>
             </div>
             <div className="space-y-2">
               <Label htmlFor="job-department">Department</Label>
@@ -446,11 +466,50 @@ export default function Teams() {
               <Input
                 id="job-rate"
                 type="number"
-                placeholder="e.g., 50"
+                placeholder="e.g., 18.00"
                 value={newJobRate}
                 onChange={(e) => setNewJobRate(e.target.value)}
                 data-testid="input-job-rate"
               />
+              <p className="text-xs text-muted-foreground">Default rate for employees in this role</p>
+            </div>
+            
+            <div className="pt-4 border-t">
+              <p className="text-sm font-medium mb-3">Payroll Integration (Optional)</p>
+              
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="job-earning-code">Earning Code</Label>
+                  <Input
+                    id="job-earning-code"
+                    placeholder="e.g., REG, OT, TIP"
+                    value={newJobEarningCode}
+                    onChange={(e) => setNewJobEarningCode(e.target.value)}
+                    data-testid="input-job-earning-code"
+                  />
+                  <p className="text-xs text-muted-foreground">Maps to Check HQ earning code</p>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="job-workers-comp">Workers Comp Code</Label>
+                  <Input
+                    id="job-workers-comp"
+                    placeholder="e.g., 9082"
+                    value={newJobWorkersComp}
+                    onChange={(e) => setNewJobWorkersComp(e.target.value)}
+                    data-testid="input-job-workers-comp"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="job-labor-category">Labor Reporting Category</Label>
+                  <Input
+                    id="job-labor-category"
+                    placeholder="e.g., Kitchen, Service"
+                    value={newJobLaborCategory}
+                    onChange={(e) => setNewJobLaborCategory(e.target.value)}
+                    data-testid="input-job-labor-category"
+                  />
+                </div>
+              </div>
             </div>
           </div>
           <SheetFooter>
