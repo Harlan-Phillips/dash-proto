@@ -2308,7 +2308,6 @@ function FloatingAssistantBar() {
   const [messages, setMessages] = useState<FloatingMessage[]>([]);
   const [isTyping, setIsTyping] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [isChatActive, setIsChatActive] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -2325,7 +2324,6 @@ function FloatingAssistantBar() {
   const handleSend = async (text: string) => {
     if (!text.trim()) return;
 
-    setIsChatActive(true);
     setIsExpanded(true);
 
     const userMsg: FloatingMessage = {
@@ -2345,8 +2343,8 @@ function FloatingAssistantBar() {
     const assistantMsg: FloatingMessage = {
       id: (Date.now() + 1).toString(),
       role: "assistant",
-      content: "Based on your P&L data, here's what I found regarding your question about " + text.toLowerCase().slice(0, 30) + "...",
-      artifact: text.toLowerCase().includes("sales") || text.toLowerCase().includes("performer")
+      content: "Here are some suggested improvements based on your October report:",
+      artifact: true
     };
 
     setMessages(prev => [...prev, assistantMsg]);
@@ -2355,7 +2353,6 @@ function FloatingAssistantBar() {
 
   const handleNewChat = () => {
     setMessages([]);
-    setIsChatActive(false);
     setInput("");
     setTimeout(() => inputRef.current?.focus(), 50);
   };
@@ -2399,188 +2396,136 @@ function FloatingAssistantBar() {
             style={{ maxHeight: "calc(100vh - 100px)" }}
             data-testid="floating-assistant-panel"
           >
-            {/* Chat Content */}
-            <div className={isChatActive ? "max-h-[350px]" : "max-h-[320px]"}>
-          {/* Prompts View */}
-          {!isChatActive && (
-            <div className="relative p-5">
-              <button 
-                onClick={handleCollapse}
-                className="absolute top-4 right-4 p-1.5 hover:bg-gray-100 rounded-full transition-colors text-gray-400 hover:text-gray-600"
-              >
-                <X className="h-4 w-4" />
-              </button>
-              <div className="flex items-center justify-between mb-4 pr-8">
-                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Quick Insights</h3>
-              </div>
-              <div className="flex flex-wrap gap-2 mb-5">
-                {pnlQuickActions.map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => handleSend(`Analyze ${item.label.toLowerCase()} for this period`)}
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-gray-900 hover:bg-gray-800 text-white rounded-full text-sm font-medium transition-colors"
-                  >
-                    {item.icon === "labor" && <Users className="h-3.5 w-3.5" />}
-                    {item.icon === "cogs" && <TrendingUp className="h-3.5 w-3.5" />}
-                    {item.icon === "margin" && <DollarSign className="h-3.5 w-3.5" />}
-                    {item.label}
-                  </button>
-                ))}
-              </div>
-
-              <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Suggested Questions</h3>
-              <div className="space-y-1">
-                {pnlInsightPrompts.map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => handleSend(item.question)}
-                    className="w-full flex items-center gap-3 py-2.5 px-3 hover:bg-gray-50 rounded-lg transition-colors text-left group"
-                  >
-                    <div className={cn(
-                      "h-6 w-6 rounded-full flex items-center justify-center flex-shrink-0",
-                      item.category === "variance" ? "bg-red-100 text-red-600" :
-                      item.category === "trend" ? "bg-emerald-100 text-emerald-600" :
-                      item.category === "action" ? "bg-amber-100 text-amber-600" :
-                      "bg-blue-100 text-blue-600"
-                    )}>
-                      {item.category === "variance" && <AlertTriangle className="h-3 w-3" />}
-                      {item.category === "trend" && <TrendingUp className="h-3 w-3" />}
-                      {item.category === "action" && <Target className="h-3 w-3" />}
-                      {item.category === "benchmark" && <LayoutDashboard className="h-3 w-3" />}
-                    </div>
-                    <span className="text-sm text-gray-700 group-hover:text-gray-900">{item.question}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Chat View */}
-          {isChatActive && (
-            <div className="relative flex flex-col h-full">
-              <button 
-                onClick={handleCollapse}
-                className="absolute top-3 right-4 p-1.5 hover:bg-gray-100 rounded-full transition-colors text-gray-400 hover:text-gray-600 z-10"
-              >
-                <X className="h-4 w-4" />
-              </button>
-              <div className="flex items-center justify-between px-4 py-3 pr-12">
-                <div className="flex items-center gap-2">
-                  <div className="h-7 w-7 bg-black rounded-full flex items-center justify-center">
-                    <Sparkles className="h-3.5 w-3.5 text-white" />
-                  </div>
-                  <span className="text-sm font-semibold text-gray-900">Munch AI</span>
+            {/* Header */}
+            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 bg-gray-100 rounded-xl flex items-center justify-center">
+                  <Sparkles className="h-5 w-5 text-gray-700" />
                 </div>
-                <button
-                  onClick={handleNewChat}
-                  className="text-xs text-gray-500 hover:text-gray-900 font-medium flex items-center gap-1 px-2 py-1 hover:bg-gray-100 rounded-md transition-colors"
-                >
-                  <Plus className="h-3.5 w-3.5" />
-                  New Chat
-                </button>
+                <div>
+                  <h3 className="font-semibold text-sm text-gray-900">Munch Assistant</h3>
+                  <p className="text-xs text-gray-500">Build your action plan</p>
+                </div>
               </div>
-
-              <div 
-                ref={scrollRef}
-                className="flex-1 overflow-y-auto p-4 space-y-4"
-                style={{ maxHeight: "280px" }}
+              <button 
+                onClick={handleCollapse}
+                className="p-1.5 hover:bg-gray-100 rounded-full transition-colors text-gray-400 hover:text-gray-600"
               >
-                {messages.map((msg) => (
-                  <div 
-                    key={msg.id} 
-                    className={cn("flex gap-3", msg.role === "assistant" ? "" : "flex-row-reverse")}
-                  >
-                    <div className={cn(
-                      "h-7 w-7 rounded-full flex items-center justify-center flex-shrink-0",
-                      msg.role === "assistant" ? "bg-black text-white" : "bg-gray-200 text-gray-600"
-                    )}>
-                      {msg.role === "assistant" ? <Sparkles className="h-3.5 w-3.5" /> : <User className="h-3.5 w-3.5" />}
-                    </div>
+                <X className="h-4 w-4" />
+              </button>
+            </div>
 
-                    <div className={cn("max-w-[85%]", msg.role === "user" && "text-right")}>
-                      <div className={cn(
-                        "py-2.5 px-4 rounded-2xl inline-block text-sm leading-relaxed",
-                        msg.role === "user" 
-                          ? "bg-gray-100 text-gray-900 rounded-tr-sm" 
-                          : "text-gray-800"
-                      )}>
-                        {msg.content}
+            {/* Chat Content */}
+            <div 
+              ref={scrollRef}
+              className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/50"
+              style={{ maxHeight: "450px" }}
+            >
+              {messages.map((msg) => (
+                <div key={msg.id}>
+                  {msg.role === "user" ? (
+                    <div className="flex justify-end mb-4">
+                      <div className="bg-gray-100 rounded-2xl rounded-tr-sm px-4 py-3 max-w-[85%]">
+                        <div className="flex items-center justify-between gap-4 mb-1">
+                          <p className="text-sm text-gray-800">{msg.content}</p>
+                          <span className="text-xs text-gray-500 font-medium shrink-0">You</span>
+                        </div>
                       </div>
-
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      <div className="flex items-start gap-3">
+                        <div className="h-8 w-8 bg-gray-100 rounded-lg flex items-center justify-center shrink-0">
+                          <Sparkles className="h-4 w-4 text-gray-600" />
+                        </div>
+                        <p className="text-sm text-gray-700 pt-1.5">{msg.content}</p>
+                      </div>
+                      
+                      {/* Action Cards */}
                       {msg.artifact && (
-                        <div className="mt-3 bg-white shadow-lg rounded-xl p-4 max-w-sm">
-                          <div className="flex items-center gap-3 mb-3">
-                            <div className="h-10 w-10 bg-emerald-50 text-emerald-700 rounded-full flex items-center justify-center font-serif text-sm font-bold">
-                              MR
+                        <div className="space-y-2 mt-3">
+                          {[
+                            { id: "switch-avocado", title: "Switch Avocado Supplier", desc: "GreenLeaf offers $48/case vs current $62", impact: 600, icon: "arrow", color: "amber" },
+                            { id: "adjust-delivery", title: "Adjust Delivery Window", desc: "Move Sysco to 8-10AM to avoid overtime", impact: 350, icon: "clock", color: "purple" },
+                            { id: "lock-scheduling", title: "Lock Mid-Shift Cuts", desc: "Make Tue/Wed staffing changes permanent", impact: 480, icon: "users", color: "blue" },
+                          ].map((action) => (
+                            <div 
+                              key={action.id}
+                              className="bg-white border border-gray-200 rounded-xl p-4 flex items-start gap-3 hover:border-gray-300 transition-colors cursor-pointer group"
+                            >
+                              <div className={cn(
+                                "h-10 w-10 rounded-lg flex items-center justify-center shrink-0",
+                                action.color === "amber" ? "bg-amber-50" :
+                                action.color === "purple" ? "bg-purple-50" : "bg-blue-50"
+                              )}>
+                                {action.icon === "arrow" && <ArrowRight className={cn("h-5 w-5", action.color === "amber" ? "text-amber-600" : "text-gray-600")} />}
+                                {action.icon === "clock" && <Clock className="h-5 w-5 text-purple-600" />}
+                                {action.icon === "users" && <Users className="h-5 w-5 text-blue-600" />}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <h4 className="font-medium text-sm text-gray-900">{action.title}</h4>
+                                <p className="text-xs text-gray-500 mt-0.5">{action.desc}</p>
+                                <div className="flex items-center gap-1 mt-2 text-emerald-600">
+                                  <TrendingUp className="h-3.5 w-3.5" />
+                                  <span className="text-xs font-medium">+${action.impact}/mo</span>
+                                </div>
+                              </div>
+                              <div className="h-5 w-5 rounded-full border-2 border-gray-300 group-hover:border-gray-400 shrink-0 mt-1" />
                             </div>
-                            <div>
-                              <div className="text-sm font-semibold text-gray-900">Michael Richards</div>
-                              <div className="text-xs text-gray-500">Top Server • Dinner Shift</div>
-                            </div>
-                            <div className="ml-auto bg-emerald-100 text-emerald-700 text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1">
-                              <Award className="h-3 w-3" /> Top 1%
-                            </div>
-                          </div>
-                          <div className="grid grid-cols-2 gap-4 text-sm">
-                            <div>
-                              <div className="text-xs text-gray-500 uppercase tracking-wider mb-0.5">Total Sales</div>
-                              <div className="font-semibold text-gray-900">$4,280</div>
-                              <div className="text-xs text-emerald-600">+12% vs avg</div>
-                            </div>
-                            <div>
-                              <div className="text-xs text-gray-500 uppercase tracking-wider mb-0.5">Upsell Conv.</div>
-                              <div className="font-semibold text-gray-900">32%</div>
-                              <div className="text-xs text-emerald-600">+8% vs avg</div>
-                            </div>
-                          </div>
+                          ))}
                         </div>
                       )}
                     </div>
-                  </div>
-                ))}
+                  )}
+                </div>
+              ))}
 
-                {isTyping && (
-                  <div className="flex gap-3">
-                    <div className="h-7 w-7 bg-black text-white rounded-full flex items-center justify-center flex-shrink-0">
-                      <Sparkles className="h-3.5 w-3.5" />
-                    </div>
-                    <div className="flex items-center gap-2 py-2">
-                      <div className="flex gap-1">
-                        <div className="h-2 w-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                        <div className="h-2 w-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                        <div className="h-2 w-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
-                      </div>
-                    </div>
+              {isTyping && (
+                <div className="flex items-start gap-3">
+                  <div className="h-8 w-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                    <Sparkles className="h-4 w-4 text-gray-600" />
                   </div>
-                )}
-              </div>
-            </div>
-          )}
+                  <div className="flex items-center gap-1 pt-2">
+                    <div className="h-2 w-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                    <div className="h-2 w-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                    <div className="h-2 w-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                  </div>
+                </div>
+              )}
+
+              {messages.length === 0 && !isTyping && (
+                <div className="text-center py-8">
+                  <div className="h-12 w-12 bg-gray-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+                    <Sparkles className="h-6 w-6 text-gray-400" />
+                  </div>
+                  <p className="text-sm text-gray-500">Ask me anything about your P&L</p>
+                </div>
+              )}
             </div>
 
-            {/* Input Tray */}
-            <div className="flex items-center gap-3 px-4 py-3 border-t border-gray-100 bg-white">
+            {/* Input */}
+            <div className="p-4 border-t border-gray-100 bg-white">
               <form 
                 onSubmit={(e) => { e.preventDefault(); handleSend(input); }}
-                className="flex-1 flex items-center bg-gray-100 rounded-xl px-4 py-2.5 focus-within:bg-gray-50 transition-colors"
+                className="flex items-center gap-2 bg-gray-100 rounded-xl px-4 py-3"
               >
                 <input 
                   ref={inputRef}
                   type="text" 
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder="Ask about your P&L..."
+                  placeholder="Ask a follow-up question..."
                   data-testid="input-floating-chat"
-                  className="flex-1 bg-transparent outline-none text-sm text-gray-900 placeholder:text-gray-500"
+                  className="flex-1 bg-transparent outline-none text-sm text-gray-900 placeholder:text-gray-400"
                 />
                 <button
                   type="submit"
                   disabled={!input.trim()}
                   className={cn(
-                    "ml-2 p-1.5 rounded-lg transition-colors",
+                    "h-8 w-8 rounded-full flex items-center justify-center transition-colors",
                     input.trim() 
-                      ? "text-gray-700 hover:text-gray-900" 
-                      : "text-gray-400"
+                      ? "bg-gray-900 text-white hover:bg-gray-800" 
+                      : "bg-gray-200 text-gray-400"
                   )}
                 >
                   <Send className="h-4 w-4" />
