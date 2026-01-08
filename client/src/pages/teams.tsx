@@ -262,7 +262,7 @@ export default function Teams() {
                     />
                   </div>
                   <div className="relative">
-                    <div className="max-h-[308px] overflow-y-auto scrollable-list">
+                    <div className="max-h-[318px] overflow-y-auto scrollable-list">
                       {departments.filter(d => d.name.toLowerCase().includes(deptSearch.toLowerCase())).map((dept, index, arr) => (
                         <button
                           key={dept.id}
@@ -304,7 +304,7 @@ export default function Teams() {
                     />
                   </div>
                   <div className="relative">
-                    <div className="max-h-[308px] overflow-y-auto scrollable-list">
+                    <div className="max-h-[318px] overflow-y-auto scrollable-list">
                       {filteredJobs.filter(j => j.name.toLowerCase().includes(deptJobSearch.toLowerCase())).map((job, index, arr) => (
                         <label
                           key={job.id}
@@ -359,7 +359,7 @@ export default function Teams() {
                     />
                   </div>
                   <div className="relative">
-                    <div className="max-h-[308px] overflow-y-auto scrollable-list">
+                    <div className="max-h-[318px] overflow-y-auto scrollable-list">
                       {jobRoles.filter(job => job.name.toLowerCase().includes(jobSearch.toLowerCase())).map((job, index, arr) => (
                         <button
                           key={job.id}
@@ -406,7 +406,7 @@ export default function Teams() {
                     />
                   </div>
                   <div className="relative">
-                    <div className="max-h-[308px] overflow-y-auto scrollable-list">
+                    <div className="max-h-[318px] overflow-y-auto scrollable-list">
                       {staff.filter(person => person.name.toLowerCase().includes(personnelSearch.toLowerCase())).map((person, index, arr) => {
                         const isAssigned = assignedToSelectedJob.includes(person.id);
                         const assignedElsewhere = isStaffAssignedElsewhere(person.id);
