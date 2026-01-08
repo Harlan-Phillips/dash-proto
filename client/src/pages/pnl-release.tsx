@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import Layout from "@/components/layout";
 import confetti from "canvas-confetti";
+import munchCatIcon from "../../../attached_assets/Screenshot_2026-01-08_at_12.59.10_PM_1767895210474.png";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Calendar, 
@@ -2382,7 +2383,7 @@ function FloatingAssistantBar({ triggerQuery }: { triggerQuery?: string | null }
           data-testid="floating-chat-icon"
           title="Open Munch Assistant"
         >
-          <img src="/attached_assets/Screenshot_2026-01-08_at_12.59.10_PM_1767895210474.png" alt="Munch" className="h-12 w-12 object-cover" />
+          <img src={munchCatIcon} alt="Munch" className="h-12 w-12 object-cover" />
         </motion.button>
       ) : (
         <>
