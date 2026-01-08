@@ -187,12 +187,17 @@ export default function PayrollHome() {
   return (
     <Layout>
       <div className="p-8 max-w-7xl mx-auto">
-        <div className="flex items-center border-b border-border pb-4 mb-8">
+        <div className="flex items-center justify-between border-b border-border pb-4 mb-8">
           <div className="flex items-center gap-4">
+            <span className="font-serif text-2xl font-medium" data-testid="text-location-title">Showing All Locations</span>
+            <span className="text-sm text-muted-foreground bg-gray-100 px-3 py-1.5 rounded-md" data-testid="text-date">Today, Jan 8</span>
+          </div>
+          
+          <div className="flex items-center gap-6 text-sm font-medium text-muted-foreground">
             <Select value={selectedEntity} onValueChange={setSelectedEntity}>
-              <SelectTrigger className="border-0 bg-transparent p-0 h-auto gap-1 hover:bg-gray-100 px-2 py-1 -ml-2 rounded-md transition-colors" data-testid="select-entity">
-                <span className="font-serif text-2xl font-medium">{currentEntity?.name || "Select Location"}</span>
-                <ChevronsUpDown className="h-4 w-4 text-muted-foreground" />
+              <SelectTrigger className="border-0 bg-transparent p-0 h-auto gap-1 hover:text-foreground transition-colors focus:ring-0 focus:ring-offset-0" data-testid="select-entity">
+                <span>Locations</span>
+                <ChevronDown className="h-3 w-3" />
               </SelectTrigger>
               <SelectContent>
                 {entities.map((ent) => (
@@ -200,8 +205,9 @@ export default function PayrollHome() {
                 ))}
               </SelectContent>
             </Select>
-            <div className="h-6 w-px bg-border" />
-            <span className="text-sm text-muted-foreground bg-gray-100 px-3 py-1.5 rounded-md" data-testid="text-date">Today, Jan 8</span>
+            <button className="hover:text-foreground transition-colors">Bonuses</button>
+            <button className="hover:text-foreground transition-colors">Reports</button>
+            <button className="hover:text-foreground transition-colors">Settings</button>
           </div>
         </div>
 
