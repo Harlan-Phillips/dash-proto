@@ -759,12 +759,12 @@ const getSuggestions = (lineItem: PnLLineItem, varianceInfo: VarianceInfo): Sugg
 };
 
 // Count flagged items
-const countFlaggedItems = (items: PnLLineItem[], totalRevenue: number): { critical: number; attention: number; favorable: number } => {
+const countFlaggedItems = (items: PnLLineItem[], netProfit: number): { critical: number; attention: number; favorable: number } => {
   let counts = { critical: 0, attention: 0, favorable: 0 };
 
   const countRecursive = (lineItems: PnLLineItem[]) => {
     lineItems.forEach(item => {
-      const variance = analyzeVariance(item, totalRevenue);
+      const variance = analyzeVariance(item, netProfit);
       if (variance.level === 'critical') counts.critical++;
       else if (variance.level === 'attention') counts.attention++;
       else if (variance.level === 'favorable') counts.favorable++;
@@ -777,14 +777,14 @@ const countFlaggedItems = (items: PnLLineItem[], totalRevenue: number): { critic
 };
 
 // Filter items recursively - keep parent if any child matches
-const filterItemsByVariance = (items: PnLLineItem[], level: VarianceLevel, totalRevenue: number): PnLLineItem[] => {
+const filterItemsByVariance = (items: PnLLineItem[], level: VarianceLevel, netProfit: number): PnLLineItem[] => {
   return items.reduce<PnLLineItem[]>((acc, item) => {
-    const variance = analyzeVariance(item, totalRevenue);
+    const variance = analyzeVariance(item, netProfit);
     const itemMatches = variance.level === level;
 
     // Check if any children match
     const filteredChildren = item.children 
-      ? filterItemsByVariance(item.children, level, totalRevenue)
+      ? filterItemsByVariance(item.children, level, netProfit)
       : [];
 
     // Include item if it matches OR if it has matching children
@@ -808,13 +808,13 @@ interface AnalysisPanelProps {
   lineItem: PnLLineItem | null;
   analysisType: string;
   onSuggestionClick: (suggestion: Suggestion) => void;
-  totalRevenue: number;
+  netProfit: number;
 }
 
-function AnalysisPanel({ isOpen, onClose, lineItem, analysisType, onSuggestionClick, totalRevenue }: AnalysisPanelProps) {
+function AnalysisPanel({ isOpen, onClose, lineItem, analysisType, onSuggestionClick, netProfit }: AnalysisPanelProps) {
   if (!isOpen || !lineItem) return null;
 
-  const variance = analyzeVariance(lineItem, totalRevenue);
+  const variance = analyzeVariance(lineItem, netProfit);
   const suggestions = getSuggestions(lineItem, variance);
 
   const mockTrendData = [
@@ -936,7 +936,7 @@ function AnalysisPanel({ isOpen, onClose, lineItem, analysisType, onSuggestionCl
 interface PnLTreeItemProps {
   item: PnLLineItem;
   depth: number;
-  totalRevenue: number;
+  netProfit: number;
   expandedItems: Set<string>;
   onToggleExpand: (id: string) => void;
   selectedItem: string | null;
@@ -950,7 +950,7 @@ interface PnLTreeItemProps {
 function PnLTreeItem({ 
   item, 
   depth, 
-  totalRevenue, 
+  netProfit, 
   expandedItems, 
   onToggleExpand,
   selectedItem,
@@ -968,7 +968,7 @@ function PnLTreeItem({
 
   const isExpanded = expandedItems.has(item.id);
   const hasChildren = item.children && item.children.length > 0;
-  const variance = analyzeVariance(item, totalRevenue);
+  const variance = analyzeVariance(item, netProfit);
   const suggestions = getSuggestions(item, variance);
   const isFocused = focusedIndex === currentIndex;
 
@@ -1099,10 +1099,10 @@ function PnLTreeItem({
         </div>
 
         <div className="flex items-center gap-6 text-sm">
-          <span className="font-semibold text-gray-900 w-24 text-right">
+          <span className="font-semibold text-gray-900 w-28 text-right">
             ${item.current.toLocaleString()}
           </span>
-          <span className="text-gray-500 w-24 text-right">
+          <span className="text-gray-500 w-28 text-right">
             ${item.prior.toLocaleString()}
           </span>
           <span className={cn(
@@ -1168,7 +1168,7 @@ function PnLTreeItem({
                 key={child.id}
                 item={child}
                 depth={depth + 1}
-                totalRevenue={totalRevenue}
+                netProfit={netProfit}
                 expandedItems={expandedItems}
                 onToggleExpand={onToggleExpand}
                 selectedItem={selectedItem}
@@ -1326,8 +1326,9 @@ function PnLDashboard({ onInsightClick, highlightedNodeId, onHighlightClear, onT
   const [searchTerm, setSearchTerm] = useState('');
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  const totalRevenue = hierarchicalPnlData[0].current;
-  const flagCounts = countFlaggedItems(hierarchicalPnlData, totalRevenue);
+  // Use net profit for variance analysis (Net Operating Income)
+  const netProfit = hierarchicalPnlData.find(item => item.id === 'net-income')?.current || 17722.37;
+  const flagCounts = countFlaggedItems(hierarchicalPnlData, netProfit);
 
   // Auto-expand parents when search matches nested items
   useEffect(() => {
@@ -1410,7 +1411,7 @@ function PnLDashboard({ onInsightClick, highlightedNodeId, onHighlightClear, onT
   // Apply both variance filter and search filter
   let filteredItems = filterLevel === 'all' 
     ? hierarchicalPnlData 
-    : filterItemsByVariance(hierarchicalPnlData, filterLevel, totalRevenue);
+    : filterItemsByVariance(hierarchicalPnlData, filterLevel, netProfit);
 
   if (searchTerm.trim()) {
     filteredItems = filterItemsBySearch(filteredItems, searchTerm);
@@ -1506,9 +1507,11 @@ function PnLDashboard({ onInsightClick, highlightedNodeId, onHighlightClear, onT
       <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
         <div className="flex items-center px-4 py-3 bg-gray-50 border-b border-gray-100 text-xs font-medium text-gray-500 uppercase tracking-wider">
           <div className="flex-1">Line Item</div>
-          <div className="w-24 text-right">Current</div>
-          <div className="w-24 text-right">Prior</div>
-          <div className="w-20 text-right">Variance</div>
+          <div className="flex items-center gap-6">
+            <div className="w-28 text-right">Current</div>
+            <div className="w-28 text-right">Prior</div>
+            <div className="w-20 text-right">% Profit</div>
+          </div>
         </div>
 
         <div className="divide-y divide-gray-100">
@@ -1517,7 +1520,7 @@ function PnLDashboard({ onInsightClick, highlightedNodeId, onHighlightClear, onT
               key={item.id}
               item={item}
               depth={0}
-              totalRevenue={totalRevenue}
+              netProfit={netProfit}
               expandedItems={expandedItems}
               onToggleExpand={toggleExpand}
               selectedItem={selectedItem}
@@ -1547,7 +1550,7 @@ function PnLDashboard({ onInsightClick, highlightedNodeId, onHighlightClear, onT
         lineItem={analysisPanel.item}
         analysisType={analysisPanel.type}
         onSuggestionClick={handlePanelSuggestionClick}
-        totalRevenue={totalRevenue}
+        netProfit={netProfit}
       />
         </>
       )}
