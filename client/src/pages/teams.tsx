@@ -330,10 +330,7 @@ export default function Teams() {
                           disabled={assignedElsewhere}
                           data-testid={`checkbox-staff-${person.id}`}
                         />
-                        <div className={cn(
-                          "w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium",
-                          isAssigned ? "bg-emerald-500" : "bg-gray-400"
-                        )}>
+                        <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium bg-gray-400">
                           {person.initials}
                         </div>
                         <div className="flex-1 min-w-0">
