@@ -367,84 +367,14 @@ export default function Teams() {
         )}
 
         {activeTab === "staff" && (
-          <div className="space-y-6">
-            <Card data-testid="card-staff-list">
-              <CardHeader className="flex flex-row items-center justify-between py-4">
-                <div>
-                  <CardTitle className="text-lg">Staff Directory</CardTitle>
-                  <CardDescription>View and manage team members</CardDescription>
-                </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="gap-1.5"
-                  data-testid="button-add-staff"
-                >
-                  <Plus className="h-4 w-4" />
-                  Add Staff
-                </Button>
-              </CardHeader>
-              <CardContent className="p-0">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-t border-b text-left text-sm text-muted-foreground bg-gray-50">
-                      <th className="px-6 py-3 font-medium">Name</th>
-                      <th className="px-6 py-3 font-medium">Department</th>
-                      <th className="px-6 py-3 font-medium">Job Role</th>
-                      <th className="px-6 py-3 font-medium">Status</th>
-                      <th className="px-6 py-3 font-medium"></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {staff.map((person) => {
-                      const assignedJobIds = Object.entries(assignedStaff)
-                        .filter(([_, staffIds]) => staffIds.includes(person.id))
-                        .map(([jobId]) => jobId);
-                      const assignedJobs = jobRoles.filter(j => assignedJobIds.includes(j.id));
-                      const dept = assignedJobs.length > 0 
-                        ? departments.find(d => d.id === assignedJobs[0].departmentId)
-                        : null;
-                      
-                      return (
-                        <tr 
-                          key={person.id} 
-                          className="border-b hover:bg-gray-50 transition-colors"
-                          data-testid={`row-staff-${person.id}`}
-                        >
-                          <td className="px-6 py-4">
-                            <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-full bg-gray-400 flex items-center justify-center text-white text-sm font-medium">
-                                {person.initials}
-                              </div>
-                              <span className="font-medium">{person.name}</span>
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 text-muted-foreground">
-                            {dept?.name || "—"}
-                          </td>
-                          <td className="px-6 py-4 text-muted-foreground">
-                            {assignedJobs.length > 0 
-                              ? assignedJobs.map(j => j.name).join(", ")
-                              : "—"
-                            }
-                          </td>
-                          <td className="px-6 py-4">
-                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">
-                              Active
-                            </span>
-                          </td>
-                          <td className="px-6 py-4">
-                            <Button variant="ghost" size="sm" data-testid={`button-view-staff-${person.id}`}>
-                              View →
-                            </Button>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </CardContent>
-            </Card>
+          <div className="border border-border rounded-lg min-h-[400px] flex flex-col items-center justify-center py-16 bg-[#fafafa]" data-testid="content-staff">
+            <h2 className="font-serif text-2xl font-medium text-foreground mb-3">Staff</h2>
+            <p className="text-muted-foreground text-center max-w-md mb-6">
+              This module is currently under development. Check back soon for updates.
+            </p>
+            <span className="px-4 py-1.5 text-sm text-muted-foreground border border-border rounded-full">
+              Status: Development Preview
+            </span>
           </div>
         )}
       </div>
