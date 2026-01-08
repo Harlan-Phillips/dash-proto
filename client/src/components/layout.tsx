@@ -104,17 +104,12 @@ const navCategories: NavCategory[] = [
 
 function NavCategoryItem({ category }: { category: NavCategory }) {
   const [location] = useLocation();
-  const [isExpanded, setIsExpanded] = useState(false);
   
   const isActiveCategory = category.items.some(item => location === item.href || location.startsWith(item.href.split('/').slice(0, 3).join('/')));
   const Icon = category.icon;
 
   return (
-    <div 
-      className="relative"
-      onMouseEnter={() => setIsExpanded(true)}
-      onMouseLeave={() => setIsExpanded(false)}
-    >
+    <div className="group/nav relative">
       <button
         className={cn(
           "w-full h-10 flex items-center gap-3 px-3 rounded-lg transition-all duration-200 text-left",
@@ -123,43 +118,33 @@ function NavCategoryItem({ category }: { category: NavCategory }) {
             : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
         )}
       >
-        <Icon className="h-4.5 w-4.5 flex-shrink-0" />
+        <Icon className="h-4 w-4 flex-shrink-0" />
         <span className="font-medium text-sm">{category.name}</span>
       </button>
 
-      {/* Dropdown submenu with animation */}
-      <div 
-        className={cn(
-          "absolute left-full top-0 ml-1 w-52 bg-white rounded-xl border border-gray-200 shadow-xl py-1.5 z-50 transition-all duration-200 origin-left",
-          isExpanded 
-            ? "opacity-100 scale-100 translate-x-0" 
-            : "opacity-0 scale-95 -translate-x-2 pointer-events-none"
-        )}
-      >
-        {category.items.map((item, index) => {
-          const ItemIcon = item.icon;
-          const isActive = location === item.href;
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                "flex items-center gap-2.5 px-3 py-2 mx-1.5 rounded-lg transition-all duration-150",
-                isActive 
-                  ? "bg-gray-900 text-white" 
-                  : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
-              )}
-              style={{ 
-                transitionDelay: isExpanded ? `${index * 30}ms` : '0ms',
-                opacity: isExpanded ? 1 : 0,
-                transform: isExpanded ? 'translateX(0)' : 'translateX(-8px)'
-              }}
-            >
-              <ItemIcon className="h-4 w-4 flex-shrink-0" />
-              <span className="text-sm">{item.label}</span>
-            </Link>
-          );
-        })}
+      {/* Dropdown submenu */}
+      <div className="absolute left-full top-0 ml-1 pt-0 opacity-0 invisible group-hover/nav:opacity-100 group-hover/nav:visible transition-all duration-150 z-50">
+        <div className="w-52 bg-white rounded-xl border border-gray-200 shadow-lg py-1.5 transform scale-95 group-hover/nav:scale-100 transition-transform duration-150 origin-top-left">
+          {category.items.map((item) => {
+            const ItemIcon = item.icon;
+            const isActive = location === item.href;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "flex items-center gap-2.5 px-3 py-2 mx-1.5 rounded-lg transition-colors duration-100",
+                  isActive 
+                    ? "bg-gray-900 text-white" 
+                    : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                )}
+              >
+                <ItemIcon className="h-4 w-4 flex-shrink-0" />
+                <span className="text-sm">{item.label}</span>
+              </Link>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
@@ -171,17 +156,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-background flex font-sans text-foreground">
       {/* Sidebar */}
-      <aside className="w-56 flex-shrink-0 bg-white border-r border-gray-200 flex flex-col py-6 sticky top-0 h-screen z-20">
-        <div className="mb-8 flex items-center px-5">
+      <aside className="w-52 flex-shrink-0 bg-white border-r border-gray-200 flex flex-col py-6 sticky top-0 h-screen z-20">
+        <div className="mb-8 flex items-center px-4">
           <div className="h-8 w-8 bg-black text-white flex items-center justify-center font-serif font-bold text-lg flex-shrink-0 rounded-sm">
             M
           </div>
-          <span className="ml-3 font-serif text-xl font-bold">
-            Munch Insights
+          <span className="ml-2.5 font-serif text-lg font-bold">
+            Munch
           </span>
         </div>
 
-        <nav className="flex-1 flex flex-col px-3 space-y-1 overflow-y-auto">
+        <nav className="flex-1 flex flex-col px-2 space-y-0.5 overflow-y-auto overflow-x-visible">
           {navCategories.map((category) => (
             <NavCategoryItem key={category.name} category={category} />
           ))}
