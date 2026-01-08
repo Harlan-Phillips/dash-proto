@@ -3675,118 +3675,123 @@ export default function PnlRelease() {
                        </section>
 
                        {/* 4. Team Performance & Manager Goals */}
-                       <section>
-                          <h3 className="font-serif text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                            <Users className="h-5 w-5 text-black" /> Team Performance & Goals
-                          </h3>
-
-                          {/* Manager Goals Summary */}
-                          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-5 mb-4">
-                            <div className="flex items-start justify-between mb-4">
-                              <div>
-                                <h4 className="font-medium text-blue-900 mb-1">Manager Scoreboard</h4>
-                                <p className="text-xs text-blue-700">Tracking goals set at beginning of quarter</p>
-                              </div>
-                              <div className="flex items-center gap-2">
+                       <section id="team-performance" className="scroll-mt-4">
+                          <div className="flex items-center justify-between mb-4">
+                             <h3 className="font-serif text-lg font-bold text-gray-900 flex items-center gap-2">
+                               <Users className="h-5 w-5 text-gray-700" /> Team Performance & Goals
+                             </h3>
+                             <div className="flex items-center gap-2">
                                 <button
                                   data-testid="button-email-report"
                                   onClick={() => setShowEmailReportModal(true)}
-                                  className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-blue-200 rounded-lg text-xs font-medium text-blue-700 hover:bg-blue-50 hover:border-blue-300 transition-colors"
+                                  className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-900 text-white rounded-lg text-xs font-medium hover:bg-gray-800 transition-colors"
                                 >
                                   <Mail className="h-3.5 w-3.5" />
                                   Email Report
                                 </button>
-                                <div className="px-3 py-1 bg-blue-100 rounded-full text-xs font-medium text-blue-800">
+                                <span className="px-2.5 py-1 bg-gray-100 rounded-full text-xs font-medium text-gray-600">
                                   Q3 2025
+                                </span>
+                             </div>
+                          </div>
+
+                          {/* Manager Goals Summary */}
+                          <div className="bg-white rounded-xl border border-gray-200 overflow-hidden mb-4">
+                            <div className="p-5 border-b border-gray-100">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                  <div className="h-11 w-11 rounded-full bg-gray-900 flex items-center justify-center text-white font-semibold text-sm">
+                                    SM
+                                  </div>
+                                  <div>
+                                    <h5 className="font-semibold text-gray-900">Sarah Mitchell</h5>
+                                    <p className="text-sm text-gray-500">General Manager</p>
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-3 px-4 py-2 bg-amber-50 rounded-lg border border-amber-100">
+                                  <Trophy className="h-5 w-5 text-amber-500" />
+                                  <div className="text-right">
+                                    <span className="text-lg font-bold text-gray-900">2/3</span>
+                                    <p className="text-xs text-gray-500">Goals Hit</p>
+                                  </div>
                                 </div>
                               </div>
                             </div>
 
-                            <div className="space-y-4">
-                              {/* Sarah's Goals */}
-                              <div className="bg-white rounded-lg p-4 border border-blue-100">
-                                <div className="flex items-center justify-between mb-3">
-                                  <div className="flex items-center gap-3">
-                                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white font-bold text-sm">
-                                      SM
-                                    </div>
-                                    <div>
-                                      <h5 className="font-medium text-gray-900">Sarah Mitchell</h5>
-                                      <p className="text-xs text-gray-500">General Manager</p>
-                                    </div>
+                            <div className="divide-y divide-gray-100">
+                              <div className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors">
+                                <div className="flex items-center gap-3">
+                                  <div className="h-8 w-8 rounded-full bg-emerald-100 flex items-center justify-center">
+                                    <Check className="h-4 w-4 text-emerald-600" />
                                   </div>
-                                  <div className="flex items-center gap-2">
-                                    <Trophy className="h-4 w-4 text-amber-500" />
-                                    <span className="text-sm font-bold text-emerald-600">2/3 Goals Hit</span>
+                                  <div>
+                                    <p className="text-sm font-medium text-gray-900">Labor under 33%</p>
+                                    <p className="text-xs text-gray-500">Achieved 32%</p>
                                   </div>
                                 </div>
-
-                                <div className="space-y-2">
-                                  <div className="flex items-center justify-between p-2 bg-emerald-50 rounded-lg">
-                                    <div className="flex items-center gap-2">
-                                      <Check className="h-4 w-4 text-emerald-600" />
-                                      <span className="text-sm text-gray-700">Labor under 33%</span>
-                                    </div>
-                                    <div className="text-right">
-                                      <span className="text-sm font-medium text-emerald-600">32% achieved</span>
-                                      <span className="text-xs text-emerald-700 block">+$250 bonus</span>
-                                    </div>
-                                  </div>
-                                  <div className="flex items-center justify-between p-2 bg-emerald-50 rounded-lg">
-                                    <div className="flex items-center gap-2">
-                                      <Check className="h-4 w-4 text-emerald-600" />
-                                      <span className="text-sm text-gray-700">Sales target $120k</span>
-                                    </div>
-                                    <div className="text-right">
-                                      <span className="text-sm font-medium text-emerald-600">$124.5k achieved</span>
-                                      <span className="text-xs text-emerald-700 block">+$200 bonus</span>
-                                    </div>
-                                  </div>
-                                  <div className="flex items-center justify-between p-2 bg-amber-50 rounded-lg">
-                                    <div className="flex items-center gap-2">
-                                      <X className="h-4 w-4 text-amber-600" />
-                                      <span className="text-sm text-gray-700">COGS under 30%</span>
-                                    </div>
-                                    <div className="text-right">
-                                      <span className="text-sm font-medium text-amber-600">31% (missed by 1%)</span>
-                                      <span className="text-xs text-gray-500 block">$0 bonus</span>
-                                    </div>
-                                  </div>
-                                </div>
-
-                                <div className="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between">
-                                  <span className="text-sm text-gray-600">October Bonus Earned</span>
-                                  <span className="text-lg font-bold text-emerald-600">$450</span>
-                                </div>
+                                <span className="text-sm font-semibold text-emerald-600">+$250</span>
                               </div>
+                              <div className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors">
+                                <div className="flex items-center gap-3">
+                                  <div className="h-8 w-8 rounded-full bg-emerald-100 flex items-center justify-center">
+                                    <Check className="h-4 w-4 text-emerald-600" />
+                                  </div>
+                                  <div>
+                                    <p className="text-sm font-medium text-gray-900">Sales target $120k</p>
+                                    <p className="text-xs text-gray-500">Achieved $124.5k</p>
+                                  </div>
+                                </div>
+                                <span className="text-sm font-semibold text-emerald-600">+$200</span>
+                              </div>
+                              <div className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors">
+                                <div className="flex items-center gap-3">
+                                  <div className="h-8 w-8 rounded-full bg-red-100 flex items-center justify-center">
+                                    <X className="h-4 w-4 text-red-500" />
+                                  </div>
+                                  <div>
+                                    <p className="text-sm font-medium text-gray-900">COGS under 30%</p>
+                                    <p className="text-xs text-gray-500">Actual 31%</p>
+                                  </div>
+                                </div>
+                                <span className="text-sm font-medium text-gray-400">—</span>
+                              </div>
+                            </div>
+
+                            <div className="p-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between">
+                              <span className="text-sm font-medium text-gray-600">Total Bonus Earned</span>
+                              <span className="text-lg font-bold text-gray-900">$450</span>
                             </div>
                           </div>
 
                           {/* Staff Highlights */}
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                             <div className="p-4 border border-gray-200 rounded-xl hover:shadow-md transition-all cursor-pointer bg-white">
-                                <div className="flex items-center gap-2 mb-2">
-                                  <TrendingUp className="h-4 w-4 text-emerald-500" />
-                                  <h4 className="text-sm font-bold text-gray-900">FOH Upsell Leader</h4>
+                             <div className="bg-white rounded-xl border border-gray-200 p-4 hover:border-gray-300 transition-colors">
+                                <div className="flex items-center gap-2 mb-3">
+                                  <div className="h-7 w-7 rounded-full bg-emerald-100 flex items-center justify-center">
+                                    <TrendingUp className="h-3.5 w-3.5 text-emerald-600" />
+                                  </div>
+                                  <h4 className="text-sm font-semibold text-gray-900">FOH Upsell Leader</h4>
                                 </div>
-                                <p className="text-xs text-gray-600 mb-3">Team achieved 18% upsell rate on specials — best month this year. Mimosa attach rate drove $1,200 in extra revenue.</p>
-                                <div className="flex items-center justify-between">
+                                <p className="text-sm text-gray-600 mb-3">Team achieved 18% upsell rate on specials — best month this year.</p>
+                                <div className="flex items-center justify-between pt-3 border-t border-gray-100">
                                    <div className="flex items-center gap-2">
-                                      <div className="h-6 w-6 rounded-full bg-purple-100 flex items-center justify-center text-[10px] font-bold text-purple-700">JR</div>
-                                      <span className="text-xs font-medium text-gray-700">Jamie R. (top server)</span>
+                                      <div className="h-6 w-6 rounded-full bg-gray-200 flex items-center justify-center text-[10px] font-bold text-gray-600">JR</div>
+                                      <span className="text-xs font-medium text-gray-600">Jamie R.</span>
                                    </div>
-                                   <span className="text-xs font-medium text-emerald-600">+4.2% vs Sep</span>
+                                   <span className="text-xs font-semibold text-emerald-600">+$1,200</span>
                                 </div>
                              </div>
-                             <div className="p-4 border border-gray-200 rounded-xl hover:shadow-md transition-all cursor-pointer bg-white">
-                                <div className="flex items-center gap-2 mb-2">
-                                  <Clock className="h-4 w-4 text-blue-500" />
-                                  <h4 className="text-sm font-bold text-gray-900">Scheduling Win</h4>
+                             <div className="bg-white rounded-xl border border-gray-200 p-4 hover:border-gray-300 transition-colors">
+                                <div className="flex items-center gap-2 mb-3">
+                                  <div className="h-7 w-7 rounded-full bg-blue-100 flex items-center justify-center">
+                                    <Clock className="h-3.5 w-3.5 text-blue-600" />
+                                  </div>
+                                  <h4 className="text-sm font-semibold text-gray-900">Scheduling Win</h4>
                                 </div>
-                                <p className="text-xs text-gray-600 mb-3">New "mid-shift cut" policy on Tue/Wed dinner saved 40 hours of labor without impacting service scores.</p>
-                                <div className="flex items-center justify-between">
-                                   <span className="text-xs text-gray-500">Policy started: Oct 8</span>
-                                   <span className="text-xs font-medium text-emerald-600">-$2,400 in labor</span>
+                                <p className="text-sm text-gray-600 mb-3">New "mid-shift cut" policy saved 40 hours without impacting service.</p>
+                                <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                                   <span className="text-xs text-gray-500">Started Oct 8</span>
+                                   <span className="text-xs font-semibold text-emerald-600">-$2,400</span>
                                 </div>
                              </div>
                           </div>
@@ -5688,79 +5693,89 @@ export default function PnlRelease() {
                    {/* Team Performance - Owner only */}
                    {selectedRole === "owner" && (
                    <section>
-                      <h3 className="font-serif text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                        <Users className="h-5 w-5 text-black" /> Team Performance & Goals
-                      </h3>
-
-                      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-5">
-                        <div className="flex items-start justify-between mb-4">
-                          <div>
-                            <h4 className="font-medium text-blue-900 mb-1">Manager Scoreboard</h4>
-                            <p className="text-xs text-blue-700">Tracking goals set at beginning of quarter</p>
-                          </div>
-                          <div className="flex items-center gap-2">
+                      <div className="flex items-center justify-between mb-4">
+                         <h3 className="font-serif text-lg font-bold text-gray-900 flex items-center gap-2">
+                           <Users className="h-5 w-5 text-gray-700" /> Team Performance & Goals
+                         </h3>
+                         <div className="flex items-center gap-2">
                             <button
                               data-testid="button-email-report-curated"
                               onClick={() => setShowEmailReportModal(true)}
-                              className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-blue-200 rounded-lg text-xs font-medium text-blue-700 hover:bg-blue-50 hover:border-blue-300 transition-colors"
+                              className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-900 text-white rounded-lg text-xs font-medium hover:bg-gray-800 transition-colors"
                             >
                               <Mail className="h-3.5 w-3.5" />
                               Email Report
                             </button>
-                            <div className="px-3 py-1 bg-blue-100 rounded-full text-xs font-medium text-blue-800">
+                            <span className="px-2.5 py-1 bg-gray-100 rounded-full text-xs font-medium text-gray-600">
                               Q4 2024
+                            </span>
+                         </div>
+                      </div>
+
+                      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                        <div className="p-5 border-b border-gray-100">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className="h-11 w-11 rounded-full bg-gray-900 flex items-center justify-center text-white font-semibold text-sm">
+                                SM
+                              </div>
+                              <div>
+                                <h5 className="font-semibold text-gray-900">Sarah Mitchell</h5>
+                                <p className="text-sm text-gray-500">General Manager</p>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-3 px-4 py-2 bg-amber-50 rounded-lg border border-amber-100">
+                              <Trophy className="h-5 w-5 text-amber-500" />
+                              <div className="text-right">
+                                <span className="text-lg font-bold text-gray-900">2/3</span>
+                                <p className="text-xs text-gray-500">Goals Hit</p>
+                              </div>
                             </div>
                           </div>
                         </div>
 
-                        <div className="bg-white rounded-lg p-4 border border-blue-100">
-                          <div className="flex items-center justify-between mb-3">
+                        <div className="divide-y divide-gray-100">
+                          <div className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors">
                             <div className="flex items-center gap-3">
-                              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white font-bold text-sm">
-                                SM
+                              <div className="h-8 w-8 rounded-full bg-emerald-100 flex items-center justify-center">
+                                <Check className="h-4 w-4 text-emerald-600" />
                               </div>
                               <div>
-                                <h5 className="font-medium text-gray-900">Sarah Mitchell</h5>
-                                <p className="text-xs text-gray-500">General Manager</p>
+                                <p className="text-sm font-medium text-gray-900">Labor under 33%</p>
+                                <p className="text-xs text-gray-500">Achieved 32%</p>
                               </div>
                             </div>
-                            <div className="flex items-center gap-2">
-                              <Trophy className="h-4 w-4 text-amber-500" />
-                              <span className="text-sm font-bold text-emerald-600">2/3 Goals Hit</span>
-                            </div>
+                            <span className="text-sm font-semibold text-emerald-600">+$250</span>
                           </div>
-
-                          <div className="space-y-2">
-                            <div className="flex items-center justify-between p-2 bg-emerald-50 rounded-lg">
-                              <div className="flex items-center gap-2">
+                          <div className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors">
+                            <div className="flex items-center gap-3">
+                              <div className="h-8 w-8 rounded-full bg-emerald-100 flex items-center justify-center">
                                 <Check className="h-4 w-4 text-emerald-600" />
-                                <span className="text-sm text-gray-700">Labor under 33%</span>
                               </div>
-                              <div className="text-right">
-                                <span className="text-sm font-medium text-emerald-600">32% achieved</span>
-                                <span className="text-xs text-emerald-700 block">+$250 bonus</span>
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">Sales target $120k</p>
+                                <p className="text-xs text-gray-500">Achieved $124.5k</p>
                               </div>
                             </div>
-                            <div className="flex items-center justify-between p-2 bg-emerald-50 rounded-lg">
-                              <div className="flex items-center gap-2">
-                                <Check className="h-4 w-4 text-emerald-600" />
-                                <span className="text-sm text-gray-700">Sales target $120k</span>
-                              </div>
-                              <div className="text-right">
-                                <span className="text-sm font-medium text-emerald-600">$124.5k achieved</span>
-                                <span className="text-xs text-emerald-700 block">+$200 bonus</span>
-                              </div>
-                            </div>
-                            <div className="flex items-center justify-between p-2 bg-red-50 rounded-lg">
-                              <div className="flex items-center gap-2">
+                            <span className="text-sm font-semibold text-emerald-600">+$200</span>
+                          </div>
+                          <div className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors">
+                            <div className="flex items-center gap-3">
+                              <div className="h-8 w-8 rounded-full bg-red-100 flex items-center justify-center">
                                 <X className="h-4 w-4 text-red-500" />
-                                <span className="text-sm text-gray-700">COGS under 30%</span>
                               </div>
-                              <div className="text-right">
-                                <span className="text-sm font-medium text-red-600">31% (missed)</span>
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">COGS under 30%</p>
+                                <p className="text-xs text-gray-500">Actual 31%</p>
                               </div>
                             </div>
+                            <span className="text-sm font-medium text-gray-400">—</span>
                           </div>
+                        </div>
+
+                        <div className="p-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between">
+                          <span className="text-sm font-medium text-gray-600">Total Bonus Earned</span>
+                          <span className="text-lg font-bold text-gray-900">$450</span>
                         </div>
                       </div>
                    </section>
