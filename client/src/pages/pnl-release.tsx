@@ -654,38 +654,39 @@ const hierarchicalPnlData: PnLLineItem[] = [
   }
 ];
 
-// Variance analysis function
-const analyzeVariance = (lineItem: PnLLineItem, totalRevenue: number): VarianceInfo => {
+// Variance analysis function - uses % of profit for accurate critical status
+const analyzeVariance = (lineItem: PnLLineItem, netProfit: number): VarianceInfo => {
   const variance = lineItem.current - lineItem.prior;
   const variancePct = lineItem.prior !== 0 ? (variance / lineItem.prior) * 100 : 0;
-  const revenueImpact = Math.abs(variance / totalRevenue) * 100;
+  // Profit impact: how much does this variance eat into profit?
+  const profitImpact = netProfit !== 0 ? Math.abs(variance / netProfit) * 100 : 0;
 
   const isExpense = lineItem.type === 'expense';
   const isPositiveChange = variance > 0;
   const isFavorable = isExpense ? !isPositiveChange : isPositiveChange;
 
-  // Critical: >20% variance AND >$5,000 impact OR >5% of revenue
-  if ((Math.abs(variancePct) > 20 && Math.abs(variance) > 5000) || revenueImpact > 5) {
+  // Critical: variance exceeds 25% of profit OR (>15% line variance AND >$3,000)
+  if (profitImpact > 25 || (Math.abs(variancePct) > 15 && Math.abs(variance) > 3000)) {
     return {
       level: isFavorable ? 'favorable' : 'critical',
-      reason: `${isPositiveChange ? 'Up' : 'Down'} ${Math.abs(variancePct).toFixed(1)}% ($${Math.abs(variance).toLocaleString()})`,
+      reason: `${isPositiveChange ? 'Up' : 'Down'} ${Math.abs(variancePct).toFixed(1)}% ($${Math.abs(variance).toLocaleString()}) • ${profitImpact.toFixed(0)}% of profit`,
       variance,
       variancePct
     };
   }
 
-  // Attention: >15% variance OR >$2,000 impact
-  if (Math.abs(variancePct) > 15 || Math.abs(variance) > 2000) {
+  // Attention: variance is 10-25% of profit OR >$2,000 impact
+  if (profitImpact > 10 || Math.abs(variance) > 2000) {
     return {
       level: isFavorable ? 'favorable' : 'attention',
-      reason: `${isPositiveChange ? 'Up' : 'Down'} ${Math.abs(variancePct).toFixed(1)}% ($${Math.abs(variance).toLocaleString()})`,
+      reason: `${isPositiveChange ? 'Up' : 'Down'} ${Math.abs(variancePct).toFixed(1)}% ($${Math.abs(variance).toLocaleString()}) • ${profitImpact.toFixed(0)}% of profit`,
       variance,
       variancePct
     };
   }
 
-  // Favorable check for minor improvements
-  if (isFavorable && (Math.abs(variancePct) > 5 || Math.abs(variance) > 1000)) {
+  // Favorable check for improvements >5% of profit
+  if (isFavorable && (profitImpact > 5 || Math.abs(variance) > 1000)) {
     return {
       level: 'favorable',
       reason: `${isPositiveChange ? 'Up' : 'Down'} ${Math.abs(variancePct).toFixed(1)}% ($${Math.abs(variance).toLocaleString()})`,
