@@ -3320,16 +3320,21 @@ export default function PnlRelease() {
         }
       }
 
-      if (currentSection !== activeSection) {
-        setActiveSection(currentSection);
-      }
+      setActiveSection(currentSection);
     };
 
     container.addEventListener("scroll", handleScroll);
-    handleScroll(); // Initial check
+    
+    // Run initial detection after a brief delay to ensure DOM is ready
+    const initialTimeout = setTimeout(() => {
+      handleScroll();
+    }, 100);
 
-    return () => container.removeEventListener("scroll", handleScroll);
-  }, [activeTab, activeSection]);
+    return () => {
+      container.removeEventListener("scroll", handleScroll);
+      clearTimeout(initialTimeout);
+    };
+  }, [activeTab]);
 
   const scrollToSection = useCallback((sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -4207,85 +4212,21 @@ export default function PnlRelease() {
 
                 {/* View Toggle Tabs */}
                 <div className="px-6 flex gap-1 border-t border-gray-100">
-                   {/* Detailed View Tab with Hover/Click Dropdown TOC */}
-                   <div 
-                      className="relative"
-                      ref={tocDropdownRef}
-                      onMouseEnter={() => activeTab === "detailed" && setTocDropdownOpen(true)}
-                      onMouseLeave={() => setTocDropdownOpen(false)}
+                   <button
+                      data-testid="tab-detailed-view"
+                      onClick={() => setActiveTab("detailed")}
+                      className={cn(
+                         "px-4 py-3 text-sm font-medium border-b-2 transition-colors",
+                         activeTab === "detailed"
+                            ? "border-black text-gray-900"
+                            : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                      )}
                    >
-                      <button
-                         data-testid="tab-detailed-view"
-                         onClick={() => {
-                            if (activeTab === "detailed") {
-                               setTocDropdownOpen(!tocDropdownOpen);
-                            } else {
-                               setActiveTab("detailed");
-                            }
-                         }}
-                         className={cn(
-                            "px-4 py-3 text-sm font-medium border-b-2 transition-colors",
-                            activeTab === "detailed"
-                               ? "border-black text-gray-900"
-                               : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                         )}
-                      >
-                         <div className="flex items-center gap-2">
-                            <FileSpreadsheet className="h-4 w-4" />
-                            Detailed View
-                            {activeTab === "detailed" && (
-                               <ChevronDown className={cn("h-3.5 w-3.5 transition-transform", tocDropdownOpen && "rotate-180")} />
-                            )}
-                         </div>
-                      </button>
-
-                      {/* TOC Dropdown */}
-                      <AnimatePresence>
-                         {tocDropdownOpen && activeTab === "detailed" && (
-                            <motion.div
-                               initial={{ opacity: 0, y: -4 }}
-                               animate={{ opacity: 1, y: 0 }}
-                               exit={{ opacity: 0, y: -4 }}
-                               transition={{ duration: 0.15 }}
-                               className="absolute top-full left-0 mt-1 w-64 bg-white rounded-xl border border-gray-200 shadow-lg z-50 py-2"
-                               data-testid="toc-dropdown"
-                            >
-                               <div className="px-3 py-2 border-b border-gray-100 mb-1">
-                                  <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider flex items-center gap-2">
-                                     <List className="h-3 w-3" />
-                                     Jump to Section
-                                  </span>
-                               </div>
-                               {tocSections.map((section, index) => (
-                                  <button
-                                     key={section.id}
-                                     data-testid={`toc-dropdown-${section.id}`}
-                                     onClick={() => {
-                                        scrollToSection(section.id);
-                                        setTocDropdownOpen(false);
-                                     }}
-                                     className={cn(
-                                        "w-full text-left px-3 py-2 text-sm transition-colors flex items-center gap-3 hover:bg-gray-50",
-                                        activeSection === section.id
-                                           ? "bg-gray-100 text-gray-900 font-medium"
-                                           : "text-gray-600"
-                                     )}
-                                  >
-                                     <span className={cn(
-                                        "w-5 h-5 rounded-full flex items-center justify-center text-xs font-medium shrink-0",
-                                        activeSection === section.id
-                                           ? "bg-black text-white"
-                                           : "bg-gray-100 text-gray-500"
-                                     )}>
-                                        {activeSection === section.id ? <Check className="h-3 w-3" /> : index + 1}
-                                     </span>
-                                     {section.label}
-                                  </button>
-                               ))}
-                            </motion.div>
-                         )}
-                      </AnimatePresence>
-                   </div>
+                      <div className="flex items-center gap-2">
+                         <FileSpreadsheet className="h-4 w-4" />
+                         Detailed View
+                      </div>
+                   </button>
                    <button
                       data-testid="tab-curated-view"
                       onClick={() => setActiveTab("curated")}
