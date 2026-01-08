@@ -226,7 +226,7 @@ export default function Teams() {
                       key={dept.id}
                       onClick={() => setSelectedDepartment(dept.id)}
                       className={cn(
-                        "w-full flex items-center justify-between px-6 py-4 text-left transition-colors",
+                        "w-full flex items-center justify-between px-6 py-3 h-14 text-left transition-colors",
                         selectedDepartment === dept.id
                           ? "bg-muted"
                           : "hover:bg-gray-50",
@@ -234,7 +234,7 @@ export default function Teams() {
                       )}
                       data-testid={`button-department-${dept.id}`}
                     >
-                      <span className="font-medium">{dept.name}</span>
+                      <span className="font-medium text-sm">{dept.name}</span>
                       {selectedDepartment === dept.id && (
                         <ChevronRight className="h-4 w-4" />
                       )}
@@ -250,7 +250,7 @@ export default function Teams() {
                     <label
                       key={job.id}
                       className={cn(
-                        "flex items-center gap-3 px-6 py-4 hover:bg-gray-50 cursor-pointer transition-colors",
+                        "flex items-center gap-3 px-6 py-3 h-14 hover:bg-gray-50 cursor-pointer transition-colors",
                         index !== filteredJobs.length - 1 && "border-b"
                       )}
                       data-testid={`label-job-${job.id}`}
@@ -289,7 +289,7 @@ export default function Teams() {
                       key={job.id}
                       onClick={() => setSelectedJob(job.id)}
                       className={cn(
-                        "w-full flex items-center justify-between px-6 py-4 text-left transition-colors",
+                        "w-full flex items-center justify-between px-6 py-3 h-14 text-left transition-colors",
                         selectedJob === job.id
                           ? "bg-muted"
                           : "hover:bg-gray-50",
@@ -299,7 +299,7 @@ export default function Teams() {
                     >
                       <div>
                         <div className="font-medium text-sm">{job.name}</div>
-                        <div className="text-xs mt-0.5 text-muted-foreground">
+                        <div className="text-xs text-muted-foreground">
                           BASE: ${job.baseRate}/HR
                         </div>
                       </div>
@@ -326,7 +326,7 @@ export default function Teams() {
                       <div
                         key={person.id}
                         className={cn(
-                          "flex items-center gap-3 px-6 py-4 transition-colors",
+                          "flex items-center gap-3 px-6 py-3 h-14 transition-colors",
                           assignedElsewhere ? "opacity-50" : "hover:bg-gray-50",
                           index !== staff.length - 1 && "border-b"
                         )}
