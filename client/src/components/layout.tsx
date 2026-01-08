@@ -42,22 +42,23 @@ import {
 import { cn } from "@/lib/utils";
 
 function SidebarItem({ icon: Icon, label, href }: { icon: any, label: string, href: string }) {
-  const [location, setLocation] = useLocation();
+  const [location] = useLocation();
   const active = location === href;
 
   return (
-    <Link href={href}>
-      <a className={cn(
+    <Link 
+      href={href}
+      className={cn(
         "h-10 flex items-center transition-all duration-300 mb-2 rounded-md mx-2 px-2.5",
         "justify-start",
         "w-10 group-hover:w-[calc(100%-1rem)]", 
         active ? "bg-black text-white" : "text-gray-400 hover:text-black hover:bg-gray-100"
-      )}>
-        <Icon className="h-5 w-5 flex-shrink-0" />
-        <span className="ml-3 whitespace-nowrap overflow-hidden opacity-0 w-0 group-hover:w-auto group-hover:opacity-100 transition-all duration-300 delay-75 text-sm font-medium">
-          {label}
-        </span>
-      </a>
+      )}
+    >
+      <Icon className="h-5 w-5 flex-shrink-0" />
+      <span className="ml-3 whitespace-nowrap overflow-hidden opacity-0 w-0 group-hover:w-auto group-hover:opacity-100 transition-all duration-300 delay-75 text-sm font-medium">
+        {label}
+      </span>
     </Link>
   );
 }
@@ -88,7 +89,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             Munch Insights
           </span>
         </div>
-        
+
         <nav className="flex-1 flex flex-col w-full overflow-y-auto overflow-x-hidden scrollbar-hide">
           <SidebarSection title="Accounting">
             <SidebarItem icon={Calculator} label="Accounting Home" href="/accounting/home" />
@@ -102,7 +103,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <SidebarItem icon={Sparkles} label="Assistant" href="/insight/assistant" />
             <SidebarItem icon={LayoutDashboard} label="Dashboards" href="/insight/dashboards" />
           </SidebarSection>
-          
+
           <SidebarSection title="Operate">
             <SidebarItem icon={Calendar} label="Schedule" href="/operate/schedule" />
             <SidebarItem icon={Moon} label="End of Day" href="/operate/end-of-day" />
@@ -112,6 +113,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <SidebarSection title="Motivate">
             <SidebarItem icon={DollarSign} label="Bonus" href="/motivate/bonus" />
             <SidebarItem icon={TrendingUp} label="Upsell" href="/motivate/upsell" />
+          </SidebarSection>
+
+          <SidebarSection title="Payroll">
+            <SidebarItem icon={Sparkles} label="Onboarding" href="/payroll/onboarding" />
+            <SidebarItem icon={Home} label="Home" href="/payroll/home" />
+            <SidebarItem icon={FileText} label="Tax Center" href="/payroll/tax-center" />
           </SidebarSection>
         </nav>
       </aside>
@@ -157,7 +164,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                <PopoverContent className="w-64 p-2" align="start">
                  <div className="space-y-1">
                    <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Integrations</div>
-                   
+
                    <div className="flex items-center justify-between px-3 py-2 rounded-md hover:bg-gray-50 cursor-default">
                       <div className="flex items-center gap-3">
                         <div className="h-2 w-2 rounded-full bg-emerald-500"></div>
@@ -180,7 +187,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                       <CheckCircle2 className="h-4 w-4 text-emerald-500" />
                    </div>
                  </div>
-                 
+
                  <div className="mt-2 pt-2 border-t border-border px-2">
                     <button className="w-full flex items-center justify-center gap-2 text-xs text-muted-foreground hover:text-foreground py-1.5 hover:bg-gray-50 rounded transition-colors">
                        <RefreshCw className="h-3 w-3" /> Sync Now
@@ -189,13 +196,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                </PopoverContent>
              </Popover>
            </div>
-           
+
            <div className="flex items-center gap-6">
              <button className="text-sm text-muted-foreground hover:text-foreground transition-colors">Help</button>
              <Link href="/settings">
                 <button className="text-sm text-muted-foreground hover:text-foreground transition-colors">Settings</button>
              </Link>
-             
+
              <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button className="h-8 w-8 bg-secondary rounded-full flex items-center justify-center text-xs font-medium hover:bg-secondary/70 transition-colors outline-none" title="Profile">
