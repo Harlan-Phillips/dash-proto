@@ -43,20 +43,39 @@ interface Staff {
 }
 
 const initialDepartments: Department[] = [
-  { id: "1", name: "Engineering" },
-  { id: "2", name: "Product" },
+  { id: "1", name: "Front of House" },
+  { id: "2", name: "Back of House" },
+  { id: "3", name: "Bar" },
+  { id: "4", name: "Management" },
+  { id: "5", name: "Catering" },
+  { id: "6", name: "Events" },
+  { id: "7", name: "Maintenance" },
 ];
 
 const initialJobRoles: JobRole[] = [
-  { id: "1", name: "Senior Developer", departmentId: "1", baseRate: 85, selected: true },
-  { id: "2", name: "Product Manager", departmentId: "2", baseRate: 75, selected: false },
-  { id: "3", name: "QA Engineer", departmentId: "1", baseRate: 65, selected: true },
+  { id: "1", name: "Server", departmentId: "1", baseRate: 18, selected: true },
+  { id: "2", name: "Host", departmentId: "1", baseRate: 16, selected: false },
+  { id: "3", name: "Busser", departmentId: "1", baseRate: 15, selected: true },
+  { id: "4", name: "Food Runner", departmentId: "1", baseRate: 15, selected: false },
+  { id: "5", name: "Line Cook", departmentId: "2", baseRate: 20, selected: true },
+  { id: "6", name: "Prep Cook", departmentId: "2", baseRate: 17, selected: false },
+  { id: "7", name: "Dishwasher", departmentId: "2", baseRate: 15, selected: true },
+  { id: "8", name: "Sous Chef", departmentId: "2", baseRate: 28, selected: false },
+  { id: "9", name: "Bartender", departmentId: "3", baseRate: 20, selected: true },
+  { id: "10", name: "Barback", departmentId: "3", baseRate: 16, selected: false },
+  { id: "11", name: "General Manager", departmentId: "4", baseRate: 65000, selected: true },
+  { id: "12", name: "Assistant Manager", departmentId: "4", baseRate: 55000, selected: false },
 ];
 
 const initialStaff: Staff[] = [
-  { id: "1", name: "Alice Johnson", initials: "A" },
-  { id: "2", name: "Bob Smith", initials: "B" },
-  { id: "3", name: "Charlie Davis", initials: "C" },
+  { id: "1", name: "Alice Johnson", initials: "AJ" },
+  { id: "2", name: "Bob Smith", initials: "BS" },
+  { id: "3", name: "Charlie Davis", initials: "CD" },
+  { id: "4", name: "Diana Martinez", initials: "DM" },
+  { id: "5", name: "Eric Thompson", initials: "ET" },
+  { id: "6", name: "Fiona Garcia", initials: "FG" },
+  { id: "7", name: "George Wilson", initials: "GW" },
+  { id: "8", name: "Hannah Brown", initials: "HB" },
 ];
 
 export default function Teams() {
@@ -69,7 +88,16 @@ export default function Teams() {
   const [assignedStaff, setAssignedStaff] = useState<Record<string, string[]>>({
     "1": ["1"],
     "2": [],
-    "3": [],
+    "3": ["3"],
+    "4": [],
+    "5": ["5"],
+    "6": [],
+    "7": [],
+    "8": [],
+    "9": [],
+    "10": [],
+    "11": [],
+    "12": [],
   });
 
   const [showAddDepartmentSheet, setShowAddDepartmentSheet] = useState(false);
