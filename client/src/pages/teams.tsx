@@ -41,7 +41,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, ChevronRight, Search, UserPlus, Mail, Phone, MapPin, Briefcase, Shield, Link2, AlertCircle, Check, X, Edit2, UserX, ChevronLeft } from "lucide-react";
+import { Plus, ChevronRight, Search, UserPlus, Mail, Phone, MapPin, Briefcase, Shield, Link2, AlertCircle, Check, X, Edit2, UserX, ChevronLeft, Zap, ArrowRight, Lock } from "lucide-react";
 
 interface Department {
   id: string;
@@ -242,6 +242,12 @@ export default function Teams() {
   const [showAddPayrollMappingDialog, setShowAddPayrollMappingDialog] = useState(false);
   const [pendingPOSMapping, setPendingPOSMapping] = useState<string | null>(null);
   const [pendingPayrollMapping, setPendingPayrollMapping] = useState<string | null>(null);
+
+  // Mapping approval flow
+  const [showMappingApproval, setShowMappingApproval] = useState(false);
+  const [mappingApprovalType, setMappingApprovalType] = useState<"pos" | "payroll">("pos");
+  const [approvedPOSMappings, setApprovedPOSMappings] = useState<Set<string>>(new Set());
+  const [approvedPayrollMappings, setApprovedPayrollMappings] = useState<Set<string>>(new Set());
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>, setter: (v: boolean) => void) => {
     const target = e.currentTarget;
@@ -471,6 +477,39 @@ export default function Teams() {
   const allMappedPOSIds = staff.flatMap(s => s.posEmployeeIds);
   const unmappedPOSEmployees = mockPOSEmployees.filter(e => !allMappedPOSIds.includes(e.id));
   const usersWithoutPayrollMapping = staff.filter(s => s.status !== "inactive" && !s.payrollEmployeeId);
+
+  // Calculate approval status - need to approve all existing mappings
+  const existingPOSMappings = staff.filter(s => s.posEmployeeIds.length > 0);
+  const existingPayrollMappings = staff.filter(s => s.payrollEmployeeId !== null);
+  const unapprovedPOSMappings = existingPOSMappings.filter(s => !approvedPOSMappings.has(s.id));
+  const unapprovedPayrollMappings = existingPayrollMappings.filter(s => !approvedPayrollMappings.has(s.id));
+  
+  const allPOSMappingsApproved = unapprovedPOSMappings.length === 0 && existingPOSMappings.length > 0;
+  const allPayrollMappingsApproved = unapprovedPayrollMappings.length === 0 && existingPayrollMappings.length > 0;
+  const canEnableAutoImport = allPOSMappingsApproved && allPayrollMappingsApproved && unmappedPOSEmployees.length === 0 && usersWithoutPayrollMapping.length === 0;
+
+  const openMappingApproval = (type: "pos" | "payroll") => {
+    setMappingApprovalType(type);
+    setShowMappingApproval(true);
+  };
+
+  const approvePOSMapping = (staffId: string) => {
+    setApprovedPOSMappings(prev => new Set([...prev, staffId]));
+  };
+
+  const approvePayrollMapping = (staffId: string) => {
+    setApprovedPayrollMappings(prev => new Set([...prev, staffId]));
+  };
+
+  const approveAllPOSMappings = () => {
+    const allIds = existingPOSMappings.map(s => s.id);
+    setApprovedPOSMappings(new Set(allIds));
+  };
+
+  const approveAllPayrollMappings = () => {
+    const allIds = existingPayrollMappings.map(s => s.id);
+    setApprovedPayrollMappings(new Set(allIds));
+  };
 
   const getJobRoleNames = (roleIds: string[]) => {
     return roleIds.map(id => jobRoles.find(j => j.id === id)?.name || "Unknown").join(", ");
@@ -820,27 +859,114 @@ export default function Teams() {
               </Button>
             </div>
 
-            {/* Unmapped counts banner */}
-            {(unmappedPOSEmployees.length > 0 || usersWithoutPayrollMapping.length > 0) && (
-              <div className="flex items-start gap-3 p-4 rounded-lg bg-amber-50 border border-amber-200" data-testid="banner-unmapped-counts">
-                <AlertCircle className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" />
-                <div className="space-y-1">
-                  <div className="text-sm font-medium text-amber-900">Mapping Attention Needed</div>
-                  <div className="text-sm text-amber-700 space-y-0.5">
-                    {unmappedPOSEmployees.length > 0 && (
-                      <div data-testid="text-unmapped-pos-count">
-                        {unmappedPOSEmployees.length} POS employee{unmappedPOSEmployees.length !== 1 ? 's' : ''} aren't mapped to users
-                      </div>
-                    )}
-                    {usersWithoutPayrollMapping.length > 0 && (
-                      <div data-testid="text-unmapped-payroll-count">
-                        {usersWithoutPayrollMapping.length} user{usersWithoutPayrollMapping.length !== 1 ? 's' : ''} don't have payroll employee mappings
-                      </div>
-                    )}
+            {/* Actions Needed Card */}
+            <Card data-testid="card-actions-needed">
+              <CardHeader className="py-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <Zap className="h-5 w-5" />
+                      Auto Import
+                    </CardTitle>
+                    <CardDescription>Automatically sync employees from POS and Payroll systems</CardDescription>
                   </div>
+                  <Button 
+                    disabled={!canEnableAutoImport}
+                    className={cn(
+                      "gap-2",
+                      !canEnableAutoImport && "opacity-50"
+                    )}
+                    data-testid="button-enable-auto-import"
+                  >
+                    {canEnableAutoImport ? (
+                      <>
+                        <Zap className="h-4 w-4" />
+                        Enable Auto Import
+                      </>
+                    ) : (
+                      <>
+                        <Lock className="h-4 w-4" />
+                        Actions Required
+                      </>
+                    )}
+                  </Button>
                 </div>
-              </div>
-            )}
+              </CardHeader>
+              {!canEnableAutoImport && (
+                <CardContent className="pt-0">
+                  <div className="text-xs text-muted-foreground mb-3">Complete these actions to enable auto import:</div>
+                  <div className="space-y-2">
+                    {/* POS Mapping Approval */}
+                    <button
+                      onClick={() => openMappingApproval("pos")}
+                      className="w-full flex items-center justify-between p-3 rounded-lg border hover:bg-gray-50 transition-colors text-left"
+                      data-testid="button-action-pos-mappings"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className={cn(
+                          "w-8 h-8 rounded-full flex items-center justify-center",
+                          allPOSMappingsApproved && unmappedPOSEmployees.length === 0 
+                            ? "bg-emerald-100 text-emerald-600" 
+                            : "bg-amber-100 text-amber-600"
+                        )}>
+                          {allPOSMappingsApproved && unmappedPOSEmployees.length === 0 ? (
+                            <Check className="h-4 w-4" />
+                          ) : (
+                            <AlertCircle className="h-4 w-4" />
+                          )}
+                        </div>
+                        <div>
+                          <div className="text-sm font-medium">Review POS Employee Mappings</div>
+                          <div className="text-xs text-muted-foreground">
+                            {unapprovedPOSMappings.length > 0 
+                              ? `${unapprovedPOSMappings.length} mapping${unapprovedPOSMappings.length !== 1 ? 's' : ''} need approval`
+                              : unmappedPOSEmployees.length > 0
+                                ? `${unmappedPOSEmployees.length} POS employee${unmappedPOSEmployees.length !== 1 ? 's' : ''} unmapped`
+                                : "All mappings approved"
+                            }
+                          </div>
+                        </div>
+                      </div>
+                      <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                    </button>
+
+                    {/* Payroll Mapping Approval */}
+                    <button
+                      onClick={() => openMappingApproval("payroll")}
+                      className="w-full flex items-center justify-between p-3 rounded-lg border hover:bg-gray-50 transition-colors text-left"
+                      data-testid="button-action-payroll-mappings"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className={cn(
+                          "w-8 h-8 rounded-full flex items-center justify-center",
+                          allPayrollMappingsApproved && usersWithoutPayrollMapping.length === 0 
+                            ? "bg-emerald-100 text-emerald-600" 
+                            : "bg-amber-100 text-amber-600"
+                        )}>
+                          {allPayrollMappingsApproved && usersWithoutPayrollMapping.length === 0 ? (
+                            <Check className="h-4 w-4" />
+                          ) : (
+                            <AlertCircle className="h-4 w-4" />
+                          )}
+                        </div>
+                        <div>
+                          <div className="text-sm font-medium">Review Payroll Employee Mappings</div>
+                          <div className="text-xs text-muted-foreground">
+                            {unapprovedPayrollMappings.length > 0 
+                              ? `${unapprovedPayrollMappings.length} mapping${unapprovedPayrollMappings.length !== 1 ? 's' : ''} need approval`
+                              : usersWithoutPayrollMapping.length > 0
+                                ? `${usersWithoutPayrollMapping.length} user${usersWithoutPayrollMapping.length !== 1 ? 's' : ''} without payroll mapping`
+                                : "All mappings approved"
+                            }
+                          </div>
+                        </div>
+                      </div>
+                      <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                    </button>
+                  </div>
+                </CardContent>
+              )}
+            </Card>
 
             {/* Staff list */}
             <Card>
@@ -1559,6 +1685,201 @@ export default function Teams() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Mapping Approval Sheet */}
+      <Sheet open={showMappingApproval} onOpenChange={setShowMappingApproval}>
+        <SheetContent className="sm:max-w-lg overflow-y-auto">
+          <SheetHeader>
+            <SheetTitle>
+              {mappingApprovalType === "pos" ? "Review POS Employee Mappings" : "Review Payroll Employee Mappings"}
+            </SheetTitle>
+            <SheetDescription>
+              {mappingApprovalType === "pos" 
+                ? "Review and approve how POS employees from Toast are linked to user accounts. Auto import cannot be enabled until all mappings are approved."
+                : "Review and approve how payroll employees from Gusto are linked to user accounts. Auto import cannot be enabled until all mappings are approved."
+              }
+            </SheetDescription>
+          </SheetHeader>
+
+          <div className="mt-6 space-y-6">
+            {/* Approve All Button */}
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">
+                {mappingApprovalType === "pos" 
+                  ? `${existingPOSMappings.length - unapprovedPOSMappings.length} of ${existingPOSMappings.length} approved`
+                  : `${existingPayrollMappings.length - unapprovedPayrollMappings.length} of ${existingPayrollMappings.length} approved`
+                }
+              </span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={mappingApprovalType === "pos" ? approveAllPOSMappings : approveAllPayrollMappings}
+                data-testid="button-approve-all-mappings"
+              >
+                Approve All
+              </Button>
+            </div>
+
+            {/* Mappings List */}
+            <div className="space-y-3">
+              {mappingApprovalType === "pos" ? (
+                <>
+                  {existingPOSMappings.map((person) => {
+                    const isApproved = approvedPOSMappings.has(person.id);
+                    return (
+                      <div 
+                        key={person.id}
+                        className={cn(
+                          "border rounded-lg p-4 transition-colors",
+                          isApproved ? "bg-emerald-50 border-emerald-200" : "bg-white"
+                        )}
+                        data-testid={`mapping-approval-${person.id}`}
+                      >
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex items-center gap-3">
+                            <div className={cn("w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-medium", person.avatarColor)}>
+                              {person.initials}
+                            </div>
+                            <div>
+                              <div className="font-medium text-sm">{person.name}</div>
+                              <div className="text-xs text-muted-foreground">{person.email}</div>
+                            </div>
+                          </div>
+                          {isApproved ? (
+                            <span className="flex items-center gap-1 text-xs text-emerald-600 font-medium">
+                              <Check className="h-4 w-4" />
+                              Approved
+                            </span>
+                          ) : (
+                            <Button 
+                              size="sm" 
+                              onClick={() => approvePOSMapping(person.id)}
+                              data-testid={`button-approve-${person.id}`}
+                            >
+                              Approve
+                            </Button>
+                          )}
+                        </div>
+                        <div className="mt-3 pt-3 border-t">
+                          <div className="text-xs text-muted-foreground mb-2">Linked POS Employees:</div>
+                          <div className="space-y-2">
+                            {person.posEmployeeIds.map(posId => {
+                              const posEmp = getPOSEmployee(posId);
+                              return (
+                                <div key={posId} className="flex items-center gap-2 text-sm">
+                                  <Link2 className="h-3 w-3 text-blue-600" />
+                                  <span>{posEmp?.name}</span>
+                                  <span className="text-xs text-muted-foreground">({posEmp?.posSystem})</span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                  
+                  {/* Unmapped POS Employees */}
+                  {unmappedPOSEmployees.length > 0 && (
+                    <div className="pt-4 border-t">
+                      <div className="text-sm font-medium mb-3 text-amber-700">Unmapped POS Employees</div>
+                      <div className="space-y-2">
+                        {unmappedPOSEmployees.map(emp => (
+                          <div key={emp.id} className="flex items-center justify-between p-3 rounded-lg bg-amber-50 border border-amber-200">
+                            <div className="flex items-center gap-2">
+                              <AlertCircle className="h-4 w-4 text-amber-600" />
+                              <span className="text-sm">{emp.name}</span>
+                              <span className="text-xs text-muted-foreground">({emp.posSystem})</span>
+                            </div>
+                            <span className="text-xs text-amber-600">Needs mapping</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <>
+                  {existingPayrollMappings.map((person) => {
+                    const isApproved = approvedPayrollMappings.has(person.id);
+                    const payrollEmp = getPayrollEmployee(person.payrollEmployeeId);
+                    return (
+                      <div 
+                        key={person.id}
+                        className={cn(
+                          "border rounded-lg p-4 transition-colors",
+                          isApproved ? "bg-emerald-50 border-emerald-200" : "bg-white"
+                        )}
+                        data-testid={`mapping-approval-${person.id}`}
+                      >
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex items-center gap-3">
+                            <div className={cn("w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-medium", person.avatarColor)}>
+                              {person.initials}
+                            </div>
+                            <div>
+                              <div className="font-medium text-sm">{person.name}</div>
+                              <div className="text-xs text-muted-foreground">{person.email}</div>
+                            </div>
+                          </div>
+                          {isApproved ? (
+                            <span className="flex items-center gap-1 text-xs text-emerald-600 font-medium">
+                              <Check className="h-4 w-4" />
+                              Approved
+                            </span>
+                          ) : (
+                            <Button 
+                              size="sm" 
+                              onClick={() => approvePayrollMapping(person.id)}
+                              data-testid={`button-approve-${person.id}`}
+                            >
+                              Approve
+                            </Button>
+                          )}
+                        </div>
+                        <div className="mt-3 pt-3 border-t">
+                          <div className="text-xs text-muted-foreground mb-2">Linked Payroll Employee:</div>
+                          <div className="flex items-center gap-2 text-sm">
+                            <Link2 className="h-3 w-3 text-emerald-600" />
+                            <span>{payrollEmp?.name}</span>
+                            <span className="text-xs text-muted-foreground">({payrollEmp?.payrollSystem})</span>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                  
+                  {/* Users without Payroll Mapping */}
+                  {usersWithoutPayrollMapping.length > 0 && (
+                    <div className="pt-4 border-t">
+                      <div className="text-sm font-medium mb-3 text-amber-700">Users Without Payroll Mapping</div>
+                      <div className="space-y-2">
+                        {usersWithoutPayrollMapping.map(person => (
+                          <div key={person.id} className="flex items-center justify-between p-3 rounded-lg bg-amber-50 border border-amber-200">
+                            <div className="flex items-center gap-3">
+                              <div className={cn("w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-medium", person.avatarColor)}>
+                                {person.initials}
+                              </div>
+                              <span className="text-sm">{person.name}</span>
+                            </div>
+                            <span className="text-xs text-amber-600">Needs mapping</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+
+          <SheetFooter className="mt-6">
+            <Button variant="outline" onClick={() => setShowMappingApproval(false)}>
+              Close
+            </Button>
+          </SheetFooter>
+        </SheetContent>
+      </Sheet>
     </Layout>
   );
 }
