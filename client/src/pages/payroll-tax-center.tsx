@@ -213,15 +213,15 @@ export default function PayrollTaxCenter() {
       <div className="p-8 max-w-7xl mx-auto">
         <div className="flex items-center justify-between border-b border-border pb-4 mb-8">
           <div className="flex items-center gap-6">
-            <span className="font-serif text-2xl font-medium" data-testid="text-location-name">{currentEntity?.name || "Select Entity"}</span>
-            <span className="text-sm text-muted-foreground bg-secondary px-3 py-1 rounded-full" data-testid="text-date">Jan 8, 2026</span>
+            <span className="font-serif text-2xl font-medium" data-testid="text-location-name">Showing All Locations</span>
+            <span className="text-sm text-muted-foreground bg-secondary px-3 py-1 rounded-full" data-testid="text-date">Today, Jan 8</span>
           </div>
           
           <div className="flex gap-6 text-sm font-medium text-muted-foreground">
             <Select value={selectedEntity} onValueChange={setSelectedEntity}>
-              <SelectTrigger className="w-[200px] border-0 bg-transparent hover:bg-gray-100 transition-colors" data-testid="select-entity">
-                <SelectValue placeholder="Select entity" />
-                <span className="text-[10px] ml-1">▼</span>
+              <SelectTrigger className="w-auto border-0 bg-transparent hover:text-foreground transition-colors p-0 h-auto gap-1" data-testid="select-entity">
+                <span>Locations</span>
+                <span className="text-[10px]">▼</span>
               </SelectTrigger>
               <SelectContent>
                 {entities.map((ent) => (
@@ -229,6 +229,9 @@ export default function PayrollTaxCenter() {
                 ))}
               </SelectContent>
             </Select>
+            <button className="hover:text-foreground transition-colors">Bonuses</button>
+            <button className="hover:text-foreground transition-colors">Reports</button>
+            <button className="hover:text-foreground transition-colors">Settings</button>
           </div>
         </div>
 
