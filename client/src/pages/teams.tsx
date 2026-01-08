@@ -237,6 +237,12 @@ export default function Teams() {
     payrollEmployeeId: null as string | null,
   });
 
+  // Mapping dialogs
+  const [showAddPOSMappingDialog, setShowAddPOSMappingDialog] = useState(false);
+  const [showAddPayrollMappingDialog, setShowAddPayrollMappingDialog] = useState(false);
+  const [pendingPOSMapping, setPendingPOSMapping] = useState<string | null>(null);
+  const [pendingPayrollMapping, setPendingPayrollMapping] = useState<string | null>(null);
+
   const handleScroll = (e: React.UIEvent<HTMLDivElement>, setter: (v: boolean) => void) => {
     const target = e.currentTarget;
     const isAtBottom = target.scrollHeight - target.scrollTop <= target.clientHeight + 5;
@@ -422,6 +428,30 @@ export default function Teams() {
       ));
       setSelectedStaff({ ...selectedStaff, payrollEmployeeId: payrollId });
     }
+  };
+
+  const confirmAddPOSMapping = () => {
+    if (pendingPOSMapping) {
+      updatePOSMapping(pendingPOSMapping);
+      setPendingPOSMapping(null);
+      setShowAddPOSMappingDialog(false);
+    }
+  };
+
+  const confirmAddPayrollMapping = () => {
+    if (pendingPayrollMapping) {
+      updatePayrollMapping(pendingPayrollMapping);
+      setPendingPayrollMapping(null);
+      setShowAddPayrollMappingDialog(false);
+    }
+  };
+
+  const getPOSEmployee = (id: string | null) => {
+    return id ? mockPOSEmployees.find(e => e.id === id) : null;
+  };
+
+  const getPayrollEmployee = (id: string | null) => {
+    return id ? mockPayrollEmployees.find(e => e.id === id) : null;
   };
 
   const getJobRoleNames = (roleIds: string[]) => {
@@ -1028,22 +1058,48 @@ export default function Teams() {
                         </span>
                       )}
                     </div>
-                    <Select 
-                      value={selectedStaff.posEmployeeId || "none"} 
-                      onValueChange={(v) => updatePOSMapping(v === "none" ? null : v)}
+                    
+                    <div className="border rounded-lg">
+                      {selectedStaff.posEmployeeId ? (
+                        <div className="flex items-center justify-between px-4 py-3">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                              <Link2 className="h-4 w-4 text-blue-600" />
+                            </div>
+                            <div>
+                              <div className="text-sm font-medium">{getPOSEmployee(selectedStaff.posEmployeeId)?.name}</div>
+                              <div className="text-xs text-muted-foreground">{getPOSEmployee(selectedStaff.posEmployeeId)?.posSystem}</div>
+                            </div>
+                          </div>
+                          <button
+                            onClick={() => updatePOSMapping(null)}
+                            className="p-1.5 rounded-md hover:bg-red-50 text-muted-foreground hover:text-red-600 transition-colors"
+                            data-testid="button-remove-pos-mapping"
+                          >
+                            <X className="h-4 w-4" />
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="px-4 py-6 text-center text-sm text-muted-foreground">
+                          No POS employee linked
+                        </div>
+                      )}
+                    </div>
+                    
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full gap-2"
+                      onClick={() => {
+                        setPendingPOSMapping(null);
+                        setShowAddPOSMappingDialog(true);
+                      }}
+                      data-testid="button-add-pos-mapping"
                     >
-                      <SelectTrigger data-testid="select-pos-mapping">
-                        <SelectValue placeholder="Select POS employee" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="none">Not mapped</SelectItem>
-                        {mockPOSEmployees.map((emp) => (
-                          <SelectItem key={emp.id} value={emp.id}>
-                            {emp.name} ({emp.posSystem})
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                      <Plus className="h-4 w-4" />
+                      {selectedStaff.posEmployeeId ? "Change POS Mapping" : "Add POS Mapping"}
+                    </Button>
+                    
                     <p className="text-xs text-muted-foreground">
                       Link this staff member to their POS employee record for time tracking and sales attribution.
                     </p>
@@ -1065,22 +1121,48 @@ export default function Teams() {
                         </span>
                       )}
                     </div>
-                    <Select 
-                      value={selectedStaff.payrollEmployeeId || "none"} 
-                      onValueChange={(v) => updatePayrollMapping(v === "none" ? null : v)}
+                    
+                    <div className="border rounded-lg">
+                      {selectedStaff.payrollEmployeeId ? (
+                        <div className="flex items-center justify-between px-4 py-3">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center">
+                              <Link2 className="h-4 w-4 text-emerald-600" />
+                            </div>
+                            <div>
+                              <div className="text-sm font-medium">{getPayrollEmployee(selectedStaff.payrollEmployeeId)?.name}</div>
+                              <div className="text-xs text-muted-foreground">{getPayrollEmployee(selectedStaff.payrollEmployeeId)?.payrollSystem}</div>
+                            </div>
+                          </div>
+                          <button
+                            onClick={() => updatePayrollMapping(null)}
+                            className="p-1.5 rounded-md hover:bg-red-50 text-muted-foreground hover:text-red-600 transition-colors"
+                            data-testid="button-remove-payroll-mapping"
+                          >
+                            <X className="h-4 w-4" />
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="px-4 py-6 text-center text-sm text-muted-foreground">
+                          No payroll employee linked
+                        </div>
+                      )}
+                    </div>
+                    
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full gap-2"
+                      onClick={() => {
+                        setPendingPayrollMapping(null);
+                        setShowAddPayrollMappingDialog(true);
+                      }}
+                      data-testid="button-add-payroll-mapping"
                     >
-                      <SelectTrigger data-testid="select-payroll-mapping">
-                        <SelectValue placeholder="Select payroll employee" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="none">Not mapped</SelectItem>
-                        {mockPayrollEmployees.map((emp) => (
-                          <SelectItem key={emp.id} value={emp.id}>
-                            {emp.name} ({emp.payrollSystem})
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                      <Plus className="h-4 w-4" />
+                      {selectedStaff.payrollEmployeeId ? "Change Payroll Mapping" : "Add Payroll Mapping"}
+                    </Button>
+                    
                     <p className="text-xs text-muted-foreground">
                       Link this staff member to their payroll record for wage calculations and tax filings.
                     </p>
@@ -1331,6 +1413,100 @@ export default function Teams() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Add POS Mapping Dialog */}
+      <Dialog open={showAddPOSMappingDialog} onOpenChange={setShowAddPOSMappingDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Add POS Employee Mapping</DialogTitle>
+            <DialogDescription>
+              Select a POS employee to link to {selectedStaff?.name}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <Label className="text-sm font-medium mb-3 block">Select POS Employee</Label>
+            <div className="border rounded-lg max-h-64 overflow-y-auto divide-y">
+              {mockPOSEmployees.map((emp) => (
+                <button
+                  key={emp.id}
+                  onClick={() => setPendingPOSMapping(emp.id)}
+                  className={cn(
+                    "w-full flex items-center gap-3 px-4 py-3 text-left transition-colors",
+                    pendingPOSMapping === emp.id ? "bg-blue-50" : "hover:bg-gray-50"
+                  )}
+                  data-testid={`button-select-pos-${emp.id}`}
+                >
+                  <div className={cn(
+                    "w-5 h-5 rounded-full border-2 flex items-center justify-center",
+                    pendingPOSMapping === emp.id ? "border-blue-600 bg-blue-600" : "border-gray-300"
+                  )}>
+                    {pendingPOSMapping === emp.id && <Check className="h-3 w-3 text-white" />}
+                  </div>
+                  <div>
+                    <div className="text-sm font-medium">{emp.name}</div>
+                    <div className="text-xs text-muted-foreground">{emp.posSystem}</div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowAddPOSMappingDialog(false)}>
+              Cancel
+            </Button>
+            <Button onClick={confirmAddPOSMapping} disabled={!pendingPOSMapping} data-testid="button-confirm-pos-mapping">
+              Confirm Mapping
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Add Payroll Mapping Dialog */}
+      <Dialog open={showAddPayrollMappingDialog} onOpenChange={setShowAddPayrollMappingDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Add Payroll Employee Mapping</DialogTitle>
+            <DialogDescription>
+              Select a payroll employee to link to {selectedStaff?.name}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <Label className="text-sm font-medium mb-3 block">Select Payroll Employee</Label>
+            <div className="border rounded-lg max-h-64 overflow-y-auto divide-y">
+              {mockPayrollEmployees.map((emp) => (
+                <button
+                  key={emp.id}
+                  onClick={() => setPendingPayrollMapping(emp.id)}
+                  className={cn(
+                    "w-full flex items-center gap-3 px-4 py-3 text-left transition-colors",
+                    pendingPayrollMapping === emp.id ? "bg-emerald-50" : "hover:bg-gray-50"
+                  )}
+                  data-testid={`button-select-payroll-${emp.id}`}
+                >
+                  <div className={cn(
+                    "w-5 h-5 rounded-full border-2 flex items-center justify-center",
+                    pendingPayrollMapping === emp.id ? "border-emerald-600 bg-emerald-600" : "border-gray-300"
+                  )}>
+                    {pendingPayrollMapping === emp.id && <Check className="h-3 w-3 text-white" />}
+                  </div>
+                  <div>
+                    <div className="text-sm font-medium">{emp.name}</div>
+                    <div className="text-xs text-muted-foreground">{emp.payrollSystem}</div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowAddPayrollMappingDialog(false)}>
+              Cancel
+            </Button>
+            <Button onClick={confirmAddPayrollMapping} disabled={!pendingPayrollMapping} data-testid="button-confirm-payroll-mapping">
+              Confirm Mapping
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Layout>
   );
 }
