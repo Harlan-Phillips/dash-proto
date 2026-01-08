@@ -106,7 +106,13 @@ export default function AccountingHome() {
         {/* Staff Navigation */}
         <div className="bg-white border-b border-border sticky top-0 z-40">
           <div className="max-w-7xl mx-auto px-8">
-            <nav className="flex items-center gap-1 py-2">
+            <nav className="flex items-center gap-1 py-2" data-testid="staff-nav">
+              <a href="/staff" className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-gray-100 rounded-md transition-colors" data-testid="nav-staff">
+                Staff
+              </a>
+              <a href="/department" className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-gray-100 rounded-md transition-colors" data-testid="nav-department">
+                Department
+              </a>
               <a href="/accounting" className="px-4 py-2 text-sm font-medium bg-black text-white rounded-md transition-colors" data-testid="nav-accounting">
                 Accounting
               </a>
