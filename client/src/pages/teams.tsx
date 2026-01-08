@@ -44,6 +44,19 @@ export default function Teams() {
             </div>
           </div>
 
+          {/* Tab Content */}
+          {activeTab === "departments" && (
+            <div className="border-2 border-dashed border-muted-foreground/30 rounded-lg min-h-[400px] flex items-center justify-center" data-testid="content-departments">
+              <span className="text-xl text-muted-foreground">Department content goes here</span>
+            </div>
+          )}
+
+          {activeTab === "staff" && (
+            <div className="border-2 border-dashed border-muted-foreground/30 rounded-lg min-h-[400px] flex items-center justify-center" data-testid="content-staff">
+              <span className="text-xl text-muted-foreground">Staff content goes here</span>
+            </div>
+          )}
+
         </div>
       </div>
     </Layout>
