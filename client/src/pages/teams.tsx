@@ -80,9 +80,6 @@ export default function Teams() {
   const [newJobDepartment, setNewJobDepartment] = useState("");
   const [newJobRate, setNewJobRate] = useState("");
   const [newJobPayType, setNewJobPayType] = useState("hourly");
-  const [newJobEarningCode, setNewJobEarningCode] = useState("");
-  const [newJobWorkersComp, setNewJobWorkersComp] = useState("");
-  const [newJobLaborCategory, setNewJobLaborCategory] = useState("");
   const [jobSearch, setJobSearch] = useState("");
   const [personnelSearch, setPersonnelSearch] = useState("");
 
@@ -145,9 +142,6 @@ export default function Teams() {
       setNewJobDepartment("");
       setNewJobPayType("hourly");
       setNewJobRate("");
-      setNewJobEarningCode("");
-      setNewJobWorkersComp("");
-      setNewJobLaborCategory("");
       setShowAddJobSheet(false);
     }
   };
@@ -505,43 +499,6 @@ export default function Teams() {
                 onChange={(e) => setNewJobRate(e.target.value)}
                 data-testid="input-job-rate"
               />
-            </div>
-            
-            <div className="pt-4 border-t">
-              <p className="text-sm font-medium mb-3">Payroll Integration (Optional)</p>
-              
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="job-earning-code">Earning Code</Label>
-                  <Input
-                    id="job-earning-code"
-                    placeholder="e.g., REG, OT, TIP"
-                    value={newJobEarningCode}
-                    onChange={(e) => setNewJobEarningCode(e.target.value)}
-                    data-testid="input-job-earning-code"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="job-workers-comp">Workers Comp Code</Label>
-                  <Input
-                    id="job-workers-comp"
-                    placeholder="e.g., 9082"
-                    value={newJobWorkersComp}
-                    onChange={(e) => setNewJobWorkersComp(e.target.value)}
-                    data-testid="input-job-workers-comp"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="job-labor-category">Labor Reporting Category</Label>
-                  <Input
-                    id="job-labor-category"
-                    placeholder="e.g., Kitchen, Service"
-                    value={newJobLaborCategory}
-                    onChange={(e) => setNewJobLaborCategory(e.target.value)}
-                    data-testid="input-job-labor-category"
-                  />
-                </div>
-              </div>
             </div>
           </div>
           <SheetFooter>
