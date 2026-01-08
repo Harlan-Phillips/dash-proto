@@ -21,7 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, ChevronRight } from "lucide-react";
+import { Plus, ChevronRight, Search } from "lucide-react";
 
 interface Department {
   id: string;
@@ -83,6 +83,8 @@ export default function Teams() {
   const [newJobEarningCode, setNewJobEarningCode] = useState("");
   const [newJobWorkersComp, setNewJobWorkersComp] = useState("");
   const [newJobLaborCategory, setNewJobLaborCategory] = useState("");
+  const [jobSearch, setJobSearch] = useState("");
+  const [personnelSearch, setPersonnelSearch] = useState("");
 
   const filteredJobs = jobRoles.filter(
     (job) => job.departmentId === selectedDepartment
@@ -283,10 +285,20 @@ export default function Teams() {
             <CardContent className="p-0">
               <div className="grid grid-cols-2 border-t">
                 <div className="border-r">
-                  <div className="px-6 py-3 border-b bg-gray-50">
+                  <div className="px-6 py-3 border-b bg-gray-50 flex items-center justify-between gap-2">
                     <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Jobs</span>
+                    <div className="relative">
+                      <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
+                      <Input
+                        placeholder="Search..."
+                        value={jobSearch}
+                        onChange={(e) => setJobSearch(e.target.value)}
+                        className="h-7 w-32 pl-7 text-xs"
+                        data-testid="input-search-jobs"
+                      />
+                    </div>
                   </div>
-                  {jobRoles.map((job, index) => (
+                  {jobRoles.filter(job => job.name.toLowerCase().includes(jobSearch.toLowerCase())).map((job, index, arr) => (
                     <button
                       key={job.id}
                       onClick={() => setSelectedJob(job.id)}
@@ -295,7 +307,7 @@ export default function Teams() {
                         selectedJob === job.id
                           ? "bg-muted"
                           : "hover:bg-gray-50",
-                        index !== jobRoles.length - 1 && "border-b"
+                        index !== arr.length - 1 && "border-b"
                       )}
                       data-testid={`button-select-job-${job.id}`}
                     >
@@ -313,10 +325,20 @@ export default function Teams() {
                 </div>
 
                 <div>
-                  <div className="px-6 py-3 border-b bg-gray-50">
+                  <div className="px-6 py-3 border-b bg-gray-50 flex items-center justify-between gap-2">
                     <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Available Personnel</span>
+                    <div className="relative">
+                      <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
+                      <Input
+                        placeholder="Search..."
+                        value={personnelSearch}
+                        onChange={(e) => setPersonnelSearch(e.target.value)}
+                        className="h-7 w-32 pl-7 text-xs"
+                        data-testid="input-search-personnel"
+                      />
+                    </div>
                   </div>
-                  {staff.map((person, index) => {
+                  {staff.filter(person => person.name.toLowerCase().includes(personnelSearch.toLowerCase())).map((person, index, arr) => {
                     const isAssigned = assignedToSelectedJob.includes(person.id);
                     const assignedElsewhere = isStaffAssignedElsewhere(person.id);
                     const assignedToJobId = Object.entries(assignedStaff).find(
@@ -330,7 +352,7 @@ export default function Teams() {
                         className={cn(
                           "flex items-center gap-3 px-6 py-3 h-14 transition-colors",
                           assignedElsewhere ? "opacity-50" : "hover:bg-gray-50",
-                          index !== staff.length - 1 && "border-b"
+                          index !== arr.length - 1 && "border-b"
                         )}
                         data-testid={`staff-row-${person.id}`}
                       >
