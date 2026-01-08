@@ -190,7 +190,6 @@ export default function PayrollHome() {
         <div className="flex items-center justify-between border-b border-border pb-4 mb-8">
           <div className="flex items-center gap-6">
             <span className="font-serif text-2xl font-medium" data-testid="text-location-title">{currentEntity?.name || "Select Location"}</span>
-            <span className="text-sm text-muted-foreground bg-secondary px-3 py-1 rounded-full" data-testid="text-date">Today, Jan 8</span>
           </div>
           
           <div className="flex gap-6 text-sm font-medium text-muted-foreground">
