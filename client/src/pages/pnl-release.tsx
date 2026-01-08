@@ -4975,7 +4975,6 @@ export default function PnlRelease() {
                                   <th className="text-left px-6 py-3 font-medium text-gray-500">Category</th>
                                   <th className="text-right px-6 py-3 font-medium text-gray-500">Actual</th>
                                   <th className="text-right px-6 py-3 font-medium text-gray-500">Budget</th>
-                                  <th className="text-right px-6 py-3 font-medium text-gray-500">% Profit</th>
                                </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100">
@@ -4983,31 +4982,26 @@ export default function PnlRelease() {
                                   <td className="px-6 py-4 text-gray-900">Total Occupancy</td>
                                   <td className="px-6 py-4 text-right">$28,500</td>
                                   <td className="px-6 py-4 text-right text-gray-500">$28,500</td>
-                                  <td className="px-6 py-4 text-right text-gray-600">$0</td>
                                </tr>
                                <tr className="hover:bg-gray-50">
                                   <td className="px-6 py-4 text-gray-700 pl-10">Rent</td>
                                   <td className="px-6 py-4 text-right">$18,000</td>
                                   <td className="px-6 py-4 text-right text-gray-500">$18,000</td>
-                                  <td className="px-6 py-4 text-right text-gray-600">$0</td>
                                </tr>
                                <tr className="hover:bg-gray-50">
                                   <td className="px-6 py-4 text-gray-700 pl-10">CAM / Property Tax</td>
                                   <td className="px-6 py-4 text-right">$4,500</td>
                                   <td className="px-6 py-4 text-right text-gray-500">$4,500</td>
-                                  <td className="px-6 py-4 text-right text-gray-600">$0</td>
                                </tr>
                                <tr className="hover:bg-gray-50">
                                   <td className="px-6 py-4 text-gray-700 pl-10">Insurance</td>
                                   <td className="px-6 py-4 text-right">$3,200</td>
                                   <td className="px-6 py-4 text-right text-gray-500">$3,200</td>
-                                  <td className="px-6 py-4 text-right text-gray-600">$0</td>
                                </tr>
                                <tr className="hover:bg-gray-50">
                                   <td className="px-6 py-4 text-gray-700 pl-10">Depreciation</td>
                                   <td className="px-6 py-4 text-right">$2,800</td>
                                   <td className="px-6 py-4 text-right text-gray-500">$2,800</td>
-                                  <td className="px-6 py-4 text-right text-gray-600">$0</td>
                                </tr>
                             </tbody>
                          </table>
