@@ -213,16 +213,16 @@ export default function PayrollTaxCenter() {
     <Layout>
       <div className="p-8 max-w-7xl mx-auto">
         <div className="flex items-center justify-between border-b border-border pb-4 mb-8">
-          <div className="flex items-center gap-4">
-            <span className="font-serif text-2xl font-medium" data-testid="text-location-title">Showing All Locations</span>
-            <span className="text-sm text-muted-foreground bg-gray-100 px-3 py-1.5 rounded-md" data-testid="text-date">Today, Jan 8</span>
+          <div className="flex items-center gap-6">
+            <span className="font-serif text-2xl font-medium" data-testid="text-location-title">{currentEntity?.name || "Select Location"}</span>
+            <span className="text-sm text-muted-foreground bg-secondary px-3 py-1 rounded-full" data-testid="text-date">Today, Jan 8</span>
           </div>
           
-          <div className="flex items-center text-sm font-medium text-muted-foreground">
+          <div className="flex gap-6 text-sm font-medium text-muted-foreground">
             <Select value={selectedEntity} onValueChange={setSelectedEntity}>
-              <SelectTrigger className="border-0 bg-transparent p-0 h-auto gap-1 hover:text-foreground transition-colors focus:ring-0 focus:ring-offset-0" data-testid="select-entity">
+              <SelectTrigger className="border-0 bg-transparent p-0 h-auto gap-0 hover:text-foreground transition-colors focus:ring-0 focus:ring-offset-0" data-testid="select-entity">
                 <span>Locations</span>
-                <ChevronDown className="h-3 w-3" />
+                <span className="text-[10px] ml-1">▼</span>
               </SelectTrigger>
               <SelectContent>
                 {entities.map((ent) => (
