@@ -193,7 +193,7 @@ export default function PayrollHome() {
             <span className="text-sm text-muted-foreground bg-gray-100 px-3 py-1.5 rounded-md" data-testid="text-date">Today, Jan 8</span>
           </div>
           
-          <div className="flex items-center gap-6 text-sm font-medium text-muted-foreground">
+          <div className="flex items-center text-sm font-medium text-muted-foreground">
             <Select value={selectedEntity} onValueChange={setSelectedEntity}>
               <SelectTrigger className="border-0 bg-transparent p-0 h-auto gap-1 hover:text-foreground transition-colors focus:ring-0 focus:ring-offset-0" data-testid="select-entity">
                 <span>Locations</span>
@@ -205,9 +205,6 @@ export default function PayrollHome() {
                 ))}
               </SelectContent>
             </Select>
-            <button className="hover:text-foreground transition-colors">Bonuses</button>
-            <button className="hover:text-foreground transition-colors">Reports</button>
-            <button className="hover:text-foreground transition-colors">Settings</button>
           </div>
         </div>
 
