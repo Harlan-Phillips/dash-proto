@@ -284,7 +284,7 @@ export default function Teams() {
                       ))}
                     </div>
                     {departments.filter(d => d.name.toLowerCase().includes(deptSearch.toLowerCase())).length > 5 && (
-                      <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white via-white/80 to-transparent pointer-events-none" />
+                      <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white/70 via-white/40 to-transparent pointer-events-none" />
                     )}
                   </div>
                 </div>
@@ -329,7 +329,7 @@ export default function Teams() {
                       )}
                     </div>
                     {filteredJobs.filter(j => j.name.toLowerCase().includes(deptJobSearch.toLowerCase())).length > 5 && (
-                      <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white via-white/80 to-transparent pointer-events-none" />
+                      <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white/70 via-white/40 to-transparent pointer-events-none" />
                     )}
                   </div>
                 </div>
@@ -386,7 +386,7 @@ export default function Teams() {
                       ))}
                     </div>
                     {jobRoles.filter(job => job.name.toLowerCase().includes(jobSearch.toLowerCase())).length > 5 && (
-                      <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white via-white/80 to-transparent pointer-events-none" />
+                      <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white/70 via-white/40 to-transparent pointer-events-none" />
                     )}
                   </div>
                 </div>
@@ -459,7 +459,7 @@ export default function Teams() {
                       })}
                     </div>
                     {staff.filter(person => person.name.toLowerCase().includes(personnelSearch.toLowerCase())).length > 5 && (
-                      <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white via-white/80 to-transparent pointer-events-none" />
+                      <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white/70 via-white/40 to-transparent pointer-events-none" />
                     )}
                   </div>
                 </div>
