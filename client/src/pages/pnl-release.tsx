@@ -2303,19 +2303,28 @@ const pnlInsightPrompts = [
   { id: "4", question: "How does our prime cost compare to industry benchmarks?", category: "benchmark" },
 ];
 
-function FloatingAssistantBar() {
+function FloatingAssistantBar({ triggerQuery }: { triggerQuery?: string | null }) {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<FloatingMessage[]>([]);
   const [isTyping, setIsTyping] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [processedTrigger, setProcessedTrigger] = useState<string | null>(null);
 
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages, isTyping]);
+
+  useEffect(() => {
+    if (triggerQuery && triggerQuery !== processedTrigger) {
+      setIsExpanded(true);
+      handleSend(triggerQuery.split(" ").slice(0, -1).join(" "));
+      setProcessedTrigger(triggerQuery);
+    }
+  }, [triggerQuery]);
 
   const handleCollapse = () => {
     setIsExpanded(false);
@@ -2369,11 +2378,11 @@ function FloatingAssistantBar() {
           whileTap={{ scale: 0.95 }}
           transition={{ type: "spring", stiffness: 400, damping: 25 }}
           onClick={() => setIsExpanded(true)}
-          className="fixed bottom-6 right-6 z-50 h-14 w-14 bg-black rounded-full shadow-xl flex items-center justify-center cursor-pointer"
+          className="fixed bottom-6 right-6 z-50 h-14 w-14 bg-white rounded-full shadow-xl flex items-center justify-center cursor-pointer border border-gray-200"
           data-testid="floating-chat-icon"
           title="Open Munch Assistant"
         >
-          <Sparkles className="h-6 w-6 text-white" />
+          <img src="/src/assets/munch-logo.png" alt="Munch" className="h-9 w-9 object-contain" />
         </motion.button>
       ) : (
         <>
@@ -2399,8 +2408,8 @@ function FloatingAssistantBar() {
             {/* Header */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 bg-gray-100 rounded-xl flex items-center justify-center">
-                  <Sparkles className="h-5 w-5 text-gray-700" />
+                <div className="h-10 w-10 bg-gray-50 rounded-xl flex items-center justify-center border border-gray-100">
+                  <img src="/src/assets/munch-logo.png" alt="Munch" className="h-7 w-7 object-contain" />
                 </div>
                 <div>
                   <h3 className="font-semibold text-sm text-gray-900">Munch Assistant</h3>
@@ -2804,6 +2813,7 @@ export default function PnlRelease() {
   const [period, setPeriod] = useState("September 2025");
   const [showChat, setShowChat] = useState(false); // Disabled - using floating assistant instead
   const [chatTrigger, setChatTrigger] = useState<string | null>(null);
+  const [floatingChatTrigger, setFloatingChatTrigger] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"detailed" | "curated">("detailed");
   const [activeSection, setActiveSection] = useState<string>("executive-narrative");
   const [tocDropdownOpen, setTocDropdownOpen] = useState(false);
@@ -3176,8 +3186,7 @@ export default function PnlRelease() {
   };
 
   const handleInsightClick = (query: string) => {
-    setChatTrigger(query + " " + Date.now()); // Unique trigger
-    setShowChat(true);
+    setFloatingChatTrigger(query + " " + Date.now()); // Unique trigger for floating chat
   };
 
   // --- Owner View (Customer Facing) ---
@@ -5973,7 +5982,7 @@ export default function PnlRelease() {
             triggerQuery={chatTrigger ? chatTrigger.split(" ").slice(0, -1).join(" ") : null} 
           />
 
-          <FloatingAssistantBar />
+          <FloatingAssistantBar triggerQuery={floatingChatTrigger} />
        </div>
     </Layout>
   );
