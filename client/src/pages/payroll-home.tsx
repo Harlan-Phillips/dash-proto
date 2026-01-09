@@ -524,34 +524,7 @@ export default function PayrollHome() {
             {isEntityComplete && (
               <Card>
                 <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-base flex items-center gap-2">
-                      <Zap className="h-4 w-4" />
-                      Action Needed
-                    </CardTitle>
-                    <Button 
-                      size="sm"
-                      disabled={!canEnableAutoImport}
-                      className={cn(
-                        "gap-1.5 text-xs",
-                        !canEnableAutoImport && "opacity-50"
-                      )}
-                      data-testid="button-enable-auto-import"
-                    >
-                      {canEnableAutoImport ? (
-                        <>
-                          <Zap className="h-3 w-3" />
-                          Enable
-                        </>
-                      ) : (
-                        <>
-                          <Lock className="h-3 w-3" />
-                          Locked
-                        </>
-                      )}
-                    </Button>
-                  </div>
-                  <CardDescription className="text-xs">Sync employees from POS & Payroll</CardDescription>
+                  <CardTitle className="text-base">Actions Needed</CardTitle>
                 </CardHeader>
                 <CardContent className="p-0">
                   {/* POS Mapping Approval */}
