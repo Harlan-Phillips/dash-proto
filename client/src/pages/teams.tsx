@@ -218,7 +218,7 @@ export default function Teams() {
 
   // Staff tab state
   const [staffSearch, setStaffSearch] = useState("");
-  const [staffStatusFilter, setStaffStatusFilter] = useState<"all" | "active" | "inactive">("all");
+  const [staffStatusFilter, setStaffStatusFilter] = useState<"active" | "inactive">("active");
   const [selectedStaff, setSelectedStaff] = useState<Staff | null>(null);
   const [showStaffDetail, setShowStaffDetail] = useState(false);
   const [showInviteDialog, setShowInviteDialog] = useState(false);
@@ -362,7 +362,7 @@ export default function Teams() {
   const filteredStaff = staff.filter((person) => {
     const matchesSearch = person.name.toLowerCase().includes(staffSearch.toLowerCase()) ||
       person.email.toLowerCase().includes(staffSearch.toLowerCase());
-    const matchesStatus = staffStatusFilter === "all" || person.status === staffStatusFilter;
+    const matchesStatus = person.status === staffStatusFilter;
     return matchesSearch && matchesStatus;
   });
 
@@ -723,7 +723,6 @@ export default function Teams() {
                     <SelectValue placeholder="Filter by status" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Status</SelectItem>
                     <SelectItem value="active">Active</SelectItem>
                     <SelectItem value="inactive">Inactive</SelectItem>
                   </SelectContent>
@@ -757,9 +756,6 @@ export default function Teams() {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
                             <span className="font-medium text-sm">{person.name}</span>
-                            <span className={cn("text-xs px-2 py-0.5 rounded-full border capitalize", getStatusBadgeColor(person.status))}>
-                              {person.status}
-                            </span>
                             <span className={cn("text-xs px-2 py-0.5 rounded-full border capitalize", getRoleBadgeColor(person.role))}>
                               {person.role}
                             </span>
@@ -914,9 +910,6 @@ export default function Teams() {
                   <div className="flex-1">
                     <SheetTitle className="text-xl">{selectedStaff.name}</SheetTitle>
                     <div className="flex items-center gap-2 mt-1">
-                      <span className={cn("text-xs px-2 py-0.5 rounded-full border capitalize", getStatusBadgeColor(selectedStaff.status))}>
-                        {selectedStaff.status}
-                      </span>
                       <span className={cn("text-xs px-2 py-0.5 rounded-full border capitalize", getRoleBadgeColor(selectedStaff.role))}>
                         {selectedStaff.role}
                       </span>
