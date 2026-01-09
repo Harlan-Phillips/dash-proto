@@ -136,6 +136,14 @@ const initialDepartments: Department[] = [
   { id: "5", name: "Catering" },
   { id: "6", name: "Events" },
   { id: "7", name: "Maintenance" },
+  { id: "8", name: "Marketing" },
+  { id: "9", name: "Finance" },
+  { id: "10", name: "Human Resources" },
+  { id: "11", name: "Operations" },
+  { id: "12", name: "Purchasing" },
+  { id: "13", name: "Training" },
+  { id: "14", name: "Quality Control" },
+  { id: "15", name: "Guest Services" },
 ];
 
 const initialJobRoles: JobRole[] = [
