@@ -7768,8 +7768,8 @@ export default function PnlRelease() {
                   {/* Modal Header */}
                   <div className="flex items-center justify-between p-5 border-b border-gray-100">
                     <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-full bg-gray-900 flex items-center justify-center">
-                        <Mail className="h-5 w-5 text-white" />
+                      <div className="h-12 w-12 rounded-xl bg-gray-100 flex items-center justify-center">
+                        <Mail className="h-6 w-6 text-gray-600" />
                       </div>
                       <div>
                         <h3 className="font-semibold text-gray-900">Email Report</h3>
