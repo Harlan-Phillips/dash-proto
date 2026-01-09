@@ -915,6 +915,7 @@ export default function WorkQueue() {
     );
     
     localStorage.setItem("activeTask", JSON.stringify(selectedTask));
+    localStorage.setItem("fromPipeline", "true");
     setSelectedTask(null);
     navigate(selectedTask.workPage);
   };

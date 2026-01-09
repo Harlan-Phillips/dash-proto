@@ -79,6 +79,7 @@ export default function TaskBanner() {
 
   const handleDismiss = () => {
     localStorage.removeItem("activeTask");
+    localStorage.removeItem("fromPipeline");
     setActiveTask(null);
   };
 
@@ -96,10 +97,13 @@ export default function TaskBanner() {
 
   const handleMarkComplete = () => {
     localStorage.removeItem("activeTask");
+    localStorage.removeItem("fromPipeline");
     setActiveTask(null);
   };
 
-  if (!activeTask || location === "/work-queue") return null;
+  const fromPipeline = localStorage.getItem("fromPipeline") === "true";
+  
+  if (!activeTask || location === "/work-queue" || !fromPipeline) return null;
 
   const config = priorityConfig[activeTask.priority];
   const PriorityIcon = config.icon;
