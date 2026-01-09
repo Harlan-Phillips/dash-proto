@@ -720,7 +720,7 @@ export default function Teams() {
                           <span className="font-medium text-sm truncate">{dept.name}</span>
                           <div className="flex items-center gap-2">
                             <Edit2 
-                              className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground cursor-pointer"
+                              className="h-3.5 w-3.5 opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-foreground cursor-pointer transition-opacity"
                               onClick={(e) => { e.stopPropagation(); openEditDepartmentDialog(dept); }}
                             />
                             {selectedDepartment === dept.id && (
@@ -777,7 +777,7 @@ export default function Teams() {
                             </div>
                             <div className="flex items-center gap-2">
                               <Edit2 
-                                className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground cursor-pointer"
+                                className="h-3.5 w-3.5 opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-foreground cursor-pointer transition-opacity"
                                 onClick={(e) => { e.stopPropagation(); openEditJobDialog(job); }}
                               />
                               {selectedJobRole === job.id && (
