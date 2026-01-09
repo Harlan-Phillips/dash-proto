@@ -254,6 +254,37 @@ export default function Teams() {
   const [pendingPOSMapping, setPendingPOSMapping] = useState<string | null>(null);
   const [pendingPayrollMapping, setPendingPayrollMapping] = useState<string | null>(null);
 
+  // Edit job dialog
+  const [showEditJobDialog, setShowEditJobDialog] = useState(false);
+  const [editingJob, setEditingJob] = useState<JobRole | null>(null);
+  const [editJobForm, setEditJobForm] = useState({
+    name: "",
+    baseRate: "",
+    payType: "hourly" as "hourly" | "salaried",
+  });
+
+  const openEditJobDialog = (job: JobRole) => {
+    setEditingJob(job);
+    setEditJobForm({
+      name: job.name,
+      baseRate: job.baseRate.toString(),
+      payType: job.payType,
+    });
+    setShowEditJobDialog(true);
+  };
+
+  const handleSaveJob = () => {
+    if (editingJob) {
+      setJobRoles(prev => prev.map(job => 
+        job.id === editingJob.id 
+          ? { ...job, name: editJobForm.name, baseRate: parseFloat(editJobForm.baseRate) || 0, payType: editJobForm.payType }
+          : job
+      ));
+      setShowEditJobDialog(false);
+      setEditingJob(null);
+    }
+  };
+
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>, setter: (v: boolean) => void) => {
     const target = e.currentTarget;
@@ -635,10 +666,11 @@ export default function Teams() {
                   <div className="relative">
                     <div className="max-h-[578px] overflow-y-auto scrollable-list" onScroll={(e) => handleScroll(e, setDeptJobScrolledToBottom)}>
                       {filteredJobs.filter(j => j.name.toLowerCase().includes(deptJobSearch.toLowerCase())).map((job, index, arr) => (
-                        <div
+                        <button
                           key={job.id}
+                          onClick={() => openEditJobDialog(job)}
                           className={cn(
-                            "flex items-center justify-between px-6 h-[55px] hover:bg-gray-50 transition-colors group",
+                            "w-full flex items-center justify-between px-6 h-[55px] hover:bg-gray-50 transition-colors group text-left",
                             index !== arr.length - 1 && "border-b"
                           )}
                           data-testid={`row-job-${job.id}`}
@@ -649,14 +681,8 @@ export default function Teams() {
                               {job.payType === "salaried" ? `$${job.baseRate.toLocaleString()}/yr` : `$${job.baseRate}/hr`}
                             </div>
                           </div>
-                          <button
-                            className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-foreground transition-opacity"
-                            onClick={() => {/* Edit job logic */}}
-                            data-testid={`button-edit-job-${job.id}`}
-                          >
-                            <Edit2 className="h-4 w-4" />
-                          </button>
-                        </div>
+                          <Edit2 className="h-4 w-4 opacity-0 group-hover:opacity-100 text-muted-foreground transition-opacity" />
+                        </button>
                       ))}
                       {filteredJobs.filter(j => j.name.toLowerCase().includes(deptJobSearch.toLowerCase())).length === 0 && (
                         <div className="px-6 py-4 text-sm text-muted-foreground">
@@ -1400,6 +1426,64 @@ export default function Teams() {
             </Button>
             <Button onClick={confirmAddPayrollMapping} disabled={!pendingPayrollMapping} data-testid="button-confirm-payroll-mapping">
               Confirm Mapping
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Job Dialog */}
+      <Dialog open={showEditJobDialog} onOpenChange={setShowEditJobDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit Job Role</DialogTitle>
+            <DialogDescription>
+              Update the job name and pay rate
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="edit-job-name">Job Name</Label>
+              <Input
+                id="edit-job-name"
+                value={editJobForm.name}
+                onChange={(e) => setEditJobForm({ ...editJobForm, name: e.target.value })}
+                data-testid="input-edit-job-name"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Pay Type</Label>
+              <Select 
+                value={editJobForm.payType} 
+                onValueChange={(v) => setEditJobForm({ ...editJobForm, payType: v as "hourly" | "salaried" })}
+              >
+                <SelectTrigger data-testid="select-edit-job-pay-type">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="hourly">Hourly</SelectItem>
+                  <SelectItem value="salaried">Salaried</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-job-rate">
+                {editJobForm.payType === "hourly" ? "Hourly Rate ($)" : "Annual Salary ($)"}
+              </Label>
+              <Input
+                id="edit-job-rate"
+                type="number"
+                value={editJobForm.baseRate}
+                onChange={(e) => setEditJobForm({ ...editJobForm, baseRate: e.target.value })}
+                data-testid="input-edit-job-rate"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowEditJobDialog(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleSaveJob} disabled={!editJobForm.name || !editJobForm.baseRate} data-testid="button-save-job">
+              Save Changes
             </Button>
           </DialogFooter>
         </DialogContent>
