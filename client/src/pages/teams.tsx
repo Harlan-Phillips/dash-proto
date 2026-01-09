@@ -597,59 +597,79 @@ export default function Teams() {
 
         {activeTab === "departments" && (
         <div className="space-y-6">
-          <Card data-testid="card-departments-jobs">
-            <CardHeader className="flex flex-row items-center justify-between py-4">
-              <div>
-                <CardTitle className="text-lg">Departments & Jobs</CardTitle>
-                <CardDescription>Manage units and role assignments</CardDescription>
+          {/* Location Selector Bar */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 bg-white border rounded-lg p-1">
+                {locations.map((loc) => (
+                  <button
+                    key={loc.id}
+                    onClick={() => setJobAssignmentLocation(loc.id)}
+                    className={cn(
+                      "px-4 py-2 rounded-md text-sm font-medium transition-all",
+                      jobAssignmentLocation === loc.id
+                        ? "bg-foreground text-white shadow-sm"
+                        : "text-muted-foreground hover:text-foreground hover:bg-gray-50"
+                    )}
+                    data-testid={`button-location-${loc.id}`}
+                  >
+                    {loc.name}
+                  </button>
+                ))}
               </div>
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="gap-1.5"
-                  onClick={() => setShowAddDepartmentSheet(true)}
-                  data-testid="button-add-department"
-                >
-                  <Plus className="h-4 w-4" />
-                  Add Department
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="gap-1.5"
-                  onClick={() => setShowAddJobSheet(true)}
-                  data-testid="button-add-job-role"
-                >
-                  <Plus className="h-4 w-4" />
-                  Add Job Role
-                </Button>
-              </div>
-            </CardHeader>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-1.5"
+                onClick={() => setShowAddDepartmentSheet(true)}
+                data-testid="button-add-department"
+              >
+                <Plus className="h-4 w-4" />
+                Add Department
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-1.5"
+                onClick={() => setShowAddJobSheet(true)}
+                data-testid="button-add-job-role"
+              >
+                <Plus className="h-4 w-4" />
+                Add Job Role
+              </Button>
+            </div>
+          </div>
+
+          {/* Unified 3-Column Layout */}
+          <Card data-testid="card-unified-management">
             <CardContent className="p-0">
-              <div className="grid grid-cols-2 border-t">
-                <div className="border-r">
-                  <div className="px-6 py-3 border-b bg-gray-50">
+              <div className="grid grid-cols-12 border-b">
+                {/* Column 1: Departments (Chain-wide) - Narrow */}
+                <div className="col-span-3 border-r">
+                  <div className="px-4 py-3 border-b bg-gray-50 flex items-center justify-between">
                     <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Departments</span>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-200 text-gray-600">Chain-wide</span>
                   </div>
-                  <div className="relative border-b h-12 flex items-center">
-                    <Search className="absolute left-4 h-4 w-4 text-muted-foreground" />
+                  <div className="relative border-b h-10 flex items-center">
+                    <Search className="absolute left-3 h-3.5 w-3.5 text-muted-foreground" />
                     <Input
-                      placeholder="Search departments..."
+                      placeholder="Search..."
                       value={deptSearch}
                       onChange={(e) => setDeptSearch(e.target.value)}
-                      className="h-full pl-10 text-sm w-full border-0 shadow-none focus-visible:ring-0 rounded-none"
+                      className="h-full pl-8 text-sm w-full border-0 shadow-none focus-visible:ring-0 rounded-none"
                       data-testid="input-search-departments"
                     />
                   </div>
                   <div className="relative">
-                    <div className="max-h-[302px] overflow-y-auto scrollable-list" onScroll={(e) => handleScroll(e, setDeptScrolledToBottom)}>
+                    <div className="max-h-[400px] overflow-y-auto scrollable-list" onScroll={(e) => handleScroll(e, setDeptScrolledToBottom)}>
                       {departments.filter(d => d.name.toLowerCase().includes(deptSearch.toLowerCase())).map((dept, index, arr) => (
                         <button
                           key={dept.id}
                           onClick={() => setSelectedDepartment(dept.id)}
                           className={cn(
-                            "w-full flex items-center justify-between px-6 h-[55px] text-left transition-colors",
+                            "w-full flex items-center justify-between px-4 h-[48px] text-left transition-colors",
                             selectedDepartment === dept.id
                               ? "bg-muted"
                               : "hover:bg-gray-50",
@@ -657,175 +677,118 @@ export default function Teams() {
                           )}
                           data-testid={`button-department-${dept.id}`}
                         >
-                          <span className="font-medium text-sm">{dept.name}</span>
+                          <span className="font-medium text-sm truncate">{dept.name}</span>
                           {selectedDepartment === dept.id && (
-                            <ChevronRight className="h-4 w-4" />
+                            <ChevronRight className="h-4 w-4 flex-shrink-0" />
                           )}
                         </button>
                       ))}
                     </div>
-                    {departments.filter(d => d.name.toLowerCase().includes(deptSearch.toLowerCase())).length > 5 && !deptScrolledToBottom && (
-                      <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white/70 via-white/40 to-transparent pointer-events-none" />
-                    )}
                   </div>
                 </div>
 
-                <div>
-                  <div className="px-6 py-3 border-b bg-gray-50">
+                {/* Column 2: Jobs (Location-specific) */}
+                <div className="col-span-4 border-r">
+                  <div className="px-4 py-3 border-b bg-gray-50 flex items-center justify-between">
                     <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Jobs</span>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 flex items-center gap-1">
+                      <MapPin className="h-2.5 w-2.5" />
+                      {locations.find(l => l.id === jobAssignmentLocation)?.name}
+                    </span>
                   </div>
-                  <div className="relative border-b h-12 flex items-center">
-                    <Search className="absolute left-4 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      placeholder="Search jobs..."
-                      value={deptJobSearch}
-                      onChange={(e) => setDeptJobSearch(e.target.value)}
-                      className="h-full pl-10 text-sm w-full border-0 shadow-none focus-visible:ring-0 rounded-none"
-                      data-testid="input-search-dept-jobs"
-                    />
-                  </div>
-                  <div className="relative">
-                    <div className="max-h-[302px] overflow-y-auto scrollable-list" onScroll={(e) => handleScroll(e, setDeptJobScrolledToBottom)}>
-                      {filteredJobs.filter(j => j.name.toLowerCase().includes(deptJobSearch.toLowerCase())).map((job, index, arr) => (
-                        <button
-                          key={job.id}
-                          onClick={() => openEditJobDialog(job)}
-                          className={cn(
-                            "w-full flex items-center justify-between px-6 h-[55px] hover:bg-gray-50 transition-colors group text-left",
-                            index !== arr.length - 1 && "border-b"
-                          )}
-                          data-testid={`row-job-${job.id}`}
-                        >
-                          <div>
-                            <div className="text-sm font-medium">{job.name}</div>
-                            <div className="text-xs text-muted-foreground">
-                              {job.payType === "salaried" ? `$${job.baseRate.toLocaleString()}/yr` : `$${job.baseRate}/hr`}
-                            </div>
-                          </div>
-                          <Edit2 className="h-4 w-4 opacity-0 group-hover:opacity-100 text-muted-foreground transition-opacity" />
-                        </button>
-                      ))}
-                      {filteredJobs.filter(j => j.name.toLowerCase().includes(deptJobSearch.toLowerCase())).length === 0 && (
-                        <div className="px-6 py-4 text-sm text-muted-foreground">
-                          No job roles found
-                        </div>
-                      )}
-                    </div>
-                    {filteredJobs.filter(j => j.name.toLowerCase().includes(deptJobSearch.toLowerCase())).length > 5 && !deptJobScrolledToBottom && (
-                      <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white/70 via-white/40 to-transparent pointer-events-none" />
-                    )}
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Job Assignment Card */}
-          <Card data-testid="card-job-assignment">
-            <CardHeader className="py-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle className="text-lg">Job Assignment</CardTitle>
-                  <CardDescription>Link employees to job roles</CardDescription>
-                </div>
-                <Select value={jobAssignmentLocation} onValueChange={setJobAssignmentLocation}>
-                  <SelectTrigger className="w-40" data-testid="select-job-assignment-location">
-                    <MapPin className="h-4 w-4 mr-2" />
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {locations.map(loc => (
-                      <SelectItem key={loc.id} value={loc.id}>{loc.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </CardHeader>
-            <CardContent className="p-0">
-              <div className="grid grid-cols-2 border-t">
-                <div className="border-r">
-                  <div className="px-6 py-3 border-b bg-gray-50">
-                    <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Jobs</span>
-                  </div>
-                  <div className="relative border-b h-12 flex items-center">
-                    <Search className="absolute left-4 h-4 w-4 text-muted-foreground" />
+                  <div className="relative border-b h-10 flex items-center">
+                    <Search className="absolute left-3 h-3.5 w-3.5 text-muted-foreground" />
                     <Input
                       placeholder="Search jobs..."
                       value={jobSearch}
                       onChange={(e) => setJobSearch(e.target.value)}
-                      className="h-full pl-10 text-sm w-full border-0 shadow-none focus-visible:ring-0 rounded-none"
-                      data-testid="input-search-job-assignment"
+                      className="h-full pl-8 text-sm w-full border-0 shadow-none focus-visible:ring-0 rounded-none"
+                      data-testid="input-search-jobs"
                     />
                   </div>
                   <div className="relative">
-                    <div className="max-h-[302px] overflow-y-auto scrollable-list" onScroll={(e) => handleScroll(e, setJobScrolledToBottom)}>
-                      {jobRoles.filter(j => j.name.toLowerCase().includes(jobSearch.toLowerCase())).map((job, index, arr) => (
-                        <button
-                          key={job.id}
-                          onClick={() => setSelectedJobRole(job.id)}
-                          className={cn(
-                            "w-full flex items-center justify-between px-6 h-[55px] text-left transition-colors",
-                            selectedJobRole === job.id
-                              ? "bg-muted"
-                              : "hover:bg-gray-50",
-                            index !== arr.length - 1 && "border-b"
-                          )}
-                          data-testid={`button-job-assignment-${job.id}`}
-                        >
-                          <div>
-                            <div className="font-medium text-sm">{job.name}</div>
-                            <div className="text-xs text-muted-foreground">
-                              ${job.baseRate}/HR
+                    <div className="max-h-[400px] overflow-y-auto scrollable-list" onScroll={(e) => handleScroll(e, setJobScrolledToBottom)}>
+                      {filteredJobs.filter(j => j.name.toLowerCase().includes(jobSearch.toLowerCase())).map((job, index, arr) => {
+                        const staffAtJob = staff.filter(s => 
+                          s.status === "active" && 
+                          s.jobAssignments.some(ja => ja.jobRoleId === job.id && ja.locationId === jobAssignmentLocation)
+                        ).length;
+                        return (
+                          <button
+                            key={job.id}
+                            onClick={() => setSelectedJobRole(job.id)}
+                            className={cn(
+                              "w-full flex items-center justify-between px-4 h-[48px] text-left transition-colors group",
+                              selectedJobRole === job.id
+                                ? "bg-muted"
+                                : "hover:bg-gray-50",
+                              index !== arr.length - 1 && "border-b"
+                            )}
+                            data-testid={`button-job-${job.id}`}
+                          >
+                            <div className="min-w-0 flex-1">
+                              <div className="text-sm font-medium truncate">{job.name}</div>
+                              <div className="text-xs text-muted-foreground">${job.baseRate}/hr</div>
                             </div>
-                          </div>
-                          {selectedJobRole === job.id && (
-                            <ChevronRight className="h-4 w-4" />
-                          )}
-                        </button>
-                      ))}
+                            <div className="flex items-center gap-2">
+                              {staffAtJob > 0 && (
+                                <span className="text-xs bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded">{staffAtJob}</span>
+                              )}
+                              <Edit2 
+                                className="h-3.5 w-3.5 opacity-0 group-hover:opacity-100 text-muted-foreground transition-opacity"
+                                onClick={(e) => { e.stopPropagation(); openEditJobDialog(job); }}
+                              />
+                              {selectedJobRole === job.id && (
+                                <ChevronRight className="h-4 w-4 flex-shrink-0" />
+                              )}
+                            </div>
+                          </button>
+                        );
+                      })}
+                      {filteredJobs.length === 0 && (
+                        <div className="px-4 py-8 text-sm text-muted-foreground text-center">
+                          No jobs in {departments.find(d => d.id === selectedDepartment)?.name}
+                        </div>
+                      )}
                     </div>
-                    {jobRoles.filter(j => j.name.toLowerCase().includes(jobSearch.toLowerCase())).length > 5 && !jobScrolledToBottom && (
-                      <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white/70 via-white/40 to-transparent pointer-events-none" />
-                    )}
                   </div>
                 </div>
 
-                <div>
-                  <div className="px-6 py-3 border-b bg-gray-50">
-                    <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Staff</span>
+                {/* Column 3: Staff Assignment (Location-specific) */}
+                <div className="col-span-5">
+                  <div className="px-4 py-3 border-b bg-gray-50 flex items-center justify-between">
+                    <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                      Staff at {locations.find(l => l.id === jobAssignmentLocation)?.name}
+                    </span>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-100 text-blue-700">
+                      Assign to: {jobRoles.find(j => j.id === selectedJobRole)?.name || "Select job"}
+                    </span>
                   </div>
-                  <div className="relative border-b h-12 flex items-center">
-                    <Search className="absolute left-4 h-4 w-4 text-muted-foreground" />
+                  <div className="relative border-b h-10 flex items-center">
+                    <Search className="absolute left-3 h-3.5 w-3.5 text-muted-foreground" />
                     <Input
                       placeholder="Search staff..."
                       value={personnelSearch}
                       onChange={(e) => setPersonnelSearch(e.target.value)}
-                      className="h-full pl-10 text-sm w-full border-0 shadow-none focus-visible:ring-0 rounded-none"
+                      className="h-full pl-8 text-sm w-full border-0 shadow-none focus-visible:ring-0 rounded-none"
                       data-testid="input-search-staff-assignment"
                     />
                   </div>
                   <div className="relative">
-                    <div className="max-h-[302px] overflow-y-auto scrollable-list" onScroll={(e) => handleScroll(e, setStaffScrolledToBottom)}>
+                    <div className="max-h-[400px] overflow-y-auto scrollable-list" onScroll={(e) => handleScroll(e, setStaffScrolledToBottom)}>
                       {staff.filter(s => s.status === "active" && s.name.toLowerCase().includes(personnelSearch.toLowerCase())).map((person, index, arr) => {
-                        // Check if assigned to selected job at selected location
                         const isAssignedHere = person.jobAssignments.some(ja => ja.jobRoleId === selectedJobRole && ja.locationId === jobAssignmentLocation);
-                        // Check if assigned to a different job at this location
                         const otherJobAtLocation = person.jobAssignments.find(ja => ja.locationId === jobAssignmentLocation && ja.jobRoleId !== selectedJobRole);
                         const otherJobName = otherJobAtLocation ? jobRoles.find(j => j.id === otherJobAtLocation.jobRoleId)?.name : null;
-                        // Check if person works at this location at all
-                        const worksAtLocation = person.jobAssignments.some(ja => ja.locationId === jobAssignmentLocation);
-                        
                         const isMuted = otherJobName && !isAssignedHere;
                         
                         const handleToggleAssignment = () => {
-                          if (isMuted) return; // Can't toggle if assigned to another job at this location
+                          if (isMuted) return;
                           setStaff(prev => prev.map(s => {
                             if (s.id !== person.id) return s;
                             if (isAssignedHere) {
-                              // Remove assignment
                               return { ...s, jobAssignments: s.jobAssignments.filter(ja => !(ja.jobRoleId === selectedJobRole && ja.locationId === jobAssignmentLocation)) };
                             } else {
-                              // Add assignment
                               return { ...s, jobAssignments: [...s.jobAssignments, { locationId: jobAssignmentLocation, jobRoleId: selectedJobRole }] };
                             }
                           }));
@@ -835,7 +798,7 @@ export default function Teams() {
                           <div
                             key={person.id}
                             className={cn(
-                              "flex items-center gap-3 px-6 h-[55px] transition-colors",
+                              "flex items-center gap-3 px-4 h-[48px] transition-colors",
                               isMuted ? "opacity-50" : "hover:bg-gray-50 cursor-pointer",
                               index !== arr.length - 1 && "border-b"
                             )}
@@ -845,37 +808,32 @@ export default function Teams() {
                             <Checkbox 
                               checked={isAssignedHere}
                               disabled={isMuted}
-                              className={cn(
-                                isAssignedHere && "bg-emerald-600 border-emerald-600 text-white"
-                              )}
+                              className={cn(isAssignedHere && "bg-emerald-600 border-emerald-600 text-white")}
                               data-testid={`checkbox-assign-${person.id}`}
                             />
-                            <div className={cn("w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-medium", person.avatarColor, isMuted && "opacity-60")}>
+                            <div className={cn("w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-medium", person.avatarColor, isMuted && "opacity-60")}>
                               {person.initials}
                             </div>
                             <div className="flex-1 min-w-0">
-                              <div className={cn("font-medium text-sm", isMuted && "text-muted-foreground")}>{person.name}</div>
+                              <div className={cn("font-medium text-sm truncate", isMuted && "text-muted-foreground")}>{person.name}</div>
                               {isAssignedHere ? (
-                                <div className="text-xs text-muted-foreground">ASSIGNED</div>
+                                <div className="text-xs text-emerald-600 font-medium">ASSIGNED</div>
                               ) : otherJobName ? (
                                 <div className="text-xs text-muted-foreground">Assigned to {otherJobName}</div>
                               ) : null}
                             </div>
                             {isAssignedHere && (
                               <button 
-                                className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1"
+                                className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-0.5"
                                 onClick={(e) => { e.stopPropagation(); openStaffDetail(person); }}
                               >
-                                View Earning Rates <ChevronRight className="h-3 w-3" />
+                                Rates <ChevronRight className="h-3 w-3" />
                               </button>
                             )}
                           </div>
                         );
                       })}
                     </div>
-                    {staff.filter(s => s.status === "active" && s.name.toLowerCase().includes(personnelSearch.toLowerCase())).length > 5 && !staffScrolledToBottom && (
-                      <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white/70 via-white/40 to-transparent pointer-events-none" />
-                    )}
                   </div>
                 </div>
               </div>
