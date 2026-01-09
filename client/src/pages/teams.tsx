@@ -567,79 +567,72 @@ export default function Teams() {
             <span className="font-serif text-2xl font-medium" data-testid="text-page-title">Team</span>
           </div>
           
-          <div className="flex gap-6 text-sm font-medium">
-            <button
-              onClick={() => setActiveTab("departments")}
-              className={cn(
-                "pb-1 transition-colors",
-                activeTab === "departments"
-                  ? "text-foreground border-b-2 border-foreground"
-                  : "text-muted-foreground hover:text-foreground"
-              )}
-              data-testid="tab-departments"
-            >
-              Departments
-            </button>
-            <button
-              onClick={() => setActiveTab("staff")}
-              className={cn(
-                "pb-1 transition-colors",
-                activeTab === "staff"
-                  ? "text-foreground border-b-2 border-foreground"
-                  : "text-muted-foreground hover:text-foreground"
-              )}
-              data-testid="tab-staff"
-            >
-              Staff
-            </button>
+          <div className="flex items-center gap-8">
+            {/* Location Dropdown */}
+            <Select value={jobAssignmentLocation} onValueChange={setJobAssignmentLocation}>
+              <SelectTrigger className="w-auto border-0 shadow-none text-sm text-muted-foreground hover:text-foreground gap-1 p-0 h-auto" data-testid="select-location-header">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {locations.map(loc => (
+                  <SelectItem key={loc.id} value={loc.id}>{loc.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            
+            <div className="flex gap-6 text-sm font-medium">
+              <button
+                onClick={() => setActiveTab("departments")}
+                className={cn(
+                  "pb-1 transition-colors",
+                  activeTab === "departments"
+                    ? "text-foreground border-b-2 border-foreground"
+                    : "text-muted-foreground hover:text-foreground"
+                )}
+                data-testid="tab-departments"
+              >
+                Departments
+              </button>
+              <button
+                onClick={() => setActiveTab("staff")}
+                className={cn(
+                  "pb-1 transition-colors",
+                  activeTab === "staff"
+                    ? "text-foreground border-b-2 border-foreground"
+                    : "text-muted-foreground hover:text-foreground"
+                )}
+                data-testid="tab-staff"
+              >
+                Staff
+              </button>
+            </div>
           </div>
         </div>
 
         {activeTab === "departments" && (
         <div className="space-y-6">
-          {/* Location Selector Bar */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2 bg-white border rounded-lg p-1">
-                {locations.map((loc) => (
-                  <button
-                    key={loc.id}
-                    onClick={() => setJobAssignmentLocation(loc.id)}
-                    className={cn(
-                      "px-4 py-2 rounded-md text-sm font-medium transition-all",
-                      jobAssignmentLocation === loc.id
-                        ? "bg-foreground text-white shadow-sm"
-                        : "text-muted-foreground hover:text-foreground hover:bg-gray-50"
-                    )}
-                    data-testid={`button-location-${loc.id}`}
-                  >
-                    {loc.name}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                className="gap-1.5"
-                onClick={() => setShowAddDepartmentSheet(true)}
-                data-testid="button-add-department"
-              >
-                <Plus className="h-4 w-4" />
-                Add Department
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="gap-1.5"
-                onClick={() => setShowAddJobSheet(true)}
-                data-testid="button-add-job-role"
-              >
-                <Plus className="h-4 w-4" />
-                Add Job Role
-              </Button>
-            </div>
+          {/* Action Buttons */}
+          <div className="flex items-center justify-end gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-1.5"
+              onClick={() => setShowAddDepartmentSheet(true)}
+              data-testid="button-add-department"
+            >
+              <Plus className="h-4 w-4" />
+              Add Department
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-1.5"
+              onClick={() => setShowAddJobSheet(true)}
+              data-testid="button-add-job-role"
+            >
+              <Plus className="h-4 w-4" />
+              Add Job Role
+            </Button>
           </div>
 
           {/* Unified 3-Column Layout */}
@@ -687,14 +680,10 @@ export default function Teams() {
                   </div>
                 </div>
 
-                {/* Column 2: Jobs (Location-specific) */}
+                {/* Column 2: Jobs */}
                 <div className="col-span-4 border-r">
-                  <div className="px-4 py-3 border-b bg-gray-50 flex items-center justify-between">
+                  <div className="px-4 py-3 border-b bg-gray-50">
                     <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Jobs</span>
-                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 flex items-center gap-1">
-                      <MapPin className="h-2.5 w-2.5" />
-                      {locations.find(l => l.id === jobAssignmentLocation)?.name}
-                    </span>
                   </div>
                   <div className="relative border-b h-10 flex items-center">
                     <Search className="absolute left-3 h-3.5 w-3.5 text-muted-foreground" />
@@ -754,15 +743,10 @@ export default function Teams() {
                   </div>
                 </div>
 
-                {/* Column 3: Staff Assignment (Location-specific) */}
+                {/* Column 3: Staff Assignment */}
                 <div className="col-span-5">
-                  <div className="px-4 py-3 border-b bg-gray-50 flex items-center justify-between">
-                    <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                      Staff at {locations.find(l => l.id === jobAssignmentLocation)?.name}
-                    </span>
-                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-100 text-blue-700">
-                      Assign to: {jobRoles.find(j => j.id === selectedJobRole)?.name || "Select job"}
-                    </span>
+                  <div className="px-4 py-3 border-b bg-gray-50">
+                    <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Staff</span>
                   </div>
                   <div className="relative border-b h-10 flex items-center">
                     <Search className="absolute left-3 h-3.5 w-3.5 text-muted-foreground" />
@@ -778,12 +762,8 @@ export default function Teams() {
                     <div className="max-h-[400px] overflow-y-auto scrollable-list" onScroll={(e) => handleScroll(e, setStaffScrolledToBottom)}>
                       {staff.filter(s => s.status === "active" && s.name.toLowerCase().includes(personnelSearch.toLowerCase())).map((person, index, arr) => {
                         const isAssignedHere = person.jobAssignments.some(ja => ja.jobRoleId === selectedJobRole && ja.locationId === jobAssignmentLocation);
-                        const otherJobAtLocation = person.jobAssignments.find(ja => ja.locationId === jobAssignmentLocation && ja.jobRoleId !== selectedJobRole);
-                        const otherJobName = otherJobAtLocation ? jobRoles.find(j => j.id === otherJobAtLocation.jobRoleId)?.name : null;
-                        const isMuted = otherJobName && !isAssignedHere;
                         
                         const handleToggleAssignment = () => {
-                          if (isMuted) return;
                           setStaff(prev => prev.map(s => {
                             if (s.id !== person.id) return s;
                             if (isAssignedHere) {
@@ -798,8 +778,7 @@ export default function Teams() {
                           <div
                             key={person.id}
                             className={cn(
-                              "flex items-center gap-3 px-4 h-[48px] transition-colors",
-                              isMuted ? "opacity-50" : "hover:bg-gray-50 cursor-pointer",
+                              "flex items-center gap-3 px-4 h-[48px] transition-colors hover:bg-gray-50 cursor-pointer",
                               index !== arr.length - 1 && "border-b"
                             )}
                             onClick={handleToggleAssignment}
@@ -807,20 +786,17 @@ export default function Teams() {
                           >
                             <Checkbox 
                               checked={isAssignedHere}
-                              disabled={isMuted}
                               className={cn(isAssignedHere && "bg-emerald-600 border-emerald-600 text-white")}
                               data-testid={`checkbox-assign-${person.id}`}
                             />
-                            <div className={cn("w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-medium", person.avatarColor, isMuted && "opacity-60")}>
+                            <div className={cn("w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-medium", person.avatarColor)}>
                               {person.initials}
                             </div>
                             <div className="flex-1 min-w-0">
-                              <div className={cn("font-medium text-sm truncate", isMuted && "text-muted-foreground")}>{person.name}</div>
-                              {isAssignedHere ? (
+                              <div className="font-medium text-sm truncate">{person.name}</div>
+                              {isAssignedHere && (
                                 <div className="text-xs text-emerald-600 font-medium">ASSIGNED</div>
-                              ) : otherJobName ? (
-                                <div className="text-xs text-muted-foreground">Assigned to {otherJobName}</div>
-                              ) : null}
+                              )}
                             </div>
                             {isAssignedHere && (
                               <button 
