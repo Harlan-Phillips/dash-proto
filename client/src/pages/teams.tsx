@@ -591,13 +591,13 @@ export default function Teams() {
                     />
                   </div>
                   <div className="relative">
-                    <div className="max-h-[552px] overflow-y-auto scrollable-list" onScroll={(e) => handleScroll(e, setDeptScrolledToBottom)}>
+                    <div className="max-h-[632px] overflow-y-auto scrollable-list" onScroll={(e) => handleScroll(e, setDeptScrolledToBottom)}>
                       {departments.filter(d => d.name.toLowerCase().includes(deptSearch.toLowerCase())).map((dept, index, arr) => (
                         <button
                           key={dept.id}
                           onClick={() => setSelectedDepartment(dept.id)}
                           className={cn(
-                            "w-full flex items-center justify-between px-6 h-12 text-left transition-colors",
+                            "w-full flex items-center justify-between px-6 py-3 min-h-[55px] text-left transition-colors",
                             selectedDepartment === dept.id
                               ? "bg-muted"
                               : "hover:bg-gray-50",
@@ -633,28 +633,35 @@ export default function Teams() {
                     />
                   </div>
                   <div className="relative">
-                    <div className="max-h-[552px] overflow-y-auto scrollable-list" onScroll={(e) => handleScroll(e, setDeptJobScrolledToBottom)}>
+                    <div className="max-h-[632px] overflow-y-auto scrollable-list" onScroll={(e) => handleScroll(e, setDeptJobScrolledToBottom)}>
                       {filteredJobs.filter(j => j.name.toLowerCase().includes(deptJobSearch.toLowerCase())).map((job, index, arr) => (
-                        <label
+                        <div
                           key={job.id}
                           className={cn(
-                            "flex items-center gap-3 px-6 h-12 hover:bg-gray-50 cursor-pointer transition-colors",
+                            "flex items-center gap-3 px-6 py-3 min-h-[55px] hover:bg-gray-50 transition-colors group",
                             index !== arr.length - 1 && "border-b"
                           )}
-                          data-testid={`label-job-${job.id}`}
+                          data-testid={`row-job-${job.id}`}
                         >
                           <Checkbox
                             checked={job.selected}
                             onCheckedChange={() => toggleJobSelection(job.id)}
                             data-testid={`checkbox-job-${job.id}`}
                           />
-                          <div>
+                          <div className="flex-1">
                             <div className="text-sm font-medium">{job.name}</div>
                             <div className="text-xs text-muted-foreground">
                               {job.payType === "salaried" ? `$${job.baseRate.toLocaleString()}/yr` : `$${job.baseRate}/hr`}
                             </div>
                           </div>
-                        </label>
+                          <button
+                            className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-foreground transition-opacity"
+                            onClick={() => {/* Edit job logic */}}
+                            data-testid={`button-edit-job-${job.id}`}
+                          >
+                            <Edit2 className="h-4 w-4" />
+                          </button>
+                        </div>
                       ))}
                       {filteredJobs.filter(j => j.name.toLowerCase().includes(deptJobSearch.toLowerCase())).length === 0 && (
                         <div className="px-6 py-4 text-sm text-muted-foreground">
