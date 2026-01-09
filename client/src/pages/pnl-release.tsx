@@ -496,12 +496,12 @@ const navigationYears = [
 
 const tocSections = [
   { id: "executive-narrative", label: "Executive Narrative" },
+  { id: "bottom-line", label: "Bottom Line" },
   { id: "pnl-dashboard", label: "P&L Dashboard" },
   { id: "health-snapshot", label: "Health Snapshot" },
   { id: "revenue-analysis", label: "Revenue Analysis" },
   { id: "prime-cost-analysis", label: "Prime Cost Analysis" },
   { id: "operating-expenses", label: "Operating Expenses" },
-  { id: "bottom-line", label: "Bottom Line" },
   { id: "action-items", label: "Action Items" },
   { id: "accountant-note", label: "Accountant Note" },
 ];
