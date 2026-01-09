@@ -41,6 +41,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Separator } from "@/components/ui/separator";
 import { Plus, ChevronRight, Search, UserPlus, Mail, Phone, MapPin, Briefcase, Shield, Link2, AlertCircle, Check, X, Edit2, UserX, ChevronLeft } from "lucide-react";
 
 interface Department {
@@ -254,6 +255,8 @@ export default function Teams() {
     jobAssignments: [] as JobAssignment[],
     selectedLocations: [] as string[],
   });
+  const [editDialogLocation, setEditDialogLocation] = useState("1");
+  const [editDialogJobSearch, setEditDialogJobSearch] = useState("");
 
   // Mapping dialogs
   const [showAddPOSMappingDialog, setShowAddPOSMappingDialog] = useState(false);
@@ -1574,17 +1577,22 @@ export default function Teams() {
       </Dialog>
 
       {/* Edit Staff Dialog */}
-      <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+      <Dialog open={showEditDialog} onOpenChange={(open) => {
+        setShowEditDialog(open);
+        if (!open) {
+          setEditDialogJobSearch("");
+        }
+      }}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>Edit Staff Details</DialogTitle>
             <DialogDescription>
-              Update information for {selectedStaff?.name}
+              Update job assignments and pay rates for {selectedStaff?.name}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label>Role</Label>
+              <Label>System Role</Label>
               <Select value={editForm.role} onValueChange={(v) => setEditForm({ ...editForm, role: v as typeof editForm.role })}>
                 <SelectTrigger data-testid="select-edit-role">
                   <SelectValue placeholder="Select role" />
@@ -1596,87 +1604,154 @@ export default function Teams() {
                 </SelectContent>
               </Select>
             </div>
-            <div className="space-y-2">
-              <Label>Locations</Label>
-              <p className="text-xs text-muted-foreground mb-2">Select locations where this person works</p>
-              <div className="grid grid-cols-3 gap-2">
-                {locations.map((loc) => {
-                  const jobsAtLocation = editForm.jobAssignments.filter(ja => ja.locationId === loc.id).length;
-                  return (
-                    <label key={loc.id} className="flex items-center gap-2 text-sm cursor-pointer p-2 rounded border hover:bg-gray-50 transition-colors">
-                      <Checkbox
-                        checked={editForm.selectedLocations.includes(loc.id)}
-                        onCheckedChange={(checked) => {
-                          if (checked) {
-                            setEditForm({ ...editForm, selectedLocations: [...editForm.selectedLocations, loc.id] });
-                          } else {
-                            setEditForm({ 
-                              ...editForm, 
-                              selectedLocations: editForm.selectedLocations.filter(l => l !== loc.id),
-                              jobAssignments: editForm.jobAssignments.filter(ja => ja.locationId !== loc.id)
-                            });
-                          }
-                        }}
-                        data-testid={`checkbox-edit-location-${loc.id}`}
-                      />
-                      <div className="flex-1">
-                        <span>{loc.name}</span>
-                      </div>
-                      {jobsAtLocation > 0 && (
-                        <span className="text-xs bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded">{jobsAtLocation}</span>
-                      )}
-                    </label>
-                  );
-                })}
+            
+            <Separator />
+            
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Label>Job Assignments</Label>
+                <Select value={editDialogLocation} onValueChange={setEditDialogLocation}>
+                  <SelectTrigger className="w-36 h-8" data-testid="select-edit-location">
+                    <MapPin className="h-3.5 w-3.5 mr-1.5 text-muted-foreground" />
+                    <SelectValue placeholder="Location" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {locations.map((loc) => (
+                      <SelectItem key={loc.id} value={loc.id}>{loc.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
-            </div>
-            <div className="space-y-2">
-              <Label>Job Roles by Location</Label>
-              {editForm.selectedLocations.length === 0 ? (
-                <div className="text-sm text-muted-foreground bg-gray-50 rounded-lg p-4 text-center">
-                  Select at least one location to assign job roles
-                </div>
-              ) : (
-                <div className="max-h-56 overflow-y-auto border rounded-lg divide-y">
-                  {editForm.selectedLocations.map((locId) => {
-                    const location = locations.find(l => l.id === locId);
+              
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search job roles..."
+                  value={editDialogJobSearch}
+                  onChange={(e) => setEditDialogJobSearch(e.target.value)}
+                  className="pl-9 h-9"
+                  data-testid="input-edit-job-search"
+                />
+              </div>
+              
+              <div className="border rounded-lg divide-y max-h-64 overflow-y-auto">
+                {(() => {
+                  const filteredJobs = jobRoles.filter(job => 
+                    job.name.toLowerCase().includes(editDialogJobSearch.toLowerCase())
+                  );
+                  
+                  if (filteredJobs.length === 0) {
                     return (
-                      <div key={locId} className="p-3">
-                        <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2 flex items-center gap-2">
-                          <MapPin className="h-3 w-3" />
-                          {location?.name}
-                        </div>
-                        <div className="grid grid-cols-2 gap-1.5">
-                          {jobRoles.map((job) => {
-                            const isAssigned = editForm.jobAssignments.some(ja => ja.locationId === locId && ja.jobRoleId === job.id);
-                            return (
-                              <label key={`${locId}-${job.id}`} className="flex items-center gap-2 text-sm cursor-pointer hover:bg-gray-50 p-1.5 rounded transition-colors">
-                                <Checkbox
-                                  checked={isAssigned}
-                                  onCheckedChange={(checked) => {
-                                    if (checked) {
-                                      setEditForm({ 
-                                        ...editForm, 
-                                        jobAssignments: [...editForm.jobAssignments, { locationId: locId, jobRoleId: job.id }] 
-                                      });
-                                    } else {
-                                      setEditForm({ 
-                                        ...editForm, 
-                                        jobAssignments: editForm.jobAssignments.filter(ja => !(ja.locationId === locId && ja.jobRoleId === job.id))
-                                      });
-                                    }
-                                  }}
-                                  data-testid={`checkbox-edit-job-${locId}-${job.id}`}
-                                />
-                                <span className="truncate">{job.name}</span>
-                                <span className="text-xs text-muted-foreground ml-auto whitespace-nowrap">{job.payType === "salaried" ? `$${(job.baseRate/1000).toFixed(0)}k` : `$${job.baseRate}/hr`}</span>
-                              </label>
-                            );
-                          })}
-                        </div>
+                      <div className="p-4 text-center text-sm text-muted-foreground">
+                        No job roles found
                       </div>
                     );
-                  })}
+                  }
+                  
+                  return filteredJobs.map((job) => {
+                    const assignment = editForm.jobAssignments.find(
+                      ja => ja.locationId === editDialogLocation && ja.jobRoleId === job.id
+                    );
+                    const isAssigned = !!assignment;
+                    const dept = departments.find(d => d.id === job.departmentId);
+                    
+                    return (
+                      <div key={job.id} className="p-3 space-y-2">
+                        <div className="flex items-center gap-3">
+                          <Checkbox
+                            checked={isAssigned}
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                setEditForm({ 
+                                  ...editForm, 
+                                  jobAssignments: [...editForm.jobAssignments, { locationId: editDialogLocation, jobRoleId: job.id }],
+                                  selectedLocations: editForm.selectedLocations.includes(editDialogLocation) 
+                                    ? editForm.selectedLocations 
+                                    : [...editForm.selectedLocations, editDialogLocation]
+                                });
+                              } else {
+                                const newAssignments = editForm.jobAssignments.filter(
+                                  ja => !(ja.locationId === editDialogLocation && ja.jobRoleId === job.id)
+                                );
+                                const stillHasJobsAtLocation = newAssignments.some(ja => ja.locationId === editDialogLocation);
+                                setEditForm({ 
+                                  ...editForm, 
+                                  jobAssignments: newAssignments,
+                                  selectedLocations: stillHasJobsAtLocation 
+                                    ? editForm.selectedLocations 
+                                    : editForm.selectedLocations.filter(l => l !== editDialogLocation)
+                                });
+                              }
+                            }}
+                            data-testid={`checkbox-edit-job-${editDialogLocation}-${job.id}`}
+                          />
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <span className="font-medium text-sm">{job.name}</span>
+                              <span className="text-xs text-muted-foreground">{dept?.name}</span>
+                            </div>
+                            <div className="text-xs text-muted-foreground">
+                              Base: ${job.baseRate}/{job.payType === "hourly" ? "hr" : "yr"}
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {isAssigned && (
+                          <div className="flex items-center gap-2 ml-7">
+                            <Label className="text-xs text-muted-foreground shrink-0">Custom Rate:</Label>
+                            <div className="relative flex-1">
+                              <span className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground text-xs">$</span>
+                              <Input
+                                type="number"
+                                step="0.01"
+                                placeholder={job.baseRate.toString()}
+                                value={assignment?.customRate ?? ""}
+                                onChange={(e) => {
+                                  const value = e.target.value ? parseFloat(e.target.value) : undefined;
+                                  setEditForm({
+                                    ...editForm,
+                                    jobAssignments: editForm.jobAssignments.map(ja =>
+                                      ja.locationId === editDialogLocation && ja.jobRoleId === job.id
+                                        ? { ...ja, customRate: value }
+                                        : ja
+                                    )
+                                  });
+                                }}
+                                className="pl-5 h-7 text-xs"
+                                data-testid={`input-edit-rate-${editDialogLocation}-${job.id}`}
+                              />
+                            </div>
+                            <span className="text-xs text-muted-foreground">/{job.payType === "hourly" ? "hr" : "yr"}</span>
+                            {assignment?.customRate && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-7 px-1.5"
+                                onClick={() => {
+                                  setEditForm({
+                                    ...editForm,
+                                    jobAssignments: editForm.jobAssignments.map(ja =>
+                                      ja.locationId === editDialogLocation && ja.jobRoleId === job.id
+                                        ? { ...ja, customRate: undefined }
+                                        : ja
+                                    )
+                                  });
+                                }}
+                              >
+                                <X className="h-3 w-3" />
+                              </Button>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  });
+                })()}
+              </div>
+              
+              {editForm.jobAssignments.length > 0 && (
+                <div className="text-xs text-muted-foreground">
+                  {editForm.jobAssignments.length} job{editForm.jobAssignments.length !== 1 ? 's' : ''} assigned across {editForm.selectedLocations.length} location{editForm.selectedLocations.length !== 1 ? 's' : ''}
                 </div>
               )}
             </div>
