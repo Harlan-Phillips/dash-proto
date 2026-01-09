@@ -5564,7 +5564,12 @@ export default function PnlRelease() {
                             )}
                          </div>
 
-                         {/* Wins Section */}
+                         {/* Highlights Section */}
+                         <div className="p-3 bg-emerald-50 border-b border-emerald-100">
+                            <span className="text-xs font-medium text-emerald-700 uppercase tracking-wide flex items-center gap-1.5">
+                               <Check className="h-3.5 w-3.5" /> Highlights
+                            </span>
+                         </div>
                          <div className="divide-y divide-gray-100">
                             {selectedRole === "owner" && (
                                <>
@@ -5686,11 +5691,18 @@ export default function PnlRelease() {
                                   </div>
                                </>
                             )}
+                         </div>
 
-                            {/* Opportunities Section */}
+                         {/* Missed Targets & Opportunities Section */}
+                         <div className="p-3 bg-amber-50 border-y border-amber-100">
+                            <span className="text-xs font-medium text-amber-700 uppercase tracking-wide flex items-center gap-1.5">
+                               <AlertTriangle className="h-3.5 w-3.5" /> Missed Targets & Opportunities
+                            </span>
+                         </div>
+                         <div className="divide-y divide-gray-100">
                             {selectedRole === "owner" && (
                                <>
-                                  <div className="p-4 flex justify-between items-center bg-amber-50/30">
+                                  <div className="p-4 flex justify-between items-center">
                                      <div className="flex items-center gap-3">
                                         <div className="h-8 w-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
                                            <AlertTriangle className="h-4 w-4" />
@@ -5702,7 +5714,7 @@ export default function PnlRelease() {
                                      </div>
                                      <span className="text-sm font-medium text-amber-600">-$1,245</span>
                                   </div>
-                                  <div className="p-4 flex justify-between items-center bg-amber-50/30">
+                                  <div className="p-4 flex justify-between items-center">
                                      <div className="flex items-center gap-3">
                                         <div className="h-8 w-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
                                            <AlertTriangle className="h-4 w-4" />
@@ -5714,11 +5726,35 @@ export default function PnlRelease() {
                                      </div>
                                      <span className="text-sm font-medium text-amber-600">-$3,200</span>
                                   </div>
+                                  <div className="p-4 flex justify-between items-center bg-indigo-50/30">
+                                     <div className="flex items-center gap-3">
+                                        <div className="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
+                                           <Lightbulb className="h-4 w-4" />
+                                        </div>
+                                        <div>
+                                           <p className="text-sm font-medium text-gray-900">Cut 10hrs of Prep Overtime</p>
+                                           <p className="text-xs text-muted-foreground">Kitchen Staff • Oct 14 • What-if scenario</p>
+                                        </div>
+                                     </div>
+                                     <span className="text-sm font-medium text-emerald-600">+$350</span>
+                                  </div>
+                                  <div className="p-4 flex justify-between items-center bg-indigo-50/30">
+                                     <div className="flex items-center gap-3">
+                                        <div className="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
+                                           <Lightbulb className="h-4 w-4" />
+                                        </div>
+                                        <div>
+                                           <p className="text-sm font-medium text-gray-900">Switch Avocado Supplier</p>
+                                           <p className="text-xs text-muted-foreground">COGS • Produce • What-if scenario</p>
+                                        </div>
+                                     </div>
+                                     <span className="text-sm font-medium text-emerald-600">+$800</span>
+                                  </div>
                                </>
                             )}
                             {selectedRole === "gm" && (
                                <>
-                                  <div className="p-4 flex justify-between items-center bg-amber-50/30">
+                                  <div className="p-4 flex justify-between items-center">
                                      <div className="flex items-center gap-3">
                                         <div className="h-8 w-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
                                            <AlertTriangle className="h-4 w-4" />
@@ -5730,7 +5766,7 @@ export default function PnlRelease() {
                                      </div>
                                      <span className="text-sm font-medium text-amber-600">-$1,800</span>
                                   </div>
-                                  <div className="p-4 flex justify-between items-center bg-amber-50/30">
+                                  <div className="p-4 flex justify-between items-center">
                                      <div className="flex items-center gap-3">
                                         <div className="h-8 w-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
                                            <AlertTriangle className="h-4 w-4" />
@@ -5746,7 +5782,7 @@ export default function PnlRelease() {
                             )}
                             {selectedRole === "chef" && (
                                <>
-                                  <div className="p-4 flex justify-between items-center bg-amber-50/30">
+                                  <div className="p-4 flex justify-between items-center">
                                      <div className="flex items-center gap-3">
                                         <div className="h-8 w-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
                                            <AlertTriangle className="h-4 w-4" />
@@ -5758,7 +5794,7 @@ export default function PnlRelease() {
                                      </div>
                                      <span className="text-sm font-medium text-amber-600">-$800</span>
                                   </div>
-                                  <div className="p-4 flex justify-between items-center bg-amber-50/30">
+                                  <div className="p-4 flex justify-between items-center">
                                      <div className="flex items-center gap-3">
                                         <div className="h-8 w-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
                                            <AlertTriangle className="h-4 w-4" />
@@ -5769,39 +5805,6 @@ export default function PnlRelease() {
                                         </div>
                                      </div>
                                      <span className="text-sm font-medium text-amber-600">-$350</span>
-                                  </div>
-                               </>
-                            )}
-
-                            {/* Impact Analysis - Owner only */}
-                            {selectedRole === "owner" && (
-                               <>
-                                  <div className="p-3 bg-gray-100 border-t border-gray-200">
-                                     <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">What-If Scenarios</span>
-                                  </div>
-                                  <div className="p-4 flex justify-between items-center">
-                                     <div className="flex items-center gap-3">
-                                        <div className="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
-                                           <Lightbulb className="h-4 w-4" />
-                                        </div>
-                                        <div>
-                                           <p className="text-sm font-medium text-gray-900">Cut 10hrs of Prep Overtime</p>
-                                           <p className="text-xs text-muted-foreground">Kitchen Staff • Oct 14</p>
-                                        </div>
-                                     </div>
-                                     <span className="text-sm font-medium text-emerald-600">+$350</span>
-                                  </div>
-                                  <div className="p-4 flex justify-between items-center">
-                                     <div className="flex items-center gap-3">
-                                        <div className="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
-                                           <Lightbulb className="h-4 w-4" />
-                                        </div>
-                                        <div>
-                                           <p className="text-sm font-medium text-gray-900">Switch Avocado Supplier</p>
-                                           <p className="text-xs text-muted-foreground">COGS • Produce</p>
-                                        </div>
-                                     </div>
-                                     <span className="text-sm font-medium text-emerald-600">+$800</span>
                                   </div>
                                </>
                             )}
