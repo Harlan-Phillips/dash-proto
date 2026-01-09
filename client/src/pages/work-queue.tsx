@@ -106,7 +106,7 @@ const mockTasks: Task[] = [
     workPage: "/payroll/run",
     steps: [
       { id: "1", label: "Review failed payroll details", completed: false, page: "/payroll/run" },
-      { id: "2", label: "Fix missing tax information", completed: false, page: "/payroll/onboarding" },
+      { id: "2", label: "Fix missing tax information", completed: false, page: "/payroll/staff?employees=f1,f2,f3" },
       { id: "3", label: "Re-run payroll", completed: false, page: "/payroll/run" },
     ],
   },
@@ -210,11 +210,11 @@ const mockTasks: Task[] = [
     company: "KOQ LLC",
     location: "NYC - Queens",
     employees: 5,
-    workPage: "/payroll/staff",
+    workPage: "/payroll/staff?employees=f3,6",
     steps: [
-      { id: "1", label: "Open Staff page", completed: false, page: "/payroll/staff" },
-      { id: "2", label: "Select unmapped employees at NYC - Queens", completed: false, page: "/payroll/staff" },
-      { id: "3", label: "Create payroll records", completed: false, page: "/payroll/staff" },
+      { id: "1", label: "Open Staff page", completed: false, page: "/payroll/staff?employees=f3,6" },
+      { id: "2", label: "Select unmapped employees at NYC - Queens", completed: false, page: "/payroll/staff?employees=f3,6" },
+      { id: "3", label: "Create payroll records", completed: false, page: "/payroll/staff?employees=f3,6" },
     ],
   },
   {
