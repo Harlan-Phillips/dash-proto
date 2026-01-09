@@ -3669,149 +3669,153 @@ export default function PnlRelease() {
                           </div>
                        </section>
 
-                       {/* 2. Key Insights Breakdown */}
+                       {/* 2. Highlights Section - matches curated view */}
                        <section>
                           <h3 className="font-serif text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                             <TrendingUp className="h-5 w-5 text-black" /> Performance Analysis
+                             <Check className="h-5 w-5 text-emerald-600" /> Highlights
                           </h3>
 
-                          <div className="grid gap-4">
-                             <div className="bg-emerald-50/50 border border-emerald-100 rounded-xl p-5">
-                                <h4 className="font-medium text-emerald-900 mb-3 flex items-center gap-2">
-                                   <ArrowUp className="h-4 w-4" /> Wins (What's working)
-                                </h4>
-                                <ul className="space-y-4">
-                                   <li className="flex gap-3 text-sm text-gray-700 items-start group">
-                                      <Check className="h-4 w-4 text-emerald-600 flex-shrink-0 mt-0.5" />
-                                      <div className="flex-1">
-                                        <div className="font-medium text-gray-900 mb-1">Labor % improved: 35% → 32% <span className="text-emerald-600">(saved $2,400)</span></div>
-                                        <p className="text-gray-600">Dinner shifts on Tue/Wed operated with 1 less runner, saving 40 hours. This hit Sarah's "Under 33% Labor" goal — she's now eligible for her <strong>$500 quarterly bonus</strong>.</p>
-                                      </div>
-                                      <button 
-                                        onClick={() => handleInsightClick("Tell me more about the labor efficiency improvements on Tue/Wed")}
-                                        className="text-emerald-600 hover:text-emerald-800 hover:bg-emerald-100 p-1 rounded-full transition-colors opacity-0 group-hover:opacity-100"
-                                        title="Ask Assistant for details"
-                                      >
-                                        <Lightbulb className="h-4 w-4" />
-                                      </button>
-                                   </li>
-                                   <li className="flex gap-3 text-sm text-gray-700 items-start group">
-                                      <Check className="h-4 w-4 text-emerald-600 flex-shrink-0 mt-0.5" />
-                                      <div className="flex-1">
-                                        <div className="font-medium text-gray-900 mb-1">Sales exceeded target: $124.5k vs $120k goal <span className="text-emerald-600">(+$4.5k)</span></div>
-                                        <p className="text-gray-600">Weekend brunch traffic was up 12% YoY. The "Smoked Salmon Benedict" special sold 145 units (+40 vs forecast). FOH upsell rate on Mimosas hit 18%, adding $1,200 to revenue.</p>
-                                      </div>
-                                      <button 
-                                        onClick={() => handleInsightClick("Analyze the sales goal variance and weekend brunch performance")}
-                                        className="text-emerald-600 hover:text-emerald-800 hover:bg-emerald-100 p-1 rounded-full transition-colors opacity-0 group-hover:opacity-100"
-                                        title="Ask Assistant for details"
-                                      >
-                                        <Lightbulb className="h-4 w-4" />
-                                      </button>
-                                   </li>
-                                   <li className="flex gap-3 text-sm text-gray-700 items-start group">
-                                      <Check className="h-4 w-4 text-emerald-600 flex-shrink-0 mt-0.5" />
-                                      <div className="flex-1">
-                                        <div className="font-medium text-gray-900 mb-1">Net Profit up: 15% → 18% <span className="text-emerald-600">(+$3,735)</span></div>
-                                        <p className="text-gray-600">Combined labor savings and strong sales outpaced the COGS increase, pushing net profit 3 points above target.</p>
-                                      </div>
-                                      <button 
-                                        onClick={() => handleInsightClick("What drove the net profit improvement?")}
-                                        className="text-emerald-600 hover:text-emerald-800 hover:bg-emerald-100 p-1 rounded-full transition-colors opacity-0 group-hover:opacity-100"
-                                        title="Ask Assistant for details"
-                                      >
-                                        <Lightbulb className="h-4 w-4" />
-                                      </button>
-                                   </li>
-                                </ul>
+                          <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                             <div className="p-4 bg-emerald-50 border-b border-emerald-100 flex justify-between items-center">
+                                <span className="text-sm font-medium text-emerald-700">What's working this period</span>
+                                <span className="text-xs text-emerald-600">Impact</span>
                              </div>
-
-                             <div className="bg-amber-50/50 border border-amber-100 rounded-xl p-5">
-                                <h4 className="font-medium text-amber-900 mb-3 flex items-center gap-2">
-                                   <AlertTriangle className="h-4 w-4" /> Opportunities (Where we lost out)
-                                </h4>
-                                <ul className="space-y-4">
-                                   <li className="flex gap-3 text-sm text-gray-700 items-start group">
-                                      <ArrowDown className="h-4 w-4 text-amber-600 flex-shrink-0 mt-0.5" />
-                                      <div className="flex-1">
-                                        <div className="font-medium text-gray-900 mb-1">COGS % missed target: 31% vs 30% goal <span className="text-amber-600">(-$1,245)</span></div>
-                                        <p className="text-gray-600">Produce prices spiked mid-month. <strong>Avocados</strong>: $45 → $62/case (+37%). <strong>Limes</strong>: $32 → $41 (+28%). These two items alone caused $980 of the variance. A local vendor "GreenLeaf" offers avocados at $48/case.</p>
+                             <div className="divide-y divide-gray-100">
+                                <div className="p-4 flex justify-between items-center group">
+                                   <div className="flex items-center gap-3">
+                                      <div className="h-8 w-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
+                                         <Check className="h-4 w-4" />
                                       </div>
-                                      <button 
-                                        onClick={() => handleInsightClick("Why did produce COGS spike? Show me details on Avocados and Limes.")}
-                                        className="text-amber-600 hover:text-amber-800 hover:bg-amber-100 p-1 rounded-full transition-colors opacity-0 group-hover:opacity-100"
-                                        title="Ask Assistant for details"
-                                      >
-                                        <Lightbulb className="h-4 w-4" />
-                                      </button>
-                                   </li>
-                                   <li className="flex gap-3 text-sm text-gray-700 items-start group">
-                                      <ArrowDown className="h-4 w-4 text-amber-600 flex-shrink-0 mt-0.5" />
-                                      <div className="flex-1">
-                                        <div className="font-medium text-gray-900 mb-1">Unplanned overtime: 12 hours <span className="text-amber-600">(-$350)</span></div>
-                                        <p className="text-gray-600">Kitchen prep team stayed late on 10/14 due to Sysco delivery arriving at 2PM instead of 10AM. Adjusting the delivery window to 8-10AM would prevent this next month.</p>
+                                      <div>
+                                         <p className="text-sm font-medium text-gray-900">
+                                            Labor % improved: 35% → 32%
+                                         </p>
+                                         <p className="text-xs text-muted-foreground">Dinner shifts on Tue/Wed operated with 1 less runner</p>
                                       </div>
+                                   </div>
+                                   <div className="flex items-center gap-2">
+                                      <span className="text-sm font-medium text-emerald-600">+$2,400</span>
                                       <button 
-                                        onClick={() => handleInsightClick("Show me the breakdown of overtime hours and who was affected.")}
-                                        className="text-amber-600 hover:text-amber-800 hover:bg-amber-100 p-1 rounded-full transition-colors opacity-0 group-hover:opacity-100"
-                                        title="Ask Assistant for details"
+                                         onClick={() => handleInsightClick("Tell me more about the labor efficiency improvements")}
+                                         className="text-emerald-600 hover:text-emerald-800 hover:bg-emerald-100 p-1 rounded-full transition-colors opacity-0 group-hover:opacity-100"
+                                         title="Ask Assistant"
                                       >
-                                        <Lightbulb className="h-4 w-4" />
+                                         <Lightbulb className="h-4 w-4" />
                                       </button>
-                                   </li>
-                                </ul>
-                                <div className="mt-4 pt-3 border-t border-amber-200">
-                                  <p className="text-xs text-amber-800">
-                                    <strong>To hit your 30% COGS goal:</strong> Switch avocado supplier (+$600/mo) and negotiate lime pricing (+$180/mo) = 1% savings on COGS.
-                                  </p>
+                                   </div>
+                                </div>
+                                <div className="p-4 flex justify-between items-center group">
+                                   <div className="flex items-center gap-3">
+                                      <div className="h-8 w-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
+                                         <Check className="h-4 w-4" />
+                                      </div>
+                                      <div>
+                                         <p className="text-sm font-medium text-gray-900">
+                                            Sales exceeded target: $124.5k vs $120k goal
+                                         </p>
+                                         <p className="text-xs text-muted-foreground">Weekend brunch traffic was up 12% YoY</p>
+                                      </div>
+                                   </div>
+                                   <div className="flex items-center gap-2">
+                                      <span className="text-sm font-medium text-emerald-600">+$4,500</span>
+                                      <button 
+                                         onClick={() => handleInsightClick("Analyze the sales goal variance")}
+                                         className="text-emerald-600 hover:text-emerald-800 hover:bg-emerald-100 p-1 rounded-full transition-colors opacity-0 group-hover:opacity-100"
+                                         title="Ask Assistant"
+                                      >
+                                         <Lightbulb className="h-4 w-4" />
+                                      </button>
+                                   </div>
+                                </div>
+                                <div className="p-4 flex justify-between items-center group">
+                                   <div className="flex items-center gap-3">
+                                      <div className="h-8 w-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
+                                         <Check className="h-4 w-4" />
+                                      </div>
+                                      <div>
+                                         <p className="text-sm font-medium text-gray-900">
+                                            Net Profit up: 15% → 18%
+                                         </p>
+                                         <p className="text-xs text-muted-foreground">Combined labor savings and strong sales outpaced COGS increase</p>
+                                      </div>
+                                   </div>
+                                   <div className="flex items-center gap-2">
+                                      <span className="text-sm font-medium text-emerald-600">+$3,735</span>
+                                      <button 
+                                         onClick={() => handleInsightClick("What drove the net profit improvement?")}
+                                         className="text-emerald-600 hover:text-emerald-800 hover:bg-emerald-100 p-1 rounded-full transition-colors opacity-0 group-hover:opacity-100"
+                                         title="Ask Assistant"
+                                      >
+                                         <Lightbulb className="h-4 w-4" />
+                                      </button>
+                                   </div>
                                 </div>
                              </div>
                           </div>
                        </section>
 
-                       {/* 3. Shopping Cart / Impact Analysis */}
+                       {/* 3. Missed Targets Section - matches curated view */}
                        <section>
-                          <h3 className="font-serif text-lg font-bold text-gray-900 mb-4">Impact Analysis</h3>
+                          <h3 className="font-serif text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                             <AlertTriangle className="h-5 w-5 text-amber-600" /> Missed Targets
+                          </h3>
+
                           <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
-                             <div className="p-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
-                                <span className="text-sm font-medium text-gray-600">If you had adjusted these items...</span>
-                                <span className="text-xs text-muted-foreground">Est. Margin Impact</span>
+                             <div className="p-4 bg-amber-50 border-b border-amber-100 flex justify-between items-center">
+                                <span className="text-sm font-medium text-amber-700">Areas needing attention</span>
+                                <span className="text-xs text-amber-600">Impact</span>
                              </div>
                              <div className="divide-y divide-gray-100">
-                                <div className="p-4 flex justify-between items-center hover:bg-gray-50 transition-colors cursor-pointer group" onClick={() => setShowChat(true)}>
+                                <div className="p-4 flex justify-between items-center group">
                                    <div className="flex items-center gap-3">
-                                      <div className="h-8 w-8 rounded-full bg-red-100 flex items-center justify-center text-red-600">
-                                         <X className="h-4 w-4" />
+                                      <div className="h-8 w-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
+                                         <AlertTriangle className="h-4 w-4" />
                                       </div>
                                       <div>
-                                         <p className="text-sm font-medium text-gray-900">Cut 10hrs of Prep Overtime</p>
-                                         <p className="text-xs text-muted-foreground">Kitchen Staff • Oct 14</p>
+                                         <p className="text-sm font-medium text-gray-900">
+                                            COGS % missed target: 31% vs 30% goal
+                                         </p>
+                                         <p className="text-xs text-muted-foreground">Produce prices spiked: Avocados +37%, Limes +28%</p>
                                       </div>
                                    </div>
-                                   <div className="text-right">
-                                      <span className="text-sm font-medium text-emerald-600">+$350</span>
-                                      <span className="text-xs text-gray-400 block group-hover:text-black transition-colors">Ask AI why →</span>
+                                   <div className="flex items-center gap-2">
+                                      <span className="text-sm font-medium text-amber-600">-$1,245</span>
+                                      <button 
+                                         onClick={() => handleInsightClick("Why did produce COGS spike?")}
+                                         className="text-amber-600 hover:text-amber-800 hover:bg-amber-100 p-1 rounded-full transition-colors opacity-0 group-hover:opacity-100"
+                                         title="Ask Assistant"
+                                      >
+                                         <Lightbulb className="h-4 w-4" />
+                                      </button>
                                    </div>
                                 </div>
-                                <div className="p-4 flex justify-between items-center hover:bg-gray-50 transition-colors cursor-pointer group" onClick={() => setShowChat(true)}>
+                                <div className="p-4 flex justify-between items-center group">
                                    <div className="flex items-center gap-3">
-                                      <div className="h-8 w-8 rounded-full bg-red-100 flex items-center justify-center text-red-600">
-                                         <X className="h-4 w-4" />
+                                      <div className="h-8 w-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
+                                         <AlertTriangle className="h-4 w-4" />
                                       </div>
                                       <div>
-                                         <p className="text-sm font-medium text-gray-900">Switch Avocado Supplier</p>
-                                         <p className="text-xs text-muted-foreground">COGS • Produce</p>
+                                         <p className="text-sm font-medium text-gray-900">
+                                            Overtime ran high: 142 hrs vs 80 budgeted
+                                         </p>
+                                         <p className="text-xs text-muted-foreground">Holiday weeks drove excess overtime across BOH and FOH</p>
                                       </div>
                                    </div>
-                                   <div className="text-right">
-                                      <span className="text-sm font-medium text-emerald-600">+$800</span>
-                                      <span className="text-xs text-gray-400 block group-hover:text-black transition-colors">Ask AI for options →</span>
+                                   <div className="flex items-center gap-2">
+                                      <span className="text-sm font-medium text-amber-600">-$3,200</span>
+                                      <button 
+                                         onClick={() => handleInsightClick("Show me the overtime breakdown")}
+                                         className="text-amber-600 hover:text-amber-800 hover:bg-amber-100 p-1 rounded-full transition-colors opacity-0 group-hover:opacity-100"
+                                         title="Ask Assistant"
+                                      >
+                                         <Lightbulb className="h-4 w-4" />
+                                      </button>
                                    </div>
                                 </div>
                              </div>
-                             <div className="p-4 bg-emerald-50/30 border-t border-gray-200 flex justify-between items-center">
-                                <span className="text-sm font-medium text-gray-900">Potential Net Income Increase</span>
-                                <span className="text-lg font-serif font-bold text-emerald-700">+$1,150</span>
+                             <div className="p-4 bg-amber-50/30 border-t border-amber-100 flex justify-between items-center">
+                                <span className="text-sm font-medium text-amber-800">To hit your 30% COGS goal: Switch avocado supplier (+$600/mo)</span>
+                                <span className="text-sm font-bold text-amber-700">+$780/mo savings</span>
                              </div>
                           </div>
                        </section>
