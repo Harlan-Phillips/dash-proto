@@ -1,0 +1,66 @@
+Replit Design Mode Prompt:
+
+In the Accounting/PnL page, fix the "Learn" lightbulb chat assistant so it properly answers user questions:
+Current Issue:
+
+Clicking the lightbulb icon opens a chat interface
+When users type a question and submit, the chat does not respond/answer
+The assistant appears non-functional
+
+Required Fix:
+1. Connect Chat to AI Backend:
+
+Ensure the chat input is properly connected to the AI/LLM API endpoint
+Verify the API call is being triggered on message submit
+Check that the response is being received and rendered in the chat UI
+
+2. Chat Functionality Requirements:
+
+On user message submit → send query to AI backend
+Display loading indicator while waiting for response
+Render AI response in chat bubble below user message
+Maintain conversation history within the session
+Handle errors gracefully with user-friendly messages
+
+3. Context-Aware Responses:
+
+Pass relevant P&L context to the AI (current page, selected metrics, visible data)
+The assistant should be able to answer questions like:
+
+"What is prime cost?"
+"How do I read this P&L statement?"
+"What does gross profit margin mean?"
+"Why is my food cost high?"
+
+
+
+4. Technical Checklist:
+
+ Verify onSubmit or onClick handler is attached to send button
+ Confirm API endpoint URL is correct and accessible
+ Check that request payload includes the user's message
+ Ensure response parsing extracts the AI's answer correctly
+ Confirm state update triggers re-render to display response
+
+5. UI/UX for Chat:
+
+Show typing indicator ("Assistant is thinking...")
+Auto-scroll to latest message
+Allow follow-up questions in the same thread
+Include a "Clear chat" option
+Style AI responses differently from user messages (different background color/alignment)
+
+Example Code Pattern (React):
+javascriptconst handleSend = async (userMessage) => {
+  setMessages([...messages, { role: 'user', content: userMessage }]);
+  setIsLoading(true);
+  
+  const response = await fetch('/api/chat', {
+    method: 'POST',
+    body: JSON.stringify({ message: userMessage, context: currentPnLData })
+  });
+  
+  const data = await response.json();
+  setMessages(prev => [...prev, { role: 'assistant', content: data.answer }]);
+  setIsLoading(false);
+};

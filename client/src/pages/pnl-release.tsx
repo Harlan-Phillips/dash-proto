@@ -51,7 +51,8 @@ import {
   Filter,
   Mail,
   Eye,
-  Pencil
+  Pencil,
+  RotateCcw
 } from "lucide-react";
 import {
   Popover,
@@ -2440,6 +2441,71 @@ function FloatingAssistantBar({ triggerQuery }: { triggerQuery?: string | null }
     setIsExpanded(false);
   };
 
+  const generateMockResponse = (question: string): { content: string; showArtifact: boolean } => {
+    const q = question.toLowerCase();
+    
+    if (q.includes('labor') && (q.includes('high') || q.includes('above') || q.includes('variance') || q.includes('why'))) {
+      return {
+        content: "Labor costs are running 1.5 points above target this month primarily due to:\n\n• **Holiday overtime**: 142 hours vs 80 budgeted, driven by Thanksgiving week scheduling\n• **Training costs**: New BOH staff onboarding added $1,200 in extra hours\n• **Server/Plater overtime**: Up $612 from last month\n\nTo reduce labor costs, consider locking in the Tue/Wed mid-shift cuts that saved $2,400 last month.",
+        showArtifact: true
+      };
+    }
+    
+    if (q.includes('cogs') || q.includes('food cost') || q.includes('cost of goods')) {
+      return {
+        content: "Your COGS is at 31% of revenue, slightly above the 30% target:\n\n• **Food Cost**: $5,185 (up 5% from last month)\n• **Beverage Cost**: $2,393 (doubled due to new wine program)\n• **Dairy**: Up 22% - consider switching suppliers\n\nGreenLeaf offers avocados at $48/case vs your current $62, potentially saving $600/month.",
+        showArtifact: true
+      };
+    }
+    
+    if (q.includes('margin') || q.includes('profit') || q.includes('net income') || q.includes('bottom line')) {
+      return {
+        content: "Net Operating Income is $17,722 (13.3% of revenue), down from $28,966 prior period:\n\n• **Revenue**: Up 4.2% to $133,042 — strong DoorDash growth (+$2,100)\n• **COGS**: 31% vs 30% target — slight overage\n• **Labor efficiency**: Improved from 35% to 32%\n\nThe margin compression is mainly from one-time online delivery fee investments ($3,134) that will pay back over time.",
+        showArtifact: false
+      };
+    }
+    
+    if (q.includes('revenue') || q.includes('sales') || q.includes('income')) {
+      return {
+        content: "Revenue for September 2025 was $133,042, up 4.2% vs prior period:\n\n• **Dine-in**: $89,650 (67% of revenue)\n• **Delivery**: $28,418 (21%) — DoorDash up 35%\n• **Takeout**: $14,974 (11%)\n\nDelivery channel is the fastest growing segment. Consider optimizing DoorDash menu pricing to improve margins.",
+        showArtifact: false
+      };
+    }
+    
+    if (q.includes('prime cost') || q.includes('benchmark') || q.includes('industry') || q.includes('compare')) {
+      return {
+        content: "Your Prime Cost (COGS + Labor) is at 54.2%, which compares favorably:\n\n• **Your Restaurant**: 54.2%\n• **Texas Average**: 59.5%\n• **National Average**: 60.0%\n\nYou're outperforming benchmarks by 5-6 points. Key advantages: efficient BOH staffing and strong vendor relationships.",
+        showArtifact: false
+      };
+    }
+    
+    if (q.includes('expense') || q.includes('operating') || q.includes('overhead')) {
+      return {
+        content: "Operating Expenses total $59,650 (44.8% of revenue):\n\n• **Payroll & Benefits**: $16,949 (25%)\n• **Direct Operating**: $21,380 (32%) — includes credit card fees\n• **Occupancy**: $17,054 (26%) — rent is stable\n• **G&A**: $3,871 (6%)\n\nCredit card fees at $3,978 are high — consider negotiating processor rates or incentivizing cash payments.",
+        showArtifact: false
+      };
+    }
+    
+    if (q.includes('action') || q.includes('improve') || q.includes('recommend') || q.includes('what should')) {
+      return {
+        content: "Based on your September P&L, here are the top opportunities:",
+        showArtifact: true
+      };
+    }
+    
+    if (q.includes('overtime') || q.includes('hours')) {
+      return {
+        content: "Overtime ran high this month: 142 hours vs 80 budgeted (+$3,200 impact):\n\n• **Dishwasher OT**: $278 (down from $384)\n• **Server/Plater OT**: $58 (down significantly from $670)\n• **Holiday weeks**: Thanksgiving drove most of the excess\n\nConsider adjusting Sysco delivery windows to 8-10AM to avoid prep overtime.",
+        showArtifact: true
+      };
+    }
+    
+    return {
+      content: "I can help you understand your P&L data. Here are some things I can explain:\n\n• **Labor costs** and overtime analysis\n• **COGS breakdown** and food cost percentages\n• **Revenue trends** by channel (dine-in, delivery, takeout)\n• **Operating expenses** and where to cut costs\n• **Prime cost benchmarks** vs industry standards\n\nWhat would you like to know more about?",
+      showArtifact: false
+    };
+  };
+
   const handleSend = async (text: string) => {
     if (!text.trim()) return;
 
@@ -2457,13 +2523,16 @@ function FloatingAssistantBar({ triggerQuery }: { triggerQuery?: string | null }
 
     setTimeout(() => inputRef.current?.focus(), 50);
 
-    await new Promise(r => setTimeout(r, 1500));
+    // Simulate thinking time (1-2 seconds for realism)
+    await new Promise(r => setTimeout(r, 1200 + Math.random() * 800));
 
+    const response = generateMockResponse(text);
+    
     const assistantMsg: FloatingMessage = {
       id: (Date.now() + 1).toString(),
       role: "assistant",
-      content: "Here are some suggested improvements based on your October report:",
-      artifact: true
+      content: response.content,
+      artifact: response.showArtifact
     };
 
     setMessages(prev => [...prev, assistantMsg]);
@@ -2526,12 +2595,23 @@ function FloatingAssistantBar({ triggerQuery }: { triggerQuery?: string | null }
                   <p className="text-xs text-gray-500">Build your action plan</p>
                 </div>
               </div>
-              <button 
-                onClick={handleCollapse}
-                className="p-1.5 hover:bg-gray-100 rounded-full transition-colors text-gray-400 hover:text-gray-600"
-              >
-                <X className="h-4 w-4" />
-              </button>
+              <div className="flex items-center gap-1">
+                {messages.length > 0 && (
+                  <button 
+                    onClick={handleNewChat}
+                    className="p-1.5 hover:bg-gray-100 rounded-full transition-colors text-gray-400 hover:text-gray-600"
+                    title="Clear chat"
+                  >
+                    <RotateCcw className="h-4 w-4" />
+                  </button>
+                )}
+                <button 
+                  onClick={handleCollapse}
+                  className="p-1.5 hover:bg-gray-100 rounded-full transition-colors text-gray-400 hover:text-gray-600"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
             </div>
 
             {/* Chat Content */}
@@ -2557,7 +2637,13 @@ function FloatingAssistantBar({ triggerQuery }: { triggerQuery?: string | null }
                         <div className="h-8 w-8 bg-gray-100 rounded-lg flex items-center justify-center shrink-0">
                           <Sparkles className="h-4 w-4 text-gray-600" />
                         </div>
-                        <p className="text-sm text-gray-700 pt-1.5">{msg.content}</p>
+                        <div className="text-sm text-gray-700 pt-1.5 whitespace-pre-line">
+                          {msg.content.split(/(\*\*[^*]+\*\*)/).map((part, i) => 
+                            part.startsWith('**') && part.endsWith('**') 
+                              ? <strong key={i} className="font-semibold text-gray-900">{part.slice(2, -2)}</strong>
+                              : <span key={i}>{part}</span>
+                          )}
+                        </div>
                       </div>
                       
                       {/* Action Cards */}
