@@ -3073,8 +3073,21 @@ export default function PnlRelease() {
   const [archiveSidebarWidth, setArchiveSidebarWidth] = useState(256); // default 256px (w-64)
   const [archiveSidebarCollapsed, setArchiveSidebarCollapsed] = useState(false);
   const [isResizingArchive, setIsResizingArchive] = useState(false);
+  const [isLayoutSidebarHovered, setIsLayoutSidebarHovered] = useState(false);
   const archiveMinWidth = 200;
   const archiveMaxWidth = 400;
+
+  // Track Layout sidebar hover via mouse position
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      // Layout sidebar is 64px (w-16) normally, expands to 256px (w-64) on hover
+      const sidebarWidth = isLayoutSidebarHovered ? 256 : 64;
+      setIsLayoutSidebarHovered(e.clientX <= sidebarWidth);
+    };
+    
+    document.addEventListener('mousemove', handleMouseMove);
+    return () => document.removeEventListener('mousemove', handleMouseMove);
+  }, [isLayoutSidebarHovered]);
 
   const handleArchiveMouseDown = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -3580,17 +3593,17 @@ export default function PnlRelease() {
         <Layout>
            <div className="min-h-screen bg-gray-50 flex overflow-hidden relative">
 
-              {/* Collapsed Sidebar Toggle Tab - fixed next to left sidebar */}
+              {/* Collapsed Sidebar Toggle Tab - attached to top right of left sidebar */}
               {archiveSidebarCollapsed && (
                  <button
                     onClick={toggleArchiveSidebar}
-                    style={{ left: 56 }}
-                    className="fixed top-1/2 -translate-y-1/2 z-30 bg-white border border-l-0 border-gray-200 rounded-r-lg shadow-md px-1.5 py-4 hover:bg-gray-50 transition-colors group"
+                    style={{ left: isLayoutSidebarHovered ? 256 : 64 }}
+                    className="fixed top-24 z-30 bg-white border border-l-0 border-gray-200 rounded-r-lg shadow-md px-1.5 py-3 hover:bg-gray-50 transition-all duration-500 ease-in-out"
                     data-testid="expand-archive-tab"
                  >
-                    <div className="flex flex-col items-center gap-2">
-                       <ChevronRight className="h-4 w-4 text-gray-400 group-hover:text-gray-600" />
-                       <span className="text-xs font-medium text-gray-500 [writing-mode:vertical-rl] rotate-180">Archive</span>
+                    <div className="flex flex-col items-center gap-1.5">
+                       <ChevronRight className="h-4 w-4 text-gray-400" />
+                       <span className="text-[10px] font-medium text-gray-500 [writing-mode:vertical-rl] rotate-180">Archive</span>
                     </div>
                  </button>
               )}
