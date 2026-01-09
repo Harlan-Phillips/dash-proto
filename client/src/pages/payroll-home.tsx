@@ -636,12 +636,17 @@ export default function PayrollHome() {
                 </div>
                 <div className="flex items-start gap-3">
                   <Zap className="h-4 w-4 mt-0.5 text-muted-foreground" />
-                  <div>
+                  <div className="flex-1">
                     <div className="font-medium flex items-center gap-2">
-                      {canEnableAutoImport ? "Ready to enable" : "Pending approval"}
-                      <div className={cn("h-2 w-2 rounded-full", canEnableAutoImport ? "bg-emerald-500" : "bg-amber-500")} />
+                      {canEnableAutoImport ? "Enabled" : "Disabled"}
+                      <div className={cn("h-2 w-2 rounded-full", canEnableAutoImport ? "bg-emerald-500" : "bg-gray-400")} />
                     </div>
                     <div className="text-muted-foreground">Auto Import Status</div>
+                    {!canEnableAutoImport && (
+                      <div className="mt-2 text-xs text-amber-600 bg-amber-50 px-2 py-1.5 rounded border border-amber-200">
+                        Complete POS & Payroll mappings in Actions Needed to enable
+                      </div>
+                    )}
                   </div>
                 </div>
               </CardContent>
