@@ -813,7 +813,16 @@ export default function Teams() {
                   </div>
                   <div className="relative">
                     <div className="max-h-[400px] overflow-y-auto scrollable-list" onScroll={(e) => handleScroll(e, setStaffScrolledToBottom)}>
-                      {staff.filter(s => s.status === "active" && s.name.toLowerCase().includes(personnelSearch.toLowerCase())).map((person, index, arr) => {
+                      {staff
+                      .filter(s => s.status === "active" && s.name.toLowerCase().includes(personnelSearch.toLowerCase()))
+                      .sort((a, b) => {
+                        const aAssigned = a.jobAssignments.some(ja => ja.jobRoleId === selectedJobRole && ja.locationId === jobAssignmentLocation);
+                        const bAssigned = b.jobAssignments.some(ja => ja.jobRoleId === selectedJobRole && ja.locationId === jobAssignmentLocation);
+                        if (aAssigned && !bAssigned) return -1;
+                        if (!aAssigned && bAssigned) return 1;
+                        return a.name.localeCompare(b.name);
+                      })
+                      .map((person, index, arr) => {
                         const isAssignedHere = person.jobAssignments.some(ja => ja.jobRoleId === selectedJobRole && ja.locationId === jobAssignmentLocation);
                         
                         const handleToggleAssignment = () => {
