@@ -1388,6 +1388,16 @@ function PnLDashboard({ onInsightClick, highlightedNodeId, onHighlightClear, onT
   const [filterLevel, setFilterLevel] = useState<VarianceLevel | 'all'>('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [isCollapsed, setIsCollapsed] = useState(false);
+  
+  // Comparison Period State
+  const [comparisonPeriod, setComparisonPeriod] = useState({
+    currentMonth: "September",
+    currentYear: "2025",
+    priorMonth: "August", 
+    priorYear: "2025"
+  });
+  const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  const years = ["2023", "2024", "2025", "2026"];
 
   // Use net profit for variance analysis (Net Operating Income)
   const netProfit = hierarchicalPnlData.find(item => item.id === 'net-income')?.current || 17722.37;
@@ -3051,17 +3061,6 @@ export default function PnlRelease() {
   const [showEmailReportModal, setShowEmailReportModal] = useState(false);
   const [showImpactAnalysis, setShowImpactAnalysis] = useState(false);
   const [expandedMissedTarget, setExpandedMissedTarget] = useState<string | null>(null);
-  
-  // Comparison Period State
-  const [comparisonPeriod, setComparisonPeriod] = useState({
-    currentMonth: "September",
-    currentYear: "2025",
-    priorMonth: "August", 
-    priorYear: "2025"
-  });
-  const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-  const years = ["2023", "2024", "2025", "2026"];
-  
   const [emailRecipients, setEmailRecipients] = useState<string[]>([
     "owner@restaurant.com",
     "gm@restaurant.com"
