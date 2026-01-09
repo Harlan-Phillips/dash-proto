@@ -72,7 +72,7 @@ interface Staff {
   role: "admin" | "manager" | "employee";
   jobAssignments: JobAssignment[];
   posEmployeeIds: string[];
-  payrollEmployeeId: string | null;
+  payrollEmployeeIds: string[];
   startDate: string;
   avatarColor: string;
 }
@@ -169,14 +169,14 @@ const initialJobRoles: JobRole[] = [
 ];
 
 const initialStaff: Staff[] = [
-  { id: "1", name: "Alice Johnson", initials: "AJ", email: "alice@example.com", phone: "(206) 555-0101", status: "active", role: "manager", jobAssignments: [{ locationId: "1", jobRoleId: "1" }, { locationId: "2", jobRoleId: "1" }, { locationId: "2", jobRoleId: "2" }], posEmployeeIds: ["pos-1", "pos-2"], payrollEmployeeId: "pay-1", startDate: "2023-03-15", avatarColor: avatarColors[0] },
-  { id: "2", name: "Bob Smith", initials: "BS", email: "bob@example.com", phone: "(206) 555-0102", status: "active", role: "employee", jobAssignments: [{ locationId: "1", jobRoleId: "5" }], posEmployeeIds: ["pos-3"], payrollEmployeeId: "pay-2", startDate: "2023-06-01", avatarColor: avatarColors[1] },
-  { id: "3", name: "Charlie Davis", initials: "CD", email: "charlie@example.com", phone: "(206) 555-0103", status: "active", role: "employee", jobAssignments: [{ locationId: "2", jobRoleId: "3" }], posEmployeeIds: ["pos-4", "pos-5", "pos-6"], payrollEmployeeId: "pay-3", startDate: "2023-07-20", avatarColor: avatarColors[2] },
-  { id: "4", name: "Diana Martinez", initials: "DM", email: "diana@example.com", phone: "(206) 555-0104", status: "active", role: "employee", jobAssignments: [{ locationId: "3", jobRoleId: "9" }], posEmployeeIds: ["pos-7"], payrollEmployeeId: "pay-4", startDate: "2024-01-10", avatarColor: avatarColors[3] },
-  { id: "5", name: "Eric Thompson", initials: "ET", email: "eric@example.com", phone: "(206) 555-0105", status: "active", role: "employee", jobAssignments: [{ locationId: "1", jobRoleId: "5" }, { locationId: "3", jobRoleId: "6" }], posEmployeeIds: ["pos-8"], payrollEmployeeId: "pay-5", startDate: "2022-11-05", avatarColor: avatarColors[4] },
-  { id: "6", name: "Fiona Garcia", initials: "FG", email: "fiona@example.com", phone: "(206) 555-0106", status: "active", role: "admin", jobAssignments: [{ locationId: "1", jobRoleId: "11" }, { locationId: "2", jobRoleId: "11" }, { locationId: "3", jobRoleId: "11" }], posEmployeeIds: [], payrollEmployeeId: "pay-6", startDate: "2021-01-15", avatarColor: avatarColors[5] },
-  { id: "7", name: "George Wilson", initials: "GW", email: "george@example.com", phone: "(206) 555-0107", status: "inactive", role: "employee", jobAssignments: [{ locationId: "2", jobRoleId: "7" }], posEmployeeIds: [], payrollEmployeeId: "pay-7", startDate: "2023-04-01", avatarColor: avatarColors[6] },
-  { id: "8", name: "Hannah Brown", initials: "HB", email: "hannah@example.com", phone: "(206) 555-0108", status: "active", role: "employee", jobAssignments: [{ locationId: "1", jobRoleId: "1" }, { locationId: "1", jobRoleId: "2" }], posEmployeeIds: [], payrollEmployeeId: null, startDate: "2024-02-01", avatarColor: avatarColors[7] },
+  { id: "1", name: "Alice Johnson", initials: "AJ", email: "alice@example.com", phone: "(206) 555-0101", status: "active", role: "manager", jobAssignments: [{ locationId: "1", jobRoleId: "1" }, { locationId: "2", jobRoleId: "1" }, { locationId: "2", jobRoleId: "2" }], posEmployeeIds: ["pos-1", "pos-2"], payrollEmployeeIds: ["pay-1", "pay-2"], startDate: "2023-03-15", avatarColor: avatarColors[0] },
+  { id: "2", name: "Bob Smith", initials: "BS", email: "bob@example.com", phone: "(206) 555-0102", status: "active", role: "employee", jobAssignments: [{ locationId: "1", jobRoleId: "5" }], posEmployeeIds: ["pos-3"], payrollEmployeeIds: ["pay-3"], startDate: "2023-06-01", avatarColor: avatarColors[1] },
+  { id: "3", name: "Charlie Davis", initials: "CD", email: "charlie@example.com", phone: "(206) 555-0103", status: "active", role: "employee", jobAssignments: [{ locationId: "2", jobRoleId: "3" }], posEmployeeIds: ["pos-4", "pos-5", "pos-6"], payrollEmployeeIds: ["pay-4", "pay-5"], startDate: "2023-07-20", avatarColor: avatarColors[2] },
+  { id: "4", name: "Diana Martinez", initials: "DM", email: "diana@example.com", phone: "(206) 555-0104", status: "active", role: "employee", jobAssignments: [{ locationId: "3", jobRoleId: "9" }], posEmployeeIds: ["pos-7"], payrollEmployeeIds: ["pay-6"], startDate: "2024-01-10", avatarColor: avatarColors[3] },
+  { id: "5", name: "Eric Thompson", initials: "ET", email: "eric@example.com", phone: "(206) 555-0105", status: "active", role: "employee", jobAssignments: [{ locationId: "1", jobRoleId: "5" }, { locationId: "3", jobRoleId: "6" }], posEmployeeIds: ["pos-8"], payrollEmployeeIds: ["pay-7", "pay-8"], startDate: "2022-11-05", avatarColor: avatarColors[4] },
+  { id: "6", name: "Fiona Garcia", initials: "FG", email: "fiona@example.com", phone: "(206) 555-0106", status: "active", role: "admin", jobAssignments: [{ locationId: "1", jobRoleId: "11" }, { locationId: "2", jobRoleId: "11" }, { locationId: "3", jobRoleId: "11" }], posEmployeeIds: [], payrollEmployeeIds: [], startDate: "2021-01-15", avatarColor: avatarColors[5] },
+  { id: "7", name: "George Wilson", initials: "GW", email: "george@example.com", phone: "(206) 555-0107", status: "inactive", role: "employee", jobAssignments: [{ locationId: "2", jobRoleId: "7" }], posEmployeeIds: [], payrollEmployeeIds: [], startDate: "2023-04-01", avatarColor: avatarColors[6] },
+  { id: "8", name: "Hannah Brown", initials: "HB", email: "hannah@example.com", phone: "(206) 555-0108", status: "active", role: "employee", jobAssignments: [{ locationId: "1", jobRoleId: "1" }, { locationId: "1", jobRoleId: "2" }], posEmployeeIds: [], payrollEmployeeIds: [], startDate: "2024-02-01", avatarColor: avatarColors[7] },
 ];
 
 export default function Teams() {
@@ -402,7 +402,7 @@ export default function Teams() {
         role: inviteForm.role,
         jobAssignments: inviteForm.jobAssignments,
         posEmployeeIds: [],
-        payrollEmployeeId: null,
+        payrollEmployeeIds: [],
         startDate: new Date().toISOString().split('T')[0],
         avatarColor: avatarColors[staff.length % avatarColors.length],
       };
@@ -479,14 +479,27 @@ export default function Teams() {
     }
   };
 
-  const updatePayrollMapping = (payrollId: string | null) => {
-    if (selectedStaff) {
+  const addPayrollMapping = (payrollId: string) => {
+    if (selectedStaff && !selectedStaff.payrollEmployeeIds.includes(payrollId)) {
+      const newPayrollIds = [...selectedStaff.payrollEmployeeIds, payrollId];
       setStaff(staff.map(s => 
         s.id === selectedStaff.id 
-          ? { ...s, payrollEmployeeId: payrollId }
+          ? { ...s, payrollEmployeeIds: newPayrollIds }
           : s
       ));
-      setSelectedStaff({ ...selectedStaff, payrollEmployeeId: payrollId });
+      setSelectedStaff({ ...selectedStaff, payrollEmployeeIds: newPayrollIds });
+    }
+  };
+
+  const removePayrollMapping = (payrollId: string) => {
+    if (selectedStaff) {
+      const newPayrollIds = selectedStaff.payrollEmployeeIds.filter(id => id !== payrollId);
+      setStaff(staff.map(s => 
+        s.id === selectedStaff.id 
+          ? { ...s, payrollEmployeeIds: newPayrollIds }
+          : s
+      ));
+      setSelectedStaff({ ...selectedStaff, payrollEmployeeIds: newPayrollIds });
     }
   };
 
@@ -500,7 +513,7 @@ export default function Teams() {
 
   const confirmAddPayrollMapping = () => {
     if (pendingPayrollMapping) {
-      updatePayrollMapping(pendingPayrollMapping);
+      addPayrollMapping(pendingPayrollMapping);
       setPendingPayrollMapping(null);
       setShowAddPayrollMappingDialog(false);
     }
@@ -510,14 +523,16 @@ export default function Teams() {
     return mockPOSEmployees.find(e => e.id === id);
   };
 
-  const getPayrollEmployee = (id: string | null) => {
-    return id ? mockPayrollEmployees.find(e => e.id === id) : null;
+  const getPayrollEmployee = (id: string) => {
+    return mockPayrollEmployees.find(e => e.id === id);
   };
 
   // Calculate unmapped counts
   const allMappedPOSIds = staff.flatMap(s => s.posEmployeeIds);
   const unmappedPOSEmployees = mockPOSEmployees.filter(e => !allMappedPOSIds.includes(e.id));
-  const usersWithoutPayrollMapping = staff.filter(s => s.status !== "inactive" && !s.payrollEmployeeId);
+  const allMappedPayrollIds = staff.flatMap(s => s.payrollEmployeeIds);
+  const unmappedPayrollEmployees = mockPayrollEmployees.filter(e => !allMappedPayrollIds.includes(e.id));
+  const usersWithoutPayrollMapping = staff.filter(s => s.status !== "inactive" && s.payrollEmployeeIds.length === 0);
 
   const getJobRoleNames = (assignments: JobAssignment[]) => {
     const uniqueJobIds = Array.from(new Set(assignments.map(a => a.jobRoleId)));
@@ -931,7 +946,7 @@ export default function Teams() {
                           </div>
                         </div>
                         <div className="flex items-center gap-3">
-                          {(person.posEmployeeIds.length === 0 || person.payrollEmployeeId === null) && (
+                          {(person.posEmployeeIds.length === 0 || person.payrollEmployeeIds.length === 0) && (
                             <span className="flex items-center gap-1 text-xs text-amber-600">
                               <AlertCircle className="h-3.5 w-3.5" />
                               Mapping needed
@@ -1205,11 +1220,11 @@ export default function Teams() {
                   {/* Payroll Mapping */}
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <Label className="text-sm font-medium">Payroll Employee Mapping</Label>
-                      {selectedStaff.payrollEmployeeId ? (
+                      <Label className="text-sm font-medium">Payroll Employee Mappings</Label>
+                      {selectedStaff.payrollEmployeeIds.length > 0 ? (
                         <span className="flex items-center gap-1 text-xs text-emerald-600">
                           <Check className="h-3 w-3" />
-                          Mapped
+                          {selectedStaff.payrollEmployeeIds.length} mapped
                         </span>
                       ) : (
                         <span className="flex items-center gap-1 text-xs text-amber-600">
@@ -1219,29 +1234,34 @@ export default function Teams() {
                       )}
                     </div>
                     
-                    <div className="border rounded-lg">
-                      {selectedStaff.payrollEmployeeId ? (
-                        <div className="flex items-center justify-between px-4 py-3">
-                          <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center">
-                              <Link2 className="h-4 w-4 text-emerald-600" />
+                    <div className="border rounded-lg divide-y">
+                      {selectedStaff.payrollEmployeeIds.length > 0 ? (
+                        selectedStaff.payrollEmployeeIds.map((payrollId) => {
+                          const payrollEmp = getPayrollEmployee(payrollId);
+                          return (
+                            <div key={payrollId} className="flex items-center justify-between px-4 py-3">
+                              <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center">
+                                  <Link2 className="h-4 w-4 text-emerald-600" />
+                                </div>
+                                <div>
+                                  <div className="text-sm font-medium">{payrollEmp?.name}</div>
+                                  <div className="text-xs text-muted-foreground">{payrollEmp?.payrollSystem}</div>
+                                </div>
+                              </div>
+                              <button
+                                onClick={() => removePayrollMapping(payrollId)}
+                                className="p-1.5 rounded-md hover:bg-red-50 text-muted-foreground hover:text-red-600 transition-colors"
+                                data-testid={`button-remove-payroll-mapping-${payrollId}`}
+                              >
+                                <X className="h-4 w-4" />
+                              </button>
                             </div>
-                            <div>
-                              <div className="text-sm font-medium">{getPayrollEmployee(selectedStaff.payrollEmployeeId)?.name}</div>
-                              <div className="text-xs text-muted-foreground">{getPayrollEmployee(selectedStaff.payrollEmployeeId)?.payrollSystem}</div>
-                            </div>
-                          </div>
-                          <button
-                            onClick={() => updatePayrollMapping(null)}
-                            className="p-1.5 rounded-md hover:bg-red-50 text-muted-foreground hover:text-red-600 transition-colors"
-                            data-testid="button-remove-payroll-mapping"
-                          >
-                            <X className="h-4 w-4" />
-                          </button>
-                        </div>
+                          );
+                        })
                       ) : (
                         <div className="px-4 py-6 text-center text-sm text-muted-foreground">
-                          No payroll employee linked
+                          No payroll employees linked
                         </div>
                       )}
                     </div>
@@ -1257,11 +1277,11 @@ export default function Teams() {
                       data-testid="button-add-payroll-mapping"
                     >
                       <Plus className="h-4 w-4" />
-                      {selectedStaff.payrollEmployeeId ? "Change Payroll Mapping" : "Add Payroll Mapping"}
+                      Add Payroll Mapping
                     </Button>
                     
                     <p className="text-xs text-muted-foreground">
-                      Link this staff member to their payroll record for wage calculations and tax filings.
+                      Link this staff member to their payroll records across different legal entities.
                     </p>
                   </div>
                 </TabsContent>
@@ -1638,7 +1658,7 @@ export default function Teams() {
           <div className="py-4">
             <Label className="text-sm font-medium mb-3 block">Select Payroll Employee</Label>
             <div className="border rounded-lg max-h-64 overflow-y-auto divide-y">
-              {mockPayrollEmployees.map((emp) => (
+              {mockPayrollEmployees.filter(emp => !selectedStaff?.payrollEmployeeIds.includes(emp.id)).map((emp) => (
                 <button
                   key={emp.id}
                   onClick={() => setPendingPayrollMapping(emp.id)}
@@ -1660,6 +1680,11 @@ export default function Teams() {
                   </div>
                 </button>
               ))}
+              {mockPayrollEmployees.filter(emp => !selectedStaff?.payrollEmployeeIds.includes(emp.id)).length === 0 && (
+                <div className="px-4 py-6 text-center text-sm text-muted-foreground">
+                  All payroll employees are already mapped
+                </div>
+              )}
             </div>
           </div>
           <DialogFooter>
