@@ -2978,6 +2978,7 @@ export default function PnlRelease() {
     bottomLine: "chart" as "data" | "chart",
     laborEfficiency: "data" as "data" | "chart"
   });
+  const [healthSnapshotMode, setHealthSnapshotMode] = useState<"percentage" | "actual">("percentage");
   // Initialize role from URL param if viewing as owner/gm/chef, otherwise default to owner
   const [selectedRole, setSelectedRole] = useState<"owner" | "gm" | "chef">(urlRole || "owner");
   const [showFullPnl, setShowFullPnl] = useState(false);
@@ -4415,15 +4416,33 @@ export default function PnlRelease() {
                    <section id="health-snapshot" className="scroll-mt-4">
                       <div className="flex items-center justify-between mb-1">
                          <h2 className="text-xl font-serif font-bold text-gray-900">Health Snapshot</h2>
-                         <button 
-                            data-testid="learn-health-snapshot"
-                            onClick={() => handleInsightClick("What are the key KPIs in a restaurant P&L health snapshot? Explain what each metric means and what healthy ranges look like.")}
-                            className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-amber-700 bg-amber-50 hover:bg-amber-100 rounded-lg transition-colors"
-                            title="Learn about Health Snapshot KPIs"
-                         >
-                            <Lightbulb className="h-3.5 w-3.5" />
-                            Learn
-                         </button>
+                         <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-0.5">
+                               <button 
+                                  onClick={() => setHealthSnapshotMode("percentage")}
+                                  className={cn("px-3 py-1.5 text-xs font-medium rounded-md transition-colors", healthSnapshotMode === "percentage" ? "bg-white shadow-sm text-gray-900" : "text-gray-500 hover:text-gray-700")}
+                                  data-testid="toggle-health-percentage"
+                               >
+                                  % Income
+                               </button>
+                               <button 
+                                  onClick={() => setHealthSnapshotMode("actual")}
+                                  className={cn("px-3 py-1.5 text-xs font-medium rounded-md transition-colors", healthSnapshotMode === "actual" ? "bg-white shadow-sm text-gray-900" : "text-gray-500 hover:text-gray-700")}
+                                  data-testid="toggle-health-actual"
+                               >
+                                  Actual $
+                               </button>
+                            </div>
+                            <button 
+                               data-testid="learn-health-snapshot"
+                               onClick={() => handleInsightClick("What are the key KPIs in a restaurant P&L health snapshot? Explain what each metric means and what healthy ranges look like.")}
+                               className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-amber-700 bg-amber-50 hover:bg-amber-100 rounded-lg transition-colors"
+                               title="Learn about Health Snapshot KPIs"
+                            >
+                               <Lightbulb className="h-3.5 w-3.5" />
+                               Learn
+                            </button>
+                         </div>
                       </div>
                       <p className="text-sm text-muted-foreground mb-4">Key Performance Indicators <span className="text-gray-400">• Click a metric to view trends</span></p>
                       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
@@ -4433,7 +4452,7 @@ export default function PnlRelease() {
                                   <th className="text-left px-6 py-4 font-medium text-gray-500">Metric</th>
                                   <th className="text-left px-6 py-4 font-medium text-gray-500">Actual</th>
                                   <th className="text-left px-6 py-4 font-medium text-gray-500">Target</th>
-                                  <th className="text-left px-6 py-4 font-medium text-gray-500">% Income</th>
+                                  <th className="text-left px-6 py-4 font-medium text-gray-500">Variance</th>
                                   <th className="text-right px-6 py-4 font-medium text-gray-500">Status</th>
                                </tr>
                             </thead>
@@ -4447,9 +4466,9 @@ export default function PnlRelease() {
                                     Net Sales
                                     <TrendingUp className="h-3.5 w-3.5 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
                                   </td>
-                                  <td className="px-6 py-4 font-semibold text-gray-900">$133,042</td>
-                                  <td className="px-6 py-4 text-gray-500">$150,000</td>
-                                  <td className="px-6 py-4 text-red-600 font-medium">-11.3%</td>
+                                  <td className="px-6 py-4 font-semibold text-gray-900">{healthSnapshotMode === "actual" ? "$133,042" : "100.0%"}</td>
+                                  <td className="px-6 py-4 text-gray-500">{healthSnapshotMode === "actual" ? "$150,000" : "100.0%"}</td>
+                                  <td className="px-6 py-4 text-red-600 font-medium">{healthSnapshotMode === "actual" ? "-$16,958" : "-11.3%"}</td>
                                   <td className="px-6 py-4 text-right"><span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">NEEDS ATTENTION</span></td>
                                </tr>
                                <tr 
@@ -4458,12 +4477,12 @@ export default function PnlRelease() {
                                   data-testid="health-row-prime-cost"
                                >
                                   <td className="px-6 py-4 text-gray-900 flex items-center gap-2">
-                                    Prime Cost %
+                                    Prime Cost
                                     <TrendingUp className="h-3.5 w-3.5 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
                                   </td>
-                                  <td className="px-6 py-4 font-semibold text-gray-900">54.0%</td>
-                                  <td className="px-6 py-4 text-gray-500">50.0%</td>
-                                  <td className="px-6 py-4 text-red-600 font-medium">+4.0pts</td>
+                                  <td className="px-6 py-4 font-semibold text-gray-900">{healthSnapshotMode === "actual" ? "$71,826" : "54.0%"}</td>
+                                  <td className="px-6 py-4 text-gray-500">{healthSnapshotMode === "actual" ? "$66,521" : "50.0%"}</td>
+                                  <td className="px-6 py-4 text-red-600 font-medium">{healthSnapshotMode === "actual" ? "+$5,305" : "+4.0pts"}</td>
                                   <td className="px-6 py-4 text-right"><span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">NEEDS ATTENTION</span></td>
                                </tr>
                                <tr 
@@ -4472,12 +4491,12 @@ export default function PnlRelease() {
                                   data-testid="health-row-labor"
                                >
                                   <td className="px-6 py-4 text-gray-900 flex items-center gap-2">
-                                    Labor %
+                                    Labor
                                     <TrendingUp className="h-3.5 w-3.5 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
                                   </td>
-                                  <td className="px-6 py-4 font-semibold text-gray-900">12.1%</td>
-                                  <td className="px-6 py-4 text-gray-500">12.0%</td>
-                                  <td className="px-6 py-4 text-amber-600 font-medium">+0.1pts</td>
+                                  <td className="px-6 py-4 font-semibold text-gray-900">{healthSnapshotMode === "actual" ? "$16,156" : "12.1%"}</td>
+                                  <td className="px-6 py-4 text-gray-500">{healthSnapshotMode === "actual" ? "$15,965" : "12.0%"}</td>
+                                  <td className="px-6 py-4 text-amber-600 font-medium">{healthSnapshotMode === "actual" ? "+$191" : "+0.1pts"}</td>
                                   <td className="px-6 py-4 text-right"><span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700">ON TRACK</span></td>
                                </tr>
                                <tr 
@@ -4486,12 +4505,12 @@ export default function PnlRelease() {
                                   data-testid="health-row-cogs"
                                >
                                   <td className="px-6 py-4 text-gray-900 flex items-center gap-2">
-                                    COGS %
+                                    COGS
                                     <TrendingUp className="h-3.5 w-3.5 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
                                   </td>
-                                  <td className="px-6 py-4 font-semibold text-gray-900">41.8%</td>
-                                  <td className="px-6 py-4 text-gray-500">38.0%</td>
-                                  <td className="px-6 py-4 text-red-600 font-medium">+3.8pts</td>
+                                  <td className="px-6 py-4 font-semibold text-gray-900">{healthSnapshotMode === "actual" ? "$55,670" : "41.8%"}</td>
+                                  <td className="px-6 py-4 text-gray-500">{healthSnapshotMode === "actual" ? "$50,556" : "38.0%"}</td>
+                                  <td className="px-6 py-4 text-red-600 font-medium">{healthSnapshotMode === "actual" ? "+$5,114" : "+3.8pts"}</td>
                                   <td className="px-6 py-4 text-right"><span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">NEEDS ATTENTION</span></td>
                                </tr>
                                <tr 
@@ -4500,12 +4519,12 @@ export default function PnlRelease() {
                                   data-testid="health-row-net-income"
                                >
                                   <td className="px-6 py-4 text-gray-900 flex items-center gap-2">
-                                    Net Margin %
+                                    Net Margin
                                     <TrendingUp className="h-3.5 w-3.5 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
                                   </td>
-                                  <td className="px-6 py-4 font-semibold text-gray-900">13.3%</td>
-                                  <td className="px-6 py-4 text-gray-500">15.0%</td>
-                                  <td className="px-6 py-4 text-red-600 font-medium">-1.7pts</td>
+                                  <td className="px-6 py-4 font-semibold text-gray-900">{healthSnapshotMode === "actual" ? "$17,722" : "13.3%"}</td>
+                                  <td className="px-6 py-4 text-gray-500">{healthSnapshotMode === "actual" ? "$19,956" : "15.0%"}</td>
+                                  <td className="px-6 py-4 text-red-600 font-medium">{healthSnapshotMode === "actual" ? "-$2,234" : "-1.7pts"}</td>
                                   <td className="px-6 py-4 text-right"><span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-700">MONITOR</span></td>
                                </tr>
                                <tr 
@@ -4517,9 +4536,9 @@ export default function PnlRelease() {
                                     Gross Profit
                                     <TrendingUp className="h-3.5 w-3.5 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
                                   </td>
-                                  <td className="px-6 py-4 font-semibold text-gray-900">$77,372</td>
-                                  <td className="px-6 py-4 text-gray-500">$93,000</td>
-                                  <td className="px-6 py-4 text-red-600 font-medium">-$15.6k</td>
+                                  <td className="px-6 py-4 font-semibold text-gray-900">{healthSnapshotMode === "actual" ? "$77,372" : "58.2%"}</td>
+                                  <td className="px-6 py-4 text-gray-500">{healthSnapshotMode === "actual" ? "$93,000" : "62.0%"}</td>
+                                  <td className="px-6 py-4 text-red-600 font-medium">{healthSnapshotMode === "actual" ? "-$15,628" : "-3.8pts"}</td>
                                   <td className="px-6 py-4 text-right"><span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">NEEDS ATTENTION</span></td>
                                </tr>
                             </tbody>
