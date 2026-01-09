@@ -3644,23 +3644,8 @@ export default function PnlRelease() {
                           </div>
                        </div>
 
-                       {/* View Toggle Tabs - same as accounting/pnl */}
+                       {/* View Toggle Tabs - matches accounting/pnl exactly */}
                        <div className="px-6 flex gap-1 border-t border-gray-100 mt-2">
-                          <button
-                             data-testid="tab-owner-curated-view"
-                             onClick={() => setOwnerViewTab("curated")}
-                             className={cn(
-                                "px-4 py-3 text-sm font-medium border-b-2 transition-colors",
-                                ownerViewTab === "curated"
-                                   ? "border-black text-gray-900"
-                                   : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                             )}
-                          >
-                             <div className="flex items-center gap-2">
-                                <LayoutDashboard className="h-4 w-4" />
-                                Curated View
-                             </div>
-                          </button>
                           <button
                              data-testid="tab-owner-detailed-view"
                              onClick={() => setOwnerViewTab("detailed")}
@@ -3674,6 +3659,21 @@ export default function PnlRelease() {
                              <div className="flex items-center gap-2">
                                 <FileSpreadsheet className="h-4 w-4" />
                                 Detailed View
+                             </div>
+                          </button>
+                          <button
+                             data-testid="tab-owner-curated-view"
+                             onClick={() => setOwnerViewTab("curated")}
+                             className={cn(
+                                "px-4 py-3 text-sm font-medium border-b-2 transition-colors",
+                                ownerViewTab === "curated"
+                                   ? "border-black text-gray-900"
+                                   : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                             )}
+                          >
+                             <div className="flex items-center gap-2">
+                                <LayoutDashboard className="h-4 w-4" />
+                                Curated View
                              </div>
                           </button>
                        </div>
@@ -4179,7 +4179,60 @@ export default function PnlRelease() {
                     {/* Detailed View Content */}
                     {ownerViewTab === "detailed" && (
                     <div className="p-8 space-y-8">
-                       {/* P&L Dashboard - Full detailed view */}
+                       {/* 1. Executive Narrative */}
+                       <section id="owner-executive-narrative" className="scroll-mt-4">
+                          <div className="flex items-center justify-between mb-4">
+                             <h2 className="text-xl font-serif font-bold text-gray-900">Executive Narrative</h2>
+                             <button 
+                                data-testid="learn-owner-executive-narrative"
+                                onClick={() => handleInsightClick("What is an executive narrative in a P&L report? Help me understand how to write and interpret it for my restaurant.")}
+                                className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-amber-700 bg-amber-50 hover:bg-amber-100 rounded-lg transition-colors"
+                                title="Learn about Executive Narrative"
+                             >
+                                <Lightbulb className="h-3.5 w-3.5" />
+                                Learn
+                             </button>
+                          </div>
+                          <div className="bg-white rounded-xl border border-gray-200 p-6">
+                             <div className="flex gap-4">
+                                <div className="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+                                   <Sparkles className="h-5 w-5 text-gray-600" />
+                                </div>
+                                <div className="flex-1">
+                                   <h3 className="font-semibold text-gray-900 mb-2">Performance Summary</h3>
+                                   <p className="text-gray-700 leading-relaxed">
+                                      December{' '}
+                                      <button 
+                                        onClick={() => navigateToPnlNode('net_income')}
+                                        className="text-amber-700 hover:text-amber-900 hover:bg-amber-50 rounded px-0.5 -mx-0.5 transition-colors cursor-pointer focus:outline-none focus:ring-1 focus:ring-amber-400 focus:ring-offset-1"
+                                        aria-label="View Net Income in P&L Dashboard"
+                                      >net income</button>{' '}
+                                      came in at $18,200 (6.2% margin), beating budget by $2,400. Strong holiday traffic drove{' '}
+                                      <button 
+                                        onClick={() => navigateToPnlNode('revenue')}
+                                        className="text-amber-700 hover:text-amber-900 hover:bg-amber-50 rounded px-0.5 -mx-0.5 transition-colors cursor-pointer focus:outline-none focus:ring-1 focus:ring-amber-400 focus:ring-offset-1"
+                                        aria-label="View Revenue in P&L Dashboard"
+                                      >revenue</button>{' '}
+                                      up 12% YoY, while{' '}
+                                      <button 
+                                        onClick={() => navigateToPnlNode('labor')}
+                                        className="text-amber-700 hover:text-amber-900 hover:bg-amber-50 rounded px-0.5 -mx-0.5 transition-colors cursor-pointer focus:outline-none focus:ring-1 focus:ring-amber-400 focus:ring-offset-1"
+                                        aria-label="View Labor Costs in P&L Dashboard"
+                                      >labor costs</button>{' '}
+                                      ran slightly over target due to overtime during peak weeks. Food cost held steady at 29.2%. The{' '}
+                                      <button 
+                                        onClick={() => navigateToPnlNode('prime_cost')}
+                                        className="text-amber-700 hover:text-amber-900 hover:bg-amber-50 rounded px-0.5 -mx-0.5 transition-colors cursor-pointer focus:outline-none focus:ring-1 focus:ring-amber-400 focus:ring-offset-1"
+                                        aria-label="View Prime Cost in P&L Dashboard"
+                                      >prime cost</button>{' '}
+                                      remained within the target range of 60-62%.
+                                   </p>
+                                </div>
+                             </div>
+                          </div>
+                       </section>
+
+                       {/* 2. P&L Dashboard - Full detailed view */}
                        <PnLDashboard 
                          onInsightClick={handleInsightClick} 
                          highlightedNodeId={highlightedPnlNodeId}
