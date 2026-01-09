@@ -355,18 +355,20 @@ export default function PayrollRun() {
             {hoursEntryMode === "select" && (
               <div className="grid grid-cols-3 gap-6">
                 <Card 
-                  className="cursor-pointer hover:border-primary transition-colors"
-                  onClick={() => { setHoursEntryMode("auto"); handleAutoImport(); }}
+                  className="cursor-not-allowed opacity-60"
                   data-testid="card-auto-import"
                 >
                   <CardContent className="p-8 flex flex-col items-center text-center">
-                    <div className="h-16 w-16 rounded-full bg-purple-100 flex items-center justify-center mb-4">
-                      <Zap className="h-8 w-8 text-purple-600" />
+                    <div className="h-16 w-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+                      <Zap className="h-8 w-8 text-gray-400" />
                     </div>
-                    <h3 className="text-lg font-semibold mb-2">Auto Import</h3>
+                    <h3 className="text-lg font-semibold mb-2 text-gray-500">Auto Import</h3>
                     <p className="text-sm text-muted-foreground">
                       Import hours directly from Toast POS integration
                     </p>
+                    <div className="mt-3 text-xs text-amber-600 bg-amber-50 px-3 py-2 rounded border border-amber-200">
+                      Complete POS & Payroll mappings on the Payroll Home page to enable
+                    </div>
                   </CardContent>
                 </Card>
                 <Card 

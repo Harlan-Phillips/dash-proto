@@ -642,11 +642,6 @@ export default function PayrollHome() {
                       <div className={cn("h-2 w-2 rounded-full", canEnableAutoImport ? "bg-emerald-500" : "bg-gray-400")} />
                     </div>
                     <div className="text-muted-foreground">Auto Import Status</div>
-                    {!canEnableAutoImport && (
-                      <div className="mt-2 text-xs text-amber-600 bg-amber-50 px-2 py-1.5 rounded border border-amber-200">
-                        Complete POS & Payroll mappings in Actions Needed to enable
-                      </div>
-                    )}
                   </div>
                 </div>
               </CardContent>
