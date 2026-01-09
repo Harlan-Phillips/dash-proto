@@ -5543,276 +5543,275 @@ export default function PnlRelease() {
                       </div>
                    </section>
 
-                   {/* Performance Analysis - Role-specific */}
+                   {/* Performance & Impact Analysis - Role-specific */}
                    <section>
-                      <div className="flex items-center justify-between mb-4">
-                         <h3 className="font-serif text-lg font-bold text-gray-900 flex items-center gap-2">
-                            <TrendingUp className="h-5 w-5 text-black" /> 
-                            {selectedRole === "owner" ? "Performance Analysis" : 
-                             selectedRole === "gm" ? "Operations Highlights" : 
-                             "Kitchen Highlights"}
-                         </h3>
-                         {selectedRole === "owner" && (
-                            <div className="flex items-center gap-1 text-xs text-gray-500">
-                               <span>Performance</span>
-                               {showImpactAnalysis && (
-                                  <>
-                                     <ChevronRight className="h-3 w-3" />
-                                     <span className="text-gray-900 font-medium">Impact Analysis</span>
-                                  </>
-                               )}
-                            </div>
-                         )}
-                      </div>
+                      <h3 className="font-serif text-lg font-bold text-gray-900 mb-4">
+                         {selectedRole === "owner" ? "Performance & Impact Analysis" : 
+                          selectedRole === "gm" ? "Operations Highlights" : 
+                          "Kitchen Highlights"}
+                      </h3>
 
-                      <div className="grid gap-4">
-                         <div className="bg-emerald-50/50 border border-emerald-100 rounded-xl p-5">
-                            <h4 className="font-medium text-emerald-900 mb-3 flex items-center gap-2">
-                               <ArrowUp className="h-4 w-4" /> Wins (What's working)
-                            </h4>
-                            <ul className="space-y-4">
-                               {/* Owner sees all wins */}
-                               {selectedRole === "owner" && (
-                                  <>
-                                     <li className="flex gap-3 text-sm text-gray-700 items-start">
-                                        <Check className="h-4 w-4 text-emerald-600 flex-shrink-0 mt-0.5" />
-                                        <div className="flex-1">
-                                          <div className="font-medium text-gray-900 mb-1">Labor % improved: 35% → 32% <span className="text-emerald-600">(saved $2,400)</span></div>
-                                          <p className="text-gray-600">Dinner shifts on Tue/Wed operated with 1 less runner, saving 40 hours.</p>
-                                        </div>
-                                     </li>
-                                     <li className="flex gap-3 text-sm text-gray-700 items-start">
-                                        <Check className="h-4 w-4 text-emerald-600 flex-shrink-0 mt-0.5" />
-                                        <div className="flex-1">
-                                          <div className="font-medium text-gray-900 mb-1">Sales exceeded target: $124.5k vs $120k goal <span className="text-emerald-600">(+$4.5k)</span></div>
-                                          <p className="text-gray-600">Weekend brunch traffic was up 12% YoY.</p>
-                                        </div>
-                                     </li>
-                                     <li className="flex gap-3 text-sm text-gray-700 items-start">
-                                        <Check className="h-4 w-4 text-emerald-600 flex-shrink-0 mt-0.5" />
-                                        <div className="flex-1">
-                                          <div className="font-medium text-gray-900 mb-1">Net Profit up: 15% → 18% <span className="text-emerald-600">(+$3,735)</span></div>
-                                          <p className="text-gray-600">Combined labor savings and strong sales outpaced the COGS increase.</p>
-                                        </div>
-                                     </li>
-                                  </>
-                               )}
-                               {/* GM sees FOH and operations wins */}
-                               {selectedRole === "gm" && (
-                                  <>
-                                     <li className="flex gap-3 text-sm text-gray-700 items-start">
-                                        <Check className="h-4 w-4 text-emerald-600 flex-shrink-0 mt-0.5" />
-                                        <div className="flex-1">
-                                          <div className="font-medium text-gray-900 mb-1">FOH Labor optimized: Saved 40 hours <span className="text-emerald-600">(+$1,200)</span></div>
-                                          <p className="text-gray-600">Dinner shifts on Tue/Wed operated with 1 less runner without impacting service quality.</p>
-                                        </div>
-                                     </li>
-                                     <li className="flex gap-3 text-sm text-gray-700 items-start">
-                                        <Check className="h-4 w-4 text-emerald-600 flex-shrink-0 mt-0.5" />
-                                        <div className="flex-1">
-                                          <div className="font-medium text-gray-900 mb-1">Guest count up 12%: 8,580 vs 7,650 <span className="text-emerald-600">(+930 covers)</span></div>
-                                          <p className="text-gray-600">Strong weekend traffic, especially during brunch hours.</p>
-                                        </div>
-                                     </li>
-                                     <li className="flex gap-3 text-sm text-gray-700 items-start">
-                                        <Check className="h-4 w-4 text-emerald-600 flex-shrink-0 mt-0.5" />
-                                        <div className="flex-1">
-                                          <div className="font-medium text-gray-900 mb-1">Table turns improved: 2.4 vs 2.2 target <span className="text-emerald-600">(+9%)</span></div>
-                                          <p className="text-gray-600">Faster turnover during peak hours improved revenue per seat.</p>
-                                        </div>
-                                     </li>
-                                  </>
-                               )}
-                               {/* Chef sees kitchen wins */}
-                               {selectedRole === "chef" && (
-                                  <>
-                                     <li className="flex gap-3 text-sm text-gray-700 items-start">
-                                        <Check className="h-4 w-4 text-emerald-600 flex-shrink-0 mt-0.5" />
-                                        <div className="flex-1">
-                                          <div className="font-medium text-gray-900 mb-1">Food cost % on target: 23.3% vs 24% budget <span className="text-emerald-600">(saved $1,100)</span></div>
-                                          <p className="text-gray-600">Portion control and waste reduction initiatives paid off.</p>
-                                        </div>
-                                     </li>
-                                     <li className="flex gap-3 text-sm text-gray-700 items-start">
-                                        <Check className="h-4 w-4 text-emerald-600 flex-shrink-0 mt-0.5" />
-                                        <div className="flex-1">
-                                          <div className="font-medium text-gray-900 mb-1">Smoked Salmon Benedict sold 145 units <span className="text-emerald-600">(+40 vs forecast)</span></div>
-                                          <p className="text-gray-600">New special performed exceptionally well during brunch service.</p>
-                                        </div>
-                                     </li>
-                                     <li className="flex gap-3 text-sm text-gray-700 items-start">
-                                        <Check className="h-4 w-4 text-emerald-600 flex-shrink-0 mt-0.5" />
-                                        <div className="flex-1">
-                                          <div className="font-medium text-gray-900 mb-1">Beverage cost held steady at 4.8% <span className="text-emerald-600">(under 5% target)</span></div>
-                                          <p className="text-gray-600">Good inventory management on bar stock.</p>
-                                        </div>
-                                     </li>
-                                  </>
-                               )}
-                            </ul>
+                      <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                         {/* Header */}
+                         <div className="p-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
+                            <span className="text-sm font-medium text-gray-600">
+                               {selectedRole === "owner" ? "Performance highlights & what-if scenarios" :
+                                selectedRole === "gm" ? "This period's key highlights" :
+                                "Kitchen performance this period"}
+                            </span>
+                            {selectedRole === "owner" && (
+                               <span className="text-xs text-muted-foreground">Est. Impact</span>
+                            )}
                          </div>
 
-                         <div className="bg-amber-50/50 border border-amber-100 rounded-xl p-5">
-                            <h4 className="font-medium text-amber-900 mb-3 flex items-center gap-2">
-                               <AlertTriangle className="h-4 w-4" /> Opportunities
-                            </h4>
-                            <ul className="space-y-4">
-                               {/* Owner sees all opportunities */}
-                               {selectedRole === "owner" && (
-                                  <>
-                                     <li className="flex gap-3 text-sm text-gray-700 items-start">
-                                        <ArrowDown className="h-4 w-4 text-amber-600 flex-shrink-0 mt-0.5" />
-                                        <div className="flex-1">
-                                          <div className="font-medium text-gray-900 mb-1">COGS % missed target: 31% vs 30% goal <span className="text-amber-600">(-$1,245)</span></div>
-                                          <p className="text-gray-600">Produce prices spiked mid-month. <strong>Avocados</strong>: +37%, <strong>Limes</strong>: +28%.</p>
+                         {/* Wins Section */}
+                         <div className="divide-y divide-gray-100">
+                            {selectedRole === "owner" && (
+                               <>
+                                  <div className="p-4 flex justify-between items-center">
+                                     <div className="flex items-center gap-3">
+                                        <div className="h-8 w-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
+                                           <Check className="h-4 w-4" />
                                         </div>
-                                     </li>
-                                     <li className="flex gap-3 text-sm text-gray-700 items-start">
-                                        <ArrowDown className="h-4 w-4 text-amber-600 flex-shrink-0 mt-0.5" />
-                                        <div className="flex-1">
-                                          <div className="font-medium text-gray-900 mb-1">Overtime ran high: 142 hours vs 80 budgeted <span className="text-amber-600">(-$3,200)</span></div>
-                                          <p className="text-gray-600">Holiday weeks drove excess overtime across BOH and FOH.</p>
+                                        <div>
+                                           <p className="text-sm font-medium text-gray-900">Labor % improved: 35% → 32%</p>
+                                           <p className="text-xs text-muted-foreground">Dinner shifts on Tue/Wed operated with 1 less runner</p>
                                         </div>
-                                     </li>
-                                  </>
-                               )}
-                               {/* GM sees FOH/operations opportunities */}
-                               {selectedRole === "gm" && (
-                                  <>
-                                     <li className="flex gap-3 text-sm text-gray-700 items-start">
-                                        <ArrowDown className="h-4 w-4 text-amber-600 flex-shrink-0 mt-0.5" />
-                                        <div className="flex-1">
-                                          <div className="font-medium text-gray-900 mb-1">FOH overtime exceeded budget by 62 hours <span className="text-amber-600">(-$1,800)</span></div>
-                                          <p className="text-gray-600">Holiday weeks drove excess overtime. Need better scheduling for January.</p>
+                                     </div>
+                                     <span className="text-sm font-medium text-emerald-600">+$2,400</span>
+                                  </div>
+                                  <div className="p-4 flex justify-between items-center">
+                                     <div className="flex items-center gap-3">
+                                        <div className="h-8 w-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
+                                           <Check className="h-4 w-4" />
                                         </div>
-                                     </li>
-                                     <li className="flex gap-3 text-sm text-gray-700 items-start">
-                                        <ArrowDown className="h-4 w-4 text-amber-600 flex-shrink-0 mt-0.5" />
-                                        <div className="flex-1">
-                                          <div className="font-medium text-gray-900 mb-1">Week 2 over-scheduled by 2.1 hrs/day <span className="text-amber-600">(-$680)</span></div>
-                                          <p className="text-gray-600">Tighter scheduling alignment with traffic patterns could save labor.</p>
+                                        <div>
+                                           <p className="text-sm font-medium text-gray-900">Sales exceeded target: $124.5k vs $120k goal</p>
+                                           <p className="text-xs text-muted-foreground">Weekend brunch traffic was up 12% YoY</p>
                                         </div>
-                                     </li>
-                                  </>
-                               )}
-                               {/* Chef sees kitchen opportunities */}
-                               {selectedRole === "chef" && (
-                                  <>
-                                     <li className="flex gap-3 text-sm text-gray-700 items-start">
-                                        <ArrowDown className="h-4 w-4 text-amber-600 flex-shrink-0 mt-0.5" />
-                                        <div className="flex-1">
-                                          <div className="font-medium text-gray-900 mb-1">Produce costs spiked: Avocados +37%, Limes +28% <span className="text-amber-600">(-$800)</span></div>
-                                          <p className="text-gray-600">Need to evaluate alternative suppliers or menu adjustments.</p>
+                                     </div>
+                                     <span className="text-sm font-medium text-emerald-600">+$4,500</span>
+                                  </div>
+                                  <div className="p-4 flex justify-between items-center">
+                                     <div className="flex items-center gap-3">
+                                        <div className="h-8 w-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
+                                           <Check className="h-4 w-4" />
                                         </div>
-                                     </li>
-                                     <li className="flex gap-3 text-sm text-gray-700 items-start">
-                                        <ArrowDown className="h-4 w-4 text-amber-600 flex-shrink-0 mt-0.5" />
-                                        <div className="flex-1">
-                                          <div className="font-medium text-gray-900 mb-1">BOH overtime: 12 unplanned hours <span className="text-amber-600">(-$350)</span></div>
-                                          <p className="text-gray-600">Sysco delivery arrived late on 10/14 causing prep team to stay late.</p>
+                                        <div>
+                                           <p className="text-sm font-medium text-gray-900">Net Profit up: 15% → 18%</p>
+                                           <p className="text-xs text-muted-foreground">Combined labor savings and strong sales outpaced COGS increase</p>
                                         </div>
-                                     </li>
-                                  </>
-                               )}
-                            </ul>
+                                     </div>
+                                     <span className="text-sm font-medium text-emerald-600">+$3,735</span>
+                                  </div>
+                               </>
+                            )}
+                            {selectedRole === "gm" && (
+                               <>
+                                  <div className="p-4 flex justify-between items-center">
+                                     <div className="flex items-center gap-3">
+                                        <div className="h-8 w-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
+                                           <Check className="h-4 w-4" />
+                                        </div>
+                                        <div>
+                                           <p className="text-sm font-medium text-gray-900">FOH Labor optimized: Saved 40 hours</p>
+                                           <p className="text-xs text-muted-foreground">Dinner shifts on Tue/Wed operated with 1 less runner</p>
+                                        </div>
+                                     </div>
+                                     <span className="text-sm font-medium text-emerald-600">+$1,200</span>
+                                  </div>
+                                  <div className="p-4 flex justify-between items-center">
+                                     <div className="flex items-center gap-3">
+                                        <div className="h-8 w-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
+                                           <Check className="h-4 w-4" />
+                                        </div>
+                                        <div>
+                                           <p className="text-sm font-medium text-gray-900">Guest count up 12%: 8,580 vs 7,650</p>
+                                           <p className="text-xs text-muted-foreground">Strong weekend traffic, especially during brunch</p>
+                                        </div>
+                                     </div>
+                                     <span className="text-sm font-medium text-emerald-600">+930 covers</span>
+                                  </div>
+                                  <div className="p-4 flex justify-between items-center">
+                                     <div className="flex items-center gap-3">
+                                        <div className="h-8 w-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
+                                           <Check className="h-4 w-4" />
+                                        </div>
+                                        <div>
+                                           <p className="text-sm font-medium text-gray-900">Table turns improved: 2.4 vs 2.2 target</p>
+                                           <p className="text-xs text-muted-foreground">Faster turnover during peak hours</p>
+                                        </div>
+                                     </div>
+                                     <span className="text-sm font-medium text-emerald-600">+9%</span>
+                                  </div>
+                               </>
+                            )}
+                            {selectedRole === "chef" && (
+                               <>
+                                  <div className="p-4 flex justify-between items-center">
+                                     <div className="flex items-center gap-3">
+                                        <div className="h-8 w-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
+                                           <Check className="h-4 w-4" />
+                                        </div>
+                                        <div>
+                                           <p className="text-sm font-medium text-gray-900">Food cost % on target: 23.3% vs 24% budget</p>
+                                           <p className="text-xs text-muted-foreground">Portion control and waste reduction paid off</p>
+                                        </div>
+                                     </div>
+                                     <span className="text-sm font-medium text-emerald-600">+$1,100</span>
+                                  </div>
+                                  <div className="p-4 flex justify-between items-center">
+                                     <div className="flex items-center gap-3">
+                                        <div className="h-8 w-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
+                                           <Check className="h-4 w-4" />
+                                        </div>
+                                        <div>
+                                           <p className="text-sm font-medium text-gray-900">Smoked Salmon Benedict sold 145 units</p>
+                                           <p className="text-xs text-muted-foreground">New special performed exceptionally well</p>
+                                        </div>
+                                     </div>
+                                     <span className="text-sm font-medium text-emerald-600">+40 vs forecast</span>
+                                  </div>
+                                  <div className="p-4 flex justify-between items-center">
+                                     <div className="flex items-center gap-3">
+                                        <div className="h-8 w-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
+                                           <Check className="h-4 w-4" />
+                                        </div>
+                                        <div>
+                                           <p className="text-sm font-medium text-gray-900">Beverage cost held steady at 4.8%</p>
+                                           <p className="text-xs text-muted-foreground">Good inventory management on bar stock</p>
+                                        </div>
+                                     </div>
+                                     <span className="text-sm font-medium text-emerald-600">under 5%</span>
+                                  </div>
+                               </>
+                            )}
+
+                            {/* Opportunities Section */}
+                            {selectedRole === "owner" && (
+                               <>
+                                  <div className="p-4 flex justify-between items-center bg-amber-50/30">
+                                     <div className="flex items-center gap-3">
+                                        <div className="h-8 w-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
+                                           <AlertTriangle className="h-4 w-4" />
+                                        </div>
+                                        <div>
+                                           <p className="text-sm font-medium text-gray-900">COGS % missed target: 31% vs 30% goal</p>
+                                           <p className="text-xs text-muted-foreground">Produce prices spiked: Avocados +37%, Limes +28%</p>
+                                        </div>
+                                     </div>
+                                     <span className="text-sm font-medium text-amber-600">-$1,245</span>
+                                  </div>
+                                  <div className="p-4 flex justify-between items-center bg-amber-50/30">
+                                     <div className="flex items-center gap-3">
+                                        <div className="h-8 w-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
+                                           <AlertTriangle className="h-4 w-4" />
+                                        </div>
+                                        <div>
+                                           <p className="text-sm font-medium text-gray-900">Overtime ran high: 142 hrs vs 80 budgeted</p>
+                                           <p className="text-xs text-muted-foreground">Holiday weeks drove excess overtime across BOH and FOH</p>
+                                        </div>
+                                     </div>
+                                     <span className="text-sm font-medium text-amber-600">-$3,200</span>
+                                  </div>
+                               </>
+                            )}
+                            {selectedRole === "gm" && (
+                               <>
+                                  <div className="p-4 flex justify-between items-center bg-amber-50/30">
+                                     <div className="flex items-center gap-3">
+                                        <div className="h-8 w-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
+                                           <AlertTriangle className="h-4 w-4" />
+                                        </div>
+                                        <div>
+                                           <p className="text-sm font-medium text-gray-900">FOH overtime exceeded budget by 62 hours</p>
+                                           <p className="text-xs text-muted-foreground">Need better scheduling for January</p>
+                                        </div>
+                                     </div>
+                                     <span className="text-sm font-medium text-amber-600">-$1,800</span>
+                                  </div>
+                                  <div className="p-4 flex justify-between items-center bg-amber-50/30">
+                                     <div className="flex items-center gap-3">
+                                        <div className="h-8 w-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
+                                           <AlertTriangle className="h-4 w-4" />
+                                        </div>
+                                        <div>
+                                           <p className="text-sm font-medium text-gray-900">Week 2 over-scheduled by 2.1 hrs/day</p>
+                                           <p className="text-xs text-muted-foreground">Tighter scheduling alignment with traffic patterns</p>
+                                        </div>
+                                     </div>
+                                     <span className="text-sm font-medium text-amber-600">-$680</span>
+                                  </div>
+                               </>
+                            )}
+                            {selectedRole === "chef" && (
+                               <>
+                                  <div className="p-4 flex justify-between items-center bg-amber-50/30">
+                                     <div className="flex items-center gap-3">
+                                        <div className="h-8 w-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
+                                           <AlertTriangle className="h-4 w-4" />
+                                        </div>
+                                        <div>
+                                           <p className="text-sm font-medium text-gray-900">Produce costs spiked: Avocados +37%, Limes +28%</p>
+                                           <p className="text-xs text-muted-foreground">Evaluate alternative suppliers or menu adjustments</p>
+                                        </div>
+                                     </div>
+                                     <span className="text-sm font-medium text-amber-600">-$800</span>
+                                  </div>
+                                  <div className="p-4 flex justify-between items-center bg-amber-50/30">
+                                     <div className="flex items-center gap-3">
+                                        <div className="h-8 w-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
+                                           <AlertTriangle className="h-4 w-4" />
+                                        </div>
+                                        <div>
+                                           <p className="text-sm font-medium text-gray-900">BOH overtime: 12 unplanned hours</p>
+                                           <p className="text-xs text-muted-foreground">Sysco delivery arrived late on 10/14</p>
+                                        </div>
+                                     </div>
+                                     <span className="text-sm font-medium text-amber-600">-$350</span>
+                                  </div>
+                               </>
+                            )}
+
+                            {/* Impact Analysis - Owner only */}
+                            {selectedRole === "owner" && (
+                               <>
+                                  <div className="p-3 bg-gray-100 border-t border-gray-200">
+                                     <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">What-If Scenarios</span>
+                                  </div>
+                                  <div className="p-4 flex justify-between items-center">
+                                     <div className="flex items-center gap-3">
+                                        <div className="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
+                                           <Lightbulb className="h-4 w-4" />
+                                        </div>
+                                        <div>
+                                           <p className="text-sm font-medium text-gray-900">Cut 10hrs of Prep Overtime</p>
+                                           <p className="text-xs text-muted-foreground">Kitchen Staff • Oct 14</p>
+                                        </div>
+                                     </div>
+                                     <span className="text-sm font-medium text-emerald-600">+$350</span>
+                                  </div>
+                                  <div className="p-4 flex justify-between items-center">
+                                     <div className="flex items-center gap-3">
+                                        <div className="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
+                                           <Lightbulb className="h-4 w-4" />
+                                        </div>
+                                        <div>
+                                           <p className="text-sm font-medium text-gray-900">Switch Avocado Supplier</p>
+                                           <p className="text-xs text-muted-foreground">COGS • Produce</p>
+                                        </div>
+                                     </div>
+                                     <span className="text-sm font-medium text-emerald-600">+$800</span>
+                                  </div>
+                               </>
+                            )}
                          </div>
 
-                         {/* View Impact Analysis - Owner only */}
+                         {/* Footer Summary */}
                          {selectedRole === "owner" && (
-                            <div className="col-span-full">
-                               <button
-                                  data-testid="toggle-impact-analysis"
-                                  onClick={() => setShowImpactAnalysis(!showImpactAnalysis)}
-                                  className={cn(
-                                     "w-full flex items-center justify-between p-4 rounded-xl border transition-all duration-200",
-                                     showImpactAnalysis 
-                                        ? "bg-indigo-50 border-indigo-200" 
-                                        : "bg-gradient-to-r from-gray-50 to-slate-50 border-gray-200 hover:border-gray-300 hover:shadow-sm"
-                                  )}
-                               >
-                                  <div className="flex items-center gap-3">
-                                     <div className={cn(
-                                        "h-10 w-10 rounded-lg flex items-center justify-center",
-                                        showImpactAnalysis ? "bg-indigo-100" : "bg-white border border-gray-200"
-                                     )}>
-                                        <Layers className={cn(
-                                           "h-5 w-5",
-                                           showImpactAnalysis ? "text-indigo-600" : "text-gray-600"
-                                        )} />
-                                     </div>
-                                     <div className="text-left">
-                                        <p className={cn(
-                                           "font-medium text-sm",
-                                           showImpactAnalysis ? "text-indigo-900" : "text-gray-900"
-                                        )}>
-                                           Impact Analysis
-                                        </p>
-                                        <p className="text-xs text-gray-500">What-if scenarios & potential savings</p>
-                                     </div>
-                                  </div>
-                                  <div className="flex items-center gap-3">
-                                     <span className="text-sm font-semibold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">
-                                        +$1,150 potential
-                                     </span>
-                                     <ChevronDown className={cn(
-                                        "h-5 w-5 text-gray-400 transition-transform duration-200",
-                                        showImpactAnalysis && "rotate-180"
-                                     )} />
-                                  </div>
-                               </button>
-
-                               {/* Expandable Impact Analysis Content */}
-                               <AnimatePresence>
-                                  {showImpactAnalysis && (
-                                     <motion.div
-                                        initial={{ height: 0, opacity: 0 }}
-                                        animate={{ height: "auto", opacity: 1 }}
-                                        exit={{ height: 0, opacity: 0 }}
-                                        transition={{ duration: 0.2, ease: "easeInOut" }}
-                                        className="overflow-hidden"
-                                     >
-                                        <div className="mt-3 bg-white border border-gray-200 rounded-xl overflow-hidden">
-                                           <div className="p-4 bg-indigo-50/50 border-b border-gray-200 flex justify-between items-center">
-                                              <div className="flex items-center gap-2">
-                                                 <Lightbulb className="h-4 w-4 text-indigo-600" />
-                                                 <span className="text-sm font-medium text-gray-700">If you had adjusted these items...</span>
-                                              </div>
-                                              <span className="text-xs text-muted-foreground">Est. Margin Impact</span>
-                                           </div>
-                                           <div className="divide-y divide-gray-100">
-                                              <div className="p-4 flex justify-between items-center hover:bg-gray-50 transition-colors">
-                                                 <div className="flex items-center gap-3">
-                                                    <div className="h-8 w-8 rounded-full bg-red-100 flex items-center justify-center text-red-600">
-                                                       <X className="h-4 w-4" />
-                                                    </div>
-                                                    <div>
-                                                       <p className="text-sm font-medium text-gray-900">Cut 10hrs of Prep Overtime</p>
-                                                       <p className="text-xs text-muted-foreground">Kitchen Staff • Oct 14</p>
-                                                    </div>
-                                                 </div>
-                                                 <span className="text-sm font-medium text-emerald-600">+$350</span>
-                                              </div>
-                                              <div className="p-4 flex justify-between items-center hover:bg-gray-50 transition-colors">
-                                                 <div className="flex items-center gap-3">
-                                                    <div className="h-8 w-8 rounded-full bg-red-100 flex items-center justify-center text-red-600">
-                                                       <X className="h-4 w-4" />
-                                                    </div>
-                                                    <div>
-                                                       <p className="text-sm font-medium text-gray-900">Switch Avocado Supplier</p>
-                                                       <p className="text-xs text-muted-foreground">COGS • Produce</p>
-                                                    </div>
-                                                 </div>
-                                                 <span className="text-sm font-medium text-emerald-600">+$800</span>
-                                              </div>
-                                           </div>
-                                           <div className="p-4 bg-emerald-50/50 border-t border-gray-200 flex justify-between items-center">
-                                              <span className="text-sm font-medium text-gray-900">Potential Net Income Increase</span>
-                                              <span className="text-lg font-serif font-bold text-emerald-700">+$1,150</span>
-                                           </div>
-                                        </div>
-                                     </motion.div>
-                                  )}
-                               </AnimatePresence>
+                            <div className="p-4 bg-emerald-50/50 border-t border-gray-200 flex justify-between items-center">
+                               <span className="text-sm font-medium text-gray-900">Potential Net Income Increase</span>
+                               <span className="text-lg font-serif font-bold text-emerald-700">+$1,150</span>
                             </div>
                          )}
                       </div>
