@@ -272,6 +272,11 @@ export default function Teams() {
     departmentId: "",
   });
 
+  // Edit department dialog
+  const [showEditDepartmentDialog, setShowEditDepartmentDialog] = useState(false);
+  const [editingDepartment, setEditingDepartment] = useState<Department | null>(null);
+  const [editDepartmentName, setEditDepartmentName] = useState("");
+
   const openEditJobDialog = (job: JobRole) => {
     setEditingJob(job);
     setEditJobForm({
@@ -283,6 +288,12 @@ export default function Teams() {
     setShowEditJobDialog(true);
   };
 
+  const openEditDepartmentDialog = (dept: Department) => {
+    setEditingDepartment(dept);
+    setEditDepartmentName(dept.name);
+    setShowEditDepartmentDialog(true);
+  };
+
   const handleSaveJob = () => {
     if (editingJob) {
       setJobRoles(prev => prev.map(job => 
@@ -292,6 +303,18 @@ export default function Teams() {
       ));
       setShowEditJobDialog(false);
       setEditingJob(null);
+    }
+  };
+
+  const handleSaveDepartment = () => {
+    if (editingDepartment && editDepartmentName.trim()) {
+      setDepartments(prev => prev.map(dept => 
+        dept.id === editingDepartment.id 
+          ? { ...dept, name: editDepartmentName.trim() }
+          : dept
+      ));
+      setShowEditDepartmentDialog(false);
+      setEditingDepartment(null);
     }
   };
 
@@ -641,8 +664,7 @@ export default function Teams() {
             </Select>
             <div className="flex items-center gap-2">
               <Button
-                className="gap-1.5 bg-[#1a1a1a] hover:bg-[#333] text-white"
-                size="sm"
+                className="gap-1.5"
                 onClick={() => setShowAddDepartmentSheet(true)}
                 data-testid="button-add-department"
               >
@@ -650,8 +672,7 @@ export default function Teams() {
                 Add Department
               </Button>
               <Button
-                className="gap-1.5 bg-[#1a1a1a] hover:bg-[#333] text-white"
-                size="sm"
+                className="gap-1.5"
                 onClick={() => setShowAddJobSheet(true)}
                 data-testid="button-add-job-role"
               >
@@ -688,7 +709,7 @@ export default function Teams() {
                           key={dept.id}
                           onClick={() => setSelectedDepartment(dept.id)}
                           className={cn(
-                            "w-full flex items-center justify-between px-4 h-[48px] text-left transition-colors",
+                            "w-full flex items-center justify-between px-4 h-[48px] text-left transition-colors group",
                             selectedDepartment === dept.id
                               ? "bg-muted"
                               : "hover:bg-gray-50",
@@ -697,9 +718,15 @@ export default function Teams() {
                           data-testid={`button-department-${dept.id}`}
                         >
                           <span className="font-medium text-sm truncate">{dept.name}</span>
-                          {selectedDepartment === dept.id && (
-                            <ChevronRight className="h-4 w-4 flex-shrink-0" />
-                          )}
+                          <div className="flex items-center gap-2">
+                            <Edit2 
+                              className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground cursor-pointer"
+                              onClick={(e) => { e.stopPropagation(); openEditDepartmentDialog(dept); }}
+                            />
+                            {selectedDepartment === dept.id && (
+                              <ChevronRight className="h-4 w-4 flex-shrink-0" />
+                            )}
+                          </div>
                         </button>
                       ))}
                     </div>
@@ -742,15 +769,15 @@ export default function Teams() {
                             data-testid={`button-job-${job.id}`}
                           >
                             <div className="min-w-0 flex-1">
-                              <div className="text-sm font-medium truncate">{job.name}</div>
+                              <div className="text-sm font-medium truncate">
+                                <span className="text-muted-foreground mr-1.5">{staffAtJob}</span>
+                                {job.name}
+                              </div>
                               <div className="text-xs text-muted-foreground">${job.baseRate}/hr</div>
                             </div>
                             <div className="flex items-center gap-2">
-                              {staffAtJob > 0 && (
-                                <span className="text-xs bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded">{staffAtJob}</span>
-                              )}
                               <Edit2 
-                                className="h-3.5 w-3.5 opacity-0 group-hover:opacity-100 text-muted-foreground transition-opacity"
+                                className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground cursor-pointer"
                                 onClick={(e) => { e.stopPropagation(); openEditJobDialog(job); }}
                               />
                               {selectedJobRole === job.id && (
@@ -1794,6 +1821,37 @@ export default function Teams() {
               Cancel
             </Button>
             <Button onClick={handleSaveJob} disabled={!editJobForm.name || !editJobForm.baseRate} data-testid="button-save-job">
+              Save Changes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Department Dialog */}
+      <Dialog open={showEditDepartmentDialog} onOpenChange={setShowEditDepartmentDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit Department</DialogTitle>
+            <DialogDescription>
+              Update the department name
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="edit-dept-name">Department Name</Label>
+              <Input
+                id="edit-dept-name"
+                value={editDepartmentName}
+                onChange={(e) => setEditDepartmentName(e.target.value)}
+                data-testid="input-edit-department-name"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowEditDepartmentDialog(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleSaveDepartment} disabled={!editDepartmentName.trim()} data-testid="button-save-department">
               Save Changes
             </Button>
           </DialogFooter>
