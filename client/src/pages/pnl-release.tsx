@@ -3307,6 +3307,13 @@ export default function PnlRelease() {
     const mapping = METRIC_TO_PNL_NODE[metricKey];
     if (mapping) {
       setHighlightedPnlNodeId(mapping.nodeId);
+      // Scroll to the P&L Dashboard section
+      setTimeout(() => {
+        const pnlSection = document.getElementById('pnl-dashboard');
+        if (pnlSection) {
+          pnlSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 150);
     }
   };
 
