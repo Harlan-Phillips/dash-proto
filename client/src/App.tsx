@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Switch, Route, Redirect } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -74,6 +75,12 @@ function Router() {
 }
 
 function App() {
+  useEffect(() => {
+    // Clear stale task data on app load
+    localStorage.removeItem("activeTask");
+    localStorage.removeItem("fromPipeline");
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
