@@ -105,14 +105,26 @@ export default function TaskBanner() {
 
   const fromPipeline = localStorage.getItem("fromPipeline") === "true";
   
+  const completedSteps = steps.filter(s => s.completed).length;
+  const totalSteps = steps.length;
+  const allComplete = totalSteps > 0 && completedSteps === totalSteps;
+
+  useEffect(() => {
+    if (allComplete && activeTask) {
+      const timer = setTimeout(() => {
+        localStorage.removeItem("activeTask");
+        localStorage.removeItem("fromPipeline");
+        setActiveTask(null);
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [allComplete, activeTask]);
+  
   if (!activeTask || location === "/work-queue" || !fromPipeline) return null;
 
   const config = priorityConfig[activeTask.priority];
   const PriorityIcon = config.icon;
-  const completedSteps = steps.filter(s => s.completed).length;
-  const totalSteps = steps.length;
   const progress = totalSteps > 0 ? (completedSteps / totalSteps) * 100 : 0;
-  const allComplete = totalSteps > 0 && completedSteps === totalSteps;
 
   return (
     <div className={cn("border-b", config.bgColor, config.borderColor)}>
@@ -159,10 +171,10 @@ export default function TaskBanner() {
             )}
             
             {allComplete && (
-              <Button size="sm" onClick={handleMarkComplete} className="gap-2" data-testid="button-complete-task">
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-100 text-emerald-700 rounded-sm text-sm font-medium">
                 <CheckCircle2 className="h-4 w-4" />
-                Mark Complete
-              </Button>
+                Task Complete!
+              </div>
             )}
             
             <Button variant="ghost" size="icon" onClick={handleDismiss} className="h-8 w-8" data-testid="button-dismiss-banner">
