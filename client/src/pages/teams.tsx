@@ -63,7 +63,7 @@ interface Staff {
   initials: string;
   email: string;
   phone: string;
-  status: "active" | "invited" | "inactive";
+  status: "active" | "inactive";
   role: "admin" | "manager" | "employee";
   jobRoles: string[];
   locations: string[];
@@ -157,7 +157,7 @@ const initialStaff: Staff[] = [
   { id: "1", name: "Alice Johnson", initials: "AJ", email: "alice@example.com", phone: "(206) 555-0101", status: "active", role: "manager", jobRoles: ["1"], locations: ["1", "2"], posEmployeeIds: ["pos-1"], payrollEmployeeId: "pay-1", startDate: "2023-03-15", avatarColor: avatarColors[0] },
   { id: "2", name: "Bob Smith", initials: "BS", email: "bob@example.com", phone: "(206) 555-0102", status: "active", role: "employee", jobRoles: ["5"], locations: ["1"], posEmployeeIds: ["pos-2"], payrollEmployeeId: "pay-2", startDate: "2023-06-01", avatarColor: avatarColors[1] },
   { id: "3", name: "Charlie Davis", initials: "CD", email: "charlie@example.com", phone: "(206) 555-0103", status: "active", role: "employee", jobRoles: ["3"], locations: ["2"], posEmployeeIds: ["pos-3", "pos-4"], payrollEmployeeId: "pay-3", startDate: "2023-07-20", avatarColor: avatarColors[2] },
-  { id: "4", name: "Diana Martinez", initials: "DM", email: "diana@example.com", phone: "(206) 555-0104", status: "invited", role: "employee", jobRoles: ["9"], locations: ["3"], posEmployeeIds: [], payrollEmployeeId: "pay-4", startDate: "2024-01-10", avatarColor: avatarColors[3] },
+  { id: "4", name: "Diana Martinez", initials: "DM", email: "diana@example.com", phone: "(206) 555-0104", status: "active", role: "employee", jobRoles: ["9"], locations: ["3"], posEmployeeIds: [], payrollEmployeeId: "pay-4", startDate: "2024-01-10", avatarColor: avatarColors[3] },
   { id: "5", name: "Eric Thompson", initials: "ET", email: "eric@example.com", phone: "(206) 555-0105", status: "active", role: "employee", jobRoles: ["5", "6"], locations: ["1", "3"], posEmployeeIds: ["pos-5"], payrollEmployeeId: null, startDate: "2022-11-05", avatarColor: avatarColors[4] },
   { id: "6", name: "Fiona Garcia", initials: "FG", email: "fiona@example.com", phone: "(206) 555-0106", status: "active", role: "admin", jobRoles: ["11"], locations: ["1", "2", "3"], posEmployeeIds: ["pos-6"], payrollEmployeeId: "pay-6", startDate: "2021-01-15", avatarColor: avatarColors[5] },
   { id: "7", name: "George Wilson", initials: "GW", email: "george@example.com", phone: "(206) 555-0107", status: "inactive", role: "employee", jobRoles: ["7"], locations: ["2"], posEmployeeIds: ["pos-7"], payrollEmployeeId: "pay-7", startDate: "2023-04-01", avatarColor: avatarColors[6] },
@@ -207,7 +207,7 @@ export default function Teams() {
 
   // Staff tab state
   const [staffSearch, setStaffSearch] = useState("");
-  const [staffStatusFilter, setStaffStatusFilter] = useState<"all" | "active" | "invited" | "inactive">("all");
+  const [staffStatusFilter, setStaffStatusFilter] = useState<"all" | "active" | "inactive">("all");
   const [selectedStaff, setSelectedStaff] = useState<Staff | null>(null);
   const [showStaffDetail, setShowStaffDetail] = useState(false);
   const [showInviteDialog, setShowInviteDialog] = useState(false);
@@ -351,7 +351,7 @@ export default function Teams() {
         initials,
         email: inviteForm.email,
         phone: inviteForm.phone,
-        status: "invited",
+        status: "active",
         role: inviteForm.role,
         jobRoles: inviteForm.jobRoles,
         locations: inviteForm.locations,
@@ -484,7 +484,6 @@ export default function Teams() {
   const getStatusBadgeColor = (status: Staff["status"]) => {
     switch (status) {
       case "active": return "bg-emerald-100 text-emerald-700 border-emerald-200";
-      case "invited": return "bg-amber-100 text-amber-700 border-amber-200";
       case "inactive": return "bg-gray-100 text-gray-600 border-gray-200";
     }
   };
@@ -685,7 +684,6 @@ export default function Teams() {
                   <SelectContent>
                     <SelectItem value="all">All Status</SelectItem>
                     <SelectItem value="active">Active</SelectItem>
-                    <SelectItem value="invited">Invited</SelectItem>
                     <SelectItem value="inactive">Inactive</SelectItem>
                   </SelectContent>
                 </Select>
@@ -1073,13 +1071,13 @@ export default function Teams() {
         </SheetContent>
       </Sheet>
 
-      {/* Invite Staff Dialog */}
+      {/* Add Staff Dialog */}
       <Dialog open={showInviteDialog} onOpenChange={setShowInviteDialog}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
-            <DialogTitle>Invite Staff Member</DialogTitle>
+            <DialogTitle>Add Staff Member</DialogTitle>
             <DialogDescription>
-              Send an invitation to join your team. They will receive an email to set up their account.
+              Add a new team member and assign their roles.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
@@ -1192,7 +1190,7 @@ export default function Teams() {
               disabled={!inviteForm.firstName || !inviteForm.lastName || !inviteForm.email}
               data-testid="button-send-invite"
             >
-              Send Invitation
+              Add Staff
             </Button>
           </DialogFooter>
         </DialogContent>
