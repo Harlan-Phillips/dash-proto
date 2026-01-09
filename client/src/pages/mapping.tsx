@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Layout from "@/components/layout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -71,6 +71,20 @@ const relatedTasks = [
   { id: "6", title: "Map 5 employees at Ballard location", priority: "medium" },
 ];
 
+function updateTaskStep(stepIndex: number) {
+  const stored = localStorage.getItem("activeTask");
+  if (!stored) return;
+  
+  try {
+    const task = JSON.parse(stored);
+    if (task.steps && task.steps[stepIndex]) {
+      task.steps[stepIndex].completed = true;
+      localStorage.setItem("activeTask", JSON.stringify(task));
+      window.dispatchEvent(new Event("storage"));
+    }
+  } catch {}
+}
+
 export default function Mapping() {
   const [employees, setEmployees] = useState(mockEmployees);
   const [searchQuery, setSearchQuery] = useState("");
@@ -78,6 +92,14 @@ export default function Mapping() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [selectedEmployees, setSelectedEmployees] = useState<string[]>([]);
   const [showMapDialog, setShowMapDialog] = useState(false);
+  const [hasVisited, setHasVisited] = useState(false);
+
+  useEffect(() => {
+    if (!hasVisited) {
+      updateTaskStep(0);
+      setHasVisited(true);
+    }
+  }, [hasVisited]);
 
   const filteredEmployees = employees.filter((emp) => {
     if (searchQuery && !emp.posName.toLowerCase().includes(searchQuery.toLowerCase())) return false;
@@ -105,7 +127,11 @@ export default function Mapping() {
 
   const handleSelectEmployee = (id: string, checked: boolean) => {
     if (checked) {
-      setSelectedEmployees([...selectedEmployees, id]);
+      const newSelected = [...selectedEmployees, id];
+      setSelectedEmployees(newSelected);
+      if (newSelected.length > 0) {
+        updateTaskStep(1);
+      }
     } else {
       setSelectedEmployees(selectedEmployees.filter((eid) => eid !== id));
     }
@@ -119,6 +145,7 @@ export default function Mapping() {
     );
     setSelectedEmployees([]);
     setShowMapDialog(false);
+    updateTaskStep(2);
   };
 
   return (
