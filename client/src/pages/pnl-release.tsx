@@ -4172,6 +4172,16 @@ export default function PnlRelease() {
                           </div>
                        </section>
 
+                       {/* Full P&L Dashboard - from accounting/pnl */}
+                       <div className="border-t border-gray-100 pt-8">
+                          <PnLDashboard 
+                            onInsightClick={handleInsightClick} 
+                            highlightedNodeId={highlightedPnlNodeId}
+                            onHighlightClear={() => setHighlightedPnlNodeId(null)}
+                            onTrendClick={openTrendModal}
+                          />
+                       </div>
+
                     </div>
                     </>
                     )}
@@ -4231,14 +4241,6 @@ export default function PnlRelease() {
                              </div>
                           </div>
                        </section>
-
-                       {/* 2. P&L Dashboard - Full detailed view */}
-                       <PnLDashboard 
-                         onInsightClick={handleInsightClick} 
-                         highlightedNodeId={highlightedPnlNodeId}
-                         onHighlightClear={() => setHighlightedPnlNodeId(null)}
-                         onTrendClick={openTrendModal}
-                       />
 
                        {/* Health Snapshot */}
                        <section id="owner-health-snapshot" className="scroll-mt-4">
