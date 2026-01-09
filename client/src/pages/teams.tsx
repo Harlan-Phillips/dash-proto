@@ -581,7 +581,7 @@ export default function Teams() {
                     />
                   </div>
                   <div className="relative">
-                    <div className="max-h-[308px] overflow-y-auto scrollable-list" onScroll={(e) => handleScroll(e, setDeptScrolledToBottom)}>
+                    <div className="max-h-[460px] overflow-y-auto scrollable-list" onScroll={(e) => handleScroll(e, setDeptScrolledToBottom)}>
                       {departments.filter(d => d.name.toLowerCase().includes(deptSearch.toLowerCase())).map((dept, index, arr) => (
                         <button
                           key={dept.id}
@@ -623,12 +623,12 @@ export default function Teams() {
                     />
                   </div>
                   <div className="relative">
-                    <div className="max-h-[308px] overflow-y-auto scrollable-list" onScroll={(e) => handleScroll(e, setDeptJobScrolledToBottom)}>
+                    <div className="max-h-[460px] overflow-y-auto scrollable-list" onScroll={(e) => handleScroll(e, setDeptJobScrolledToBottom)}>
                       {filteredJobs.filter(j => j.name.toLowerCase().includes(deptJobSearch.toLowerCase())).map((job, index, arr) => (
                         <label
                           key={job.id}
                           className={cn(
-                            "flex items-center gap-3 px-6 py-3 h-14 hover:bg-gray-50 cursor-pointer transition-colors",
+                            "flex items-center gap-3 px-6 py-3 hover:bg-gray-50 cursor-pointer transition-colors",
                             index !== arr.length - 1 && "border-b"
                           )}
                           data-testid={`label-job-${job.id}`}
@@ -638,7 +638,12 @@ export default function Teams() {
                             onCheckedChange={() => toggleJobSelection(job.id)}
                             data-testid={`checkbox-job-${job.id}`}
                           />
-                          <span className="text-sm font-medium">{job.name}</span>
+                          <div>
+                            <div className="text-sm font-medium">{job.name}</div>
+                            <div className="text-xs text-muted-foreground">
+                              {job.payType === "salaried" ? `$${job.baseRate.toLocaleString()}/yr` : `$${job.baseRate}/hr`}
+                            </div>
+                          </div>
                         </label>
                       ))}
                       {filteredJobs.filter(j => j.name.toLowerCase().includes(deptJobSearch.toLowerCase())).length === 0 && (
@@ -648,136 +653,6 @@ export default function Teams() {
                       )}
                     </div>
                     {filteredJobs.filter(j => j.name.toLowerCase().includes(deptJobSearch.toLowerCase())).length > 5 && !deptJobScrolledToBottom && (
-                      <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white/70 via-white/40 to-transparent pointer-events-none" />
-                    )}
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card data-testid="card-staff-assignment">
-            <CardHeader className="py-4">
-              <CardTitle className="text-lg">Job Assignment</CardTitle>
-              <CardDescription>Link employees to job roles</CardDescription>
-            </CardHeader>
-            <CardContent className="p-0">
-              <div className="grid grid-cols-2 border-t">
-                <div className="border-r">
-                  <div className="px-6 py-3 border-b bg-gray-50">
-                    <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Jobs</span>
-                  </div>
-                  <div className="relative border-b h-12 flex items-center">
-                    <Search className="absolute left-4 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      placeholder="Search jobs..."
-                      value={jobSearch}
-                      onChange={(e) => setJobSearch(e.target.value)}
-                      className="h-full pl-10 text-sm w-full border-0 shadow-none focus-visible:ring-0 rounded-none"
-                      data-testid="input-search-jobs"
-                    />
-                  </div>
-                  <div className="relative">
-                    <div className="max-h-[308px] overflow-y-auto scrollable-list" onScroll={(e) => handleScroll(e, setJobScrolledToBottom)}>
-                      {jobRoles.filter(job => job.name.toLowerCase().includes(jobSearch.toLowerCase())).map((job, index, arr) => (
-                        <button
-                          key={job.id}
-                          onClick={() => setSelectedJob(job.id)}
-                          className={cn(
-                            "w-full flex items-center justify-between px-6 py-3 h-14 text-left transition-colors",
-                            selectedJob === job.id
-                              ? "bg-muted"
-                              : "hover:bg-gray-50",
-                            index !== arr.length - 1 && "border-b"
-                          )}
-                          data-testid={`button-select-job-${job.id}`}
-                        >
-                          <div>
-                            <div className="font-medium text-sm">{job.name}</div>
-                            <div className="text-xs text-muted-foreground">
-                              {job.payType === "salaried" ? `$${job.baseRate.toLocaleString()}/YR` : `$${job.baseRate}/HR`}
-                            </div>
-                          </div>
-                          {selectedJob === job.id && (
-                            <ChevronRight className="h-4 w-4" />
-                          )}
-                        </button>
-                      ))}
-                    </div>
-                    {jobRoles.filter(job => job.name.toLowerCase().includes(jobSearch.toLowerCase())).length > 5 && !jobScrolledToBottom && (
-                      <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white/70 via-white/40 to-transparent pointer-events-none" />
-                    )}
-                  </div>
-                </div>
-
-                <div>
-                  <div className="px-6 py-3 border-b bg-gray-50">
-                    <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Staff</span>
-                  </div>
-                  <div className="relative border-b h-12 flex items-center">
-                    <Search className="absolute left-4 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      placeholder="Search staff..."
-                      value={personnelSearch}
-                      onChange={(e) => setPersonnelSearch(e.target.value)}
-                      className="h-full pl-10 text-sm w-full border-0 shadow-none focus-visible:ring-0 rounded-none"
-                      data-testid="input-search-personnel"
-                    />
-                  </div>
-                  <div className="relative">
-                    <div className="max-h-[308px] overflow-y-auto scrollable-list" onScroll={(e) => handleScroll(e, setStaffScrolledToBottom)}>
-                      {staff.filter(person => person.name.toLowerCase().includes(personnelSearch.toLowerCase())).map((person, index, arr) => {
-                        const isAssigned = assignedToSelectedJob.includes(person.id);
-                        const assignedElsewhere = isStaffAssignedElsewhere(person.id);
-                        const assignedToJobId = Object.entries(assignedStaff).find(
-                          ([_, staffIds]) => staffIds.includes(person.id)
-                        )?.[0];
-                        const assignedToJob = assignedToJobId ? jobRoles.find(j => j.id === assignedToJobId) : null;
-                        
-                        return (
-                          <div
-                            key={person.id}
-                            className={cn(
-                              "flex items-center gap-3 px-6 py-3 h-14 transition-colors",
-                              assignedElsewhere ? "opacity-50" : "hover:bg-gray-50",
-                              index !== arr.length - 1 && "border-b"
-                            )}
-                            data-testid={`staff-row-${person.id}`}
-                          >
-                            <Checkbox
-                              checked={isAssigned}
-                              onCheckedChange={() => toggleStaffAssignment(person.id)}
-                              disabled={assignedElsewhere}
-                              data-testid={`checkbox-staff-${person.id}`}
-                            />
-                            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium bg-gray-400">
-                              {person.initials}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <div className="text-sm font-medium">{person.name}</div>
-                              <div className="h-5 flex items-center justify-between gap-2">
-                                {isAssigned ? (
-                                  <>
-                                    <span className="text-xs text-muted-foreground uppercase">Assigned</span>
-                                    <button 
-                                      className="text-xs text-muted-foreground hover:text-foreground whitespace-nowrap"
-                                      data-testid={`button-view-rates-${person.id}`}
-                                    >
-                                      View Earning Rates →
-                                    </button>
-                                  </>
-                                ) : assignedElsewhere ? (
-                                  <span className="text-xs text-muted-foreground">Assigned to {assignedToJob?.name}</span>
-                                ) : (
-                                  <span className="text-xs text-transparent">Placeholder</span>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                    {staff.filter(person => person.name.toLowerCase().includes(personnelSearch.toLowerCase())).length > 5 && !staffScrolledToBottom && (
                       <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white/70 via-white/40 to-transparent pointer-events-none" />
                     )}
                   </div>
