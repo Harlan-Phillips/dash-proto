@@ -1505,7 +1505,7 @@ function PnLDashboard({ onInsightClick, highlightedNodeId, onHighlightClear, onT
         </button>
         
         {/* Comparison Period - Inline with header */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg shadow-sm">
           <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Comparing</span>
           <select
             data-testid="select-current-month"
