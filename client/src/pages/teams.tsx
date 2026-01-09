@@ -159,6 +159,9 @@ const initialJobRoles: JobRole[] = [
   { id: "10", name: "Barback", departmentId: "3", baseRate: 16, payType: "hourly", selected: false },
   { id: "11", name: "General Manager", departmentId: "4", baseRate: 75000, payType: "salaried", selected: true },
   { id: "12", name: "Assistant Manager", departmentId: "4", baseRate: 55000, payType: "salaried", selected: false },
+  { id: "13", name: "Catering Manager", departmentId: "5", baseRate: 60000, payType: "salaried", selected: true },
+  { id: "14", name: "Events Coordinator", departmentId: "6", baseRate: 52000, payType: "salaried", selected: false },
+  { id: "15", name: "Marketing Director", departmentId: "8", baseRate: 85000, payType: "salaried", selected: true },
 ];
 
 const initialStaff: Staff[] = [
@@ -588,13 +591,13 @@ export default function Teams() {
                     />
                   </div>
                   <div className="relative">
-                    <div className="max-h-[506px] overflow-y-auto scrollable-list" onScroll={(e) => handleScroll(e, setDeptScrolledToBottom)}>
+                    <div className="max-h-[552px] overflow-y-auto scrollable-list" onScroll={(e) => handleScroll(e, setDeptScrolledToBottom)}>
                       {departments.filter(d => d.name.toLowerCase().includes(deptSearch.toLowerCase())).map((dept, index, arr) => (
                         <button
                           key={dept.id}
                           onClick={() => setSelectedDepartment(dept.id)}
                           className={cn(
-                            "w-full flex items-center justify-between px-6 h-11 text-left transition-colors",
+                            "w-full flex items-center justify-between px-6 h-12 text-left transition-colors",
                             selectedDepartment === dept.id
                               ? "bg-muted"
                               : "hover:bg-gray-50",
@@ -630,12 +633,12 @@ export default function Teams() {
                     />
                   </div>
                   <div className="relative">
-                    <div className="max-h-[506px] overflow-y-auto scrollable-list" onScroll={(e) => handleScroll(e, setDeptJobScrolledToBottom)}>
+                    <div className="max-h-[552px] overflow-y-auto scrollable-list" onScroll={(e) => handleScroll(e, setDeptJobScrolledToBottom)}>
                       {filteredJobs.filter(j => j.name.toLowerCase().includes(deptJobSearch.toLowerCase())).map((job, index, arr) => (
                         <label
                           key={job.id}
                           className={cn(
-                            "flex items-center gap-3 px-6 h-11 hover:bg-gray-50 cursor-pointer transition-colors",
+                            "flex items-center gap-3 px-6 h-12 hover:bg-gray-50 cursor-pointer transition-colors",
                             index !== arr.length - 1 && "border-b"
                           )}
                           data-testid={`label-job-${job.id}`}
@@ -645,11 +648,11 @@ export default function Teams() {
                             onCheckedChange={() => toggleJobSelection(job.id)}
                             data-testid={`checkbox-job-${job.id}`}
                           />
-                          <div className="flex items-center gap-2">
-                            <span className="text-sm font-medium">{job.name}</span>
-                            <span className="text-xs text-muted-foreground">
+                          <div>
+                            <div className="text-sm font-medium">{job.name}</div>
+                            <div className="text-xs text-muted-foreground">
                               {job.payType === "salaried" ? `$${job.baseRate.toLocaleString()}/yr` : `$${job.baseRate}/hr`}
-                            </span>
+                            </div>
                           </div>
                         </label>
                       ))}
