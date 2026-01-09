@@ -3704,7 +3704,7 @@ export default function PnlRelease() {
                                    animate={{ height: "auto", opacity: 1 }}
                                    exit={{ height: 0, opacity: 0 }}
                                    transition={{ duration: 0.2 }}
-                                   className="overflow-hidden"
+                                   style={{ overflow: showCuratedFilterDropdown ? 'visible' : 'hidden' }}
                                 >
                                    <div className="px-4 pb-4 space-y-3">
                                       {/* First-time user hint */}
