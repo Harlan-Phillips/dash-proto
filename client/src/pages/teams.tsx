@@ -235,6 +235,8 @@ export default function Teams() {
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showRevokeDialog, setShowRevokeDialog] = useState(false);
   const [staffDetailTab, setStaffDetailTab] = useState("overview");
+  const [editingRateKey, setEditingRateKey] = useState<string | null>(null);
+  const [editingRateValue, setEditingRateValue] = useState("");
 
   // Invite form state
   const [inviteForm, setInviteForm] = useState({
@@ -1130,10 +1132,10 @@ export default function Teams() {
 
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <Label className="text-sm font-medium">Job Assignments & Pay Rates</Label>
-                      <Button variant="ghost" size="sm" className="h-7 text-xs gap-1" onClick={() => openEditDialog(selectedStaff)}>
-                        <Edit2 className="h-3 w-3" />
-                        Edit
+                      <Label className="text-sm font-medium">Jobs & Pay Rates</Label>
+                      <Button variant="ghost" size="sm" className="h-6 text-xs gap-1 text-muted-foreground hover:text-foreground" onClick={() => openEditDialog(selectedStaff)}>
+                        <Plus className="h-3 w-3" />
+                        Add Job
                       </Button>
                     </div>
                     
@@ -1142,10 +1144,9 @@ export default function Teams() {
                       
                       if (assignedLocationIds.length === 0) {
                         return (
-                          <div className="text-center py-6 text-muted-foreground border rounded-lg bg-gray-50/50">
-                            <Briefcase className="h-6 w-6 mx-auto mb-2 opacity-50" />
-                            <p className="text-sm">No job assignments</p>
-                            <Button variant="link" size="sm" className="text-xs mt-1" onClick={() => openEditDialog(selectedStaff)}>
+                          <div className="text-center py-6 text-muted-foreground border border-dashed rounded-lg">
+                            <p className="text-sm">No jobs assigned</p>
+                            <Button variant="link" size="sm" className="text-xs mt-1 h-auto p-0" onClick={() => openEditDialog(selectedStaff)}>
                               Assign jobs
                             </Button>
                           </div>
@@ -1153,45 +1154,96 @@ export default function Teams() {
                       }
                       
                       return (
-                        <div className="space-y-3">
+                        <div className="space-y-2">
                           {assignedLocationIds.map(locId => {
                             const location = locations.find(l => l.id === locId);
                             const jobsAtThisLocation = selectedStaff.jobAssignments.filter(ja => ja.locationId === locId);
                             
                             return (
-                              <div key={locId} className="border rounded-lg overflow-hidden">
-                                <div className="bg-gray-50 px-3 py-2 flex items-center gap-2 border-b">
-                                  <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
-                                  <span className="text-sm font-medium">{location?.name}</span>
-                                  <span className="text-xs text-muted-foreground ml-auto">{jobsAtThisLocation.length} job{jobsAtThisLocation.length !== 1 ? 's' : ''}</span>
+                              <div key={locId}>
+                                <div className="flex items-center gap-1.5 mb-1">
+                                  <MapPin className="h-3 w-3 text-muted-foreground" />
+                                  <span className="text-xs font-medium text-muted-foreground">{location?.name}</span>
                                 </div>
-                                <div className="divide-y">
+                                <div className="border rounded-md divide-y">
                                   {jobsAtThisLocation.map(assignment => {
                                     const job = jobRoles.find(j => j.id === assignment.jobRoleId);
                                     if (!job) return null;
+                                    const rateKey = `${locId}-${assignment.jobRoleId}`;
                                     const hasCustomRate = assignment.customRate !== undefined && assignment.customRate !== job.baseRate;
                                     const displayRate = assignment.customRate ?? job.baseRate;
+                                    const isEditing = editingRateKey === rateKey;
                                     
                                     return (
-                                      <div key={`${locId}-${assignment.jobRoleId}`} className="px-3 py-2 flex items-center justify-between">
-                                        <div>
-                                          <div className="text-sm font-medium">{job.name}</div>
-                                          <div className="text-xs text-muted-foreground">
-                                            {departments.find(d => d.id === job.departmentId)?.name}
-                                          </div>
-                                        </div>
-                                        <div className="text-right">
-                                          <div className={cn(
-                                            "text-sm font-medium",
-                                            hasCustomRate && "text-amber-600"
-                                          )}>
-                                            ${displayRate}/{job.payType === "hourly" ? "hr" : "yr"}
-                                            {hasCustomRate && <span className="ml-1 text-xs">★</span>}
-                                          </div>
-                                          {hasCustomRate && (
-                                            <div className="text-xs text-muted-foreground line-through">
-                                              Base: ${job.baseRate}
+                                      <div key={rateKey} className="px-3 py-2 flex items-center justify-between group">
+                                        <div className="text-sm">{job.name}</div>
+                                        <div className="flex items-center gap-1.5">
+                                          {isEditing ? (
+                                            <div className="flex items-center gap-1">
+                                              <span className="text-xs text-muted-foreground">$</span>
+                                              <Input
+                                                type="number"
+                                                step="0.01"
+                                                value={editingRateValue}
+                                                onChange={(e) => setEditingRateValue(e.target.value)}
+                                                onKeyDown={(e) => {
+                                                  if (e.key === 'Enter') {
+                                                    const value = editingRateValue ? parseFloat(editingRateValue) : undefined;
+                                                    const updatedAssignments = selectedStaff.jobAssignments.map(ja =>
+                                                      ja.locationId === locId && ja.jobRoleId === assignment.jobRoleId
+                                                        ? { ...ja, customRate: value }
+                                                        : ja
+                                                    );
+                                                    setSelectedStaff({ ...selectedStaff, jobAssignments: updatedAssignments });
+                                                    setStaff(staff.map(s =>
+                                                      s.id === selectedStaff.id
+                                                        ? { ...s, jobAssignments: updatedAssignments }
+                                                        : s
+                                                    ));
+                                                    setEditingRateKey(null);
+                                                  } else if (e.key === 'Escape') {
+                                                    setEditingRateKey(null);
+                                                  }
+                                                }}
+                                                onBlur={() => {
+                                                  const value = editingRateValue ? parseFloat(editingRateValue) : undefined;
+                                                  const updatedAssignments = selectedStaff.jobAssignments.map(ja =>
+                                                    ja.locationId === locId && ja.jobRoleId === assignment.jobRoleId
+                                                      ? { ...ja, customRate: value }
+                                                      : ja
+                                                  );
+                                                  setSelectedStaff({ ...selectedStaff, jobAssignments: updatedAssignments });
+                                                  setStaff(staff.map(s =>
+                                                    s.id === selectedStaff.id
+                                                      ? { ...s, jobAssignments: updatedAssignments }
+                                                      : s
+                                                  ));
+                                                  setEditingRateKey(null);
+                                                }}
+                                                className="w-16 h-6 text-xs px-1.5"
+                                                autoFocus
+                                              />
+                                              <span className="text-xs text-muted-foreground">/{job.payType === "hourly" ? "hr" : "yr"}</span>
                                             </div>
+                                          ) : (
+                                            <button
+                                              onClick={() => {
+                                                setEditingRateKey(rateKey);
+                                                setEditingRateValue(displayRate.toString());
+                                              }}
+                                              className={cn(
+                                                "text-sm px-1.5 py-0.5 rounded transition-colors flex items-center gap-1",
+                                                hasCustomRate 
+                                                  ? "text-amber-700 bg-amber-50 hover:bg-amber-100" 
+                                                  : "text-muted-foreground hover:bg-gray-100 hover:text-foreground"
+                                              )}
+                                            >
+                                              ${displayRate}/{job.payType === "hourly" ? "hr" : "yr"}
+                                              <Edit2 className="h-2.5 w-2.5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                            </button>
+                                          )}
+                                          {hasCustomRate && !isEditing && (
+                                            <span className="text-[10px] text-muted-foreground">(base: ${job.baseRate})</span>
                                           )}
                                         </div>
                                       </div>
