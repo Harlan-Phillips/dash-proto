@@ -591,13 +591,13 @@ export default function Teams() {
                     />
                   </div>
                   <div className="relative">
-                    <div className="max-h-[632px] overflow-y-auto scrollable-list" onScroll={(e) => handleScroll(e, setDeptScrolledToBottom)}>
+                    <div className="max-h-[578px] overflow-y-auto scrollable-list" onScroll={(e) => handleScroll(e, setDeptScrolledToBottom)}>
                       {departments.filter(d => d.name.toLowerCase().includes(deptSearch.toLowerCase())).map((dept, index, arr) => (
                         <button
                           key={dept.id}
                           onClick={() => setSelectedDepartment(dept.id)}
                           className={cn(
-                            "w-full flex items-center justify-between px-6 py-3 min-h-[55px] text-left transition-colors",
+                            "w-full flex items-center justify-between px-6 h-[55px] text-left transition-colors",
                             selectedDepartment === dept.id
                               ? "bg-muted"
                               : "hover:bg-gray-50",
@@ -633,12 +633,12 @@ export default function Teams() {
                     />
                   </div>
                   <div className="relative">
-                    <div className="max-h-[632px] overflow-y-auto scrollable-list" onScroll={(e) => handleScroll(e, setDeptJobScrolledToBottom)}>
+                    <div className="max-h-[578px] overflow-y-auto scrollable-list" onScroll={(e) => handleScroll(e, setDeptJobScrolledToBottom)}>
                       {filteredJobs.filter(j => j.name.toLowerCase().includes(deptJobSearch.toLowerCase())).map((job, index, arr) => (
                         <div
                           key={job.id}
                           className={cn(
-                            "flex items-center justify-between px-6 py-3 min-h-[55px] hover:bg-gray-50 transition-colors group",
+                            "flex items-center justify-between px-6 h-[55px] hover:bg-gray-50 transition-colors group",
                             index !== arr.length - 1 && "border-b"
                           )}
                           data-testid={`row-job-${job.id}`}
