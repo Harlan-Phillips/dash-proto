@@ -155,7 +155,8 @@ const statusLabels: Record<PayrollStatus, string> = {
 
 const entities = [
   { id: "koq-sf", name: "KOQ SF Inc.", email: "payroll@koqsf.com", isComplete: false },
-  { id: "koq-llc", name: "KOQ Restaurant Group LLC", email: "payroll@koqrestaurant.com", isComplete: true },
+  { id: "koq-llc", name: "KOQ Restaurant Group LLC", email: "payroll@koqrestaurant.com", isComplete: false },
+  { id: "koq-ny", name: "KOQ NY Inc.", email: "payroll@koqny.com", isComplete: true },
 ];
 
 // Mock staff data for mapping approval
