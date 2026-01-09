@@ -1493,10 +1493,49 @@ function PnLDashboard({ onInsightClick, highlightedNodeId, onHighlightClear, onT
           )} />
           <h2 className="text-xl font-serif font-bold text-gray-900">P&L Dashboard</h2>
         </div>
-        <div className="flex items-center gap-2 text-xs">
-          <span className="text-gray-500">September 2025 vs August 2025</span>
-        </div>
       </button>
+      
+      {/* Comparison Period Bar */}
+      <div className="flex items-center gap-3 mb-4 px-4 py-2.5 bg-gray-50 rounded-lg border border-gray-200">
+        <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Comparing:</span>
+        <div className="flex items-center gap-2">
+          <select
+            data-testid="select-current-month"
+            value={comparisonPeriod.currentMonth}
+            onChange={(e) => setComparisonPeriod(prev => ({ ...prev, currentMonth: e.target.value }))}
+            className="text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-gray-300"
+          >
+            {months.map(m => <option key={m} value={m}>{m}</option>)}
+          </select>
+          <select
+            data-testid="select-current-year"
+            value={comparisonPeriod.currentYear}
+            onChange={(e) => setComparisonPeriod(prev => ({ ...prev, currentYear: e.target.value }))}
+            className="text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-gray-300"
+          >
+            {years.map(y => <option key={y} value={y}>{y}</option>)}
+          </select>
+        </div>
+        <span className="text-xs text-gray-400">vs</span>
+        <div className="flex items-center gap-2">
+          <select
+            data-testid="select-prior-month"
+            value={comparisonPeriod.priorMonth}
+            onChange={(e) => setComparisonPeriod(prev => ({ ...prev, priorMonth: e.target.value }))}
+            className="text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-gray-300"
+          >
+            {months.map(m => <option key={m} value={m}>{m}</option>)}
+          </select>
+          <select
+            data-testid="select-prior-year"
+            value={comparisonPeriod.priorYear}
+            onChange={(e) => setComparisonPeriod(prev => ({ ...prev, priorYear: e.target.value }))}
+            className="text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-gray-300"
+          >
+            {years.map(y => <option key={y} value={y}>{y}</option>)}
+          </select>
+        </div>
+      </div>
 
       {!isCollapsed && (
         <>
@@ -1573,7 +1612,7 @@ function PnLDashboard({ onInsightClick, highlightedNodeId, onHighlightClear, onT
           <div className="flex items-center gap-6">
             <div className="w-28 text-right">Current</div>
             <div className="w-28 text-right">Prior</div>
-            <div className="w-20 text-right">% Profit</div>
+            <div className="w-20 text-right">% Income</div>
           </div>
         </div>
 
@@ -1873,7 +1912,7 @@ function TrendChartModal({ isOpen, onClose, metric }: TrendChartModalProps) {
                               <th className="text-left px-4 py-2 font-medium text-gray-500">Sub-Category</th>
                               <th className="text-right px-4 py-2 font-medium text-gray-500">Actual</th>
                               <th className="text-right px-4 py-2 font-medium text-gray-500">Target</th>
-                              <th className="text-right px-4 py-2 font-medium text-gray-500">% Profit</th>
+                              <th className="text-right px-4 py-2 font-medium text-gray-500">% Income</th>
                               <th className="text-center px-4 py-2 font-medium text-gray-500">Status</th>
                             </tr>
                           </thead>
@@ -3012,6 +3051,17 @@ export default function PnlRelease() {
   const [showEmailReportModal, setShowEmailReportModal] = useState(false);
   const [showImpactAnalysis, setShowImpactAnalysis] = useState(false);
   const [expandedMissedTarget, setExpandedMissedTarget] = useState<string | null>(null);
+  
+  // Comparison Period State
+  const [comparisonPeriod, setComparisonPeriod] = useState({
+    currentMonth: "September",
+    currentYear: "2025",
+    priorMonth: "August", 
+    priorYear: "2025"
+  });
+  const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  const years = ["2023", "2024", "2025", "2026"];
+  
   const [emailRecipients, setEmailRecipients] = useState<string[]>([
     "owner@restaurant.com",
     "gm@restaurant.com"
@@ -4278,7 +4328,7 @@ export default function PnlRelease() {
                                   <th className="text-left px-6 py-4 font-medium text-gray-500">Metric</th>
                                   <th className="text-left px-6 py-4 font-medium text-gray-500">Actual</th>
                                   <th className="text-left px-6 py-4 font-medium text-gray-500">Target</th>
-                                  <th className="text-left px-6 py-4 font-medium text-gray-500">% Profit</th>
+                                  <th className="text-left px-6 py-4 font-medium text-gray-500">% Income</th>
                                   <th className="text-right px-6 py-4 font-medium text-gray-500">Status</th>
                                </tr>
                             </thead>
@@ -4842,7 +4892,7 @@ export default function PnlRelease() {
                                   <th className="text-left px-6 py-3 font-medium text-gray-500">Category</th>
                                   <th className="text-right px-6 py-3 font-medium text-gray-500">Actual</th>
                                   <th className="text-right px-6 py-3 font-medium text-gray-500">Budget</th>
-                                  <th className="text-right px-6 py-3 font-medium text-gray-500">% Profit</th>
+                                  <th className="text-right px-6 py-3 font-medium text-gray-500">% Income</th>
                                   <th className="text-right px-6 py-3 font-medium text-gray-500">% of Sales</th>
                                </tr>
                             </thead>
@@ -4967,7 +5017,7 @@ export default function PnlRelease() {
                                   <th className="text-left px-6 py-3 font-medium text-gray-500">Category</th>
                                   <th className="text-right px-6 py-3 font-medium text-gray-500">Actual</th>
                                   <th className="text-right px-6 py-3 font-medium text-gray-500">Budget</th>
-                                  <th className="text-right px-6 py-3 font-medium text-gray-500">% Profit</th>
+                                  <th className="text-right px-6 py-3 font-medium text-gray-500">% Income</th>
                                   <th className="text-right px-6 py-3 font-medium text-gray-500">% of Sales</th>
                                </tr>
                             </thead>
@@ -5034,7 +5084,7 @@ export default function PnlRelease() {
                                   <th className="text-left px-6 py-3 font-medium text-gray-500">Category</th>
                                   <th className="text-right px-6 py-3 font-medium text-gray-500">Actual</th>
                                   <th className="text-right px-6 py-3 font-medium text-gray-500">Budget</th>
-                                  <th className="text-right px-6 py-3 font-medium text-gray-500">% Profit</th>
+                                  <th className="text-right px-6 py-3 font-medium text-gray-500">% Income</th>
                                   <th className="text-right px-6 py-3 font-medium text-gray-500">% of Sales</th>
                                </tr>
                             </thead>
