@@ -4178,42 +4178,14 @@ export default function PnlRelease() {
                           </div>
                        </section>
 
-                       {/* Full Table */}
+                       {/* Full P&L Dashboard - Matches accounting/pnl detailed view */}
                        <div className="border-t border-gray-100 pt-8">
-                          <button 
-                             onClick={() => setShowFullPnl(!showFullPnl)}
-                             className="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 transition-colors rounded-lg border border-gray-200"
-                          >
-                             <span className="font-medium text-sm flex items-center gap-2">
-                                <FileText className="h-4 w-4 text-gray-500" /> Full P&L Detail
-                             </span>
-                             {showFullPnl ? <ChevronUp className="h-4 w-4 text-gray-500" /> : <ChevronDown className="h-4 w-4 text-gray-500" />}
-                          </button>
-
-                          {showFullPnl && (
-                             <div className="mt-4 border border-gray-200 rounded-lg overflow-hidden">
-                                <table className="w-full text-sm text-left">
-                                   <thead className="bg-gray-50 border-b border-gray-200 text-xs uppercase text-gray-500 font-medium">
-                                      <tr>
-                                         <th className="px-4 py-3">Category</th>
-                                         <th className="px-4 py-3 text-right">Current</th>
-                                         <th className="px-4 py-3 text-right">Var</th>
-                                      </tr>
-                                   </thead>
-                                   <tbody className="divide-y divide-gray-100">
-                                      {pnlData.map((row) => (
-                                         <tr key={row.category} className={cn("hover:bg-gray-50", row.category === "Net Income" ? "bg-gray-50 font-bold" : "")}>
-                                            <td className="px-4 py-3 font-medium">{row.category}</td>
-                                            <td className="px-4 py-3 text-right">${row.current.toLocaleString()}</td>
-                                            <td className={cn("px-4 py-3 text-right font-medium", row.variance > 0 ? "text-emerald-600" : "text-red-600")}>
-                                               {row.variance > 0 ? "+" : ""}{row.variance.toLocaleString()}
-                                            </td>
-                                         </tr>
-                                      ))}
-                                   </tbody>
-                                </table>
-                             </div>
-                          )}
+                          <PnLDashboard 
+                            onInsightClick={handleInsightClick} 
+                            highlightedNodeId={highlightedPnlNodeId}
+                            onHighlightClear={() => setHighlightedPnlNodeId(null)}
+                            onTrendClick={openTrendModal}
+                          />
                        </div>
                     </div>
                  </div>
