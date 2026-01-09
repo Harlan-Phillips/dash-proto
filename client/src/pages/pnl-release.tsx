@@ -1492,28 +1492,25 @@ function PnLDashboard({ onInsightClick, highlightedNodeId, onHighlightClear, onT
 
   return (
     <section id="pnl-dashboard" className="scroll-mt-4">
-      <button 
-        onClick={() => setIsCollapsed(!isCollapsed)}
-        className="w-full flex items-center justify-between mb-4 group"
-      >
-        <div className="flex items-center gap-2">
+      <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
+        <button 
+          onClick={() => setIsCollapsed(!isCollapsed)}
+          className="flex items-center gap-2 group"
+        >
           <ChevronDown className={cn(
             "h-5 w-5 text-gray-400 transition-transform",
             isCollapsed && "-rotate-90"
           )} />
           <h2 className="text-xl font-serif font-bold text-gray-900">P&L Dashboard</h2>
-        </div>
-      </button>
-      
-      {/* Comparison Period Bar */}
-      <div className="flex items-center gap-3 mb-4 px-4 py-2.5 bg-gray-50 rounded-lg border border-gray-200">
-        <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Comparing:</span>
+        </button>
+        
+        {/* Comparison Period - Inline with header */}
         <div className="flex items-center gap-2">
           <select
             data-testid="select-current-month"
             value={comparisonPeriod.currentMonth}
             onChange={(e) => setComparisonPeriod(prev => ({ ...prev, currentMonth: e.target.value }))}
-            className="text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-gray-300"
+            className="text-sm font-medium text-gray-700 bg-transparent border-none px-1 py-0.5 focus:outline-none focus:ring-0 cursor-pointer hover:text-gray-900"
           >
             {months.map(m => <option key={m} value={m}>{m}</option>)}
           </select>
@@ -1521,18 +1518,16 @@ function PnLDashboard({ onInsightClick, highlightedNodeId, onHighlightClear, onT
             data-testid="select-current-year"
             value={comparisonPeriod.currentYear}
             onChange={(e) => setComparisonPeriod(prev => ({ ...prev, currentYear: e.target.value }))}
-            className="text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-gray-300"
+            className="text-sm font-medium text-gray-700 bg-transparent border-none px-1 py-0.5 focus:outline-none focus:ring-0 cursor-pointer hover:text-gray-900"
           >
             {years.map(y => <option key={y} value={y}>{y}</option>)}
           </select>
-        </div>
-        <span className="text-xs text-gray-400">vs</span>
-        <div className="flex items-center gap-2">
+          <span className="text-xs text-gray-400">vs</span>
           <select
             data-testid="select-prior-month"
             value={comparisonPeriod.priorMonth}
             onChange={(e) => setComparisonPeriod(prev => ({ ...prev, priorMonth: e.target.value }))}
-            className="text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-gray-300"
+            className="text-sm font-medium text-gray-700 bg-transparent border-none px-1 py-0.5 focus:outline-none focus:ring-0 cursor-pointer hover:text-gray-900"
           >
             {months.map(m => <option key={m} value={m}>{m}</option>)}
           </select>
@@ -1540,7 +1535,7 @@ function PnLDashboard({ onInsightClick, highlightedNodeId, onHighlightClear, onT
             data-testid="select-prior-year"
             value={comparisonPeriod.priorYear}
             onChange={(e) => setComparisonPeriod(prev => ({ ...prev, priorYear: e.target.value }))}
-            className="text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-gray-300"
+            className="text-sm font-medium text-gray-700 bg-transparent border-none px-1 py-0.5 focus:outline-none focus:ring-0 cursor-pointer hover:text-gray-900"
           >
             {years.map(y => <option key={y} value={y}>{y}</option>)}
           </select>
