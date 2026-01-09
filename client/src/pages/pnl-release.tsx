@@ -4297,7 +4297,117 @@ export default function PnlRelease() {
                       </div>
                    </section>
 
-                   {/* 2. P&L Dashboard - Intelligent Hierarchical View */}
+                   {/* 2. Bottom Line */}
+                   <section id="bottom-line" className="scroll-mt-4">
+                      <div className="flex items-center justify-between mb-4">
+                         <h2 className="text-xl font-serif font-bold text-gray-900">Bottom Line</h2>
+                         <button 
+                            data-testid="learn-bottom-line"
+                            onClick={() => handleInsightClick("What is net income and how do I read a net income walk? Explain how to understand what's eating into my restaurant's profits.")}
+                            className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-amber-700 bg-amber-50 hover:bg-amber-100 rounded-lg transition-colors"
+                            title="Learn about Bottom Line"
+                         >
+                            <Lightbulb className="h-3.5 w-3.5" />
+                            Learn
+                         </button>
+                      </div>
+
+                      <div className="bg-white rounded-xl border border-gray-200 p-6">
+                         <div className="flex items-center justify-between mb-4">
+                            <h3 className="font-semibold text-gray-900">Net Income Walk</h3>
+                            <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-0.5">
+                               <button 
+                                  onClick={() => setViewModes({...viewModes, bottomLine: "data"})}
+                                  className={cn("px-3 py-1.5 text-xs font-medium rounded-md transition-colors", viewModes.bottomLine === "data" ? "bg-white shadow-sm text-gray-900" : "text-gray-500 hover:text-gray-700")}
+                               >
+                                  Data
+                               </button>
+                               <button 
+                                  onClick={() => setViewModes({...viewModes, bottomLine: "chart"})}
+                                  className={cn("px-3 py-1.5 text-xs font-medium rounded-md transition-colors", viewModes.bottomLine === "chart" ? "bg-white shadow-sm text-gray-900" : "text-gray-500 hover:text-gray-700")}
+                               >
+                                  Chart
+                               </button>
+                            </div>
+                         </div>
+                         {viewModes.bottomLine === "chart" ? (
+                            <div className="h-64">
+                               <ResponsiveContainer width="100%" height="100%">
+                                  <BarChart data={[
+                                     { name: 'Net Sales', value: 133042, fill: '#10b981' },
+                                     { name: 'COGS', value: -55670, fill: '#ef4444' },
+                                     { name: 'Labor', value: -16156, fill: '#ef4444' },
+                                     { name: 'Expenses', value: -43494, fill: '#f59e0b' },
+                                     { name: 'Net Income', value: 17722, fill: '#1e293b' }
+                                  ]}>
+                                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
+                                     <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fontSize: 11}} />
+                                     <YAxis tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`} axisLine={false} tickLine={false} tick={{fontSize: 11}} />
+                                     <Tooltip formatter={(value: number) => `$${Math.abs(value).toLocaleString()}`} />
+                                     <Bar dataKey="value" radius={[4, 4, 0, 0]}>
+                                        {[
+                                           { fill: '#10b981' },
+                                           { fill: '#ef4444' },
+                                           { fill: '#ef4444' },
+                                           { fill: '#f59e0b' },
+                                           { fill: '#1e293b' }
+                                        ].map((entry, index) => (
+                                           <Cell key={`cell-${index}`} fill={entry.fill} />
+                                        ))}
+                                     </Bar>
+                                  </BarChart>
+                               </ResponsiveContainer>
+                            </div>
+                         ) : (
+                            <div className="space-y-3">
+                               <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                                  <span className="text-gray-900">Net Sales</span>
+                                  <div className="text-right">
+                                     <span className="font-semibold text-gray-900">$133,042</span>
+                                     <span className="text-gray-500 text-sm ml-2">(100.0%)</span>
+                                  </div>
+                               </div>
+                               <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                                  <span className="text-gray-700">- COGS</span>
+                                  <div className="text-right">
+                                     <span className="font-medium text-red-600">-$55,670</span>
+                                     <span className="text-gray-500 text-sm ml-2">(41.8%)</span>
+                                  </div>
+                               </div>
+                               <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                                  <span className="text-gray-700">= Gross Profit</span>
+                                  <div className="text-right">
+                                     <span className="font-medium text-emerald-600">$77,372</span>
+                                     <span className="text-gray-500 text-sm ml-2">(58.2%)</span>
+                                  </div>
+                               </div>
+                               <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                                  <span className="text-gray-700">- Direct Labor</span>
+                                  <div className="text-right">
+                                     <span className="font-medium text-red-600">-$16,156</span>
+                                     <span className="text-gray-500 text-sm ml-2">(12.1%)</span>
+                                  </div>
+                               </div>
+                               <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                                  <span className="text-gray-700">- Operating Expenses</span>
+                                  <div className="text-right">
+                                     <span className="font-medium text-red-600">-$43,494</span>
+                                     <span className="text-gray-500 text-sm ml-2">(32.7%)</span>
+                                  </div>
+                               </div>
+                               <div className="flex justify-between items-center py-3 bg-gray-50 rounded-lg px-4 mt-2">
+                                  <span className="font-semibold text-gray-900">= Net Operating Income</span>
+                                  <div className="text-right">
+                                     <span className="font-bold text-lg text-emerald-600">$17,722</span>
+                                     <span className="text-gray-500 text-sm ml-2">(13.3%)</span>
+                                  </div>
+                               </div>
+                            </div>
+                         )}
+                      </div>
+                   </section>
+
+                   {/* 3. P&L Dashboard - Intelligent Hierarchical View */}
                    <PnLDashboard 
                      onInsightClick={handleInsightClick} 
                      highlightedNodeId={highlightedPnlNodeId}
@@ -5178,116 +5288,6 @@ export default function PnlRelease() {
                          <div className="px-6 py-3 bg-gray-50 border-t border-gray-100">
                             <p className="text-xs text-gray-600">No variance — as expected for fixed costs</p>
                          </div>
-                      </div>
-                   </section>
-
-                   {/* 6. Bottom Line */}
-                   <section id="bottom-line" className="scroll-mt-4">
-                      <div className="flex items-center justify-between mb-4">
-                         <h2 className="text-xl font-serif font-bold text-gray-900">Bottom Line</h2>
-                         <button 
-                            data-testid="learn-bottom-line"
-                            onClick={() => handleInsightClick("What is net income and how do I read a net income walk? Explain how to understand what's eating into my restaurant's profits.")}
-                            className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-amber-700 bg-amber-50 hover:bg-amber-100 rounded-lg transition-colors"
-                            title="Learn about Bottom Line"
-                         >
-                            <Lightbulb className="h-3.5 w-3.5" />
-                            Learn
-                         </button>
-                      </div>
-
-                      <div className="bg-white rounded-xl border border-gray-200 p-6">
-                         <div className="flex items-center justify-between mb-4">
-                            <h3 className="font-semibold text-gray-900">Net Income Walk</h3>
-                            <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-0.5">
-                               <button 
-                                  onClick={() => setViewModes({...viewModes, bottomLine: "data"})}
-                                  className={cn("px-3 py-1.5 text-xs font-medium rounded-md transition-colors", viewModes.bottomLine === "data" ? "bg-white shadow-sm text-gray-900" : "text-gray-500 hover:text-gray-700")}
-                               >
-                                  Data
-                               </button>
-                               <button 
-                                  onClick={() => setViewModes({...viewModes, bottomLine: "chart"})}
-                                  className={cn("px-3 py-1.5 text-xs font-medium rounded-md transition-colors", viewModes.bottomLine === "chart" ? "bg-white shadow-sm text-gray-900" : "text-gray-500 hover:text-gray-700")}
-                               >
-                                  Chart
-                               </button>
-                            </div>
-                         </div>
-                         {viewModes.bottomLine === "chart" ? (
-                            <div className="h-64">
-                               <ResponsiveContainer width="100%" height="100%">
-                                  <BarChart data={[
-                                     { name: 'Net Sales', value: 133042, fill: '#10b981' },
-                                     { name: 'COGS', value: -55670, fill: '#ef4444' },
-                                     { name: 'Labor', value: -16156, fill: '#ef4444' },
-                                     { name: 'Expenses', value: -43494, fill: '#f59e0b' },
-                                     { name: 'Net Income', value: 17722, fill: '#1e293b' }
-                                  ]}>
-                                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
-                                     <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fontSize: 11}} />
-                                     <YAxis tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`} axisLine={false} tickLine={false} tick={{fontSize: 11}} />
-                                     <Tooltip formatter={(value: number) => `$${Math.abs(value).toLocaleString()}`} />
-                                     <Bar dataKey="value" radius={[4, 4, 0, 0]}>
-                                        {[
-                                           { fill: '#10b981' },
-                                           { fill: '#ef4444' },
-                                           { fill: '#ef4444' },
-                                           { fill: '#f59e0b' },
-                                           { fill: '#1e293b' }
-                                        ].map((entry, index) => (
-                                           <Cell key={`cell-${index}`} fill={entry.fill} />
-                                        ))}
-                                     </Bar>
-                                  </BarChart>
-                               </ResponsiveContainer>
-                            </div>
-                         ) : (
-                            <div className="space-y-3">
-                               <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                                  <span className="text-gray-900">Net Sales</span>
-                                  <div className="text-right">
-                                     <span className="font-semibold text-gray-900">$133,042</span>
-                                     <span className="text-gray-500 text-sm ml-2">(100.0%)</span>
-                                  </div>
-                               </div>
-                               <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                                  <span className="text-gray-700">- COGS</span>
-                                  <div className="text-right">
-                                     <span className="font-medium text-red-600">-$55,670</span>
-                                     <span className="text-gray-500 text-sm ml-2">(41.8%)</span>
-                                  </div>
-                               </div>
-                               <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                                  <span className="text-gray-700">= Gross Profit</span>
-                                  <div className="text-right">
-                                     <span className="font-medium text-emerald-600">$77,372</span>
-                                     <span className="text-gray-500 text-sm ml-2">(58.2%)</span>
-                                  </div>
-                               </div>
-                               <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                                  <span className="text-gray-700">- Direct Labor</span>
-                                  <div className="text-right">
-                                     <span className="font-medium text-red-600">-$16,156</span>
-                                     <span className="text-gray-500 text-sm ml-2">(12.1%)</span>
-                                  </div>
-                               </div>
-                               <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                                  <span className="text-gray-700">- Operating Expenses</span>
-                                  <div className="text-right">
-                                     <span className="font-medium text-red-600">-$43,494</span>
-                                     <span className="text-gray-500 text-sm ml-2">(32.7%)</span>
-                                  </div>
-                               </div>
-                               <div className="flex justify-between items-center py-3 bg-gray-50 rounded-lg px-4 mt-2">
-                                  <span className="font-semibold text-gray-900">= Net Operating Income</span>
-                                  <div className="text-right">
-                                     <span className="font-bold text-lg text-emerald-600">$17,722</span>
-                                     <span className="text-gray-500 text-sm ml-2">(13.3%)</span>
-                                  </div>
-                               </div>
-                            </div>
-                         )}
                       </div>
                    </section>
 
