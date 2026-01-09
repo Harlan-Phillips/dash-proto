@@ -4723,7 +4723,14 @@ export default function PnlRelease() {
                       {/* Prime Cost Bridge + Labor Variance Drivers */}
                       <div className="grid grid-cols-2 gap-6 mb-6">
                          <div className="bg-white rounded-xl border border-gray-200 p-6">
-                            <h3 className="font-semibold text-gray-900 mb-1">Prime Cost Bridge</h3>
+                            <div className="flex items-center justify-between mb-1">
+                               <h3 className="font-semibold text-gray-900">Prime Cost Bridge</h3>
+                               {selectedState && (
+                                  <span className="text-xs px-2 py-0.5 bg-blue-50 text-blue-700 rounded-full">
+                                     vs {selectedState.code}
+                                  </span>
+                               )}
+                            </div>
                             <p className="text-xs text-gray-500 mb-4">Budget (61.5%) to Actual (62.1%)</p>
                             <div className="space-y-3">
                                <div className="flex justify-between items-center py-2 border-b border-gray-100">
@@ -4754,6 +4761,44 @@ export default function PnlRelease() {
                                      <span className="text-gray-600 text-sm ml-2">($182,200)</span>
                                   </div>
                                </div>
+                               {/* State Benchmark Comparison Row */}
+                               {selectedState && (
+                                  <div className={cn(
+                                     "flex justify-between items-center py-3 rounded-lg px-3 mt-2 border",
+                                     62.1 <= selectedState.primeCost 
+                                        ? "bg-emerald-50 border-emerald-200" 
+                                        : 62.1 - selectedState.primeCost <= 2 
+                                           ? "bg-amber-50 border-amber-200"
+                                           : "bg-red-50 border-red-200"
+                                  )}>
+                                     <div className="flex items-center gap-2">
+                                        <Target className={cn(
+                                           "h-4 w-4",
+                                           62.1 <= selectedState.primeCost 
+                                              ? "text-emerald-600" 
+                                              : 62.1 - selectedState.primeCost <= 2 
+                                                 ? "text-amber-600"
+                                                 : "text-red-600"
+                                        )} />
+                                        <span className="text-gray-700">{selectedState.code} State Benchmark:</span>
+                                     </div>
+                                     <div className="text-right flex items-center gap-3">
+                                        <span className="font-bold text-gray-900">{selectedState.primeCost}%</span>
+                                        <span className={cn(
+                                           "text-sm font-medium px-2 py-0.5 rounded",
+                                           62.1 <= selectedState.primeCost 
+                                              ? "bg-emerald-100 text-emerald-700" 
+                                              : 62.1 - selectedState.primeCost <= 2 
+                                                 ? "bg-amber-100 text-amber-700"
+                                                 : "bg-red-100 text-red-700"
+                                        )}>
+                                           {62.1 <= selectedState.primeCost 
+                                              ? `${(selectedState.primeCost - 62.1).toFixed(1)}% below` 
+                                              : `${(62.1 - selectedState.primeCost).toFixed(1)}% above`}
+                                        </span>
+                                     </div>
+                                  </div>
+                               )}
                             </div>
                          </div>
                          <div className="bg-white rounded-xl border border-gray-200 p-6">
