@@ -7,6 +7,7 @@ import {
   Calendar, 
   Check, 
   ChevronDown, 
+  ChevronLeft,
   ChevronRight, 
   ChevronUp, 
   Download, 
@@ -3068,6 +3069,54 @@ export default function PnlRelease() {
   });
   const [healthSnapshotMode, setHealthSnapshotMode] = useState<"percentage" | "actual">("percentage");
   
+  // Report Archive Sidebar State
+  const [archiveSidebarWidth, setArchiveSidebarWidth] = useState(256); // default 256px (w-64)
+  const [archiveSidebarCollapsed, setArchiveSidebarCollapsed] = useState(false);
+  const [isResizingArchive, setIsResizingArchive] = useState(false);
+  const archiveMinWidth = 200;
+  const archiveMaxWidth = 400;
+
+  const handleArchiveMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsResizingArchive(true);
+  };
+
+  useEffect(() => {
+    if (!isResizingArchive) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const newWidth = e.clientX;
+      if (newWidth < 50) {
+        setArchiveSidebarCollapsed(true);
+        setArchiveSidebarWidth(0);
+      } else if (newWidth >= archiveMinWidth) {
+        setArchiveSidebarCollapsed(false);
+        setArchiveSidebarWidth(Math.min(newWidth, archiveMaxWidth));
+      }
+    };
+
+    const handleMouseUp = () => {
+      setIsResizingArchive(false);
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isResizingArchive]);
+
+  const toggleArchiveSidebar = () => {
+    if (archiveSidebarCollapsed) {
+      setArchiveSidebarCollapsed(false);
+      setArchiveSidebarWidth(256);
+    } else {
+      setArchiveSidebarCollapsed(true);
+      setArchiveSidebarWidth(0);
+    }
+  };
+
   // Action Items State
   const [actionItems, setActionItems] = useState([
     { id: "ot-policy", title: "Review OT policy — 142 hours is unsustainable", owner: "GM", impact: "$1,500/mo potential", priority: "high", completed: false, completedAt: null as Date | null },
@@ -3529,12 +3578,42 @@ export default function PnlRelease() {
   if (isOwnerView) {
      return (
         <Layout>
-           <div className="min-h-screen bg-gray-50 flex overflow-hidden">
+           <div className="min-h-screen bg-gray-50 flex overflow-hidden relative">
 
-              {/* Left Navigation (Google Docs Style) */}
-              <div className="w-64 bg-white border-r border-gray-200 hidden lg:flex flex-col h-full overflow-y-auto">
-                 <div className="p-6">
-                    <h2 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Report Archive</h2>
+              {/* Collapsed Sidebar Toggle Tab */}
+              {archiveSidebarCollapsed && (
+                 <button
+                    onClick={toggleArchiveSidebar}
+                    className="fixed left-0 top-1/2 -translate-y-1/2 z-30 bg-white border border-l-0 border-gray-200 rounded-r-lg shadow-md px-1.5 py-4 hover:bg-gray-50 transition-colors group"
+                    data-testid="expand-archive-tab"
+                 >
+                    <div className="flex flex-col items-center gap-2">
+                       <ChevronRight className="h-4 w-4 text-gray-400 group-hover:text-gray-600" />
+                       <span className="text-xs font-medium text-gray-500 [writing-mode:vertical-rl] rotate-180">Archive</span>
+                    </div>
+                 </button>
+              )}
+
+              {/* Left Navigation (Google Docs Style) - Resizable */}
+              <div 
+                 className={cn(
+                    "bg-white border-r border-gray-200 hidden lg:flex flex-col h-full overflow-hidden transition-all duration-200 relative",
+                    archiveSidebarCollapsed && "w-0 border-r-0"
+                 )}
+                 style={{ width: archiveSidebarCollapsed ? 0 : archiveSidebarWidth }}
+              >
+                 {/* Sidebar Content */}
+                 <div className="p-6 overflow-y-auto flex-1" style={{ minWidth: archiveMinWidth }}>
+                    <div className="flex items-center justify-between mb-4">
+                       <h2 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Report Archive</h2>
+                       <button
+                          onClick={toggleArchiveSidebar}
+                          className="p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded transition-colors"
+                          data-testid="collapse-archive-btn"
+                       >
+                          <ChevronLeft className="h-4 w-4" />
+                       </button>
+                    </div>
                     <div className="space-y-6">
                        {navigationYears.map((group) => (
                           <div key={group.year}>
@@ -3578,6 +3657,16 @@ export default function PnlRelease() {
                        ))}
                     </div>
                  </div>
+
+                 {/* Resize Handle */}
+                 <div
+                    onMouseDown={handleArchiveMouseDown}
+                    className={cn(
+                       "absolute right-0 top-0 bottom-0 w-1 cursor-col-resize hover:bg-blue-400 transition-colors z-10",
+                       isResizingArchive && "bg-blue-400"
+                    )}
+                    data-testid="archive-resize-handle"
+                 />
               </div>
 
               {/* Main Content Area */}
