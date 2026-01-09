@@ -1131,13 +1131,7 @@ export default function Teams() {
                   <Separator />
 
                   <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <Label className="text-sm font-medium">Jobs & Pay Rates</Label>
-                      <Button variant="ghost" size="sm" className="h-6 text-xs gap-1 text-muted-foreground hover:text-foreground" onClick={() => openEditDialog(selectedStaff)}>
-                        <Plus className="h-3 w-3" />
-                        Add Job
-                      </Button>
-                    </div>
+                    <Label className="text-sm font-medium">Jobs & Pay Rates</Label>
                     
                     {(() => {
                       const assignedLocationIds = Array.from(new Set(selectedStaff.jobAssignments.map(ja => ja.locationId)));
