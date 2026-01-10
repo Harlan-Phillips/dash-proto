@@ -721,43 +721,40 @@ export default function Teams() {
                   </div>
                   <div className="relative">
                     <div className="max-h-[400px] overflow-y-auto scrollable-list" onScroll={(e) => handleScroll(e, setDeptScrolledToBottom)}>
-                      {legalEntities.map((le) => {
-                        const leDepts = departments
-                          .filter(d => d.legalEntityId === le.id && d.name.toLowerCase().includes(deptSearch.toLowerCase()));
-                        if (leDepts.length === 0) return null;
-                        return (
-                          <div key={le.id}>
-                            <div className="px-3 py-1.5 bg-gray-100 border-b sticky top-0">
-                              <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">{le.name}</span>
-                            </div>
-                            {leDepts.map((dept, index, arr) => (
-                              <button
-                                key={dept.id}
-                                onClick={() => setSelectedDepartment(dept.id)}
-                                className={cn(
-                                  "w-full flex items-center justify-between px-4 h-[44px] text-left transition-colors group",
-                                  selectedDepartment === dept.id
-                                    ? "bg-muted"
-                                    : "hover:bg-gray-50",
-                                  index !== arr.length - 1 && "border-b"
-                                )}
-                                data-testid={`button-department-${dept.id}`}
-                              >
+                      {departments
+                        .filter(d => d.name.toLowerCase().includes(deptSearch.toLowerCase()))
+                        .map((dept, index, arr) => {
+                          const leIndex = legalEntities.findIndex(le => le.id === dept.legalEntityId);
+                          const entityColor = leIndex === 0 ? "bg-blue-500" : leIndex === 1 ? "bg-emerald-500" : "bg-purple-500";
+                          return (
+                            <button
+                              key={dept.id}
+                              onClick={() => setSelectedDepartment(dept.id)}
+                              className={cn(
+                                "w-full flex items-center justify-between px-4 h-[44px] text-left transition-colors group",
+                                selectedDepartment === dept.id
+                                  ? "bg-muted"
+                                  : "hover:bg-gray-50",
+                                index !== arr.length - 1 && "border-b"
+                              )}
+                              data-testid={`button-department-${dept.id}`}
+                            >
+                              <div className="flex items-center gap-2.5">
+                                <div className={cn("w-1.5 h-1.5 rounded-full shrink-0", entityColor)} />
                                 <span className="font-medium text-sm truncate">{dept.name}</span>
-                                <div className="flex items-center gap-2">
-                                  <Edit2 
-                                    className="h-3.5 w-3.5 opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-foreground cursor-pointer transition-opacity"
-                                    onClick={(e) => { e.stopPropagation(); openEditDepartmentDialog(dept); }}
-                                  />
-                                  {selectedDepartment === dept.id && (
-                                    <ChevronRight className="h-4 w-4 flex-shrink-0" />
-                                  )}
-                                </div>
-                              </button>
-                            ))}
-                          </div>
-                        );
-                      })}
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Edit2 
+                                  className="h-3.5 w-3.5 opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-foreground cursor-pointer transition-opacity"
+                                  onClick={(e) => { e.stopPropagation(); openEditDepartmentDialog(dept); }}
+                                />
+                                {selectedDepartment === dept.id && (
+                                  <ChevronRight className="h-4 w-4 flex-shrink-0" />
+                                )}
+                              </div>
+                            </button>
+                          );
+                        })}
                     </div>
                   </div>
                 </div>
