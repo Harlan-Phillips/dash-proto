@@ -7,7 +7,6 @@ import {
   Calendar, 
   Check, 
   ChevronDown, 
-  ChevronLeft,
   ChevronRight, 
   ChevronUp, 
   Download, 
@@ -506,24 +505,6 @@ const tocSections = [
   { id: "operating-expenses", label: "Operating Expenses" },
   { id: "action-items", label: "Action Items" },
   { id: "accountant-note", label: "Accountant Note" },
-];
-
-interface EditableSection {
-  id: string;
-  label: string;
-  visible: boolean;
-}
-
-const defaultSections: EditableSection[] = [
-  { id: "executive-narrative", label: "Executive Narrative", visible: true },
-  { id: "bottom-line", label: "Bottom Line", visible: true },
-  { id: "pnl-dashboard", label: "P&L Dashboard", visible: true },
-  { id: "health-snapshot", label: "Health Snapshot", visible: true },
-  { id: "revenue-analysis", label: "Revenue Analysis", visible: true },
-  { id: "prime-cost-analysis", label: "Prime Cost Analysis", visible: true },
-  { id: "operating-expenses", label: "Operating Expenses", visible: true },
-  { id: "action-items", label: "Action Items", visible: true },
-  { id: "accountant-note", label: "Accountant Note", visible: true },
 ];
 
 // --- State Prime Cost Benchmarks ---
@@ -3027,13 +3008,6 @@ export default function PnlRelease() {
   const [locationName, setLocationName] = useState("STMARKS");
   const [period, setPeriod] = useState("September 2025");
   const [showChat, setShowChat] = useState(false); // Disabled - using floating assistant instead
-  
-  // New Release Flow States
-  const [showUploadModal, setShowUploadModal] = useState(false);
-  const [showProcessingAnimation, setShowProcessingAnimation] = useState(false);
-  const [processingStep, setProcessingStep] = useState(0);
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-  const [isDragOver, setIsDragOver] = useState(false);
   const [chatTrigger, setChatTrigger] = useState<string | null>(null);
   const [floatingChatTrigger, setFloatingChatTrigger] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"detailed" | "curated">("detailed");
@@ -3094,67 +3068,6 @@ export default function PnlRelease() {
   });
   const [healthSnapshotMode, setHealthSnapshotMode] = useState<"percentage" | "actual">("percentage");
   
-  // Report Archive Sidebar State
-  const [archiveSidebarWidth, setArchiveSidebarWidth] = useState(256); // default 256px (w-64)
-  const [archiveSidebarCollapsed, setArchiveSidebarCollapsed] = useState(false);
-  const [isResizingArchive, setIsResizingArchive] = useState(false);
-  const [isLayoutSidebarHovered, setIsLayoutSidebarHovered] = useState(false);
-  const archiveMinWidth = 200;
-  const archiveMaxWidth = 400;
-
-  // Track Layout sidebar hover via mouse position
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      // Layout sidebar is 64px (w-16) normally, expands to 256px (w-64) on hover
-      const sidebarWidth = isLayoutSidebarHovered ? 256 : 64;
-      setIsLayoutSidebarHovered(e.clientX <= sidebarWidth);
-    };
-    
-    document.addEventListener('mousemove', handleMouseMove);
-    return () => document.removeEventListener('mousemove', handleMouseMove);
-  }, [isLayoutSidebarHovered]);
-
-  const handleArchiveMouseDown = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setIsResizingArchive(true);
-  };
-
-  useEffect(() => {
-    if (!isResizingArchive) return;
-
-    const handleMouseMove = (e: MouseEvent) => {
-      const newWidth = e.clientX;
-      if (newWidth < 50) {
-        setArchiveSidebarCollapsed(true);
-        setArchiveSidebarWidth(0);
-      } else if (newWidth >= archiveMinWidth) {
-        setArchiveSidebarCollapsed(false);
-        setArchiveSidebarWidth(Math.min(newWidth, archiveMaxWidth));
-      }
-    };
-
-    const handleMouseUp = () => {
-      setIsResizingArchive(false);
-    };
-
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [isResizingArchive]);
-
-  const toggleArchiveSidebar = () => {
-    if (archiveSidebarCollapsed) {
-      setArchiveSidebarCollapsed(false);
-      setArchiveSidebarWidth(256);
-    } else {
-      setArchiveSidebarCollapsed(true);
-      setArchiveSidebarWidth(0);
-    }
-  };
-
   // Action Items State
   const [actionItems, setActionItems] = useState([
     { id: "ot-policy", title: "Review OT policy — 142 hours is unsustainable", owner: "GM", impact: "$1,500/mo potential", priority: "high", completed: false, completedAt: null as Date | null },
@@ -3271,147 +3184,6 @@ export default function PnlRelease() {
   const [goalsMet, setGoalsMet] = useState(true); // Mock state for confetti
   const [highlightedPnlNodeId, setHighlightedPnlNodeId] = useState<string | null>(null);
   const [trendModalMetric, setTrendModalMetric] = useState<MetricTrendData | null>(null);
-  
-  // Edit Mode State
-  const [isEditMode, setIsEditMode] = useState(false);
-  const [showSectionsSidebar, setShowSectionsSidebar] = useState(false);
-  const [sections, setSections] = useState<EditableSection[]>(defaultSections);
-  const [draggedSectionId, setDraggedSectionId] = useState<string | null>(null);
-  const [dragOverSectionId, setDragOverSectionId] = useState<string | null>(null);
-  
-  // Editable Content State
-  const [editableContent, setEditableContent] = useState({
-    executiveSummary: "Net operating income dropped 38.8% to $17.7K as revenue declined 13.8%. Operating costs improved by 12.1%.",
-    revenueAnalysis: "Revenue declined by $21.3K (-13.8%) primarily driven by lower Food Sales ($18.5K decrease) and N/A Beverage sales ($5K decrease). Delivery platforms showed mixed results with UberEats growing 23.7% while DoorDash declined 11%.",
-    primeCostAnalysis: "Prime costs as a percentage of revenue increased to 54% from 49.2% last month. COGS improved slightly but labor efficiency gains were offset by the revenue decline.",
-    operatingExpenses: "Operating expenses decreased by $8.2K (-12.1%) with notable savings in Marketing & PR ($1.1K), Repairs & Maintenance ($530), and Salaries & Wages ($2K).",
-    bottomLine: "Net operating income of $17.7K represents a 13.3% margin. This is below the 15% target but still within acceptable range given the seasonal revenue decline.",
-    actionItems: "Focus on reversing the Food Sales decline through targeted promotions. Monitor beverage cost increases and renegotiate supplier contracts. Continue leveraging UberEats growth momentum.",
-  });
-  
-  // Section drag handlers
-  const handleSectionDragStart = (sectionId: string) => {
-    setDraggedSectionId(sectionId);
-  };
-  
-  const handleSectionDragOver = (e: React.DragEvent, sectionId: string) => {
-    e.preventDefault();
-    if (draggedSectionId && draggedSectionId !== sectionId) {
-      setDragOverSectionId(sectionId);
-    }
-  };
-  
-  const handleSectionDragLeave = () => {
-    setDragOverSectionId(null);
-  };
-  
-  const handleSectionDrop = (targetSectionId: string) => {
-    if (!draggedSectionId || draggedSectionId === targetSectionId) return;
-    
-    const newSections = [...sections];
-    const draggedIndex = newSections.findIndex(s => s.id === draggedSectionId);
-    const targetIndex = newSections.findIndex(s => s.id === targetSectionId);
-    
-    const [draggedSection] = newSections.splice(draggedIndex, 1);
-    newSections.splice(targetIndex, 0, draggedSection);
-    
-    setSections(newSections);
-    setDraggedSectionId(null);
-    setDragOverSectionId(null);
-  };
-  
-  const handleSectionDragEnd = () => {
-    setDraggedSectionId(null);
-    setDragOverSectionId(null);
-  };
-  
-  const toggleSectionVisibility = (sectionId: string) => {
-    setSections(prev => prev.map(s => 
-      s.id === sectionId ? { ...s, visible: !s.visible } : s
-    ));
-  };
-  
-  const removeSection = (sectionId: string) => {
-    setSections(prev => prev.map(s => 
-      s.id === sectionId ? { ...s, visible: false } : s
-    ));
-  };
-  
-  const isSectionVisible = (sectionId: string) => {
-    return sections.find(s => s.id === sectionId)?.visible ?? true;
-  };
-  
-  const getSectionOrderIndex = (sectionId: string) => {
-    return sections.findIndex(s => s.id === sectionId);
-  };
-  
-  // Processing animation messages - P&L specific
-  const processingMessages = [
-    "Importing Data...",
-    "Analyzing Revenue...",
-    "Calculating Costs...",
-    "Categorizing Expenses...",
-    "Computing Margins...",
-    "Building Your P&L..."
-  ];
-
-  // Handle file upload and start processing
-  const handleFileUpload = (file: File) => {
-    setUploadedFile(file);
-  };
-
-  // Start the magical processing animation
-  const startProcessingAnimation = () => {
-    setShowUploadModal(false);
-    setShowProcessingAnimation(true);
-    setProcessingStep(0);
-    
-    // Cycle through processing messages
-    let currentStep = 0;
-    const interval = setInterval(() => {
-      currentStep++;
-      if (currentStep < processingMessages.length) {
-        setProcessingStep(currentStep);
-      } else {
-        clearInterval(interval);
-        // Animation complete - go to P&L view
-        setTimeout(() => {
-          setShowProcessingAnimation(false);
-          setPeriod("October 2025");
-          setStep(2);
-          confetti({
-            particleCount: 150,
-            spread: 100,
-            origin: { y: 0.5 }
-          });
-          toast({
-            title: "P&L Report Generated",
-            description: "Your October 2025 P&L is ready for review.",
-          });
-        }, 800);
-      }
-    }, 1200);
-  };
-
-  // Handle drag and drop
-  const handleFileDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(true);
-  };
-
-  const handleFileDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(false);
-  };
-
-  const handleFileDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(false);
-    const file = e.dataTransfer.files[0];
-    if (file && (file.name.endsWith('.csv') || file.name.endsWith('.xlsx') || file.name.endsWith('.xls'))) {
-      handleFileUpload(file);
-    }
-  };
 
   // Filter state for P&L Release list
   const [filters, setFilters] = useState<PnLFilterState>(loadFilters);
@@ -3757,43 +3529,12 @@ export default function PnlRelease() {
   if (isOwnerView) {
      return (
         <Layout>
-           <div className="min-h-screen bg-gray-50 flex overflow-hidden relative">
+           <div className="min-h-screen bg-gray-50 flex overflow-hidden">
 
-              {/* Collapsed Sidebar Toggle Tab - attached to top right of left sidebar */}
-              {archiveSidebarCollapsed && (
-                 <button
-                    onClick={toggleArchiveSidebar}
-                    style={{ left: isLayoutSidebarHovered ? 256 : 64 }}
-                    className="fixed top-24 z-30 bg-white border border-l-0 border-gray-200 rounded-r-lg shadow-md px-1.5 py-3 hover:bg-gray-50 transition-all duration-500 ease-in-out"
-                    data-testid="expand-archive-tab"
-                 >
-                    <div className="flex flex-col items-center gap-1.5">
-                       <ChevronRight className="h-4 w-4 text-gray-400" />
-                       <span className="text-[10px] font-medium text-gray-500 [writing-mode:vertical-rl] rotate-180">Archive</span>
-                    </div>
-                 </button>
-              )}
-
-              {/* Left Navigation (Google Docs Style) - Resizable */}
-              <div 
-                 className={cn(
-                    "bg-white border-r border-gray-200 hidden lg:flex flex-col h-full overflow-hidden transition-all duration-200 relative",
-                    archiveSidebarCollapsed && "w-0 border-r-0"
-                 )}
-                 style={{ width: archiveSidebarCollapsed ? 0 : archiveSidebarWidth }}
-              >
-                 {/* Sidebar Content */}
-                 <div className="p-6 overflow-y-auto flex-1" style={{ minWidth: archiveMinWidth }}>
-                    <div className="flex items-center justify-between mb-4">
-                       <h2 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Report Archive</h2>
-                       <button
-                          onClick={toggleArchiveSidebar}
-                          className="p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded transition-colors"
-                          data-testid="collapse-archive-btn"
-                       >
-                          <ChevronLeft className="h-4 w-4" />
-                       </button>
-                    </div>
+              {/* Left Navigation (Google Docs Style) */}
+              <div className="w-64 bg-white border-r border-gray-200 hidden lg:flex flex-col h-full overflow-y-auto">
+                 <div className="p-6">
+                    <h2 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Report Archive</h2>
                     <div className="space-y-6">
                        {navigationYears.map((group) => (
                           <div key={group.year}>
@@ -3837,16 +3578,6 @@ export default function PnlRelease() {
                        ))}
                     </div>
                  </div>
-
-                 {/* Resize Handle */}
-                 <div
-                    onMouseDown={handleArchiveMouseDown}
-                    className={cn(
-                       "absolute right-0 top-0 bottom-0 w-1 cursor-col-resize hover:bg-blue-400 transition-colors z-10",
-                       isResizingArchive && "bg-blue-400"
-                    )}
-                    data-testid="archive-resize-handle"
-                 />
               </div>
 
               {/* Main Content Area */}
@@ -4597,652 +4328,6 @@ export default function PnlRelease() {
                              </table>
                           </div>
                        </section>
-
-                       {/* 2. Bottom Line */}
-                       <section id="owner-bottom-line" className="scroll-mt-4">
-                          <div className="flex items-center justify-between mb-4">
-                             <h2 className="text-xl font-serif font-bold text-gray-900">Bottom Line</h2>
-                             <button 
-                                data-testid="learn-owner-bottom-line"
-                                onClick={() => handleInsightClick("What is net income and how do I read a net income walk? Explain how to understand what's eating into my restaurant's profits.")}
-                                className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-amber-700 bg-amber-50 hover:bg-amber-100 rounded-lg transition-colors"
-                                title="Learn about Bottom Line"
-                             >
-                                <Lightbulb className="h-3.5 w-3.5" />
-                                Learn
-                             </button>
-                          </div>
-                          <div className="bg-white rounded-xl border border-gray-200 p-6">
-                             <h3 className="font-semibold text-gray-900 mb-4">Net Income Walk</h3>
-                             <div className="space-y-3">
-                                <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                                   <span className="text-gray-900">Net Sales</span>
-                                   <div className="text-right">
-                                      <span className="font-semibold text-gray-900">$133,042</span>
-                                      <span className="text-gray-500 text-sm ml-2">(100.0%)</span>
-                                   </div>
-                                </div>
-                                <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                                   <span className="text-gray-700">- COGS</span>
-                                   <div className="text-right">
-                                      <span className="font-medium text-red-600">-$55,670</span>
-                                      <span className="text-gray-500 text-sm ml-2">(41.8%)</span>
-                                   </div>
-                                </div>
-                                <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                                   <span className="text-gray-700">= Gross Profit</span>
-                                   <div className="text-right">
-                                      <span className="font-medium text-emerald-600">$77,372</span>
-                                      <span className="text-gray-500 text-sm ml-2">(58.2%)</span>
-                                   </div>
-                                </div>
-                                <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                                   <span className="text-gray-700">- Direct Labor</span>
-                                   <div className="text-right">
-                                      <span className="font-medium text-red-600">-$16,156</span>
-                                      <span className="text-gray-500 text-sm ml-2">(12.1%)</span>
-                                   </div>
-                                </div>
-                                <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                                   <span className="text-gray-700">- Operating Expenses</span>
-                                   <div className="text-right">
-                                      <span className="font-medium text-red-600">-$43,494</span>
-                                      <span className="text-gray-500 text-sm ml-2">(32.7%)</span>
-                                   </div>
-                                </div>
-                                <div className="flex justify-between items-center py-3 bg-gray-50 rounded-lg px-4 mt-2">
-                                   <span className="font-semibold text-gray-900">= Net Operating Income</span>
-                                   <div className="text-right">
-                                      <span className="font-bold text-lg text-emerald-600">$17,722</span>
-                                      <span className="text-gray-500 text-sm ml-2">(13.3%)</span>
-                                   </div>
-                                </div>
-                             </div>
-                          </div>
-                       </section>
-
-                       {/* 3. Revenue Analysis */}
-                       <section id="owner-revenue-analysis" className="scroll-mt-4">
-                          <div className="flex items-center justify-between mb-4">
-                             <h2 className="text-xl font-serif font-bold text-gray-900">Revenue Analysis</h2>
-                             <button 
-                                data-testid="learn-owner-revenue-analysis"
-                                onClick={() => handleInsightClick("How should I analyze revenue in my restaurant P&L? Explain channel mix, average check, and what to look for in revenue trends.")}
-                                className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-amber-700 bg-amber-50 hover:bg-amber-100 rounded-lg transition-colors"
-                                title="Learn about Revenue Analysis"
-                             >
-                                <Lightbulb className="h-3.5 w-3.5" />
-                                Learn
-                             </button>
-                          </div>
-
-                          {/* AI Insight */}
-                          <div className="bg-gray-50 border-l-4 border-gray-400 p-4 mb-6 flex gap-3">
-                             <Sparkles className="h-5 w-5 text-gray-600 flex-shrink-0 mt-0.5" />
-                             <p className="text-gray-700">Revenue declined by $21,309 (-13.8%) compared to prior month due to seasonal slowdown. Net sales of $133,042 for September is below the $150,000 target. Focus on driving foot traffic and average check size.</p>
-                          </div>
-
-                          {/* Channel Performance */}
-                          <div className="bg-white rounded-xl border border-gray-200 overflow-hidden mb-6">
-                             <div className="px-6 py-4 border-b border-gray-100">
-                                <h3 className="font-semibold text-gray-900">Channel Performance</h3>
-                             </div>
-                             <table className="w-full text-sm">
-                                <thead>
-                                   <tr className="border-b border-gray-100 bg-gray-50/50">
-                                      <th className="text-left px-6 py-3 font-medium text-gray-500">Channel</th>
-                                      <th className="text-right px-6 py-3 font-medium text-gray-500">Actual</th>
-                                      <th className="text-right px-6 py-3 font-medium text-gray-500">Var %</th>
-                                      <th className="text-right px-6 py-3 font-medium text-gray-500">Mix %</th>
-                                      <th className="text-right px-6 py-3 font-medium text-gray-500">vs PY</th>
-                                   </tr>
-                                </thead>
-                                <tbody className="divide-y divide-gray-100">
-                                   <tr className="hover:bg-gray-50">
-                                      <td className="px-6 py-4 text-gray-900">Food Sales</td>
-                                      <td className="px-6 py-4 text-right font-medium">$95,614</td>
-                                      <td className="px-6 py-4 text-right text-red-600 font-medium">-15.2%</td>
-                                      <td className="px-6 py-4 text-right text-gray-600">71.8%</td>
-                                      <td className="px-6 py-4 text-right text-red-600">-5.9%</td>
-                                   </tr>
-                                   <tr className="hover:bg-gray-50">
-                                      <td className="px-6 py-4 text-gray-900">Beverage Sales</td>
-                                      <td className="px-6 py-4 text-right font-medium">$17,698</td>
-                                      <td className="px-6 py-4 text-right text-red-600 font-medium">-12.4%</td>
-                                      <td className="px-6 py-4 text-right text-gray-600">13.3%</td>
-                                      <td className="px-6 py-4 text-right text-red-600">-11.5%</td>
-                                   </tr>
-                                   <tr className="hover:bg-gray-50">
-                                      <td className="px-6 py-4 text-gray-900">Delivery/Online</td>
-                                      <td className="px-6 py-4 text-right font-medium">$19,730</td>
-                                      <td className="px-6 py-4 text-right text-emerald-600 font-medium">+2.8%</td>
-                                      <td className="px-6 py-4 text-right text-gray-600">14.9%</td>
-                                      <td className="px-6 py-4 text-right text-emerald-600">+9.6%</td>
-                                   </tr>
-                                   <tr className="hover:bg-gray-50 bg-gray-50 font-semibold">
-                                      <td className="px-6 py-4 text-gray-900">Total Net Sales</td>
-                                      <td className="px-6 py-4 text-right">$133,042</td>
-                                      <td className="px-6 py-4 text-right text-red-600">-13.8%</td>
-                                      <td className="px-6 py-4 text-right text-gray-600">100%</td>
-                                      <td className="px-6 py-4 text-right text-red-600">-11.3%</td>
-                                   </tr>
-                                </tbody>
-                             </table>
-                          </div>
-
-                          {/* Revenue Drivers */}
-                          <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
-                             <h3 className="font-semibold text-gray-900 mb-4">Revenue Drivers</h3>
-                             <div className="grid grid-cols-4 gap-4">
-                                <div className="border border-gray-200 rounded-lg p-4">
-                                   <p className="text-xs text-gray-500 mb-1">Guest Count</p>
-                                   <p className="text-2xl font-bold text-gray-900">8,580</p>
-                                   <p className="text-xs text-emerald-600 font-medium">+12.2% vs prior</p>
-                                </div>
-                                <div className="border border-gray-200 rounded-lg p-4">
-                                   <p className="text-xs text-gray-500 mb-1">Average Check</p>
-                                   <p className="text-2xl font-bold text-gray-900">$34.20</p>
-                                   <p className="text-xs text-emerald-600 font-medium">+1% vs prior</p>
-                                </div>
-                                <div className="border border-gray-200 rounded-lg p-4">
-                                   <p className="text-xs text-gray-500 mb-1">Table Turns</p>
-                                   <p className="text-2xl font-bold text-gray-900">2.4</p>
-                                   <p className="text-xs text-emerald-600 font-medium">+9.1% vs prior</p>
-                                </div>
-                                <div className="border border-gray-200 rounded-lg p-4">
-                                   <p className="text-xs text-gray-500 mb-1">Avg Delivery Order</p>
-                                   <p className="text-2xl font-bold text-gray-900">$42.50</p>
-                                   <p className="text-xs text-emerald-600 font-medium">+5.7% vs prior</p>
-                                </div>
-                             </div>
-                          </div>
-
-                          {/* Flags & Anomalies */}
-                          <div className="space-y-2">
-                             <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider">Flags & Anomalies</h4>
-                             <div className="space-y-2">
-                                <div className="flex items-start gap-2 text-sm">
-                                   <span className="text-amber-500">⚡</span>
-                                   <span className="text-gray-700">Delivery mix increased 2pts vs prior year — margin implications?</span>
-                                </div>
-                                <div className="flex items-start gap-2 text-sm">
-                                   <span className="text-amber-500">⚡</span>
-                                   <span className="text-gray-700">Week 4 dine-in revenue was 28% above weekly average (holiday effect)</span>
-                                </div>
-                                <div className="flex items-start gap-2 text-sm">
-                                   <Check className="h-4 w-4 text-emerald-500 flex-shrink-0" />
-                                   <span className="text-gray-700">No significant discounting or promo activity</span>
-                                </div>
-                             </div>
-                          </div>
-                       </section>
-
-                       {/* 4. Prime Cost Analysis */}
-                       <section id="owner-prime-cost-analysis" className="scroll-mt-4">
-                          <div className="flex items-center justify-between mb-1">
-                             <h2 className="text-xl font-serif font-bold text-gray-900">Prime Cost Analysis</h2>
-                             <button 
-                                data-testid="learn-owner-prime-cost"
-                                onClick={() => handleInsightClick("What is prime cost and why is it the most important metric in restaurant P&L? Explain how to calculate it and what's a healthy target.")}
-                                className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-amber-700 bg-amber-50 hover:bg-amber-100 rounded-lg transition-colors"
-                                title="Learn about Prime Cost"
-                             >
-                                <Lightbulb className="h-3.5 w-3.5" />
-                                Learn
-                             </button>
-                          </div>
-                          <p className="text-sm text-muted-foreground mb-4">The heart of the P&L</p>
-
-                          {/* Prime Cost Walk */}
-                          <div className="grid grid-cols-2 gap-6 mb-6">
-                             <div className="bg-white rounded-xl border border-gray-200 p-6">
-                                <h3 className="font-semibold text-gray-900 mb-4">Prime Cost Walk</h3>
-                                <div className="space-y-2">
-                                   <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                                      <span className="text-gray-600">Target Prime Cost:</span>
-                                      <div className="text-right">
-                                         <span className="font-medium text-gray-900">61.5%</span>
-                                         <span className="text-gray-500 text-sm ml-2">($180,400)</span>
-                                      </div>
-                                   </div>
-                                   <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                                      <span className="text-gray-600">+ Labor Variance:</span>
-                                      <div className="text-right">
-                                         <span className="font-medium text-red-600">+1.5pts</span>
-                                         <span className="text-red-600 text-sm ml-2">(+$4,400)</span>
-                                      </div>
-                                   </div>
-                                   <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                                      <span className="text-gray-600">- COGS Variance:</span>
-                                      <div className="text-right">
-                                         <span className="font-medium text-emerald-600">-0.9pts</span>
-                                         <span className="text-emerald-600 text-sm ml-2">(-$2,600)</span>
-                                      </div>
-                                   </div>
-                                   <div className="flex justify-between items-center py-3 bg-gray-50 rounded-lg px-3 mt-2">
-                                      <span className="font-semibold text-gray-900">= Actual Prime Cost:</span>
-                                      <div className="text-right">
-                                         <span className="font-bold text-gray-900">62.1%</span>
-                                         <span className="text-gray-600 text-sm ml-2">($182,200)</span>
-                                      </div>
-                                   </div>
-                                </div>
-                             </div>
-                             <div className="bg-white rounded-xl border border-gray-200 p-6">
-                                <h3 className="font-semibold text-gray-900 mb-4">Labor Variance Drivers</h3>
-                                <div className="space-y-4">
-                                   <div className="flex items-center justify-between">
-                                      <div>
-                                         <p className="font-medium text-gray-900">Overtime Hours</p>
-                                         <p className="text-xs text-gray-500">142 OT hours vs 80 budgeted</p>
-                                      </div>
-                                      <span className="text-red-600 font-semibold">+$3,200</span>
-                                   </div>
-                                   <div className="flex items-center justify-between">
-                                      <div>
-                                         <p className="font-medium text-gray-900">Holiday Premium</p>
-                                         <p className="text-xs text-gray-500">Dec 24-25, Dec 31</p>
-                                      </div>
-                                      <span className="text-red-600 font-semibold">+$1,800</span>
-                                   </div>
-                                   <div className="flex items-center justify-between">
-                                      <div>
-                                         <p className="font-medium text-gray-900">Volume-Driven</p>
-                                         <p className="text-xs text-gray-500">Appropriate for +12% revenue</p>
-                                      </div>
-                                      <span className="text-red-600 font-semibold">+$8,500</span>
-                                   </div>
-                                </div>
-                             </div>
-                          </div>
-
-                          {/* Labor Deep Dive */}
-                          <div className="bg-white rounded-xl border border-gray-200 overflow-hidden mb-6">
-                             <div className="px-6 py-4 border-b border-gray-100">
-                                <h3 className="font-semibold text-gray-900">Labor Deep Dive</h3>
-                             </div>
-                             <table className="w-full text-sm">
-                                <thead>
-                                   <tr className="border-b border-gray-100 bg-gray-50/50">
-                                      <th className="text-left px-6 py-3 font-medium text-gray-500">Category</th>
-                                      <th className="text-right px-6 py-3 font-medium text-gray-500">Actual</th>
-                                      <th className="text-right px-6 py-3 font-medium text-gray-500">Budget</th>
-                                      <th className="text-right px-6 py-3 font-medium text-gray-500">% Income</th>
-                                      <th className="text-right px-6 py-3 font-medium text-gray-500">% of Sales</th>
-                                   </tr>
-                                </thead>
-                                <tbody className="divide-y divide-gray-100">
-                                   <tr className="hover:bg-gray-50 font-semibold">
-                                      <td className="px-6 py-4 text-gray-900">Total Labor</td>
-                                      <td className="px-6 py-4 text-right">$95,400</td>
-                                      <td className="px-6 py-4 text-right text-gray-500">$81,220</td>
-                                      <td className="px-6 py-4 text-right text-red-600">+$14,180</td>
-                                      <td className="px-6 py-4 text-right text-gray-600">32.5%</td>
-                                   </tr>
-                                   <tr className="hover:bg-gray-50">
-                                      <td className="px-6 py-4 text-gray-700 pl-10">BOH Labor</td>
-                                      <td className="px-6 py-4 text-right">$38,200</td>
-                                      <td className="px-6 py-4 text-right text-gray-500">$35,500</td>
-                                      <td className="px-6 py-4 text-right text-red-600">+$2,700</td>
-                                      <td className="px-6 py-4 text-right text-gray-600">13.0%</td>
-                                   </tr>
-                                   <tr className="hover:bg-gray-50">
-                                      <td className="px-6 py-4 text-gray-700 pl-10">FOH Labor</td>
-                                      <td className="px-6 py-4 text-right">$42,100</td>
-                                      <td className="px-6 py-4 text-right text-gray-500">$37,800</td>
-                                      <td className="px-6 py-4 text-right text-red-600">+$4,300</td>
-                                      <td className="px-6 py-4 text-right text-gray-600">14.3%</td>
-                                   </tr>
-                                   <tr className="hover:bg-gray-50">
-                                      <td className="px-6 py-4 text-gray-700 pl-10">Management</td>
-                                      <td className="px-6 py-4 text-right">$12,600</td>
-                                      <td className="px-6 py-4 text-right text-gray-500">$12,600</td>
-                                      <td className="px-6 py-4 text-right text-gray-600">$0</td>
-                                      <td className="px-6 py-4 text-right text-gray-600">4.3%</td>
-                                   </tr>
-                                   <tr className="hover:bg-gray-50">
-                                      <td className="px-6 py-4 text-gray-700 pl-10">Payroll Taxes & Benefits</td>
-                                      <td className="px-6 py-4 text-right">$10,500</td>
-                                      <td className="px-6 py-4 text-right text-gray-500">$9,320</td>
-                                      <td className="px-6 py-4 text-right text-red-600">+$1,180</td>
-                                      <td className="px-6 py-4 text-right text-gray-600">3.6%</td>
-                                   </tr>
-                                </tbody>
-                             </table>
-                          </div>
-
-                          {/* COGS Deep Dive */}
-                          <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-                             <div className="px-6 py-4 border-b border-gray-100">
-                                <h3 className="font-semibold text-gray-900">COGS Deep Dive</h3>
-                             </div>
-                             <table className="w-full text-sm">
-                                <thead>
-                                   <tr className="border-b border-gray-100 bg-gray-50/50">
-                                      <th className="text-left px-6 py-3 font-medium text-gray-500">Category</th>
-                                      <th className="text-right px-6 py-3 font-medium text-gray-500">Actual</th>
-                                      <th className="text-right px-6 py-3 font-medium text-gray-500">Budget</th>
-                                      <th className="text-right px-6 py-3 font-medium text-gray-500">% Income</th>
-                                      <th className="text-right px-6 py-3 font-medium text-gray-500">% of Sales</th>
-                                   </tr>
-                                </thead>
-                                <tbody className="divide-y divide-gray-100">
-                                   <tr className="hover:bg-gray-50 font-semibold">
-                                      <td className="px-6 py-4 text-gray-900">Total COGS</td>
-                                      <td className="px-6 py-4 text-right">$86,800</td>
-                                      <td className="px-6 py-4 text-right text-gray-500">$79,910</td>
-                                      <td className="px-6 py-4 text-right text-red-600">+$6,890</td>
-                                      <td className="px-6 py-4 text-right text-gray-600">29.6%</td>
-                                   </tr>
-                                   <tr className="hover:bg-gray-50">
-                                      <td className="px-6 py-4 text-gray-700 pl-10">Food Cost</td>
-                                      <td className="px-6 py-4 text-right">$68,400</td>
-                                      <td className="px-6 py-4 text-right text-gray-500">$62,880</td>
-                                      <td className="px-6 py-4 text-right text-red-600">+$5,520</td>
-                                      <td className="px-6 py-4 text-right text-gray-600">23.3%</td>
-                                   </tr>
-                                   <tr className="hover:bg-gray-50">
-                                      <td className="px-6 py-4 text-gray-700 pl-10">Beverage Cost</td>
-                                      <td className="px-6 py-4 text-right">$14,200</td>
-                                      <td className="px-6 py-4 text-right text-gray-500">$13,100</td>
-                                      <td className="px-6 py-4 text-right text-red-600">+$1,100</td>
-                                      <td className="px-6 py-4 text-right text-gray-600">4.8%</td>
-                                   </tr>
-                                   <tr className="hover:bg-gray-50">
-                                      <td className="px-6 py-4 text-gray-700 pl-10">Paper & Supplies</td>
-                                      <td className="px-6 py-4 text-right">$4,200</td>
-                                      <td className="px-6 py-4 text-right text-gray-500">$3,930</td>
-                                      <td className="px-6 py-4 text-right text-red-600">+$270</td>
-                                      <td className="px-6 py-4 text-right text-gray-600">1.4%</td>
-                                   </tr>
-                                </tbody>
-                             </table>
-                             <div className="px-6 py-3 bg-gray-50 border-t border-gray-100">
-                                <p className="text-xs text-gray-600">Note: COGS variance is favorable as a % of sales (-0.9pts) despite higher absolute dollars due to volume increase.</p>
-                             </div>
-                          </div>
-                       </section>
-
-                       {/* 5. Operating Expenses */}
-                       <section id="owner-operating-expenses" className="scroll-mt-4">
-                          <div className="flex items-center justify-between mb-4">
-                             <h2 className="text-xl font-serif font-bold text-gray-900">Operating Expenses</h2>
-                             <button 
-                                data-testid="learn-owner-operating-expenses"
-                                onClick={() => handleInsightClick("What are controllable vs fixed expenses in a restaurant P&L? Explain each category and how to manage them effectively.")}
-                                className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-amber-700 bg-amber-50 hover:bg-amber-100 rounded-lg transition-colors"
-                                title="Learn about Operating Expenses"
-                             >
-                                <Lightbulb className="h-3.5 w-3.5" />
-                                Learn
-                             </button>
-                          </div>
-
-                          {/* Controllable Expenses */}
-                          <div className="bg-white rounded-xl border border-gray-200 overflow-hidden mb-6">
-                             <div className="px-6 py-4 border-b border-gray-100">
-                                <h3 className="font-semibold text-gray-900">Controllable Expenses</h3>
-                             </div>
-                             <table className="w-full text-sm">
-                                <thead>
-                                   <tr className="border-b border-gray-100 bg-gray-50/50">
-                                      <th className="text-left px-6 py-3 font-medium text-gray-500">Category</th>
-                                      <th className="text-right px-6 py-3 font-medium text-gray-500">Actual</th>
-                                      <th className="text-right px-6 py-3 font-medium text-gray-500">Budget</th>
-                                      <th className="text-right px-6 py-3 font-medium text-gray-500">% Income</th>
-                                      <th className="text-right px-6 py-3 font-medium text-gray-500">% of Sales</th>
-                                   </tr>
-                                </thead>
-                                <tbody className="divide-y divide-gray-100">
-                                   <tr className="hover:bg-gray-50 font-semibold">
-                                      <td className="px-6 py-4 text-gray-900">Total Controllable</td>
-                                      <td className="px-6 py-4 text-right">$38,600</td>
-                                      <td className="px-6 py-4 text-right text-gray-500">$39,800</td>
-                                      <td className="px-6 py-4 text-right text-emerald-600">-$1,200</td>
-                                      <td className="px-6 py-4 text-right text-gray-600">13.2%</td>
-                                   </tr>
-                                   <tr className="hover:bg-gray-50">
-                                      <td className="px-6 py-4 text-gray-700 pl-10">Marketing</td>
-                                      <td className="px-6 py-4 text-right">$3,200</td>
-                                      <td className="px-6 py-4 text-right text-gray-500">$4,500</td>
-                                      <td className="px-6 py-4 text-right text-emerald-600">-$1,300</td>
-                                      <td className="px-6 py-4 text-right text-gray-600">1.1%</td>
-                                   </tr>
-                                   <tr className="hover:bg-gray-50">
-                                      <td className="px-6 py-4 text-gray-700 pl-10">Repairs & Maintenance</td>
-                                      <td className="px-6 py-4 text-right">$4,800</td>
-                                      <td className="px-6 py-4 text-right text-gray-500">$4,000</td>
-                                      <td className="px-6 py-4 text-right text-red-600">+$800</td>
-                                      <td className="px-6 py-4 text-right text-gray-600">1.6%</td>
-                                   </tr>
-                                   <tr className="hover:bg-gray-50">
-                                      <td className="px-6 py-4 text-gray-700 pl-10">Utilities</td>
-                                      <td className="px-6 py-4 text-right">$6,400</td>
-                                      <td className="px-6 py-4 text-right text-gray-500">$6,200</td>
-                                      <td className="px-6 py-4 text-right text-red-600">+$200</td>
-                                      <td className="px-6 py-4 text-right text-gray-600">2.2%</td>
-                                   </tr>
-                                   <tr className="hover:bg-gray-50">
-                                      <td className="px-6 py-4 text-gray-700 pl-10">Credit Card Fees</td>
-                                      <td className="px-6 py-4 text-right">$7,400</td>
-                                      <td className="px-6 py-4 text-right text-gray-500">$6,600</td>
-                                      <td className="px-6 py-4 text-right text-red-600">+$800</td>
-                                      <td className="px-6 py-4 text-right text-gray-600">2.5%</td>
-                                   </tr>
-                                   <tr className="hover:bg-gray-50">
-                                      <td className="px-6 py-4 text-gray-700 pl-10">Delivery Commissions</td>
-                                      <td className="px-6 py-4 text-right">$8,200</td>
-                                      <td className="px-6 py-4 text-right text-gray-500">$7,300</td>
-                                      <td className="px-6 py-4 text-right text-red-600">+$900</td>
-                                      <td className="px-6 py-4 text-right text-gray-600">2.8%</td>
-                                   </tr>
-                                </tbody>
-                             </table>
-                          </div>
-
-                          {/* Fixed/Occupancy Expenses */}
-                          <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-                             <div className="px-6 py-4 border-b border-gray-100">
-                                <h3 className="font-semibold text-gray-900">Fixed / Occupancy Expenses</h3>
-                             </div>
-                             <table className="w-full text-sm">
-                                <thead>
-                                   <tr className="border-b border-gray-100 bg-gray-50/50">
-                                      <th className="text-left px-6 py-3 font-medium text-gray-500">Category</th>
-                                      <th className="text-right px-6 py-3 font-medium text-gray-500">Actual</th>
-                                      <th className="text-right px-6 py-3 font-medium text-gray-500">Budget</th>
-                                      <th className="text-right px-6 py-3 font-medium text-gray-500">% Income</th>
-                                      <th className="text-right px-6 py-3 font-medium text-gray-500">% of Sales</th>
-                                   </tr>
-                                </thead>
-                                <tbody className="divide-y divide-gray-100">
-                                   <tr className="hover:bg-gray-50 font-semibold">
-                                      <td className="px-6 py-4 text-gray-900">Total Fixed</td>
-                                      <td className="px-6 py-4 text-right">$21,400</td>
-                                      <td className="px-6 py-4 text-right text-gray-500">$21,400</td>
-                                      <td className="px-6 py-4 text-right text-gray-600">$0</td>
-                                      <td className="px-6 py-4 text-right text-gray-600">7.3%</td>
-                                   </tr>
-                                   <tr className="hover:bg-gray-50">
-                                      <td className="px-6 py-4 text-gray-700 pl-10">Rent</td>
-                                      <td className="px-6 py-4 text-right">$12,000</td>
-                                      <td className="px-6 py-4 text-right text-gray-500">$12,000</td>
-                                      <td className="px-6 py-4 text-right text-gray-600">$0</td>
-                                      <td className="px-6 py-4 text-right text-gray-600">4.1%</td>
-                                   </tr>
-                                   <tr className="hover:bg-gray-50">
-                                      <td className="px-6 py-4 text-gray-700 pl-10">Insurance</td>
-                                      <td className="px-6 py-4 text-right">$3,800</td>
-                                      <td className="px-6 py-4 text-right text-gray-500">$3,800</td>
-                                      <td className="px-6 py-4 text-right text-gray-600">$0</td>
-                                      <td className="px-6 py-4 text-right text-gray-600">1.3%</td>
-                                   </tr>
-                                   <tr className="hover:bg-gray-50">
-                                      <td className="px-6 py-4 text-gray-700 pl-10">CAM & Property Tax</td>
-                                      <td className="px-6 py-4 text-right">$2,800</td>
-                                      <td className="px-6 py-4 text-right text-gray-500">$2,800</td>
-                                      <td className="px-6 py-4 text-right text-gray-600">$0</td>
-                                      <td className="px-6 py-4 text-right text-gray-600">1.0%</td>
-                                   </tr>
-                                   <tr className="hover:bg-gray-50">
-                                      <td className="px-6 py-4 text-gray-700 pl-10">Depreciation</td>
-                                      <td className="px-6 py-4 text-right">$2,800</td>
-                                      <td className="px-6 py-4 text-right text-gray-500">$2,800</td>
-                                      <td className="px-6 py-4 text-right text-gray-600">$0</td>
-                                      <td className="px-6 py-4 text-right text-gray-600">1.0%</td>
-                                   </tr>
-                                </tbody>
-                             </table>
-                          </div>
-                       </section>
-
-                       {/* 6. Action Items & Recommendations */}
-                       <section id="owner-action-items" className="scroll-mt-4">
-                          <div className="flex items-center justify-between mb-4">
-                             <h2 className="text-xl font-serif font-bold text-gray-900">Action Items & Recommendations</h2>
-                             <div className="flex items-center gap-2 text-sm text-gray-500">
-                                <span className="px-2 py-1 bg-gray-100 rounded-md font-medium">{activeActions.length} active</span>
-                                {completedActions.length > 0 && (
-                                   <span className="px-2 py-1 bg-emerald-100 text-emerald-700 rounded-md font-medium">{completedActions.length} completed</span>
-                                )}
-                             </div>
-                          </div>
-
-                          <div className="bg-white rounded-xl border border-gray-200 p-6">
-                             <div className="space-y-3">
-                                <AnimatePresence mode="popLayout">
-                                   {activeActions.map((item) => (
-                                      <motion.div
-                                         key={item.id}
-                                         layout
-                                         initial={{ opacity: 0, y: -10 }}
-                                         animate={{ 
-                                            opacity: 1, 
-                                            y: 0,
-                                            scale: recentlyCompleted === item.id ? [1, 1.02, 1] : 1
-                                         }}
-                                         exit={{ opacity: 0, x: 50, transition: { duration: 0.3 } }}
-                                         data-testid={`owner-action-item-${item.id}`}
-                                         className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors group"
-                                      >
-                                         <button
-                                            onClick={() => toggleActionComplete(item.id)}
-                                            className={cn(
-                                               "w-5 h-5 rounded border-2 flex items-center justify-center transition-all flex-shrink-0",
-                                               "border-gray-300 hover:border-emerald-500 hover:bg-emerald-50"
-                                            )}
-                                            data-testid={`owner-checkbox-${item.id}`}
-                                         >
-                                         </button>
-                                         <div className={cn(
-                                            "h-2.5 w-2.5 rounded-full flex-shrink-0",
-                                            item.priority === "high" ? "bg-red-500" : item.priority === "medium" ? "bg-amber-500" : "bg-emerald-500"
-                                         )} />
-                                         <div className="flex-1 min-w-0">
-                                            {editingActionId === item.id ? (
-                                               <input
-                                                  type="text"
-                                                  value={editingActionTitle}
-                                                  onChange={(e) => setEditingActionTitle(e.target.value)}
-                                                  onBlur={saveActionEdit}
-                                                  onKeyDown={(e) => e.key === "Enter" && saveActionEdit()}
-                                                  className="w-full font-medium text-gray-900 bg-gray-50 border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-gray-400"
-                                                  autoFocus
-                                                  data-testid={`owner-input-edit-${item.id}`}
-                                               />
-                                            ) : (
-                                               <p
-                                                  onClick={() => startEditingAction(item.id, item.title)}
-                                                  className="font-medium text-gray-900 cursor-pointer hover:text-gray-700"
-                                                  data-testid={`owner-text-action-${item.id}`}
-                                               >
-                                                  {item.title}
-                                               </p>
-                                            )}
-                                            <p className="text-sm text-gray-500">
-                                               Owner: <span className="font-medium">{item.owner}</span> &nbsp;•&nbsp; Impact: {item.impact}
-                                            </p>
-                                         </div>
-                                         <div className="flex items-center gap-2">
-                                            <button
-                                               onClick={() => openAssignModal(item.id, item.title, item.owner)}
-                                               className="px-3 py-1.5 text-sm font-medium border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-                                               data-testid={`owner-button-assign-${item.id}`}
-                                            >
-                                               Assign
-                                            </button>
-                                            <button
-                                               onClick={() => startEditingAction(item.id, item.title)}
-                                               className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
-                                               data-testid={`owner-button-edit-${item.id}`}
-                                            >
-                                               <Pencil className="h-4 w-4" />
-                                            </button>
-                                         </div>
-                                      </motion.div>
-                                   ))}
-                                </AnimatePresence>
-
-                                {activeActions.length === 0 && (
-                                   <div className="text-center py-8 text-gray-500">
-                                      <CheckCircle2 className="h-12 w-12 mx-auto text-emerald-300 mb-2" />
-                                      <p className="font-medium">All action items completed!</p>
-                                   </div>
-                                )}
-                             </div>
-
-                             {/* Completed Actions Collapsible */}
-                             {completedActions.length > 0 && (
-                                <div className="mt-6 pt-4 border-t border-gray-100">
-                                   <button
-                                      onClick={() => setShowCompletedActions(!showCompletedActions)}
-                                      className="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
-                                      data-testid="owner-toggle-completed-actions"
-                                   >
-                                      <ChevronDown className={cn("h-4 w-4 transition-transform", showCompletedActions && "rotate-180")} />
-                                      Completed ({completedActions.length})
-                                   </button>
-                                   <AnimatePresence>
-                                      {showCompletedActions && (
-                                         <motion.div
-                                            initial={{ height: 0, opacity: 0 }}
-                                            animate={{ height: "auto", opacity: 1 }}
-                                            exit={{ height: 0, opacity: 0 }}
-                                            transition={{ duration: 0.2 }}
-                                            className="overflow-hidden"
-                                         >
-                                            <div className="space-y-2 mt-3">
-                                               {completedActions.map((item) => (
-                                                  <motion.div
-                                                     key={item.id}
-                                                     initial={{ opacity: 0, scale: 0.95 }}
-                                                     animate={{ opacity: 1, scale: 1 }}
-                                                     className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg"
-                                                     data-testid={`owner-completed-action-${item.id}`}
-                                                  >
-                                                     <button
-                                                        onClick={() => toggleActionComplete(item.id)}
-                                                        className="w-5 h-5 rounded border-2 border-emerald-500 bg-emerald-500 flex items-center justify-center flex-shrink-0"
-                                                        data-testid={`owner-checkbox-completed-${item.id}`}
-                                                     >
-                                                        <Check className="h-3 w-3 text-white" />
-                                                     </button>
-                                                     <div className="flex-1 min-w-0">
-                                                        <p className="font-medium text-gray-500 line-through">{item.title}</p>
-                                                        <p className="text-xs text-gray-400">
-                                                           Completed {item.completedAt ? new Date(item.completedAt).toLocaleDateString() : 'recently'}
-                                                        </p>
-                                                     </div>
-                                                  </motion.div>
-                                               ))}
-                                            </div>
-                                         </motion.div>
-                                      )}
-                                   </AnimatePresence>
-                                </div>
-                             )}
-                          </div>
-                       </section>
                     </div>
                     )}
                  </div>
@@ -5254,247 +4339,6 @@ export default function PnlRelease() {
                 onClose={() => setShowChat(false)} 
                 triggerQuery={chatTrigger ? chatTrigger.split(" ").slice(0, -1).join(" ") : null}
               />
-
-              {/* Email Report Modal for Owner View */}
-              <AnimatePresence>
-                {showEmailReportModal && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50"
-                    onClick={() => {
-                      setShowEmailReportModal(false);
-                      setShowEmailPreview(false);
-                    }}
-                  >
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                      animate={{ opacity: 1, scale: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                      transition={{ duration: 0.2 }}
-                      onClick={(e) => e.stopPropagation()}
-                      className="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden border border-gray-200"
-                    >
-                      {/* Modal Header */}
-                      <div className="flex items-center justify-between p-5 border-b border-gray-100">
-                        <div className="flex items-center gap-3">
-                          <div className="h-12 w-12 rounded-xl bg-gray-100 flex items-center justify-center">
-                            <Mail className="h-6 w-6 text-gray-600" />
-                          </div>
-                          <div>
-                            <h3 className="font-semibold text-gray-900">Email Report</h3>
-                            <p className="text-sm text-gray-500">Send Manager Scoreboard summary</p>
-                          </div>
-                        </div>
-                        <button
-                          onClick={() => {
-                            setShowEmailReportModal(false);
-                            setShowEmailPreview(false);
-                          }}
-                          className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                          data-testid="button-close-email-modal-owner"
-                        >
-                          <X className="h-5 w-5 text-gray-400" />
-                        </button>
-                      </div>
-
-                      {!showEmailPreview ? (
-                        <>
-                          {/* Recipients */}
-                          <div className="p-5 space-y-4">
-                            <div>
-                              <label className="text-sm font-medium text-gray-700 block mb-2">Recipients</label>
-                              <div className="flex flex-wrap gap-2 mb-2">
-                                {emailRecipients.map((email) => (
-                                  <span
-                                    key={email}
-                                    className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-gray-100 text-gray-700 text-sm rounded-lg"
-                                  >
-                                    {email}
-                                    <button
-                                      onClick={() => removeRecipient(email)}
-                                      className="hover:text-gray-900"
-                                      data-testid={`button-remove-owner-${email}`}
-                                    >
-                                      <X className="h-3 w-3" />
-                                    </button>
-                                  </span>
-                                ))}
-                              </div>
-                              <div className="flex gap-2">
-                                <input
-                                  type="email"
-                                  placeholder="Add email address..."
-                                  value={newRecipient}
-                                  onChange={(e) => setNewRecipient(e.target.value)}
-                                  onKeyDown={(e) => e.key === "Enter" && addRecipient()}
-                                  className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
-                                  data-testid="input-new-recipient-owner"
-                                />
-                                <button
-                                  onClick={addRecipient}
-                                  className="px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
-                                  data-testid="button-add-recipient-owner"
-                                >
-                                  <Plus className="h-4 w-4" />
-                                </button>
-                              </div>
-                            </div>
-
-                            {/* Subject */}
-                            <div>
-                              <label className="text-sm font-medium text-gray-700 block mb-2">Subject</label>
-                              <input
-                                type="text"
-                                value={emailSubject}
-                                onChange={(e) => setEmailSubject(e.target.value)}
-                                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
-                                data-testid="input-email-subject-owner"
-                              />
-                            </div>
-
-                            {/* Message */}
-                            <div>
-                              <label className="text-sm font-medium text-gray-700 block mb-2">Message (optional)</label>
-                              <textarea
-                                value={emailMessage}
-                                onChange={(e) => setEmailMessage(e.target.value)}
-                                placeholder="Add a personal note..."
-                                rows={3}
-                                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent resize-none"
-                                data-testid="textarea-email-message-owner"
-                              />
-                            </div>
-
-                            {/* Report Preview Summary */}
-                            <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
-                              <div className="flex items-center justify-between mb-3">
-                                <span className="text-sm font-medium text-gray-900">Report Summary</span>
-                                <button
-                                  onClick={() => setShowEmailPreview(true)}
-                                  className="text-xs text-gray-600 hover:text-gray-900 font-medium flex items-center gap-1 px-2 py-1 rounded hover:bg-gray-200 transition-colors"
-                                  data-testid="button-preview-report-owner"
-                                >
-                                  <Eye className="h-3 w-3" />
-                                  Preview
-                                </button>
-                              </div>
-                              <div className="text-sm text-gray-600 space-y-1">
-                                <p>• Manager Scoreboard - {getScoreboardData().quarter}</p>
-                                <p>• Location: {getScoreboardData().location}</p>
-                                <p>• {getScoreboardData().manager}'s Goals & Bonus Summary</p>
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Footer */}
-                          <div className="flex items-center justify-end gap-3 p-5 border-t border-gray-100 bg-gray-50">
-                            <button
-                              onClick={() => {
-                                setShowEmailReportModal(false);
-                                setShowEmailPreview(false);
-                              }}
-                              className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200 rounded-lg transition-colors"
-                              data-testid="button-cancel-email-owner"
-                            >
-                              Cancel
-                            </button>
-                            <button
-                              onClick={sendEmailReport}
-                              disabled={emailRecipients.length === 0 || emailSending}
-                              className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                              data-testid="button-send-report-owner"
-                            >
-                              {emailSending ? (
-                                <>
-                                  <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                                  Sending...
-                                </>
-                              ) : (
-                                <>
-                                  <Send className="h-4 w-4" />
-                                  Send Report
-                                </>
-                              )}
-                            </button>
-                          </div>
-                        </>
-                      ) : (
-                        <>
-                          {/* Email Preview */}
-                          <div className="p-5">
-                            <div className="bg-gray-50 rounded-lg border border-gray-200 overflow-hidden">
-                              <div className="p-4 border-b border-gray-200 bg-white">
-                                <p className="text-sm"><strong>To:</strong> {emailRecipients.join(", ")}</p>
-                                <p className="text-sm"><strong>Subject:</strong> {emailSubject}</p>
-                              </div>
-                              <div className="p-4 space-y-4">
-                                {emailMessage && (
-                                  <p className="text-sm text-gray-700">{emailMessage}</p>
-                                )}
-                                <div className="bg-white rounded-lg border border-gray-200 p-4">
-                                  <h4 className="font-semibold text-gray-900 mb-3">Manager Scoreboard - {getScoreboardData().quarter}</h4>
-                                  <div className="space-y-2 text-sm">
-                                    <p><strong>Location:</strong> {getScoreboardData().location}</p>
-                                    <p><strong>Manager:</strong> {getScoreboardData().manager} ({getScoreboardData().role})</p>
-                                    <p><strong>Goals Hit:</strong> {getScoreboardData().goalsHit}</p>
-                                    <div className="mt-3 pt-3 border-t border-gray-100">
-                                      <p className="font-medium mb-2">Performance Summary:</p>
-                                      {getScoreboardData().goals.map((goal, i) => (
-                                        <div key={i} className="flex items-center justify-between py-1">
-                                          <span className={goal.achieved ? "text-emerald-600" : "text-amber-600"}>
-                                            {goal.achieved ? "✓" : "○"} {goal.name}
-                                          </span>
-                                          <span className="font-medium">{goal.bonus}</span>
-                                        </div>
-                                      ))}
-                                    </div>
-                                    <div className="mt-3 pt-3 border-t border-gray-100 flex justify-between items-center">
-                                      <span className="font-semibold">Total Bonus</span>
-                                      <span className="text-lg font-bold text-emerald-600">{getScoreboardData().totalBonus}</span>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Preview Footer */}
-                          <div className="flex items-center justify-between gap-3 p-5 border-t border-gray-100 bg-gray-50">
-                            <button
-                              onClick={() => setShowEmailPreview(false)}
-                              className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200 rounded-lg transition-colors"
-                              data-testid="button-back-edit-owner"
-                            >
-                              <ChevronLeft className="h-4 w-4" />
-                              Back to Edit
-                            </button>
-                            <button
-                              onClick={sendEmailReport}
-                              disabled={emailSending}
-                              className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50"
-                              data-testid="button-send-preview-owner"
-                            >
-                              {emailSending ? (
-                                <>
-                                  <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                                  Sending...
-                                </>
-                              ) : (
-                                <>
-                                  <Send className="h-4 w-4" />
-                                  Send Report
-                                </>
-                              )}
-                            </button>
-                          </div>
-                        </>
-                      )}
-                    </motion.div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
            </div>
         </Layout>
      );
@@ -5514,11 +4358,10 @@ export default function PnlRelease() {
                   </div>
                   <button 
                      onClick={() => {
-                        setUploadedFile(null);
-                        setShowUploadModal(true);
+                        setPeriod("October 2025");
+                        setStep(2);
                      }}
                      className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-md text-sm font-medium hover:bg-gray-800 transition-colors shadow-sm"
-                     data-testid="button-start-new-release"
                   >
                      <Plus className="h-4 w-4" /> Start New Release
                   </button>
@@ -5801,250 +4644,6 @@ export default function PnlRelease() {
                </div>
             </div>
          </div>
-
-         {/* Upload Modal */}
-         <AnimatePresence>
-           {showUploadModal && (
-             <motion.div
-               initial={{ opacity: 0 }}
-               animate={{ opacity: 1 }}
-               exit={{ opacity: 0 }}
-               className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50"
-               onClick={() => setShowUploadModal(false)}
-             >
-               <motion.div
-                 initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                 animate={{ opacity: 1, scale: 1, y: 0 }}
-                 exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                 transition={{ duration: 0.2 }}
-                 onClick={(e) => e.stopPropagation()}
-                 className="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden border border-gray-200"
-               >
-                 {/* Modal Header */}
-                 <div className="flex items-center justify-between p-5 border-b border-gray-100">
-                   <div className="flex items-center gap-3">
-                     <div className="h-10 w-10 rounded-full bg-gray-900 flex items-center justify-center">
-                       <FileSpreadsheet className="h-5 w-5 text-white" />
-                     </div>
-                     <div>
-                       <h3 className="font-serif font-semibold text-gray-900">Upload Financial Data</h3>
-                       <p className="text-sm text-gray-500">Import CSV or Excel file</p>
-                     </div>
-                   </div>
-                   <button
-                     onClick={() => setShowUploadModal(false)}
-                     className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                     data-testid="button-close-upload-modal"
-                   >
-                     <X className="h-5 w-5 text-gray-400" />
-                   </button>
-                 </div>
-
-                 {/* Upload Area */}
-                 <div className="p-5">
-                   <div
-                     onDragOver={handleFileDragOver}
-                     onDragLeave={handleFileDragLeave}
-                     onDrop={handleFileDrop}
-                     className={cn(
-                       "relative border-2 border-dashed rounded-lg p-8 text-center transition-all duration-200 cursor-pointer",
-                       isDragOver 
-                         ? "border-gray-900 bg-gray-50" 
-                         : uploadedFile 
-                           ? "border-emerald-500 bg-emerald-50"
-                           : "border-gray-200 hover:border-gray-400 hover:bg-gray-50"
-                     )}
-                     onClick={() => document.getElementById('file-upload-step1')?.click()}
-                   >
-                     <input
-                       id="file-upload-step1"
-                       type="file"
-                       accept=".csv,.xlsx,.xls"
-                       className="hidden"
-                       onChange={(e) => {
-                         const file = e.target.files?.[0];
-                         if (file) handleFileUpload(file);
-                       }}
-                       data-testid="input-file-upload"
-                     />
-                     
-                     {uploadedFile ? (
-                       <motion.div
-                         initial={{ scale: 0.9, opacity: 0 }}
-                         animate={{ scale: 1, opacity: 1 }}
-                         className="flex flex-col items-center gap-3"
-                       >
-                         <div className="h-12 w-12 rounded-full bg-emerald-100 flex items-center justify-center">
-                           <Check className="h-6 w-6 text-emerald-600" />
-                         </div>
-                         <div>
-                           <p className="font-medium text-gray-900">{uploadedFile.name}</p>
-                           <p className="text-sm text-gray-500 mt-1">
-                             {(uploadedFile.size / 1024).toFixed(1)} KB
-                           </p>
-                         </div>
-                         <button
-                           onClick={(e) => {
-                             e.stopPropagation();
-                             setUploadedFile(null);
-                           }}
-                           className="text-sm text-gray-500 hover:text-gray-700 underline"
-                           data-testid="button-remove-file"
-                         >
-                           Remove file
-                         </button>
-                       </motion.div>
-                     ) : (
-                       <div className="flex flex-col items-center gap-3">
-                         <div className={cn(
-                           "h-14 w-14 rounded-full flex items-center justify-center transition-colors",
-                           isDragOver ? "bg-gray-200" : "bg-gray-100"
-                         )}>
-                           <FileSpreadsheet className={cn(
-                             "h-7 w-7 transition-colors",
-                             isDragOver ? "text-gray-700" : "text-gray-400"
-                           )} />
-                         </div>
-                         <div>
-                           <p className="font-medium text-gray-900">
-                             {isDragOver ? "Drop your file here" : "Drag & drop or click to upload"}
-                           </p>
-                           <p className="text-sm text-gray-500 mt-1">
-                             CSV, XLSX, or XLS files
-                           </p>
-                         </div>
-                       </div>
-                     )}
-                   </div>
-
-                   <p className="text-center text-xs text-gray-400 mt-4">
-                     For this demo, you can skip the upload
-                   </p>
-                 </div>
-
-                 {/* Footer */}
-                 <div className="flex items-center justify-end gap-3 p-5 border-t border-gray-100 bg-gray-50">
-                   <button
-                     onClick={() => setShowUploadModal(false)}
-                     className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200 rounded-md transition-colors"
-                     data-testid="button-cancel-upload"
-                   >
-                     Cancel
-                   </button>
-                   <button
-                     onClick={startProcessingAnimation}
-                     className="px-5 py-2 text-sm font-medium bg-black text-white rounded-md hover:bg-gray-800 transition-colors shadow-sm"
-                     data-testid="button-generate-pnl"
-                   >
-                     Generate P&L
-                   </button>
-                 </div>
-               </motion.div>
-             </motion.div>
-           )}
-         </AnimatePresence>
-
-         {/* Processing Animation */}
-         <AnimatePresence>
-           {showProcessingAnimation && (
-             <motion.div
-               initial={{ opacity: 0 }}
-               animate={{ opacity: 1 }}
-               exit={{ opacity: 0 }}
-               className="fixed inset-0 z-[200] flex items-center justify-center bg-white overflow-hidden"
-             >
-               {/* Subtle grid pattern background */}
-               <div 
-                 className="absolute inset-0 opacity-[0.03]"
-                 style={{
-                   backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-                 }}
-               />
-
-               {/* Floating dots */}
-               <div className="absolute inset-0 overflow-hidden">
-                 {[...Array(20)].map((_, i) => (
-                   <motion.div
-                     key={i}
-                     className="absolute w-1 h-1 rounded-full bg-gray-300"
-                     style={{
-                       left: `${Math.random() * 100}%`,
-                       top: `${Math.random() * 100}%`,
-                     }}
-                     animate={{
-                       y: [0, -20, 0],
-                       opacity: [0.2, 0.5, 0.2],
-                     }}
-                     transition={{
-                       duration: 4 + Math.random() * 2,
-                       repeat: Infinity,
-                       delay: Math.random() * 2,
-                     }}
-                   />
-                 ))}
-               </div>
-
-               {/* Center content */}
-               <div className="relative z-10 text-center px-8">
-                 {/* Spinning loader */}
-                 <motion.div
-                   initial={{ opacity: 0, scale: 0.8 }}
-                   animate={{ opacity: 1, scale: 1 }}
-                   className="mb-8 flex justify-center"
-                 >
-                   <div className="relative">
-                     <div className="h-16 w-16 rounded-full border-2 border-gray-200" />
-                     <motion.div 
-                       className="absolute inset-0 h-16 w-16 rounded-full border-2 border-transparent border-t-gray-900"
-                       animate={{ rotate: 360 }}
-                       transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                     />
-                     <div className="absolute inset-0 flex items-center justify-center">
-                       <Sparkles className="h-6 w-6 text-gray-400" />
-                     </div>
-                   </div>
-                 </motion.div>
-
-                 {/* Animated Text */}
-                 <AnimatePresence mode="wait">
-                   <motion.div
-                     key={processingStep}
-                     initial={{ opacity: 0, y: 20 }}
-                     animate={{ opacity: 1, y: 0 }}
-                     exit={{ opacity: 0, y: -20 }}
-                     transition={{ duration: 0.4, ease: "easeOut" }}
-                   >
-                     <h1 className="text-3xl md:text-4xl font-serif font-bold text-gray-900">
-                       {processingMessages[processingStep]}
-                     </h1>
-                   </motion.div>
-                 </AnimatePresence>
-
-                 {/* Progress bar */}
-                 <motion.div 
-                   initial={{ opacity: 0 }}
-                   animate={{ opacity: 1 }}
-                   transition={{ delay: 0.3 }}
-                   className="mt-8 w-64 mx-auto"
-                 >
-                   <div className="h-1 bg-gray-100 rounded-full overflow-hidden">
-                     <motion.div 
-                       className="h-full bg-gray-900 rounded-full"
-                       initial={{ width: "0%" }}
-                       animate={{ 
-                         width: `${((processingStep + 1) / processingMessages.length) * 100}%` 
-                       }}
-                       transition={{ duration: 0.5, ease: "easeOut" }}
-                     />
-                   </div>
-                   <p className="text-sm text-gray-400 mt-3">
-                     Step {processingStep + 1} of {processingMessages.length}
-                   </p>
-                 </motion.div>
-               </div>
-             </motion.div>
-           )}
-         </AnimatePresence>
       </Layout>
     );
   }
@@ -6085,36 +4684,6 @@ export default function PnlRelease() {
                          </button>
                       )}
                       <div className="h-6 w-px bg-gray-200" />
-                      {activeTab === "detailed" && (
-                         <>
-                            <button 
-                               onClick={() => setIsEditMode(!isEditMode)}
-                               className={cn(
-                                  "flex items-center gap-2 text-sm px-3 py-2 rounded-md transition-colors",
-                                  isEditMode 
-                                     ? "bg-blue-50 text-blue-700 border border-blue-200" 
-                                     : "text-gray-600 hover:text-black hover:bg-gray-100"
-                               )}
-                               data-testid="button-toggle-edit-mode"
-                            >
-                               {isEditMode ? <Check className="h-4 w-4" /> : <FileText className="h-4 w-4" />}
-                               {isEditMode ? "Editing" : "Edit"}
-                            </button>
-                            <button 
-                               onClick={() => setShowSectionsSidebar(!showSectionsSidebar)}
-                               className={cn(
-                                  "flex items-center gap-2 text-sm px-3 py-2 rounded-md transition-colors",
-                                  showSectionsSidebar 
-                                     ? "bg-gray-100 text-gray-900" 
-                                     : "text-gray-600 hover:text-black hover:bg-gray-100"
-                               )}
-                               data-testid="button-toggle-sections-sidebar"
-                            >
-                               <Layers className="h-4 w-4" /> Sections
-                            </button>
-                            <div className="h-6 w-px bg-gray-200" />
-                         </>
-                      )}
                       <button className="flex items-center gap-2 text-sm text-gray-600 hover:text-black px-3 py-2 rounded-md hover:bg-gray-100 transition-colors">
                          <Save className="h-4 w-4" /> Save Draft
                       </button>
@@ -6224,24 +4793,12 @@ export default function PnlRelease() {
                 <div ref={scrollContainerRef} className="flex-1 overflow-y-auto h-full">
                 {activeTab === "detailed" ? (
                 <div className="p-8">
-                      <div className="max-w-5xl mx-auto flex flex-col gap-8">
+                      <div className="max-w-5xl mx-auto space-y-8">
 
                    {/* 1. Executive Narrative */}
-                   {isSectionVisible("executive-narrative") && (
-                   <section id="executive-narrative" className="scroll-mt-4" style={{ order: getSectionOrderIndex("executive-narrative") }}>
+                   <section id="executive-narrative" className="scroll-mt-4">
                       <div className="flex items-center justify-between mb-4">
-                         <div className="flex items-center gap-3">
-                            <h2 className="text-xl font-serif font-bold text-gray-900">Executive Narrative</h2>
-                            {isEditMode && (
-                               <button
-                                  onClick={() => removeSection("executive-narrative")}
-                                  className="p-1 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
-                                  title="Remove section"
-                               >
-                                  <X className="h-4 w-4" />
-                               </button>
-                            )}
-                         </div>
+                         <h2 className="text-xl font-serif font-bold text-gray-900">Executive Narrative</h2>
                          <button 
                             data-testid="learn-executive-narrative"
                             onClick={() => handleInsightClick("What is an executive narrative in a P&L report? Help me understand how to write and interpret it for my restaurant.")}
@@ -6252,22 +4809,13 @@ export default function PnlRelease() {
                             Learn
                          </button>
                       </div>
-                      <div className={cn("bg-white rounded-xl border p-6", isEditMode ? "border-blue-200 ring-1 ring-blue-100" : "border-gray-200")}>
+                      <div className="bg-white rounded-xl border border-gray-200 p-6">
                          <div className="flex gap-4">
                             <div className="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
                                <Sparkles className="h-5 w-5 text-gray-600" />
                             </div>
                             <div className="flex-1">
                                <h3 className="font-semibold text-gray-900 mb-2">Performance Summary</h3>
-                               {isEditMode ? (
-                                  <textarea
-                                     value={editableContent.executiveSummary}
-                                     onChange={(e) => setEditableContent(prev => ({ ...prev, executiveSummary: e.target.value }))}
-                                     className="w-full min-h-[100px] p-3 text-gray-700 leading-relaxed border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y"
-                                     placeholder="Enter executive summary..."
-                                     data-testid="textarea-executive-summary"
-                                  />
-                               ) : (
                                <p className="text-gray-700 leading-relaxed">
                                   December{' '}
                                   <button 
@@ -6299,29 +4847,15 @@ export default function PnlRelease() {
                                   >Prime cost</button>{' '}
                                   landed at 62.1%—within target but worth watching as January staffing decisions are made.
                                </p>
-                               )}
                             </div>
                          </div>
                       </div>
                    </section>
-                   )}
 
                    {/* 2. Bottom Line */}
-                   {isSectionVisible("bottom-line") && (
-                   <section id="bottom-line" className="scroll-mt-4" style={{ order: getSectionOrderIndex("bottom-line") }}>
+                   <section id="bottom-line" className="scroll-mt-4">
                       <div className="flex items-center justify-between mb-4">
-                         <div className="flex items-center gap-3">
-                            <h2 className="text-xl font-serif font-bold text-gray-900">Bottom Line</h2>
-                            {isEditMode && (
-                               <button
-                                  onClick={() => removeSection("bottom-line")}
-                                  className="p-1 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
-                                  title="Remove section"
-                               >
-                                  <X className="h-4 w-4" />
-                               </button>
-                            )}
-                         </div>
+                         <h2 className="text-xl font-serif font-bold text-gray-900">Bottom Line</h2>
                          <button 
                             data-testid="learn-bottom-line"
                             onClick={() => handleInsightClick("What is net income and how do I read a net income walk? Explain how to understand what's eating into my restaurant's profits.")}
@@ -6427,23 +4961,17 @@ export default function PnlRelease() {
                          )}
                       </div>
                    </section>
-                   )}
 
                    {/* 3. P&L Dashboard - Intelligent Hierarchical View */}
-                   {isSectionVisible("pnl-dashboard") && (
-                   <div style={{ order: getSectionOrderIndex("pnl-dashboard") }}>
                    <PnLDashboard 
                      onInsightClick={handleInsightClick} 
                      highlightedNodeId={highlightedPnlNodeId}
                      onHighlightClear={() => setHighlightedPnlNodeId(null)}
                      onTrendClick={openTrendModal}
                    />
-                   </div>
-                   )}
 
                    {/* 3. Health Snapshot */}
-                   {isSectionVisible("health-snapshot") && (
-                   <section id="health-snapshot" className="scroll-mt-4" style={{ order: getSectionOrderIndex("health-snapshot") }}>
+                   <section id="health-snapshot" className="scroll-mt-4">
                       <div className="flex items-center justify-between mb-1">
                          <h2 className="text-xl font-serif font-bold text-gray-900">Health Snapshot</h2>
                          <div className="flex items-center gap-3">
@@ -6573,11 +5101,9 @@ export default function PnlRelease() {
                          </table>
                       </div>
                    </section>
-                   )}
 
                    {/* 3. Revenue Analysis */}
-                   {isSectionVisible("revenue-analysis") && (
-                   <section id="revenue-analysis" className="scroll-mt-4" style={{ order: getSectionOrderIndex("revenue-analysis") }}>
+                   <section id="revenue-analysis" className="scroll-mt-4">
                       <div className="flex items-center justify-between mb-4">
                          <h2 className="text-xl font-serif font-bold text-gray-900">Revenue Analysis</h2>
                          <button 
@@ -6727,11 +5253,9 @@ export default function PnlRelease() {
                          </div>
                       </div>
                    </section>
-                   )}
 
                    {/* 4. Prime Cost Analysis */}
-                   {isSectionVisible("prime-cost-analysis") && (
-                   <section id="prime-cost-analysis" className="scroll-mt-4" style={{ order: getSectionOrderIndex("prime-cost-analysis") }}>
+                   <section id="prime-cost-analysis" className="scroll-mt-4">
                       <div className="flex items-center justify-between mb-1">
                          <h2 className="text-xl font-serif font-bold text-gray-900">Prime Cost Analysis</h2>
                          <div className="flex items-center gap-2">
@@ -7213,11 +5737,9 @@ export default function PnlRelease() {
                          </div>
                       </div>
                    </section>
-                   )}
 
                    {/* 5. Operating Expenses */}
-                   {isSectionVisible("operating-expenses") && (
-                   <section id="operating-expenses" className="scroll-mt-4" style={{ order: getSectionOrderIndex("operating-expenses") }}>
+                   <section id="operating-expenses" className="scroll-mt-4">
                       <div className="flex items-center justify-between mb-4">
                          <h2 className="text-xl font-serif font-bold text-gray-900">Operating Expenses</h2>
                          <button 
@@ -7339,11 +5861,9 @@ export default function PnlRelease() {
                          </div>
                       </div>
                    </section>
-                   )}
 
                    {/* 7. Action Items & Recommendations */}
-                   {isSectionVisible("action-items") && (
-                   <section id="action-items" className="scroll-mt-4" style={{ order: getSectionOrderIndex("action-items") }}>
+                   <section id="action-items" className="scroll-mt-4">
                       <div className="flex items-center justify-between mb-4">
                          <h2 className="text-xl font-serif font-bold text-gray-900">Action Items & Recommendations</h2>
                          <div className="flex items-center gap-2 text-sm text-gray-500">
@@ -7637,11 +6157,9 @@ export default function PnlRelease() {
                          )}
                       </AnimatePresence>
                    </section>
-                   )}
 
                    {/* Accountant Note */}
-                   {isSectionVisible("accountant-note") && (
-                   <section id="accountant-note" className="scroll-mt-4" style={{ order: getSectionOrderIndex("accountant-note") }}>
+                   <section id="accountant-note" className="scroll-mt-4">
                       <div className="bg-white rounded-xl border border-gray-200 p-6">
                          <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-4">Note from Accountant</h2>
                          <textarea 
@@ -7652,7 +6170,6 @@ export default function PnlRelease() {
                          />
                       </div>
                    </section>
-                   )}
 
                       </div>
                 </div>
@@ -8514,8 +7031,8 @@ export default function PnlRelease() {
                   {/* Modal Header */}
                   <div className="flex items-center justify-between p-5 border-b border-gray-100">
                     <div className="flex items-center gap-3">
-                      <div className="h-12 w-12 rounded-xl bg-gray-100 flex items-center justify-center">
-                        <Mail className="h-6 w-6 text-gray-600" />
+                      <div className="h-10 w-10 rounded-full bg-gray-900 flex items-center justify-center">
+                        <Mail className="h-5 w-5 text-white" />
                       </div>
                       <div>
                         <h3 className="font-semibold text-gray-900">Email Report</h3>
@@ -8781,88 +7298,6 @@ export default function PnlRelease() {
                     </>
                   )}
                 </motion.div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Sections Sidebar */}
-          <AnimatePresence>
-            {showSectionsSidebar && activeTab === "detailed" && (
-              <motion.div
-                initial={{ width: 0, opacity: 0 }}
-                animate={{ width: 280, opacity: 1 }}
-                exit={{ width: 0, opacity: 0 }}
-                transition={{ duration: 0.2 }}
-                className="bg-white border-l border-gray-200 h-full overflow-hidden shrink-0"
-              >
-                <div className="p-4 border-b border-gray-100">
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-semibold text-gray-900">Sections</h3>
-                    <button
-                      onClick={() => setShowSectionsSidebar(false)}
-                      className="p-1.5 hover:bg-gray-100 rounded-md transition-colors"
-                      data-testid="button-close-sections-sidebar"
-                    >
-                      <X className="h-4 w-4 text-gray-400" />
-                    </button>
-                  </div>
-                  <p className="text-xs text-gray-500 mt-1">Drag to reorder, click eye to toggle</p>
-                </div>
-                <div className="p-2 space-y-1 max-h-[calc(100vh-200px)] overflow-y-auto">
-                  {sections.map((section) => (
-                    <div
-                      key={section.id}
-                      draggable
-                      onDragStart={() => handleSectionDragStart(section.id)}
-                      onDragOver={(e) => handleSectionDragOver(e, section.id)}
-                      onDragLeave={handleSectionDragLeave}
-                      onDrop={() => handleSectionDrop(section.id)}
-                      onDragEnd={handleSectionDragEnd}
-                      className={cn(
-                        "flex items-center gap-2 p-2 rounded-md cursor-move transition-all",
-                        draggedSectionId === section.id && "opacity-50 bg-gray-100",
-                        dragOverSectionId === section.id && "border-t-2 border-blue-500",
-                        section.visible ? "bg-white hover:bg-gray-50" : "bg-gray-50 opacity-60"
-                      )}
-                      data-testid={`section-item-${section.id}`}
-                    >
-                      <GripVertical className="h-4 w-4 text-gray-400 shrink-0" />
-                      <span className={cn(
-                        "text-sm flex-1 truncate",
-                        section.visible ? "text-gray-700" : "text-gray-400 line-through"
-                      )}>
-                        {section.label}
-                      </span>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleSectionVisibility(section.id);
-                        }}
-                        className={cn(
-                          "p-1 rounded hover:bg-gray-200 transition-colors",
-                          section.visible ? "text-gray-500" : "text-gray-300"
-                        )}
-                        data-testid={`toggle-visibility-${section.id}`}
-                      >
-                        {section.visible ? (
-                          <Eye className="h-4 w-4" />
-                        ) : (
-                          <Eye className="h-4 w-4" />
-                        )}
-                      </button>
-                    </div>
-                  ))}
-                </div>
-                <div className="p-3 border-t border-gray-100 bg-gray-50">
-                  <button
-                    onClick={() => setSections(defaultSections)}
-                    className="flex items-center gap-2 text-xs text-gray-500 hover:text-gray-700 transition-colors"
-                    data-testid="button-reset-sections"
-                  >
-                    <RotateCcw className="h-3 w-3" />
-                    Reset to Default
-                  </button>
-                </div>
               </motion.div>
             )}
           </AnimatePresence>
