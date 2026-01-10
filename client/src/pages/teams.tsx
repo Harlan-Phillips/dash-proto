@@ -727,7 +727,6 @@ export default function Teams() {
                                 );
                                 if (staffForJob.length > 0) {
                                   setSelectedStaff(staffForJob[0]);
-                                  setShowStaffDetail(true);
                                 }
                               }
                             }}
