@@ -4979,36 +4979,135 @@ export default function PnlRelease() {
                                       <td className="px-6 py-4 text-right text-red-600">+$2,700</td>
                                       <td className="px-6 py-4 text-right text-gray-600">13.0%</td>
                                    </tr>
-                                   <tr className="hover:bg-amber-50/40">
-                                      <td className="px-6 py-3 text-gray-600 pl-16 flex items-center gap-2">
-                                         Line Cook
-                                         <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Elaborated</span>
-                                      </td>
-                                      <td className="px-6 py-3 text-right text-gray-600">$18,400</td>
-                                      <td className="px-6 py-3 text-right text-gray-400">$17,000</td>
-                                      <td className="px-6 py-3 text-right text-red-500 text-xs">+$1,400</td>
-                                      <td className="px-6 py-3 text-right text-gray-500">6.3%</td>
-                                   </tr>
-                                   <tr className="hover:bg-amber-50/40">
-                                      <td className="px-6 py-3 text-gray-600 pl-16 flex items-center gap-2">
-                                         Prep Cook
-                                         <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Elaborated</span>
-                                      </td>
-                                      <td className="px-6 py-3 text-right text-gray-600">$12,200</td>
-                                      <td className="px-6 py-3 text-right text-gray-400">$11,500</td>
-                                      <td className="px-6 py-3 text-right text-red-500 text-xs">+$700</td>
-                                      <td className="px-6 py-3 text-right text-gray-500">4.2%</td>
-                                   </tr>
-                                   <tr className="hover:bg-amber-50/40">
-                                      <td className="px-6 py-3 text-gray-600 pl-16 flex items-center gap-2">
-                                         Dishwasher
-                                         <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Elaborated</span>
-                                      </td>
-                                      <td className="px-6 py-3 text-right text-gray-600">$7,600</td>
-                                      <td className="px-6 py-3 text-right text-gray-400">$7,000</td>
-                                      <td className="px-6 py-3 text-right text-red-500 text-xs">+$600</td>
-                                      <td className="px-6 py-3 text-right text-gray-500">2.6%</td>
-                                   </tr>
+                                   <Popover>
+                                      <PopoverTrigger asChild>
+                                         <tr className="hover:bg-amber-50/40 cursor-pointer">
+                                            <td className="px-6 py-3 text-gray-600 pl-16 flex items-center gap-2">
+                                               Line Cook
+                                               <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Elaborated</span>
+                                            </td>
+                                            <td className="px-6 py-3 text-right text-gray-600">$18,400</td>
+                                            <td className="px-6 py-3 text-right text-gray-400">$17,000</td>
+                                            <td className="px-6 py-3 text-right text-red-500 text-xs">+$1,400</td>
+                                            <td className="px-6 py-3 text-right text-gray-500">6.3%</td>
+                                         </tr>
+                                      </PopoverTrigger>
+                                      <PopoverContent className="w-[380px] p-0" align="start">
+                                         <div className="p-4 border-b border-gray-100">
+                                            <div className="flex items-start gap-3">
+                                               <div className="p-2 bg-amber-100 rounded-lg"><Sparkles className="h-4 w-4 text-amber-600" /></div>
+                                               <div>
+                                                  <p className="font-medium text-gray-900 mb-1">Line Cook Cost Analysis</p>
+                                                  <p className="text-sm text-gray-600">Variance driven by 12 additional overtime hours during weekend rushes.</p>
+                                               </div>
+                                            </div>
+                                         </div>
+                                         <div className="p-4">
+                                            <div className="h-36">
+                                               <ResponsiveContainer width="100%" height="100%">
+                                                  <BarChart data={[
+                                                     { name: 'Jul', actual: 16800, budget: 17000 },
+                                                     { name: 'Aug', actual: 17200, budget: 17000 },
+                                                     { name: 'Sep', actual: 18400, budget: 17000 },
+                                                  ]} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                                                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                                                     <XAxis dataKey="name" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+                                                     <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${(v/1000).toFixed(0)}k`} />
+                                                     <Tooltip formatter={(v: number) => `$${v.toLocaleString()}`} contentStyle={{ fontSize: 12 }} />
+                                                     <Bar dataKey="actual" fill="#f59e0b" name="Actual" radius={[4, 4, 0, 0]} />
+                                                     <Bar dataKey="budget" fill="#d1d5db" name="Budget" radius={[4, 4, 0, 0]} />
+                                                  </BarChart>
+                                               </ResponsiveContainer>
+                                            </div>
+                                         </div>
+                                      </PopoverContent>
+                                   </Popover>
+                                   <Popover>
+                                      <PopoverTrigger asChild>
+                                         <tr className="hover:bg-amber-50/40 cursor-pointer">
+                                            <td className="px-6 py-3 text-gray-600 pl-16 flex items-center gap-2">
+                                               Prep Cook
+                                               <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Elaborated</span>
+                                            </td>
+                                            <td className="px-6 py-3 text-right text-gray-600">$12,200</td>
+                                            <td className="px-6 py-3 text-right text-gray-400">$11,500</td>
+                                            <td className="px-6 py-3 text-right text-red-500 text-xs">+$700</td>
+                                            <td className="px-6 py-3 text-right text-gray-500">4.2%</td>
+                                         </tr>
+                                      </PopoverTrigger>
+                                      <PopoverContent className="w-[380px] p-0" align="start">
+                                         <div className="p-4 border-b border-gray-100">
+                                            <div className="flex items-start gap-3">
+                                               <div className="p-2 bg-amber-100 rounded-lg"><Sparkles className="h-4 w-4 text-amber-600" /></div>
+                                               <div>
+                                                  <p className="font-medium text-gray-900 mb-1">Prep Cook Cost Analysis</p>
+                                                  <p className="text-sm text-gray-600">Slight increase due to new hire training overlap period.</p>
+                                               </div>
+                                            </div>
+                                         </div>
+                                         <div className="p-4">
+                                            <div className="h-36">
+                                               <ResponsiveContainer width="100%" height="100%">
+                                                  <BarChart data={[
+                                                     { name: 'Jul', actual: 11200, budget: 11500 },
+                                                     { name: 'Aug', actual: 11400, budget: 11500 },
+                                                     { name: 'Sep', actual: 12200, budget: 11500 },
+                                                  ]} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                                                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                                                     <XAxis dataKey="name" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+                                                     <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${(v/1000).toFixed(0)}k`} />
+                                                     <Tooltip formatter={(v: number) => `$${v.toLocaleString()}`} contentStyle={{ fontSize: 12 }} />
+                                                     <Bar dataKey="actual" fill="#f59e0b" name="Actual" radius={[4, 4, 0, 0]} />
+                                                     <Bar dataKey="budget" fill="#d1d5db" name="Budget" radius={[4, 4, 0, 0]} />
+                                                  </BarChart>
+                                               </ResponsiveContainer>
+                                            </div>
+                                         </div>
+                                      </PopoverContent>
+                                   </Popover>
+                                   <Popover>
+                                      <PopoverTrigger asChild>
+                                         <tr className="hover:bg-amber-50/40 cursor-pointer">
+                                            <td className="px-6 py-3 text-gray-600 pl-16 flex items-center gap-2">
+                                               Dishwasher
+                                               <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Elaborated</span>
+                                            </td>
+                                            <td className="px-6 py-3 text-right text-gray-600">$7,600</td>
+                                            <td className="px-6 py-3 text-right text-gray-400">$7,000</td>
+                                            <td className="px-6 py-3 text-right text-red-500 text-xs">+$600</td>
+                                            <td className="px-6 py-3 text-right text-gray-500">2.6%</td>
+                                         </tr>
+                                      </PopoverTrigger>
+                                      <PopoverContent className="w-[380px] p-0" align="start">
+                                         <div className="p-4 border-b border-gray-100">
+                                            <div className="flex items-start gap-3">
+                                               <div className="p-2 bg-amber-100 rounded-lg"><Sparkles className="h-4 w-4 text-amber-600" /></div>
+                                               <div>
+                                                  <p className="font-medium text-gray-900 mb-1">Dishwasher Cost Analysis</p>
+                                                  <p className="text-sm text-gray-600">Added evening shift coverage for busy dinner service.</p>
+                                               </div>
+                                            </div>
+                                         </div>
+                                         <div className="p-4">
+                                            <div className="h-36">
+                                               <ResponsiveContainer width="100%" height="100%">
+                                                  <BarChart data={[
+                                                     { name: 'Jul', actual: 6800, budget: 7000 },
+                                                     { name: 'Aug', actual: 7100, budget: 7000 },
+                                                     { name: 'Sep', actual: 7600, budget: 7000 },
+                                                  ]} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                                                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                                                     <XAxis dataKey="name" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+                                                     <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${(v/1000).toFixed(0)}k`} />
+                                                     <Tooltip formatter={(v: number) => `$${v.toLocaleString()}`} contentStyle={{ fontSize: 12 }} />
+                                                     <Bar dataKey="actual" fill="#f59e0b" name="Actual" radius={[4, 4, 0, 0]} />
+                                                     <Bar dataKey="budget" fill="#d1d5db" name="Budget" radius={[4, 4, 0, 0]} />
+                                                  </BarChart>
+                                               </ResponsiveContainer>
+                                            </div>
+                                         </div>
+                                      </PopoverContent>
+                                   </Popover>
                                    <tr className="hover:bg-gray-50">
                                       <td className="px-6 py-4 text-gray-700 pl-10">FOH Labor</td>
                                       <td className="px-6 py-4 text-right">$42,100</td>
@@ -5016,36 +5115,135 @@ export default function PnlRelease() {
                                       <td className="px-6 py-4 text-right text-red-600">+$4,300</td>
                                       <td className="px-6 py-4 text-right text-gray-600">14.3%</td>
                                    </tr>
-                                   <tr className="hover:bg-amber-50/40">
-                                      <td className="px-6 py-3 text-gray-600 pl-16 flex items-center gap-2">
-                                         Server
-                                         <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Elaborated</span>
-                                      </td>
-                                      <td className="px-6 py-3 text-right text-gray-600">$22,500</td>
-                                      <td className="px-6 py-3 text-right text-gray-400">$19,800</td>
-                                      <td className="px-6 py-3 text-right text-red-500 text-xs">+$2,700</td>
-                                      <td className="px-6 py-3 text-right text-gray-500">7.7%</td>
-                                   </tr>
-                                   <tr className="hover:bg-amber-50/40">
-                                      <td className="px-6 py-3 text-gray-600 pl-16 flex items-center gap-2">
-                                         Bartender
-                                         <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Elaborated</span>
-                                      </td>
-                                      <td className="px-6 py-3 text-right text-gray-600">$11,800</td>
-                                      <td className="px-6 py-3 text-right text-gray-400">$10,500</td>
-                                      <td className="px-6 py-3 text-right text-red-500 text-xs">+$1,300</td>
-                                      <td className="px-6 py-3 text-right text-gray-500">4.0%</td>
-                                   </tr>
-                                   <tr className="hover:bg-amber-50/40">
-                                      <td className="px-6 py-3 text-gray-600 pl-16 flex items-center gap-2">
-                                         Host/Hostess
-                                         <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Elaborated</span>
-                                      </td>
-                                      <td className="px-6 py-3 text-right text-gray-600">$7,800</td>
-                                      <td className="px-6 py-3 text-right text-gray-400">$7,500</td>
-                                      <td className="px-6 py-3 text-right text-red-500 text-xs">+$300</td>
-                                      <td className="px-6 py-3 text-right text-gray-500">2.7%</td>
-                                   </tr>
+                                   <Popover>
+                                      <PopoverTrigger asChild>
+                                         <tr className="hover:bg-amber-50/40 cursor-pointer">
+                                            <td className="px-6 py-3 text-gray-600 pl-16 flex items-center gap-2">
+                                               Server
+                                               <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Elaborated</span>
+                                            </td>
+                                            <td className="px-6 py-3 text-right text-gray-600">$22,500</td>
+                                            <td className="px-6 py-3 text-right text-gray-400">$19,800</td>
+                                            <td className="px-6 py-3 text-right text-red-500 text-xs">+$2,700</td>
+                                            <td className="px-6 py-3 text-right text-gray-500">7.7%</td>
+                                         </tr>
+                                      </PopoverTrigger>
+                                      <PopoverContent className="w-[380px] p-0" align="start">
+                                         <div className="p-4 border-b border-gray-100">
+                                            <div className="flex items-start gap-3">
+                                               <div className="p-2 bg-red-100 rounded-lg"><Sparkles className="h-4 w-4 text-red-600" /></div>
+                                               <div>
+                                                  <p className="font-medium text-gray-900 mb-1">Server Cost Analysis</p>
+                                                  <p className="text-sm text-gray-600">Highest variance driver. Added 2 FTE for patio season; recommend scaling back.</p>
+                                               </div>
+                                            </div>
+                                         </div>
+                                         <div className="p-4">
+                                            <div className="h-36">
+                                               <ResponsiveContainer width="100%" height="100%">
+                                                  <BarChart data={[
+                                                     { name: 'Jul', actual: 20100, budget: 19800 },
+                                                     { name: 'Aug', actual: 21200, budget: 19800 },
+                                                     { name: 'Sep', actual: 22500, budget: 19800 },
+                                                  ]} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                                                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                                                     <XAxis dataKey="name" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+                                                     <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${(v/1000).toFixed(0)}k`} />
+                                                     <Tooltip formatter={(v: number) => `$${v.toLocaleString()}`} contentStyle={{ fontSize: 12 }} />
+                                                     <Bar dataKey="actual" fill="#ef4444" name="Actual" radius={[4, 4, 0, 0]} />
+                                                     <Bar dataKey="budget" fill="#d1d5db" name="Budget" radius={[4, 4, 0, 0]} />
+                                                  </BarChart>
+                                               </ResponsiveContainer>
+                                            </div>
+                                         </div>
+                                      </PopoverContent>
+                                   </Popover>
+                                   <Popover>
+                                      <PopoverTrigger asChild>
+                                         <tr className="hover:bg-amber-50/40 cursor-pointer">
+                                            <td className="px-6 py-3 text-gray-600 pl-16 flex items-center gap-2">
+                                               Bartender
+                                               <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Elaborated</span>
+                                            </td>
+                                            <td className="px-6 py-3 text-right text-gray-600">$11,800</td>
+                                            <td className="px-6 py-3 text-right text-gray-400">$10,500</td>
+                                            <td className="px-6 py-3 text-right text-red-500 text-xs">+$1,300</td>
+                                            <td className="px-6 py-3 text-right text-gray-500">4.0%</td>
+                                         </tr>
+                                      </PopoverTrigger>
+                                      <PopoverContent className="w-[380px] p-0" align="start">
+                                         <div className="p-4 border-b border-gray-100">
+                                            <div className="flex items-start gap-3">
+                                               <div className="p-2 bg-amber-100 rounded-lg"><Sparkles className="h-4 w-4 text-amber-600" /></div>
+                                               <div>
+                                                  <p className="font-medium text-gray-900 mb-1">Bartender Cost Analysis</p>
+                                                  <p className="text-sm text-gray-600">Extended happy hour staffing drove higher costs this month.</p>
+                                               </div>
+                                            </div>
+                                         </div>
+                                         <div className="p-4">
+                                            <div className="h-36">
+                                               <ResponsiveContainer width="100%" height="100%">
+                                                  <BarChart data={[
+                                                     { name: 'Jul', actual: 10200, budget: 10500 },
+                                                     { name: 'Aug', actual: 10800, budget: 10500 },
+                                                     { name: 'Sep', actual: 11800, budget: 10500 },
+                                                  ]} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                                                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                                                     <XAxis dataKey="name" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+                                                     <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${(v/1000).toFixed(0)}k`} />
+                                                     <Tooltip formatter={(v: number) => `$${v.toLocaleString()}`} contentStyle={{ fontSize: 12 }} />
+                                                     <Bar dataKey="actual" fill="#f59e0b" name="Actual" radius={[4, 4, 0, 0]} />
+                                                     <Bar dataKey="budget" fill="#d1d5db" name="Budget" radius={[4, 4, 0, 0]} />
+                                                  </BarChart>
+                                               </ResponsiveContainer>
+                                            </div>
+                                         </div>
+                                      </PopoverContent>
+                                   </Popover>
+                                   <Popover>
+                                      <PopoverTrigger asChild>
+                                         <tr className="hover:bg-amber-50/40 cursor-pointer">
+                                            <td className="px-6 py-3 text-gray-600 pl-16 flex items-center gap-2">
+                                               Host/Hostess
+                                               <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Elaborated</span>
+                                            </td>
+                                            <td className="px-6 py-3 text-right text-gray-600">$7,800</td>
+                                            <td className="px-6 py-3 text-right text-gray-400">$7,500</td>
+                                            <td className="px-6 py-3 text-right text-red-500 text-xs">+$300</td>
+                                            <td className="px-6 py-3 text-right text-gray-500">2.7%</td>
+                                         </tr>
+                                      </PopoverTrigger>
+                                      <PopoverContent className="w-[380px] p-0" align="start">
+                                         <div className="p-4 border-b border-gray-100">
+                                            <div className="flex items-start gap-3">
+                                               <div className="p-2 bg-emerald-100 rounded-lg"><Sparkles className="h-4 w-4 text-emerald-600" /></div>
+                                               <div>
+                                                  <p className="font-medium text-gray-900 mb-1">Host/Hostess Cost Analysis</p>
+                                                  <p className="text-sm text-gray-600">On track. Minor variance within acceptable range.</p>
+                                               </div>
+                                            </div>
+                                         </div>
+                                         <div className="p-4">
+                                            <div className="h-36">
+                                               <ResponsiveContainer width="100%" height="100%">
+                                                  <BarChart data={[
+                                                     { name: 'Jul', actual: 7400, budget: 7500 },
+                                                     { name: 'Aug', actual: 7600, budget: 7500 },
+                                                     { name: 'Sep', actual: 7800, budget: 7500 },
+                                                  ]} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                                                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                                                     <XAxis dataKey="name" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+                                                     <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${(v/1000).toFixed(0)}k`} />
+                                                     <Tooltip formatter={(v: number) => `$${v.toLocaleString()}`} contentStyle={{ fontSize: 12 }} />
+                                                     <Bar dataKey="actual" fill="#10b981" name="Actual" radius={[4, 4, 0, 0]} />
+                                                     <Bar dataKey="budget" fill="#d1d5db" name="Budget" radius={[4, 4, 0, 0]} />
+                                                  </BarChart>
+                                               </ResponsiveContainer>
+                                            </div>
+                                         </div>
+                                      </PopoverContent>
+                                   </Popover>
                                    <tr className="hover:bg-gray-50">
                                       <td className="px-6 py-4 text-gray-700 pl-10">Management</td>
                                       <td className="px-6 py-4 text-right">$12,600</td>
@@ -5053,26 +5251,92 @@ export default function PnlRelease() {
                                       <td className="px-6 py-4 text-right text-gray-600">$0</td>
                                       <td className="px-6 py-4 text-right text-gray-600">4.3%</td>
                                    </tr>
-                                   <tr className="hover:bg-amber-50/40">
-                                      <td className="px-6 py-3 text-gray-600 pl-16 flex items-center gap-2">
-                                         General Manager
-                                         <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Elaborated</span>
-                                      </td>
-                                      <td className="px-6 py-3 text-right text-gray-600">$6,800</td>
-                                      <td className="px-6 py-3 text-right text-gray-400">$6,800</td>
-                                      <td className="px-6 py-3 text-right text-gray-500 text-xs">$0</td>
-                                      <td className="px-6 py-3 text-right text-gray-500">2.3%</td>
-                                   </tr>
-                                   <tr className="hover:bg-amber-50/40">
-                                      <td className="px-6 py-3 text-gray-600 pl-16 flex items-center gap-2">
-                                         Shift Supervisor
-                                         <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Elaborated</span>
-                                      </td>
-                                      <td className="px-6 py-3 text-right text-gray-600">$5,800</td>
-                                      <td className="px-6 py-3 text-right text-gray-400">$5,800</td>
-                                      <td className="px-6 py-3 text-right text-gray-500 text-xs">$0</td>
-                                      <td className="px-6 py-3 text-right text-gray-500">2.0%</td>
-                                   </tr>
+                                   <Popover>
+                                      <PopoverTrigger asChild>
+                                         <tr className="hover:bg-amber-50/40 cursor-pointer">
+                                            <td className="px-6 py-3 text-gray-600 pl-16 flex items-center gap-2">
+                                               General Manager
+                                               <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Elaborated</span>
+                                            </td>
+                                            <td className="px-6 py-3 text-right text-gray-600">$6,800</td>
+                                            <td className="px-6 py-3 text-right text-gray-400">$6,800</td>
+                                            <td className="px-6 py-3 text-right text-gray-500 text-xs">$0</td>
+                                            <td className="px-6 py-3 text-right text-gray-500">2.3%</td>
+                                         </tr>
+                                      </PopoverTrigger>
+                                      <PopoverContent className="w-[380px] p-0" align="start">
+                                         <div className="p-4 border-b border-gray-100">
+                                            <div className="flex items-start gap-3">
+                                               <div className="p-2 bg-emerald-100 rounded-lg"><Sparkles className="h-4 w-4 text-emerald-600" /></div>
+                                               <div>
+                                                  <p className="font-medium text-gray-900 mb-1">General Manager Cost</p>
+                                                  <p className="text-sm text-gray-600">Fixed salary. On budget with no variance.</p>
+                                               </div>
+                                            </div>
+                                         </div>
+                                         <div className="p-4">
+                                            <div className="h-36">
+                                               <ResponsiveContainer width="100%" height="100%">
+                                                  <BarChart data={[
+                                                     { name: 'Jul', actual: 6800, budget: 6800 },
+                                                     { name: 'Aug', actual: 6800, budget: 6800 },
+                                                     { name: 'Sep', actual: 6800, budget: 6800 },
+                                                  ]} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                                                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                                                     <XAxis dataKey="name" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+                                                     <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${(v/1000).toFixed(0)}k`} />
+                                                     <Tooltip formatter={(v: number) => `$${v.toLocaleString()}`} contentStyle={{ fontSize: 12 }} />
+                                                     <Bar dataKey="actual" fill="#10b981" name="Actual" radius={[4, 4, 0, 0]} />
+                                                     <Bar dataKey="budget" fill="#d1d5db" name="Budget" radius={[4, 4, 0, 0]} />
+                                                  </BarChart>
+                                               </ResponsiveContainer>
+                                            </div>
+                                         </div>
+                                      </PopoverContent>
+                                   </Popover>
+                                   <Popover>
+                                      <PopoverTrigger asChild>
+                                         <tr className="hover:bg-amber-50/40 cursor-pointer">
+                                            <td className="px-6 py-3 text-gray-600 pl-16 flex items-center gap-2">
+                                               Shift Supervisor
+                                               <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Elaborated</span>
+                                            </td>
+                                            <td className="px-6 py-3 text-right text-gray-600">$5,800</td>
+                                            <td className="px-6 py-3 text-right text-gray-400">$5,800</td>
+                                            <td className="px-6 py-3 text-right text-gray-500 text-xs">$0</td>
+                                            <td className="px-6 py-3 text-right text-gray-500">2.0%</td>
+                                         </tr>
+                                      </PopoverTrigger>
+                                      <PopoverContent className="w-[380px] p-0" align="start">
+                                         <div className="p-4 border-b border-gray-100">
+                                            <div className="flex items-start gap-3">
+                                               <div className="p-2 bg-emerald-100 rounded-lg"><Sparkles className="h-4 w-4 text-emerald-600" /></div>
+                                               <div>
+                                                  <p className="font-medium text-gray-900 mb-1">Shift Supervisor Cost</p>
+                                                  <p className="text-sm text-gray-600">Fixed salary. On budget with no variance.</p>
+                                               </div>
+                                            </div>
+                                         </div>
+                                         <div className="p-4">
+                                            <div className="h-36">
+                                               <ResponsiveContainer width="100%" height="100%">
+                                                  <BarChart data={[
+                                                     { name: 'Jul', actual: 5800, budget: 5800 },
+                                                     { name: 'Aug', actual: 5800, budget: 5800 },
+                                                     { name: 'Sep', actual: 5800, budget: 5800 },
+                                                  ]} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                                                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                                                     <XAxis dataKey="name" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+                                                     <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${(v/1000).toFixed(0)}k`} />
+                                                     <Tooltip formatter={(v: number) => `$${v.toLocaleString()}`} contentStyle={{ fontSize: 12 }} />
+                                                     <Bar dataKey="actual" fill="#10b981" name="Actual" radius={[4, 4, 0, 0]} />
+                                                     <Bar dataKey="budget" fill="#d1d5db" name="Budget" radius={[4, 4, 0, 0]} />
+                                                  </BarChart>
+                                               </ResponsiveContainer>
+                                            </div>
+                                         </div>
+                                      </PopoverContent>
+                                   </Popover>
                                    <tr className="hover:bg-gray-50">
                                       <td className="px-6 py-4 text-gray-700 pl-10">Payroll Taxes & Benefits</td>
                                       <td className="px-6 py-4 text-right">$10,500</td>
@@ -7333,36 +7597,135 @@ export default function PnlRelease() {
                                   <td className="px-6 py-4 text-right text-red-600">+$2,700</td>
                                   <td className="px-6 py-4 text-right text-gray-600">13.0%</td>
                                </tr>
-                               <tr className="hover:bg-amber-50/40">
-                                  <td className="px-6 py-3 text-gray-600 pl-16 flex items-center gap-2">
-                                     Line Cook
-                                     <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Elaborated</span>
-                                  </td>
-                                  <td className="px-6 py-3 text-right text-gray-600">$18,400</td>
-                                  <td className="px-6 py-3 text-right text-gray-400">$17,000</td>
-                                  <td className="px-6 py-3 text-right text-red-500 text-xs">+$1,400</td>
-                                  <td className="px-6 py-3 text-right text-gray-500">6.3%</td>
-                               </tr>
-                               <tr className="hover:bg-amber-50/40">
-                                  <td className="px-6 py-3 text-gray-600 pl-16 flex items-center gap-2">
-                                     Prep Cook
-                                     <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Elaborated</span>
-                                  </td>
-                                  <td className="px-6 py-3 text-right text-gray-600">$12,200</td>
-                                  <td className="px-6 py-3 text-right text-gray-400">$11,500</td>
-                                  <td className="px-6 py-3 text-right text-red-500 text-xs">+$700</td>
-                                  <td className="px-6 py-3 text-right text-gray-500">4.2%</td>
-                               </tr>
-                               <tr className="hover:bg-amber-50/40">
-                                  <td className="px-6 py-3 text-gray-600 pl-16 flex items-center gap-2">
-                                     Dishwasher
-                                     <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Elaborated</span>
-                                  </td>
-                                  <td className="px-6 py-3 text-right text-gray-600">$7,600</td>
-                                  <td className="px-6 py-3 text-right text-gray-400">$7,000</td>
-                                  <td className="px-6 py-3 text-right text-red-500 text-xs">+$600</td>
-                                  <td className="px-6 py-3 text-right text-gray-500">2.6%</td>
-                               </tr>
+                               <Popover>
+                                  <PopoverTrigger asChild>
+                                     <tr className="hover:bg-amber-50/40 cursor-pointer">
+                                        <td className="px-6 py-3 text-gray-600 pl-16 flex items-center gap-2">
+                                           Line Cook
+                                           <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Elaborated</span>
+                                        </td>
+                                        <td className="px-6 py-3 text-right text-gray-600">$18,400</td>
+                                        <td className="px-6 py-3 text-right text-gray-400">$17,000</td>
+                                        <td className="px-6 py-3 text-right text-red-500 text-xs">+$1,400</td>
+                                        <td className="px-6 py-3 text-right text-gray-500">6.3%</td>
+                                     </tr>
+                                  </PopoverTrigger>
+                                  <PopoverContent className="w-[380px] p-0" align="start">
+                                     <div className="p-4 border-b border-gray-100">
+                                        <div className="flex items-start gap-3">
+                                           <div className="p-2 bg-amber-100 rounded-lg"><Sparkles className="h-4 w-4 text-amber-600" /></div>
+                                           <div>
+                                              <p className="font-medium text-gray-900 mb-1">Line Cook Cost Analysis</p>
+                                              <p className="text-sm text-gray-600">Variance driven by 12 additional overtime hours during weekend rushes.</p>
+                                           </div>
+                                        </div>
+                                     </div>
+                                     <div className="p-4">
+                                        <div className="h-36">
+                                           <ResponsiveContainer width="100%" height="100%">
+                                              <BarChart data={[
+                                                 { name: 'Jul', actual: 16800, budget: 17000 },
+                                                 { name: 'Aug', actual: 17200, budget: 17000 },
+                                                 { name: 'Sep', actual: 18400, budget: 17000 },
+                                              ]} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                                                 <XAxis dataKey="name" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+                                                 <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${(v/1000).toFixed(0)}k`} />
+                                                 <Tooltip formatter={(v: number) => `$${v.toLocaleString()}`} contentStyle={{ fontSize: 12 }} />
+                                                 <Bar dataKey="actual" fill="#f59e0b" name="Actual" radius={[4, 4, 0, 0]} />
+                                                 <Bar dataKey="budget" fill="#d1d5db" name="Budget" radius={[4, 4, 0, 0]} />
+                                              </BarChart>
+                                           </ResponsiveContainer>
+                                        </div>
+                                     </div>
+                                  </PopoverContent>
+                               </Popover>
+                               <Popover>
+                                  <PopoverTrigger asChild>
+                                     <tr className="hover:bg-amber-50/40 cursor-pointer">
+                                        <td className="px-6 py-3 text-gray-600 pl-16 flex items-center gap-2">
+                                           Prep Cook
+                                           <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Elaborated</span>
+                                        </td>
+                                        <td className="px-6 py-3 text-right text-gray-600">$12,200</td>
+                                        <td className="px-6 py-3 text-right text-gray-400">$11,500</td>
+                                        <td className="px-6 py-3 text-right text-red-500 text-xs">+$700</td>
+                                        <td className="px-6 py-3 text-right text-gray-500">4.2%</td>
+                                     </tr>
+                                  </PopoverTrigger>
+                                  <PopoverContent className="w-[380px] p-0" align="start">
+                                     <div className="p-4 border-b border-gray-100">
+                                        <div className="flex items-start gap-3">
+                                           <div className="p-2 bg-amber-100 rounded-lg"><Sparkles className="h-4 w-4 text-amber-600" /></div>
+                                           <div>
+                                              <p className="font-medium text-gray-900 mb-1">Prep Cook Cost Analysis</p>
+                                              <p className="text-sm text-gray-600">Slight increase due to new hire training overlap period.</p>
+                                           </div>
+                                        </div>
+                                     </div>
+                                     <div className="p-4">
+                                        <div className="h-36">
+                                           <ResponsiveContainer width="100%" height="100%">
+                                              <BarChart data={[
+                                                 { name: 'Jul', actual: 11200, budget: 11500 },
+                                                 { name: 'Aug', actual: 11400, budget: 11500 },
+                                                 { name: 'Sep', actual: 12200, budget: 11500 },
+                                              ]} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                                                 <XAxis dataKey="name" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+                                                 <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${(v/1000).toFixed(0)}k`} />
+                                                 <Tooltip formatter={(v: number) => `$${v.toLocaleString()}`} contentStyle={{ fontSize: 12 }} />
+                                                 <Bar dataKey="actual" fill="#f59e0b" name="Actual" radius={[4, 4, 0, 0]} />
+                                                 <Bar dataKey="budget" fill="#d1d5db" name="Budget" radius={[4, 4, 0, 0]} />
+                                              </BarChart>
+                                           </ResponsiveContainer>
+                                        </div>
+                                     </div>
+                                  </PopoverContent>
+                               </Popover>
+                               <Popover>
+                                  <PopoverTrigger asChild>
+                                     <tr className="hover:bg-amber-50/40 cursor-pointer">
+                                        <td className="px-6 py-3 text-gray-600 pl-16 flex items-center gap-2">
+                                           Dishwasher
+                                           <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Elaborated</span>
+                                        </td>
+                                        <td className="px-6 py-3 text-right text-gray-600">$7,600</td>
+                                        <td className="px-6 py-3 text-right text-gray-400">$7,000</td>
+                                        <td className="px-6 py-3 text-right text-red-500 text-xs">+$600</td>
+                                        <td className="px-6 py-3 text-right text-gray-500">2.6%</td>
+                                     </tr>
+                                  </PopoverTrigger>
+                                  <PopoverContent className="w-[380px] p-0" align="start">
+                                     <div className="p-4 border-b border-gray-100">
+                                        <div className="flex items-start gap-3">
+                                           <div className="p-2 bg-amber-100 rounded-lg"><Sparkles className="h-4 w-4 text-amber-600" /></div>
+                                           <div>
+                                              <p className="font-medium text-gray-900 mb-1">Dishwasher Cost Analysis</p>
+                                              <p className="text-sm text-gray-600">Added evening shift coverage for busy dinner service.</p>
+                                           </div>
+                                        </div>
+                                     </div>
+                                     <div className="p-4">
+                                        <div className="h-36">
+                                           <ResponsiveContainer width="100%" height="100%">
+                                              <BarChart data={[
+                                                 { name: 'Jul', actual: 6800, budget: 7000 },
+                                                 { name: 'Aug', actual: 7100, budget: 7000 },
+                                                 { name: 'Sep', actual: 7600, budget: 7000 },
+                                              ]} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                                                 <XAxis dataKey="name" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+                                                 <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${(v/1000).toFixed(0)}k`} />
+                                                 <Tooltip formatter={(v: number) => `$${v.toLocaleString()}`} contentStyle={{ fontSize: 12 }} />
+                                                 <Bar dataKey="actual" fill="#f59e0b" name="Actual" radius={[4, 4, 0, 0]} />
+                                                 <Bar dataKey="budget" fill="#d1d5db" name="Budget" radius={[4, 4, 0, 0]} />
+                                              </BarChart>
+                                           </ResponsiveContainer>
+                                        </div>
+                                     </div>
+                                  </PopoverContent>
+                               </Popover>
                                <tr className="hover:bg-gray-50">
                                   <td className="px-6 py-4 text-gray-700 pl-10">FOH Labor</td>
                                   <td className="px-6 py-4 text-right">$42,100</td>
@@ -7370,36 +7733,135 @@ export default function PnlRelease() {
                                   <td className="px-6 py-4 text-right text-red-600">+$4,300</td>
                                   <td className="px-6 py-4 text-right text-gray-600">14.3%</td>
                                </tr>
-                               <tr className="hover:bg-amber-50/40">
-                                  <td className="px-6 py-3 text-gray-600 pl-16 flex items-center gap-2">
-                                     Server
-                                     <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Elaborated</span>
-                                  </td>
-                                  <td className="px-6 py-3 text-right text-gray-600">$22,500</td>
-                                  <td className="px-6 py-3 text-right text-gray-400">$19,800</td>
-                                  <td className="px-6 py-3 text-right text-red-500 text-xs">+$2,700</td>
-                                  <td className="px-6 py-3 text-right text-gray-500">7.7%</td>
-                               </tr>
-                               <tr className="hover:bg-amber-50/40">
-                                  <td className="px-6 py-3 text-gray-600 pl-16 flex items-center gap-2">
-                                     Bartender
-                                     <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Elaborated</span>
-                                  </td>
-                                  <td className="px-6 py-3 text-right text-gray-600">$11,800</td>
-                                  <td className="px-6 py-3 text-right text-gray-400">$10,500</td>
-                                  <td className="px-6 py-3 text-right text-red-500 text-xs">+$1,300</td>
-                                  <td className="px-6 py-3 text-right text-gray-500">4.0%</td>
-                               </tr>
-                               <tr className="hover:bg-amber-50/40">
-                                  <td className="px-6 py-3 text-gray-600 pl-16 flex items-center gap-2">
-                                     Host/Hostess
-                                     <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Elaborated</span>
-                                  </td>
-                                  <td className="px-6 py-3 text-right text-gray-600">$7,800</td>
-                                  <td className="px-6 py-3 text-right text-gray-400">$7,500</td>
-                                  <td className="px-6 py-3 text-right text-red-500 text-xs">+$300</td>
-                                  <td className="px-6 py-3 text-right text-gray-500">2.7%</td>
-                               </tr>
+                               <Popover>
+                                  <PopoverTrigger asChild>
+                                     <tr className="hover:bg-amber-50/40 cursor-pointer">
+                                        <td className="px-6 py-3 text-gray-600 pl-16 flex items-center gap-2">
+                                           Server
+                                           <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Elaborated</span>
+                                        </td>
+                                        <td className="px-6 py-3 text-right text-gray-600">$22,500</td>
+                                        <td className="px-6 py-3 text-right text-gray-400">$19,800</td>
+                                        <td className="px-6 py-3 text-right text-red-500 text-xs">+$2,700</td>
+                                        <td className="px-6 py-3 text-right text-gray-500">7.7%</td>
+                                     </tr>
+                                  </PopoverTrigger>
+                                  <PopoverContent className="w-[380px] p-0" align="start">
+                                     <div className="p-4 border-b border-gray-100">
+                                        <div className="flex items-start gap-3">
+                                           <div className="p-2 bg-red-100 rounded-lg"><Sparkles className="h-4 w-4 text-red-600" /></div>
+                                           <div>
+                                              <p className="font-medium text-gray-900 mb-1">Server Cost Analysis</p>
+                                              <p className="text-sm text-gray-600">Highest variance driver. Added 2 FTE for patio season; recommend scaling back.</p>
+                                           </div>
+                                        </div>
+                                     </div>
+                                     <div className="p-4">
+                                        <div className="h-36">
+                                           <ResponsiveContainer width="100%" height="100%">
+                                              <BarChart data={[
+                                                 { name: 'Jul', actual: 20100, budget: 19800 },
+                                                 { name: 'Aug', actual: 21200, budget: 19800 },
+                                                 { name: 'Sep', actual: 22500, budget: 19800 },
+                                              ]} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                                                 <XAxis dataKey="name" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+                                                 <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${(v/1000).toFixed(0)}k`} />
+                                                 <Tooltip formatter={(v: number) => `$${v.toLocaleString()}`} contentStyle={{ fontSize: 12 }} />
+                                                 <Bar dataKey="actual" fill="#ef4444" name="Actual" radius={[4, 4, 0, 0]} />
+                                                 <Bar dataKey="budget" fill="#d1d5db" name="Budget" radius={[4, 4, 0, 0]} />
+                                              </BarChart>
+                                           </ResponsiveContainer>
+                                        </div>
+                                     </div>
+                                  </PopoverContent>
+                               </Popover>
+                               <Popover>
+                                  <PopoverTrigger asChild>
+                                     <tr className="hover:bg-amber-50/40 cursor-pointer">
+                                        <td className="px-6 py-3 text-gray-600 pl-16 flex items-center gap-2">
+                                           Bartender
+                                           <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Elaborated</span>
+                                        </td>
+                                        <td className="px-6 py-3 text-right text-gray-600">$11,800</td>
+                                        <td className="px-6 py-3 text-right text-gray-400">$10,500</td>
+                                        <td className="px-6 py-3 text-right text-red-500 text-xs">+$1,300</td>
+                                        <td className="px-6 py-3 text-right text-gray-500">4.0%</td>
+                                     </tr>
+                                  </PopoverTrigger>
+                                  <PopoverContent className="w-[380px] p-0" align="start">
+                                     <div className="p-4 border-b border-gray-100">
+                                        <div className="flex items-start gap-3">
+                                           <div className="p-2 bg-amber-100 rounded-lg"><Sparkles className="h-4 w-4 text-amber-600" /></div>
+                                           <div>
+                                              <p className="font-medium text-gray-900 mb-1">Bartender Cost Analysis</p>
+                                              <p className="text-sm text-gray-600">Extended happy hour staffing drove higher costs this month.</p>
+                                           </div>
+                                        </div>
+                                     </div>
+                                     <div className="p-4">
+                                        <div className="h-36">
+                                           <ResponsiveContainer width="100%" height="100%">
+                                              <BarChart data={[
+                                                 { name: 'Jul', actual: 10200, budget: 10500 },
+                                                 { name: 'Aug', actual: 10800, budget: 10500 },
+                                                 { name: 'Sep', actual: 11800, budget: 10500 },
+                                              ]} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                                                 <XAxis dataKey="name" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+                                                 <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${(v/1000).toFixed(0)}k`} />
+                                                 <Tooltip formatter={(v: number) => `$${v.toLocaleString()}`} contentStyle={{ fontSize: 12 }} />
+                                                 <Bar dataKey="actual" fill="#f59e0b" name="Actual" radius={[4, 4, 0, 0]} />
+                                                 <Bar dataKey="budget" fill="#d1d5db" name="Budget" radius={[4, 4, 0, 0]} />
+                                              </BarChart>
+                                           </ResponsiveContainer>
+                                        </div>
+                                     </div>
+                                  </PopoverContent>
+                               </Popover>
+                               <Popover>
+                                  <PopoverTrigger asChild>
+                                     <tr className="hover:bg-amber-50/40 cursor-pointer">
+                                        <td className="px-6 py-3 text-gray-600 pl-16 flex items-center gap-2">
+                                           Host/Hostess
+                                           <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Elaborated</span>
+                                        </td>
+                                        <td className="px-6 py-3 text-right text-gray-600">$7,800</td>
+                                        <td className="px-6 py-3 text-right text-gray-400">$7,500</td>
+                                        <td className="px-6 py-3 text-right text-red-500 text-xs">+$300</td>
+                                        <td className="px-6 py-3 text-right text-gray-500">2.7%</td>
+                                     </tr>
+                                  </PopoverTrigger>
+                                  <PopoverContent className="w-[380px] p-0" align="start">
+                                     <div className="p-4 border-b border-gray-100">
+                                        <div className="flex items-start gap-3">
+                                           <div className="p-2 bg-emerald-100 rounded-lg"><Sparkles className="h-4 w-4 text-emerald-600" /></div>
+                                           <div>
+                                              <p className="font-medium text-gray-900 mb-1">Host/Hostess Cost Analysis</p>
+                                              <p className="text-sm text-gray-600">On track. Minor variance within acceptable range.</p>
+                                           </div>
+                                        </div>
+                                     </div>
+                                     <div className="p-4">
+                                        <div className="h-36">
+                                           <ResponsiveContainer width="100%" height="100%">
+                                              <BarChart data={[
+                                                 { name: 'Jul', actual: 7400, budget: 7500 },
+                                                 { name: 'Aug', actual: 7600, budget: 7500 },
+                                                 { name: 'Sep', actual: 7800, budget: 7500 },
+                                              ]} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                                                 <XAxis dataKey="name" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+                                                 <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${(v/1000).toFixed(0)}k`} />
+                                                 <Tooltip formatter={(v: number) => `$${v.toLocaleString()}`} contentStyle={{ fontSize: 12 }} />
+                                                 <Bar dataKey="actual" fill="#10b981" name="Actual" radius={[4, 4, 0, 0]} />
+                                                 <Bar dataKey="budget" fill="#d1d5db" name="Budget" radius={[4, 4, 0, 0]} />
+                                              </BarChart>
+                                           </ResponsiveContainer>
+                                        </div>
+                                     </div>
+                                  </PopoverContent>
+                               </Popover>
                                <tr className="hover:bg-gray-50">
                                   <td className="px-6 py-4 text-gray-700 pl-10">Management</td>
                                   <td className="px-6 py-4 text-right">$12,600</td>
@@ -7407,26 +7869,92 @@ export default function PnlRelease() {
                                   <td className="px-6 py-4 text-right text-gray-600">$0</td>
                                   <td className="px-6 py-4 text-right text-gray-600">4.3%</td>
                                </tr>
-                               <tr className="hover:bg-amber-50/40">
-                                  <td className="px-6 py-3 text-gray-600 pl-16 flex items-center gap-2">
-                                     General Manager
-                                     <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Elaborated</span>
-                                  </td>
-                                  <td className="px-6 py-3 text-right text-gray-600">$6,800</td>
-                                  <td className="px-6 py-3 text-right text-gray-400">$6,800</td>
-                                  <td className="px-6 py-3 text-right text-gray-500 text-xs">$0</td>
-                                  <td className="px-6 py-3 text-right text-gray-500">2.3%</td>
-                               </tr>
-                               <tr className="hover:bg-amber-50/40">
-                                  <td className="px-6 py-3 text-gray-600 pl-16 flex items-center gap-2">
-                                     Shift Supervisor
-                                     <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Elaborated</span>
-                                  </td>
-                                  <td className="px-6 py-3 text-right text-gray-600">$5,800</td>
-                                  <td className="px-6 py-3 text-right text-gray-400">$5,800</td>
-                                  <td className="px-6 py-3 text-right text-gray-500 text-xs">$0</td>
-                                  <td className="px-6 py-3 text-right text-gray-500">2.0%</td>
-                               </tr>
+                               <Popover>
+                                  <PopoverTrigger asChild>
+                                     <tr className="hover:bg-amber-50/40 cursor-pointer">
+                                        <td className="px-6 py-3 text-gray-600 pl-16 flex items-center gap-2">
+                                           General Manager
+                                           <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Elaborated</span>
+                                        </td>
+                                        <td className="px-6 py-3 text-right text-gray-600">$6,800</td>
+                                        <td className="px-6 py-3 text-right text-gray-400">$6,800</td>
+                                        <td className="px-6 py-3 text-right text-gray-500 text-xs">$0</td>
+                                        <td className="px-6 py-3 text-right text-gray-500">2.3%</td>
+                                     </tr>
+                                  </PopoverTrigger>
+                                  <PopoverContent className="w-[380px] p-0" align="start">
+                                     <div className="p-4 border-b border-gray-100">
+                                        <div className="flex items-start gap-3">
+                                           <div className="p-2 bg-emerald-100 rounded-lg"><Sparkles className="h-4 w-4 text-emerald-600" /></div>
+                                           <div>
+                                              <p className="font-medium text-gray-900 mb-1">General Manager Cost</p>
+                                              <p className="text-sm text-gray-600">Fixed salary. On budget with no variance.</p>
+                                           </div>
+                                        </div>
+                                     </div>
+                                     <div className="p-4">
+                                        <div className="h-36">
+                                           <ResponsiveContainer width="100%" height="100%">
+                                              <BarChart data={[
+                                                 { name: 'Jul', actual: 6800, budget: 6800 },
+                                                 { name: 'Aug', actual: 6800, budget: 6800 },
+                                                 { name: 'Sep', actual: 6800, budget: 6800 },
+                                              ]} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                                                 <XAxis dataKey="name" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+                                                 <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${(v/1000).toFixed(0)}k`} />
+                                                 <Tooltip formatter={(v: number) => `$${v.toLocaleString()}`} contentStyle={{ fontSize: 12 }} />
+                                                 <Bar dataKey="actual" fill="#10b981" name="Actual" radius={[4, 4, 0, 0]} />
+                                                 <Bar dataKey="budget" fill="#d1d5db" name="Budget" radius={[4, 4, 0, 0]} />
+                                              </BarChart>
+                                           </ResponsiveContainer>
+                                        </div>
+                                     </div>
+                                  </PopoverContent>
+                               </Popover>
+                               <Popover>
+                                  <PopoverTrigger asChild>
+                                     <tr className="hover:bg-amber-50/40 cursor-pointer">
+                                        <td className="px-6 py-3 text-gray-600 pl-16 flex items-center gap-2">
+                                           Shift Supervisor
+                                           <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Elaborated</span>
+                                        </td>
+                                        <td className="px-6 py-3 text-right text-gray-600">$5,800</td>
+                                        <td className="px-6 py-3 text-right text-gray-400">$5,800</td>
+                                        <td className="px-6 py-3 text-right text-gray-500 text-xs">$0</td>
+                                        <td className="px-6 py-3 text-right text-gray-500">2.0%</td>
+                                     </tr>
+                                  </PopoverTrigger>
+                                  <PopoverContent className="w-[380px] p-0" align="start">
+                                     <div className="p-4 border-b border-gray-100">
+                                        <div className="flex items-start gap-3">
+                                           <div className="p-2 bg-emerald-100 rounded-lg"><Sparkles className="h-4 w-4 text-emerald-600" /></div>
+                                           <div>
+                                              <p className="font-medium text-gray-900 mb-1">Shift Supervisor Cost</p>
+                                              <p className="text-sm text-gray-600">Fixed salary. On budget with no variance.</p>
+                                           </div>
+                                        </div>
+                                     </div>
+                                     <div className="p-4">
+                                        <div className="h-36">
+                                           <ResponsiveContainer width="100%" height="100%">
+                                              <BarChart data={[
+                                                 { name: 'Jul', actual: 5800, budget: 5800 },
+                                                 { name: 'Aug', actual: 5800, budget: 5800 },
+                                                 { name: 'Sep', actual: 5800, budget: 5800 },
+                                              ]} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                                                 <XAxis dataKey="name" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+                                                 <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${(v/1000).toFixed(0)}k`} />
+                                                 <Tooltip formatter={(v: number) => `$${v.toLocaleString()}`} contentStyle={{ fontSize: 12 }} />
+                                                 <Bar dataKey="actual" fill="#10b981" name="Actual" radius={[4, 4, 0, 0]} />
+                                                 <Bar dataKey="budget" fill="#d1d5db" name="Budget" radius={[4, 4, 0, 0]} />
+                                              </BarChart>
+                                           </ResponsiveContainer>
+                                        </div>
+                                     </div>
+                                  </PopoverContent>
+                               </Popover>
                                <tr className="hover:bg-gray-50">
                                   <td className="px-6 py-4 text-gray-700 pl-10">Payroll Taxes & Benefits</td>
                                   <td className="px-6 py-4 text-right">$10,500</td>
