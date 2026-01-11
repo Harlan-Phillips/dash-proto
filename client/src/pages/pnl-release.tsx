@@ -4861,6 +4861,99 @@ export default function PnlRelease() {
                              <div className="px-6 py-4 border-b border-gray-100">
                                 <h3 className="font-semibold text-gray-900">Labor Deep Dive</h3>
                              </div>
+                             <Popover>
+                                <PopoverTrigger asChild>
+                                   <button className="w-full px-6 py-3 flex items-start gap-2 text-left bg-amber-50/60 hover:bg-amber-50 border-b border-amber-100 transition-colors cursor-pointer">
+                                      <Sparkles className="h-4 w-4 text-amber-500 mt-0.5 flex-shrink-0" />
+                                      <span className="text-sm text-gray-700">
+                                         <span className="font-medium text-gray-900">There's a 17.5% increase in labor spending this month.</span>
+                                         {" "}Click to see what's driving this variance.
+                                      </span>
+                                   </button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-[420px] p-0" align="start">
+                                   <div className="p-4 border-b border-gray-100">
+                                      <div className="flex items-start gap-3">
+                                         <div className="p-2 bg-amber-100 rounded-lg">
+                                            <Sparkles className="h-4 w-4 text-amber-600" />
+                                         </div>
+                                         <div>
+                                            <p className="text-sm text-gray-700">
+                                               We're finding that the 17.5% labor increase this month was driven by <span className="font-semibold">overtime hours</span> and <span className="font-semibold">FOH staffing</span> adjustments.
+                                            </p>
+                                         </div>
+                                      </div>
+                                   </div>
+                                   <div className="p-4">
+                                      <div className="flex items-center gap-4 mb-4 text-xs">
+                                         <div className="flex items-center gap-1.5">
+                                            <div className="w-3 h-3 rounded-sm bg-red-400"></div>
+                                            <span className="text-gray-600">Increase</span>
+                                         </div>
+                                         <div className="flex items-center gap-1.5">
+                                            <div className="w-3 h-3 rounded-sm bg-emerald-400"></div>
+                                            <span className="text-gray-600">Decrease</span>
+                                         </div>
+                                         <div className="flex items-center gap-1.5">
+                                            <div className="w-3 h-3 rounded-sm bg-blue-500"></div>
+                                            <span className="text-gray-600">Total</span>
+                                         </div>
+                                      </div>
+                                      <div className="h-48">
+                                         <ResponsiveContainer width="100%" height="100%">
+                                            <BarChart
+                                               data={[
+                                                  { name: 'Base\nBudget', value: 81220, fill: '#3b82f6', isTotal: true },
+                                                  { name: 'Overtime', value: 3200, fill: '#f87171', isIncrease: true },
+                                                  { name: 'FOH\nStaff', value: 4300, fill: '#f87171', isIncrease: true },
+                                                  { name: 'BOH\nStaff', value: 2700, fill: '#f87171', isIncrease: true },
+                                                  { name: 'Scheduling\nEfficiency', value: -1500, fill: '#34d399', isDecrease: true },
+                                                  { name: 'Actual', value: 95400, fill: '#3b82f6', isTotal: true },
+                                               ]}
+                                               margin={{ top: 20, right: 10, left: 10, bottom: 30 }}
+                                            >
+                                               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                                               <XAxis 
+                                                  dataKey="name" 
+                                                  tick={{ fontSize: 10, fill: '#6b7280' }}
+                                                  axisLine={{ stroke: '#e5e7eb' }}
+                                                  tickLine={false}
+                                                  interval={0}
+                                               />
+                                               <YAxis 
+                                                  tick={{ fontSize: 10, fill: '#6b7280' }}
+                                                  axisLine={false}
+                                                  tickLine={false}
+                                                  tickFormatter={(v) => `$${(v/1000).toFixed(0)}k`}
+                                               />
+                                               <Tooltip
+                                                  formatter={(value: number) => [`$${Math.abs(value).toLocaleString()}`, value < 0 ? 'Savings' : 'Amount']}
+                                                  contentStyle={{ fontSize: 12, borderRadius: 8 }}
+                                               />
+                                               <Bar dataKey="value" radius={[4, 4, 0, 0]}>
+                                                  {[
+                                                     { name: 'Base Budget', value: 81220, fill: '#3b82f6' },
+                                                     { name: 'Overtime', value: 3200, fill: '#f87171' },
+                                                     { name: 'FOH Staff', value: 4300, fill: '#f87171' },
+                                                     { name: 'BOH Staff', value: 2700, fill: '#f87171' },
+                                                     { name: 'Scheduling', value: -1500, fill: '#34d399' },
+                                                     { name: 'Actual', value: 95400, fill: '#3b82f6' },
+                                                  ].map((entry, index) => (
+                                                     <Cell key={`cell-${index}`} fill={entry.fill} />
+                                                  ))}
+                                               </Bar>
+                                            </BarChart>
+                                         </ResponsiveContainer>
+                                      </div>
+                                      <div className="mt-3 pt-3 border-t border-gray-100">
+                                         <div className="flex items-center justify-between text-sm">
+                                            <span className="text-gray-600">Net Variance</span>
+                                            <span className="font-semibold text-red-600">+$14,180 (17.5%)</span>
+                                         </div>
+                                      </div>
+                                   </div>
+                                </PopoverContent>
+                             </Popover>
                              <table className="w-full text-sm">
                                 <thead>
                                    <tr className="border-b border-gray-100 bg-gray-50/50">
@@ -7122,6 +7215,99 @@ export default function PnlRelease() {
                          <div className="px-6 py-4 border-b border-gray-100">
                             <h3 className="font-semibold text-gray-900">Labor Deep Dive</h3>
                          </div>
+                         <Popover>
+                            <PopoverTrigger asChild>
+                               <button className="w-full px-6 py-3 flex items-start gap-2 text-left bg-amber-50/60 hover:bg-amber-50 border-b border-amber-100 transition-colors cursor-pointer">
+                                  <Sparkles className="h-4 w-4 text-amber-500 mt-0.5 flex-shrink-0" />
+                                  <span className="text-sm text-gray-700">
+                                     <span className="font-medium text-gray-900">There's a 17.5% increase in labor spending this month.</span>
+                                     {" "}Click to see what's driving this variance.
+                                  </span>
+                               </button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-[420px] p-0" align="start">
+                               <div className="p-4 border-b border-gray-100">
+                                  <div className="flex items-start gap-3">
+                                     <div className="p-2 bg-amber-100 rounded-lg">
+                                        <Sparkles className="h-4 w-4 text-amber-600" />
+                                     </div>
+                                     <div>
+                                        <p className="text-sm text-gray-700">
+                                           We're finding that the 17.5% labor increase this month was driven by <span className="font-semibold">overtime hours</span> and <span className="font-semibold">FOH staffing</span> adjustments.
+                                        </p>
+                                     </div>
+                                  </div>
+                               </div>
+                               <div className="p-4">
+                                  <div className="flex items-center gap-4 mb-4 text-xs">
+                                     <div className="flex items-center gap-1.5">
+                                        <div className="w-3 h-3 rounded-sm bg-red-400"></div>
+                                        <span className="text-gray-600">Increase</span>
+                                     </div>
+                                     <div className="flex items-center gap-1.5">
+                                        <div className="w-3 h-3 rounded-sm bg-emerald-400"></div>
+                                        <span className="text-gray-600">Decrease</span>
+                                     </div>
+                                     <div className="flex items-center gap-1.5">
+                                        <div className="w-3 h-3 rounded-sm bg-blue-500"></div>
+                                        <span className="text-gray-600">Total</span>
+                                     </div>
+                                  </div>
+                                  <div className="h-48">
+                                     <ResponsiveContainer width="100%" height="100%">
+                                        <BarChart
+                                           data={[
+                                              { name: 'Base\nBudget', value: 81220, fill: '#3b82f6', isTotal: true },
+                                              { name: 'Overtime', value: 3200, fill: '#f87171', isIncrease: true },
+                                              { name: 'FOH\nStaff', value: 4300, fill: '#f87171', isIncrease: true },
+                                              { name: 'BOH\nStaff', value: 2700, fill: '#f87171', isIncrease: true },
+                                              { name: 'Scheduling\nEfficiency', value: -1500, fill: '#34d399', isDecrease: true },
+                                              { name: 'Actual', value: 95400, fill: '#3b82f6', isTotal: true },
+                                           ]}
+                                           margin={{ top: 20, right: 10, left: 10, bottom: 30 }}
+                                        >
+                                           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                                           <XAxis 
+                                              dataKey="name" 
+                                              tick={{ fontSize: 10, fill: '#6b7280' }}
+                                              axisLine={{ stroke: '#e5e7eb' }}
+                                              tickLine={false}
+                                              interval={0}
+                                           />
+                                           <YAxis 
+                                              tick={{ fontSize: 10, fill: '#6b7280' }}
+                                              axisLine={false}
+                                              tickLine={false}
+                                              tickFormatter={(v) => `$${(v/1000).toFixed(0)}k`}
+                                           />
+                                           <Tooltip
+                                              formatter={(value: number) => [`$${Math.abs(value).toLocaleString()}`, value < 0 ? 'Savings' : 'Amount']}
+                                              contentStyle={{ fontSize: 12, borderRadius: 8 }}
+                                           />
+                                           <Bar dataKey="value" radius={[4, 4, 0, 0]}>
+                                              {[
+                                                 { name: 'Base Budget', value: 81220, fill: '#3b82f6' },
+                                                 { name: 'Overtime', value: 3200, fill: '#f87171' },
+                                                 { name: 'FOH Staff', value: 4300, fill: '#f87171' },
+                                                 { name: 'BOH Staff', value: 2700, fill: '#f87171' },
+                                                 { name: 'Scheduling', value: -1500, fill: '#34d399' },
+                                                 { name: 'Actual', value: 95400, fill: '#3b82f6' },
+                                              ].map((entry, index) => (
+                                                 <Cell key={`cell-${index}`} fill={entry.fill} />
+                                              ))}
+                                           </Bar>
+                                        </BarChart>
+                                     </ResponsiveContainer>
+                                  </div>
+                                  <div className="mt-3 pt-3 border-t border-gray-100">
+                                     <div className="flex items-center justify-between text-sm">
+                                        <span className="text-gray-600">Net Variance</span>
+                                        <span className="font-semibold text-red-600">+$14,180 (17.5%)</span>
+                                     </div>
+                                  </div>
+                               </div>
+                            </PopoverContent>
+                         </Popover>
                          <table className="w-full text-sm">
                             <thead>
                                <tr className="border-b border-gray-100 bg-gray-50/50">
