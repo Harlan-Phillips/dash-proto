@@ -55,7 +55,11 @@ import {
   Pencil,
   RotateCcw,
   Wallet,
-  CreditCard
+  CreditCard,
+  Sun,
+  Moon,
+  Package,
+  TrendingDown
 } from "lucide-react";
 import {
   Popover,
@@ -10265,6 +10269,217 @@ export default function PnlRelease() {
                          )}
                       </div>
                    </section>
+
+                   {/* Daily Prime Cost & Auto-Diagnosis - GM Only */}
+                   {selectedRole === "gm" && (
+                   <section data-testid="gm-daily-prime-cost-section">
+                      <h2 className="text-lg font-serif font-bold text-gray-900 mb-4 flex items-center gap-2">
+                         <Calendar className="h-5 w-5 text-gray-600" />
+                         Today's Performance
+                         <span className="text-sm font-normal text-gray-500 ml-2">Monday, Jan 12</span>
+                      </h2>
+                      
+                      {/* Daily Metrics Cards */}
+                      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                         {/* Sales Card */}
+                         <div className="bg-white border border-gray-200 rounded-xl p-4">
+                            <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Sales</div>
+                            <div className="text-2xl font-bold text-gray-900">$4,820</div>
+                            <div className="flex items-center gap-2 mt-2">
+                               <span className="text-xs text-gray-500">Avg Monday:</span>
+                               <span className="text-xs font-medium text-gray-700">$5,180</span>
+                            </div>
+                            <div className="flex items-center gap-1 mt-1">
+                               <TrendingDown className="h-3 w-3 text-red-500" />
+                               <span className="text-xs font-medium text-red-600">-6.9%</span>
+                               <span className="text-xs text-gray-500">vs avg</span>
+                            </div>
+                         </div>
+
+                         {/* COGS % Card */}
+                         <div className="bg-white border border-gray-200 rounded-xl p-4">
+                            <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">COGS %</div>
+                            <div className="text-2xl font-bold text-gray-900">32.4%</div>
+                            <div className="flex items-center gap-2 mt-2">
+                               <span className="text-xs text-gray-500">Avg Monday:</span>
+                               <span className="text-xs font-medium text-gray-700">30.8%</span>
+                            </div>
+                            <div className="flex items-center gap-1 mt-1">
+                               <TrendingUp className="h-3 w-3 text-red-500" />
+                               <span className="text-xs font-medium text-red-600">+1.6 pts</span>
+                               <span className="text-xs text-gray-500">vs avg</span>
+                            </div>
+                         </div>
+
+                         {/* Labor % Card */}
+                         <div className="bg-white border border-gray-200 rounded-xl p-4">
+                            <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Labor %</div>
+                            <div className="text-2xl font-bold text-gray-900">31.8%</div>
+                            <div className="flex items-center gap-2 mt-2">
+                               <span className="text-xs text-gray-500">Avg Monday:</span>
+                               <span className="text-xs font-medium text-gray-700">29.3%</span>
+                            </div>
+                            <div className="flex items-center gap-1 mt-1">
+                               <TrendingUp className="h-3 w-3 text-red-500" />
+                               <span className="text-xs font-medium text-red-600">+2.5 pts</span>
+                               <span className="text-xs text-gray-500">vs avg</span>
+                            </div>
+                         </div>
+
+                         {/* Prime Cost Card - Primary */}
+                         <div className="bg-gradient-to-br from-red-50 to-orange-50 border border-red-200 rounded-xl p-4">
+                            <div className="text-xs font-medium text-red-700 uppercase tracking-wide mb-2">Prime Cost</div>
+                            <div className="text-2xl font-bold text-gray-900">64.2%</div>
+                            <div className="flex items-center gap-2 mt-2">
+                               <span className="text-xs text-gray-500">Avg Monday:</span>
+                               <span className="text-xs font-medium text-gray-700">60.1%</span>
+                            </div>
+                            <div className="flex items-center gap-1 mt-1">
+                               <AlertTriangle className="h-3 w-3 text-red-500" />
+                               <span className="text-xs font-medium text-red-600">+4.1 pts 🔴</span>
+                            </div>
+                         </div>
+                      </div>
+
+                      {/* Shift Breakdown */}
+                      <div className="bg-white border border-gray-200 rounded-xl p-5 mb-6">
+                         <h3 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                            <Clock className="h-4 w-4 text-gray-500" />
+                            Shift Breakdown
+                         </h3>
+                         <div className="grid grid-cols-2 gap-4">
+                            {/* Lunch Shift */}
+                            <div className="border border-red-200 bg-red-50/50 rounded-lg p-4">
+                               <div className="flex items-center justify-between mb-3">
+                                  <div className="flex items-center gap-2">
+                                     <Sun className="h-4 w-4 text-amber-500" />
+                                     <span className="font-medium text-gray-900">Lunch</span>
+                                     <span className="text-xs text-gray-500">11:00–16:00</span>
+                                  </div>
+                                  <div className="px-2 py-0.5 bg-red-100 text-red-700 text-xs font-medium rounded-full">
+                                     ⚠️ Issue
+                                  </div>
+                               </div>
+                               <div className="grid grid-cols-3 gap-3 text-center">
+                                  <div>
+                                     <div className="text-xs text-gray-500 mb-1">Sales</div>
+                                     <div className="text-sm font-semibold text-gray-900">$1,640</div>
+                                     <div className="text-xs text-red-600">-12.4%</div>
+                                  </div>
+                                  <div>
+                                     <div className="text-xs text-gray-500 mb-1">Labor %</div>
+                                     <div className="text-sm font-semibold text-gray-900">36.2%</div>
+                                     <div className="text-xs text-red-600">+7.2 pts</div>
+                                  </div>
+                                  <div>
+                                     <div className="text-xs text-gray-500 mb-1">Prime</div>
+                                     <div className="text-sm font-semibold text-gray-900">68.8%</div>
+                                     <div className="text-xs text-red-600">+9.1 pts</div>
+                                  </div>
+                               </div>
+                            </div>
+
+                            {/* Dinner Shift */}
+                            <div className="border border-emerald-200 bg-emerald-50/50 rounded-lg p-4">
+                               <div className="flex items-center justify-between mb-3">
+                                  <div className="flex items-center gap-2">
+                                     <Moon className="h-4 w-4 text-indigo-500" />
+                                     <span className="font-medium text-gray-900">Dinner</span>
+                                     <span className="text-xs text-gray-500">16:00–Close</span>
+                                  </div>
+                                  <div className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs font-medium rounded-full">
+                                     ✓ Normal
+                                  </div>
+                               </div>
+                               <div className="grid grid-cols-3 gap-3 text-center">
+                                  <div>
+                                     <div className="text-xs text-gray-500 mb-1">Sales</div>
+                                     <div className="text-sm font-semibold text-gray-900">$3,180</div>
+                                     <div className="text-xs text-emerald-600">-2.1%</div>
+                                  </div>
+                                  <div>
+                                     <div className="text-xs text-gray-500 mb-1">Labor %</div>
+                                     <div className="text-sm font-semibold text-gray-900">29.1%</div>
+                                     <div className="text-xs text-emerald-600">+0.3 pts</div>
+                                  </div>
+                                  <div>
+                                     <div className="text-xs text-gray-500 mb-1">Prime</div>
+                                     <div className="text-sm font-semibold text-gray-900">61.4%</div>
+                                     <div className="text-xs text-emerald-600">+1.2 pts</div>
+                                  </div>
+                               </div>
+                            </div>
+                         </div>
+                      </div>
+
+                      {/* Auto-Diagnosis */}
+                      <div className="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-5">
+                         <h3 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                            <Lightbulb className="h-4 w-4 text-amber-600" />
+                            What happened today?
+                         </h3>
+                         <div className="space-y-3">
+                            <div className="flex items-start gap-3 bg-white/60 rounded-lg p-3 border border-amber-100">
+                               <div className="w-6 h-6 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                  <Users className="h-3.5 w-3.5 text-red-600" />
+                               </div>
+                               <div>
+                                  <div className="text-sm font-medium text-gray-900">Lunch overstaffed vs normal Monday</div>
+                                  <div className="text-xs text-gray-600 mt-0.5">
+                                     Labor was +7.2 pts higher than normal for demand — likely overstaffed during Lunch shift.
+                                  </div>
+                                  <div className="flex items-center gap-2 mt-2">
+                                     <span className="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded">Shift: Lunch</span>
+                                     <span className="px-2 py-0.5 bg-red-100 text-red-700 text-xs rounded">Labor % +7.2 pts</span>
+                                  </div>
+                               </div>
+                            </div>
+                            
+                            <div className="flex items-start gap-3 bg-white/60 rounded-lg p-3 border border-amber-100">
+                               <div className="w-6 h-6 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                  <TrendingDown className="h-3.5 w-3.5 text-amber-600" />
+                               </div>
+                               <div>
+                                  <div className="text-sm font-medium text-gray-900">Sales below weekday average</div>
+                                  <div className="text-xs text-gray-600 mt-0.5">
+                                     Sales dropped -6.9% versus a typical Monday. Demand issue, not staffing.
+                                  </div>
+                                  <div className="flex items-center gap-2 mt-2">
+                                     <span className="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded">Day: Monday</span>
+                                     <span className="px-2 py-0.5 bg-amber-100 text-amber-700 text-xs rounded">Sales -$360</span>
+                                  </div>
+                               </div>
+                            </div>
+
+                            <div className="flex items-start gap-3 bg-white/60 rounded-lg p-3 border border-amber-100">
+                               <div className="w-6 h-6 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                  <Package className="h-3.5 w-3.5 text-orange-600" />
+                               </div>
+                               <div>
+                                  <div className="text-sm font-medium text-gray-900">Food cost ran slightly high</div>
+                                  <div className="text-xs text-gray-600 mt-0.5">
+                                     COGS % was +1.6 pts above normal — check waste, comps, or portioning.
+                                  </div>
+                                  <div className="flex items-center gap-2 mt-2">
+                                     <span className="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded">All Day</span>
+                                     <span className="px-2 py-0.5 bg-orange-100 text-orange-700 text-xs rounded">COGS % +1.6 pts</span>
+                                  </div>
+                               </div>
+                            </div>
+                         </div>
+                         
+                         {/* Action Summary */}
+                         <div className="mt-4 pt-4 border-t border-amber-200">
+                            <div className="text-xs font-medium text-gray-700 mb-2">Recommended Actions for Tomorrow:</div>
+                            <div className="flex flex-wrap gap-2">
+                               <span className="px-2.5 py-1 bg-white border border-gray-200 text-xs text-gray-700 rounded-full">Review Lunch schedule</span>
+                               <span className="px-2.5 py-1 bg-white border border-gray-200 text-xs text-gray-700 rounded-full">Check portion sizes</span>
+                               <span className="px-2.5 py-1 bg-white border border-gray-200 text-xs text-gray-700 rounded-full">Monitor afternoon traffic</span>
+                            </div>
+                         </div>
+                      </div>
+                   </section>
+                   )}
 
                    {/* Ticket Time Zone Bar Graph - Chef Only */}
                    {selectedRole === "chef" && (

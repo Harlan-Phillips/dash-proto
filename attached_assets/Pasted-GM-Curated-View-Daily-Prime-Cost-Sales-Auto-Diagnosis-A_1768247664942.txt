@@ -1,0 +1,257 @@
+GM Curated View – Daily Prime Cost, Sales & Auto-Diagnosis
+
+Area: Accounting / P&L
+View: Curated View → General Manager
+Type: Feature / Operational Intelligence
+
+Problem
+
+General Managers are accountable for today’s performance, but most financial tools:
+
+Lock them into month-to-month views
+
+Hide operational root causes
+
+Fail to explain why a day underperformed
+
+GMs need daily, weekday-aware insight driven by Munch’s operational data, with built-in diagnosis, not just charts.
+
+Goal
+
+Create a GM Curated View that:
+
+Shows daily Sales, COGS, Labor, Prime Cost
+
+Compares performance to true weekday averages
+
+Drills cleanly into shift-level detail
+
+Automatically explains what went wrong and where
+
+Core Metrics (Daily)
+
+Displayed as cards or compact charts.
+
+Metrics
+Sales (Daily)
+COGS %
+Labor %
+Prime Cost % = (COGS + Labor) / Sales
+
+Weekday Average (Required Logic)
+Definition
+
+For metric M on weekday W:
+
+Weekday Avg (W) =
+AVG( M across last 8 occurrences of weekday W )
+
+Rules
+
+Exclude:
+
+Holidays
+
+Partial operating days
+
+POS outage days
+
+Percent metrics are averaged after calculation
+
+Shift-Level Alignment (Required)
+Default Shifts
+
+Lunch: 11:00–16:00
+
+Dinner: 16:00–Close
+(Shift boundaries configurable)
+
+Shift Weekday Average
+Shift Weekday Avg (W, S) =
+AVG( M during shift S on weekday W across last 8 occurrences )
+
+
+Same formulas apply at day and shift level.
+
+Display Example (GM-Facing)
+Today (Monday)
+Prime Cost: 64.2%
+Avg Monday: 60.1%
+Δ: +4.1 pts 🔴
+
+
+Expandable into:
+
+Lunch:
+  Prime Cost: +7.2 pts vs avg
+Dinner:
+  Normal
+
+Auto-Diagnosis Engine (Key Feature)
+
+When performance deviates materially from weekday norms, the system must automatically generate explanations.
+
+Diagnosis Triggers
+
+Auto-diagnosis runs when any condition is met:
+
+Sales ↓ ≥ 7% vs weekday avg
+
+Labor % ↑ ≥ 3 pts vs weekday avg
+
+COGS % ↑ ≥ 2 pts vs weekday avg
+
+Prime Cost ↑ ≥ 4 pts vs weekday avg
+
+Diagnosis Rules (v1)
+1️⃣ Overstaffing
+
+Condition
+
+Labor % ↑ AND Sales ↓
+
+
+Message
+
+“Labor was higher than normal for demand — likely overstaffed.”
+
+Shift Attribution
+
+If isolated to Lunch or Dinner, specify shift.
+
+2️⃣ Demand Drop
+
+Condition
+
+Sales ↓ AND Labor % flat
+
+
+Message
+
+“Sales dropped versus a typical {weekday}. Demand issue, not staffing.”
+
+3️⃣ Cost Control Issue (Food)
+
+Condition
+
+COGS % ↑ AND Sales flat or up
+
+
+Message
+
+“Food cost ran high despite normal sales — check waste, comps, or portioning.”
+
+4️⃣ Prime Cost Spike
+
+Condition
+
+Prime Cost ↑ driven by both Labor and COGS
+
+
+Message
+
+“Prime cost increased due to both labor and food costs.”
+
+5️⃣ Review-Linked Impact (Exploratory)
+
+Condition
+
+Review rating ↓ AND Sales ↓ same or next day
+
+
+Message
+
+“Guest sentiment declined and sales followed.”
+
+Directional only — no causation claims.
+
+Diagnosis Display (UI)
+
+For any flagged day:
+
+What happened today?
+• Lunch overstaffed vs normal Monday
+• Sales below weekday average
+
+
+Each bullet:
+
+Tied to metric
+
+Tied to shift (if applicable)
+
+Data Sources
+
+Live Munch Data Channels
+
+POS sales
+
+Labor punches / schedules
+
+Inventory / COGS feeds
+
+Reviews (Google, Yelp, etc.)
+
+Explicitly NOT
+
+Monthly accounting close
+
+Accrual adjustments
+
+Time Scope
+
+Default: Today
+
+Secondary: Last 7 days
+
+Comparisons always use weekday logic
+
+Permissions
+Role	Access
+General Manager	✅ Full
+Owner	Optional
+Executive Chef	Partial (future)
+Staff	❌ None
+Non-Goals (v1)
+
+Forecasting
+
+Payroll detail
+
+Individual staff performance
+
+Monthly accounting summaries
+
+Acceptance Criteria
+
+ Daily Sales, COGS, Labor, Prime Cost visible
+
+ Weekday averages calculated correctly
+
+ Shift-level breakdown reconciles to daily totals
+
+ Auto-diagnosis triggers fire correctly
+
+ Diagnosis messages reference correct cause + shift
+
+ View is clearly distinct from accounting P&L
+
+Notes
+
+This view should feel like:
+
+“Why today went the way it did — and what I should fix tomorrow.”
+
+Not:
+
+“Here’s another report.”
+
+Future Extensions (Not Required)
+
+Hour-level weekday comparisons
+
+Auto-suggested labor cuts or menu focus
+
+Alerting before close if Prime Cost trending red
+
+Exec-Chef cross-view alignment
