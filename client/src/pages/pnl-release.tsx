@@ -4130,35 +4130,71 @@ export default function PnlRelease() {
   
   const whatHappenedData = getWhatHappenedNarrative();
   
-  // Shift Breakdown data by time range (synced with Performance Summary)
+  // Shift Breakdown data by time range - hourly (synced with Performance Summary)
   const shiftBreakdownData = {
     today: [
-      { shift: 'Morning', label: '9am–11am', sales: 420, labor: 180, laborPct: 42.9 },
-      { shift: 'Lunch', label: '11am–2pm', sales: 1840, labor: 710, laborPct: 38.6 },
-      { shift: 'Afternoon', label: '2pm–5pm', sales: 680, labor: 290, laborPct: 42.6 },
-      { shift: 'Dinner', label: '5pm–9pm', sales: 1580, labor: 280, laborPct: 17.7 },
-      { shift: 'Late', label: '9pm–Close', sales: 300, labor: 75, laborPct: 25.0 },
+      { hour: '9am', sales: 180, labor: 85, laborPct: 47.2 },
+      { hour: '10am', sales: 240, labor: 95, laborPct: 39.6 },
+      { hour: '11am', sales: 420, labor: 140, laborPct: 33.3 },
+      { hour: '12pm', sales: 780, labor: 290, laborPct: 37.2 },
+      { hour: '1pm', sales: 640, labor: 280, laborPct: 43.8 },
+      { hour: '2pm', sales: 320, labor: 150, laborPct: 46.9 },
+      { hour: '3pm', sales: 180, labor: 70, laborPct: 38.9 },
+      { hour: '4pm', sales: 180, labor: 70, laborPct: 38.9 },
+      { hour: '5pm', sales: 280, labor: 60, laborPct: 21.4 },
+      { hour: '6pm', sales: 520, labor: 80, laborPct: 15.4 },
+      { hour: '7pm', sales: 480, labor: 75, laborPct: 15.6 },
+      { hour: '8pm', sales: 300, labor: 65, laborPct: 21.7 },
+      { hour: '9pm', sales: 200, labor: 50, laborPct: 25.0 },
+      { hour: '10pm', sales: 100, labor: 25, laborPct: 25.0 },
     ],
     week: [
-      { shift: 'Morning', label: '9am–11am', sales: 2940, labor: 1260, laborPct: 42.9 },
-      { shift: 'Lunch', label: '11am–2pm', sales: 12880, labor: 4200, laborPct: 32.6 },
-      { shift: 'Afternoon', label: '2pm–5pm', sales: 4760, labor: 1890, laborPct: 39.7 },
-      { shift: 'Dinner', label: '5pm–9pm', sales: 11060, labor: 1960, laborPct: 17.7 },
-      { shift: 'Late', label: '9pm–Close', sales: 2100, labor: 450, laborPct: 21.4 },
+      { hour: '9am', sales: 1260, labor: 595, laborPct: 47.2 },
+      { hour: '10am', sales: 1680, labor: 665, laborPct: 39.6 },
+      { hour: '11am', sales: 2940, labor: 980, laborPct: 33.3 },
+      { hour: '12pm', sales: 5460, labor: 2030, laborPct: 37.2 },
+      { hour: '1pm', sales: 4480, labor: 1190, laborPct: 26.6 },
+      { hour: '2pm', sales: 2240, labor: 840, laborPct: 37.5 },
+      { hour: '3pm', sales: 1260, labor: 490, laborPct: 38.9 },
+      { hour: '4pm', sales: 1260, labor: 560, laborPct: 44.4 },
+      { hour: '5pm', sales: 1960, labor: 420, laborPct: 21.4 },
+      { hour: '6pm', sales: 3640, labor: 560, laborPct: 15.4 },
+      { hour: '7pm', sales: 3360, labor: 525, laborPct: 15.6 },
+      { hour: '8pm', sales: 2100, labor: 455, laborPct: 21.7 },
+      { hour: '9pm', sales: 1400, labor: 300, laborPct: 21.4 },
+      { hour: '10pm', sales: 700, labor: 150, laborPct: 21.4 },
     ],
     month: [
-      { shift: 'Morning', label: '9am–11am', sales: 5040, labor: 2160, laborPct: 42.9 },
-      { shift: 'Lunch', label: '11am–2pm', sales: 22080, labor: 6840, laborPct: 31.0 },
-      { shift: 'Afternoon', label: '2pm–5pm', sales: 8160, labor: 3060, laborPct: 37.5 },
-      { shift: 'Dinner', label: '5pm–9pm', sales: 18960, labor: 3150, laborPct: 16.6 },
-      { shift: 'Late', label: '9pm–Close', sales: 3600, labor: 720, laborPct: 20.0 },
+      { hour: '9am', sales: 2160, labor: 1020, laborPct: 47.2 },
+      { hour: '10am', sales: 2880, labor: 1140, laborPct: 39.6 },
+      { hour: '11am', sales: 5040, labor: 1680, laborPct: 33.3 },
+      { hour: '12pm', sales: 9360, labor: 2810, laborPct: 30.0 },
+      { hour: '1pm', sales: 7680, labor: 2050, laborPct: 26.7 },
+      { hour: '2pm', sales: 3840, labor: 1340, laborPct: 34.9 },
+      { hour: '3pm', sales: 2160, labor: 840, laborPct: 38.9 },
+      { hour: '4pm', sales: 2160, labor: 880, laborPct: 40.7 },
+      { hour: '5pm', sales: 3360, labor: 670, laborPct: 19.9 },
+      { hour: '6pm', sales: 6240, labor: 870, laborPct: 13.9 },
+      { hour: '7pm', sales: 5760, labor: 840, laborPct: 14.6 },
+      { hour: '8pm', sales: 3600, labor: 770, laborPct: 21.4 },
+      { hour: '9pm', sales: 2400, labor: 480, laborPct: 20.0 },
+      { hour: '10pm', sales: 1200, labor: 240, laborPct: 20.0 },
     ],
     year: [
-      { shift: 'Morning', label: '9am–11am', sales: 5040, labor: 2160, laborPct: 42.9 },
-      { shift: 'Lunch', label: '11am–2pm', sales: 22080, labor: 6480, laborPct: 29.3 },
-      { shift: 'Afternoon', label: '2pm–5pm', sales: 8160, labor: 2940, laborPct: 36.0 },
-      { shift: 'Dinner', label: '5pm–9pm', sales: 18960, labor: 3000, laborPct: 15.8 },
-      { shift: 'Late', label: '9pm–Close', sales: 3600, labor: 680, laborPct: 18.9 },
+      { hour: '9am', sales: 2160, labor: 970, laborPct: 44.9 },
+      { hour: '10am', sales: 2880, labor: 1080, laborPct: 37.5 },
+      { hour: '11am', sales: 5040, labor: 1580, laborPct: 31.3 },
+      { hour: '12pm', sales: 9360, labor: 2620, laborPct: 28.0 },
+      { hour: '1pm', sales: 7680, labor: 1920, laborPct: 25.0 },
+      { hour: '2pm', sales: 3840, labor: 1230, laborPct: 32.0 },
+      { hour: '3pm', sales: 2160, labor: 780, laborPct: 36.1 },
+      { hour: '4pm', sales: 2160, labor: 800, laborPct: 37.0 },
+      { hour: '5pm', sales: 3360, labor: 600, laborPct: 17.9 },
+      { hour: '6pm', sales: 6240, labor: 810, laborPct: 13.0 },
+      { hour: '7pm', sales: 5760, labor: 780, laborPct: 13.5 },
+      { hour: '8pm', sales: 3600, labor: 700, laborPct: 19.4 },
+      { hour: '9pm', sales: 2400, labor: 430, laborPct: 17.9 },
+      { hour: '10pm', sales: 1200, labor: 200, laborPct: 16.7 },
     ]
   };
   
@@ -11100,8 +11136,8 @@ export default function PnlRelease() {
                                <ComposedChart data={currentShiftData} margin={{ top: 10, right: 30, left: 0, bottom: 5 }}>
                                   <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                                   <XAxis 
-                                     dataKey="shift" 
-                                     tick={{ fontSize: 11, fill: '#6b7280' }}
+                                     dataKey="hour" 
+                                     tick={{ fontSize: 10, fill: '#6b7280' }}
                                      axisLine={{ stroke: '#e5e7eb' }}
                                      tickLine={false}
                                   />
@@ -11127,8 +11163,7 @@ export default function PnlRelease() {
                                            const data = payload[0].payload;
                                            return (
                                               <div className="bg-white border border-gray-200 rounded-lg shadow-lg p-3 text-sm">
-                                                 <div className="font-semibold text-gray-900 mb-2">{data.shift}</div>
-                                                 <div className="text-xs text-gray-500 mb-2">{data.label}</div>
+                                                 <div className="font-semibold text-gray-900 mb-2">{data.hour}</div>
                                                  <div className="space-y-1">
                                                     <div className="flex justify-between gap-4">
                                                        <span className="text-gray-600">Sales:</span>
