@@ -3792,6 +3792,76 @@ export default function PnlRelease() {
   // Initialize role from URL param if viewing as owner/gm/chef, otherwise default to owner
   const [selectedRole, setSelectedRole] = useState<"owner" | "gm" | "chef">(urlRole || "owner");
   const [healthComparisonPeriod, setHealthComparisonPeriod] = useState<"week" | "month" | "quarter" | "year">("month");
+  
+  // Shift time customization state
+  const [lunchStart, setLunchStart] = useState("11:00");
+  const [lunchEnd, setLunchEnd] = useState("16:00");
+  const [dinnerStart, setDinnerStart] = useState("16:00");
+  const [dinnerEnd, setDinnerEnd] = useState("22:00");
+  
+  // Calculate shift data based on hours
+  const getShiftData = (start: string, end: string, isLunch: boolean) => {
+    const startHour = parseInt(start.split(":")[0]);
+    const endHour = parseInt(end.split(":")[0]);
+    const hours = endHour - startHour;
+    
+    // Base hourly rates (simulated data)
+    const hourlyData: Record<number, { sales: number; labor: number; cogs: number }> = {
+      10: { sales: 180, labor: 85, cogs: 58 },
+      11: { sales: 320, labor: 95, cogs: 102 },
+      12: { sales: 480, labor: 110, cogs: 154 },
+      13: { sales: 420, labor: 105, cogs: 134 },
+      14: { sales: 280, labor: 90, cogs: 90 },
+      15: { sales: 200, labor: 85, cogs: 64 },
+      16: { sales: 350, labor: 120, cogs: 112 },
+      17: { sales: 520, labor: 140, cogs: 166 },
+      18: { sales: 680, labor: 160, cogs: 218 },
+      19: { sales: 720, labor: 165, cogs: 230 },
+      20: { sales: 640, labor: 155, cogs: 205 },
+      21: { sales: 480, labor: 130, cogs: 154 },
+      22: { sales: 280, labor: 100, cogs: 90 },
+    };
+    
+    let totalSales = 0;
+    let totalLabor = 0;
+    let totalCogs = 0;
+    
+    for (let h = startHour; h < endHour; h++) {
+      const data = hourlyData[h] || { sales: 200, labor: 80, cogs: 64 };
+      totalSales += data.sales;
+      totalLabor += data.labor;
+      totalCogs += data.cogs;
+    }
+    
+    const laborPct = totalSales > 0 ? (totalLabor / totalSales) * 100 : 0;
+    const cogsPct = totalSales > 0 ? (totalCogs / totalSales) * 100 : 0;
+    const primePct = laborPct + cogsPct;
+    
+    // Compare to averages (baseline: lunch avg 29%, dinner avg 28.8%)
+    const avgLaborPct = isLunch ? 29.0 : 28.8;
+    const avgPrimePct = isLunch ? 59.7 : 60.2;
+    const avgSales = isLunch ? 1872 : 3248;
+    
+    const laborVariance = laborPct - avgLaborPct;
+    const primeVariance = primePct - avgPrimePct;
+    const salesVariance = ((totalSales - avgSales) / avgSales) * 100;
+    
+    const hasIssue = laborVariance > 5 || primeVariance > 5 || salesVariance < -10;
+    
+    return {
+      sales: totalSales,
+      laborPct: laborPct.toFixed(1),
+      primePct: primePct.toFixed(1),
+      laborVariance: laborVariance.toFixed(1),
+      primeVariance: primeVariance.toFixed(1),
+      salesVariance: salesVariance.toFixed(1),
+      hasIssue,
+      hours
+    };
+  };
+  
+  const lunchData = getShiftData(lunchStart, lunchEnd, true);
+  const dinnerData = getShiftData(dinnerStart, dinnerEnd, false);
   const [showFullPnl, setShowFullPnl] = useState(false);
   const [showReleaseModal, setShowReleaseModal] = useState(false);
   const [goalsMet, setGoalsMet] = useState(true); // Mock state for confetti
@@ -10377,63 +10447,125 @@ export default function PnlRelease() {
                          </h3>
                          <div className="grid grid-cols-2 gap-4">
                             {/* Lunch Shift */}
-                            <div className="border border-red-200 bg-red-50/50 rounded-lg p-4">
+                            <div className={`border rounded-lg p-4 ${lunchData.hasIssue ? 'border-red-200 bg-red-50/50' : 'border-emerald-200 bg-emerald-50/50'}`}>
                                <div className="flex items-center justify-between mb-3">
                                   <div className="flex items-center gap-2">
                                      <Sun className="h-4 w-4 text-amber-500" />
                                      <span className="font-medium text-gray-900">Lunch</span>
-                                     <span className="text-xs text-gray-500">11:00–16:00</span>
                                   </div>
-                                  <div className="px-2 py-0.5 bg-red-100 text-red-700 text-xs font-medium rounded-full">
-                                     ⚠️ Issue
+                                  <div className={`px-2 py-0.5 text-xs font-medium rounded-full ${lunchData.hasIssue ? 'bg-red-100 text-red-700' : 'bg-emerald-100 text-emerald-700'}`}>
+                                     {lunchData.hasIssue ? '⚠️ Issue' : '✓ Normal'}
                                   </div>
+                               </div>
+                               {/* Time Selectors */}
+                               <div className="flex items-center gap-2 mb-3 text-xs">
+                                  <select 
+                                     value={lunchStart}
+                                     onChange={(e) => setLunchStart(e.target.value)}
+                                     className="px-2 py-1 border border-gray-200 rounded bg-white text-gray-700 text-xs"
+                                  >
+                                     {Array.from({ length: 8 }, (_, i) => i + 9).map(h => (
+                                        <option key={h} value={`${h}:00`}>{h}:00</option>
+                                     ))}
+                                  </select>
+                                  <span className="text-gray-400">–</span>
+                                  <select 
+                                     value={lunchEnd}
+                                     onChange={(e) => {
+                                        setLunchEnd(e.target.value);
+                                        setDinnerStart(e.target.value);
+                                     }}
+                                     className="px-2 py-1 border border-gray-200 rounded bg-white text-gray-700 text-xs"
+                                  >
+                                     {Array.from({ length: 8 }, (_, i) => i + 13).map(h => (
+                                        <option key={h} value={`${h}:00`}>{h}:00</option>
+                                     ))}
+                                  </select>
+                                  <span className="text-gray-400 ml-1">({lunchData.hours}h)</span>
                                </div>
                                <div className="grid grid-cols-3 gap-3 text-center">
                                   <div>
                                      <div className="text-xs text-gray-500 mb-1">Sales</div>
-                                     <div className="text-sm font-semibold text-gray-900">$1,640</div>
-                                     <div className="text-xs text-red-600">-12.4%</div>
+                                     <div className="text-sm font-semibold text-gray-900">${lunchData.sales.toLocaleString()}</div>
+                                     <div className={`text-xs ${parseFloat(lunchData.salesVariance) < 0 ? 'text-red-600' : 'text-emerald-600'}`}>
+                                        {parseFloat(lunchData.salesVariance) >= 0 ? '+' : ''}{lunchData.salesVariance}%
+                                     </div>
                                   </div>
                                   <div>
                                      <div className="text-xs text-gray-500 mb-1">Labor %</div>
-                                     <div className="text-sm font-semibold text-gray-900">36.2%</div>
-                                     <div className="text-xs text-red-600">+7.2 pts</div>
+                                     <div className="text-sm font-semibold text-gray-900">{lunchData.laborPct}%</div>
+                                     <div className={`text-xs ${parseFloat(lunchData.laborVariance) > 0 ? 'text-red-600' : 'text-emerald-600'}`}>
+                                        {parseFloat(lunchData.laborVariance) >= 0 ? '+' : ''}{lunchData.laborVariance} pts
+                                     </div>
                                   </div>
                                   <div>
                                      <div className="text-xs text-gray-500 mb-1">Prime</div>
-                                     <div className="text-sm font-semibold text-gray-900">68.8%</div>
-                                     <div className="text-xs text-red-600">+9.1 pts</div>
+                                     <div className="text-sm font-semibold text-gray-900">{lunchData.primePct}%</div>
+                                     <div className={`text-xs ${parseFloat(lunchData.primeVariance) > 0 ? 'text-red-600' : 'text-emerald-600'}`}>
+                                        {parseFloat(lunchData.primeVariance) >= 0 ? '+' : ''}{lunchData.primeVariance} pts
+                                     </div>
                                   </div>
                                </div>
                             </div>
 
                             {/* Dinner Shift */}
-                            <div className="border border-emerald-200 bg-emerald-50/50 rounded-lg p-4">
+                            <div className={`border rounded-lg p-4 ${dinnerData.hasIssue ? 'border-red-200 bg-red-50/50' : 'border-emerald-200 bg-emerald-50/50'}`}>
                                <div className="flex items-center justify-between mb-3">
                                   <div className="flex items-center gap-2">
                                      <Moon className="h-4 w-4 text-indigo-500" />
                                      <span className="font-medium text-gray-900">Dinner</span>
-                                     <span className="text-xs text-gray-500">16:00–Close</span>
                                   </div>
-                                  <div className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs font-medium rounded-full">
-                                     ✓ Normal
+                                  <div className={`px-2 py-0.5 text-xs font-medium rounded-full ${dinnerData.hasIssue ? 'bg-red-100 text-red-700' : 'bg-emerald-100 text-emerald-700'}`}>
+                                     {dinnerData.hasIssue ? '⚠️ Issue' : '✓ Normal'}
                                   </div>
+                               </div>
+                               {/* Time Selectors */}
+                               <div className="flex items-center gap-2 mb-3 text-xs">
+                                  <select 
+                                     value={dinnerStart}
+                                     onChange={(e) => {
+                                        setDinnerStart(e.target.value);
+                                        setLunchEnd(e.target.value);
+                                     }}
+                                     className="px-2 py-1 border border-gray-200 rounded bg-white text-gray-700 text-xs"
+                                  >
+                                     {Array.from({ length: 8 }, (_, i) => i + 13).map(h => (
+                                        <option key={h} value={`${h}:00`}>{h}:00</option>
+                                     ))}
+                                  </select>
+                                  <span className="text-gray-400">–</span>
+                                  <select 
+                                     value={dinnerEnd}
+                                     onChange={(e) => setDinnerEnd(e.target.value)}
+                                     className="px-2 py-1 border border-gray-200 rounded bg-white text-gray-700 text-xs"
+                                  >
+                                     {Array.from({ length: 5 }, (_, i) => i + 20).map(h => (
+                                        <option key={h} value={`${h}:00`}>{h}:00</option>
+                                     ))}
+                                  </select>
+                                  <span className="text-gray-400 ml-1">({dinnerData.hours}h)</span>
                                </div>
                                <div className="grid grid-cols-3 gap-3 text-center">
                                   <div>
                                      <div className="text-xs text-gray-500 mb-1">Sales</div>
-                                     <div className="text-sm font-semibold text-gray-900">$3,180</div>
-                                     <div className="text-xs text-emerald-600">-2.1%</div>
+                                     <div className="text-sm font-semibold text-gray-900">${dinnerData.sales.toLocaleString()}</div>
+                                     <div className={`text-xs ${parseFloat(dinnerData.salesVariance) < 0 ? 'text-red-600' : 'text-emerald-600'}`}>
+                                        {parseFloat(dinnerData.salesVariance) >= 0 ? '+' : ''}{dinnerData.salesVariance}%
+                                     </div>
                                   </div>
                                   <div>
                                      <div className="text-xs text-gray-500 mb-1">Labor %</div>
-                                     <div className="text-sm font-semibold text-gray-900">29.1%</div>
-                                     <div className="text-xs text-emerald-600">+0.3 pts</div>
+                                     <div className="text-sm font-semibold text-gray-900">{dinnerData.laborPct}%</div>
+                                     <div className={`text-xs ${parseFloat(dinnerData.laborVariance) > 0 ? 'text-red-600' : 'text-emerald-600'}`}>
+                                        {parseFloat(dinnerData.laborVariance) >= 0 ? '+' : ''}{dinnerData.laborVariance} pts
+                                     </div>
                                   </div>
                                   <div>
                                      <div className="text-xs text-gray-500 mb-1">Prime</div>
-                                     <div className="text-sm font-semibold text-gray-900">61.4%</div>
-                                     <div className="text-xs text-emerald-600">+1.2 pts</div>
+                                     <div className="text-sm font-semibold text-gray-900">{dinnerData.primePct}%</div>
+                                     <div className={`text-xs ${parseFloat(dinnerData.primeVariance) > 0 ? 'text-red-600' : 'text-emerald-600'}`}>
+                                        {parseFloat(dinnerData.primeVariance) >= 0 ? '+' : ''}{dinnerData.primeVariance} pts
+                                     </div>
                                   </div>
                                </div>
                             </div>
