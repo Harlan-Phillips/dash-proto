@@ -5701,11 +5701,10 @@ export default function PnlRelease() {
                        </section>
                        )}
 
-                       {/* ===== PROFITABILITY SECTION - Owner Only ===== */}
-                       {selectedRole === "owner" && (
-                       <section data-testid="profitability-section" className="relative bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl border-2 border-blue-200">
-                          <div className="bg-red-500 text-white p-4 rounded-lg mb-4 text-xl font-bold">
-                             🔴 PROFITABILITY SECTION IS HERE - IF YOU SEE THIS, IT'S WORKING
+                       {/* ===== PROFITABILITY SECTION - Always Visible for Testing ===== */}
+                       <section data-testid="profitability-section" className="relative bg-gradient-to-r from-red-100 to-red-200 p-6 rounded-xl border-4 border-red-500">
+                          <div className="bg-red-600 text-white p-6 rounded-lg mb-4 text-2xl font-bold text-center">
+                             🔴🔴🔴 PROFITABILITY SECTION 🔴🔴🔴
                           </div>
                           <div className="flex items-center justify-between mb-6">
                              <div>
@@ -5961,7 +5960,6 @@ export default function PnlRelease() {
                              <span>Click any row to ask the assistant</span>
                           </div>
                        </section>
-                       )}
 
                        {/* Financial Overview - New Section */}
                        <section>
