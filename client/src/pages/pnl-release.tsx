@@ -5601,9 +5601,9 @@ export default function PnlRelease() {
                                 >
                                    <div className="flex items-center justify-between mb-3">
                                       <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Income</span>
-                                      <div className="flex items-center gap-1">
+                                      <div className="flex items-center gap-1.5">
                                          <DollarSign className="h-4 w-4 text-gray-400" />
-                                         <ChevronDown className={cn("h-3 w-3 text-gray-400 transition-transform", expandedOwnerCard === 'income' && "rotate-180")} />
+                                         <ChevronDown className={cn("h-4 w-4 text-gray-600 transition-transform duration-200", expandedOwnerCard === 'income' && "rotate-180")} />
                                       </div>
                                    </div>
                                    <div className="text-2xl font-bold text-gray-900">$133,042</div>
@@ -5674,9 +5674,9 @@ export default function PnlRelease() {
                                 >
                                    <div className="flex items-center justify-between mb-3">
                                       <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Op. Expenses</span>
-                                      <div className="flex items-center gap-1">
+                                      <div className="flex items-center gap-1.5">
                                          <CreditCard className="h-4 w-4 text-gray-400" />
-                                         <ChevronDown className={cn("h-3 w-3 text-gray-400 transition-transform", expandedOwnerCard === 'opex' && "rotate-180")} />
+                                         <ChevronDown className={cn("h-4 w-4 text-gray-600 transition-transform duration-200", expandedOwnerCard === 'opex' && "rotate-180")} />
                                       </div>
                                    </div>
                                    <div className="text-2xl font-bold text-gray-900">$59,650</div>
@@ -5748,9 +5748,9 @@ export default function PnlRelease() {
                                 >
                                    <div className="flex items-center justify-between mb-3">
                                       <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Growth</span>
-                                      <div className="flex items-center gap-1">
+                                      <div className="flex items-center gap-1.5">
                                          <TrendingDown className="h-4 w-4 text-red-500" />
-                                         <ChevronDown className={cn("h-3 w-3 text-gray-400 transition-transform", expandedOwnerCard === 'growth' && "rotate-180")} />
+                                         <ChevronDown className={cn("h-4 w-4 text-gray-600 transition-transform duration-200", expandedOwnerCard === 'growth' && "rotate-180")} />
                                       </div>
                                    </div>
                                    <div className="flex items-center gap-2">
