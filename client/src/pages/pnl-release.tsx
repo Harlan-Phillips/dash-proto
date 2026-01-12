@@ -9089,17 +9089,17 @@ export default function PnlRelease() {
                          {/* Owner sees everything */}
                          {selectedRole === "owner" && (
                             <>
-                               <GoalProgress label="Total Sales" current={124.5} target={120} unit="k" />
-                               <GoalProgress label="Net Profit %" current={18} target={15} unit="%" />
-                               <GoalProgress label="COGS %" current={31} target={30} unit="%" inverted={true} />
-                               <GoalProgress label="Labor %" current={33} target={35} unit="%" inverted={true} />
+                               <GoalProgress label="Total Sales" current={124.5} target={120} unit="k" onTrendClick={() => openTrendModal('net-sales')} />
+                               <GoalProgress label="Net Profit %" current={18} target={15} unit="%" onTrendClick={() => openTrendModal('net-income')} />
+                               <GoalProgress label="COGS %" current={31} target={30} unit="%" inverted={true} onTrendClick={() => openTrendModal('cogs')} />
+                               <GoalProgress label="Labor %" current={33} target={35} unit="%" inverted={true} onTrendClick={() => openTrendModal('labor')} />
                             </>
                          )}
                          {/* GM sees sales, labor (FOH focus), and operations */}
                          {selectedRole === "gm" && (
                             <>
-                               <GoalProgress label="Total Sales" current={124.5} target={120} unit="k" />
-                               <GoalProgress label="FOH Labor %" current={14.3} target={14} unit="%" inverted={true} />
+                               <GoalProgress label="Total Sales" current={124.5} target={120} unit="k" onTrendClick={() => openTrendModal('net-sales')} />
+                               <GoalProgress label="FOH Labor %" current={14.3} target={14} unit="%" inverted={true} onTrendClick={() => openTrendModal('labor')} />
                                <GoalProgress label="Table Turns" current={2.4} target={2.2} unit="" />
                                <GoalProgress label="Guest Count" current={8580} target={7800} unit="" />
                             </>
@@ -9107,10 +9107,10 @@ export default function PnlRelease() {
                          {/* Executive Chef sees COGS, BOH labor */}
                          {selectedRole === "chef" && (
                             <>
-                               <GoalProgress label="COGS %" current={31} target={30} unit="%" inverted={true} />
-                               <GoalProgress label="Food Cost %" current={23.3} target={24} unit="%" inverted={true} />
-                               <GoalProgress label="BOH Labor %" current={13} target={12.5} unit="%" inverted={true} />
-                               <GoalProgress label="Beverage Cost %" current={4.8} target={5} unit="%" inverted={true} />
+                               <GoalProgress label="COGS %" current={31} target={30} unit="%" inverted={true} onTrendClick={() => openTrendModal('cogs')} />
+                               <GoalProgress label="Food Cost %" current={23.3} target={24} unit="%" inverted={true} onTrendClick={() => openTrendModal('cogs')} />
+                               <GoalProgress label="BOH Labor %" current={13} target={12.5} unit="%" inverted={true} onTrendClick={() => openTrendModal('labor')} />
+                               <GoalProgress label="Beverage Cost %" current={4.8} target={5} unit="%" inverted={true} onTrendClick={() => openTrendModal('cogs')} />
                             </>
                          )}
                       </div>
