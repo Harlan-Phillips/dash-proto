@@ -4315,23 +4315,36 @@ export default function PnlRelease() {
   };
   
   // Native DOM event handlers for panning (when zoomed)
+  const [accumulatedDelta, setAccumulatedDelta] = useState(0);
+  
   const handlePanMouseDown = (e: React.MouseEvent) => {
     if (shiftZoomLevel !== '60min') {
       e.preventDefault();
+      e.stopPropagation();
       setIsPanning(true);
       setPanStartX(e.clientX);
+      setAccumulatedDelta(0);
     }
   };
   
   const handlePanMouseMove = (e: React.MouseEvent) => {
     if (isPanning && panStartX !== null && shiftZoomLevel !== '60min') {
+      e.preventDefault();
       const delta = panStartX - e.clientX;
-      const sensitivity = shiftZoomLevel === '1min' ? 0.15 : shiftZoomLevel === '5min' ? 0.12 : 0.08;
-      const offsetChange = delta * sensitivity;
+      const newAccumulated = accumulatedDelta + delta;
       
-      if (Math.abs(offsetChange) >= 1) {
-        const newOffset = Math.min(Math.max(0, dataOffset + offsetChange), getMaxOffset());
-        setDataOffset(Math.round(newOffset));
+      // Sensitivity: pixels needed to move one data point
+      const pixelsPerPoint = shiftZoomLevel === '1min' ? 3 : shiftZoomLevel === '5min' ? 5 : 8;
+      const pointsToMove = Math.floor(newAccumulated / pixelsPerPoint);
+      
+      if (pointsToMove !== 0) {
+        const maxOff = getMaxOffset();
+        const newOffset = Math.min(Math.max(0, dataOffset + pointsToMove), maxOff);
+        setDataOffset(newOffset);
+        setAccumulatedDelta(newAccumulated - (pointsToMove * pixelsPerPoint));
+        setPanStartX(e.clientX);
+      } else {
+        setAccumulatedDelta(newAccumulated);
         setPanStartX(e.clientX);
       }
     }
@@ -4340,7 +4353,31 @@ export default function PnlRelease() {
   const handlePanMouseUp = () => {
     setIsPanning(false);
     setPanStartX(null);
+    setAccumulatedDelta(0);
   };
+  
+  // Calculate current time window for display
+  const getCurrentTimeWindow = () => {
+    if (shiftZoomLevel === '60min') return null;
+    
+    const pointsPerHour = shiftZoomLevel === '15min' ? 4 : shiftZoomLevel === '5min' ? 12 : 60;
+    const windowSize = shiftZoomLevel === '15min' ? 16 : shiftZoomLevel === '5min' ? 24 : 30;
+    
+    const startMinutes = (9 * 60) + (dataOffset / pointsPerHour * 60);
+    const endMinutes = startMinutes + (windowSize / pointsPerHour * 60);
+    
+    const formatTime = (mins: number) => {
+      const h = Math.floor(mins / 60);
+      const m = Math.round(mins % 60);
+      const period = h >= 12 ? 'pm' : 'am';
+      const hour12 = h > 12 ? h - 12 : h === 0 ? 12 : h;
+      return m === 0 ? `${hour12}${period}` : `${hour12}:${m.toString().padStart(2, '0')}${period}`;
+    };
+    
+    return { start: formatTime(startMinutes), end: formatTime(Math.min(endMinutes, 22 * 60)) };
+  };
+  
+  const timeWindow = getCurrentTimeWindow();
   
   const handleShiftChartDoubleClick = () => {
     setShiftZoomLevel('60min');
@@ -11288,7 +11325,14 @@ export default function PnlRelease() {
                                {shiftZoomLevel === '60min' ? (
                                   <span className="text-[10px] text-gray-400 italic">Drag to zoom</span>
                                ) : (
-                                  <span className="text-[10px] text-gray-400 italic">Drag to pan • Double-click to reset</span>
+                                  <div className="flex items-center gap-2">
+                                     {timeWindow && (
+                                        <span className="text-[10px] font-medium text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">
+                                           {timeWindow.start} – {timeWindow.end}
+                                        </span>
+                                     )}
+                                     <span className="text-[10px] text-gray-400 italic">← Drag to pan →</span>
+                                  </div>
                                )}
                             </div>
                          </div>

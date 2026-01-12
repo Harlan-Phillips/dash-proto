@@ -1,0 +1,193 @@
+Curated View – Swipe-to-Pan Timeline for Time-Series Charts
+
+Area: Accounting / P&L
+Views: Curated View (GM & Executive Chef)
+Sections: Ticket Performance, Shift Breakdown, Hourly / Minute Charts
+Type: Feature / Interaction & Timeline Navigation
+
+Problem
+
+When users zoom into a specific time window (hourly → minute-level), they can inspect detail — but they cannot continue exploring adjacent times without resetting.
+
+GMs and Executive Chefs need to:
+
+Pan left/right through time
+
+Stay zoomed in
+
+Explore what happened before or after the current window
+
+This is how modern timeline tools behave (maps, trading charts, analytics tools).
+
+Goal
+
+Enable swipe-to-pan timeline navigation so users can:
+
+Zoom into a time window
+
+Swipe left or right to move through time
+
+Continue viewing adjacent periods at the same resolution
+
+No sliders. No resets. No loss of context.
+
+Core Interaction Model (Required)
+Swipe / Drag to Pan (Primary)
+
+Click + drag (desktop) or swipe (trackpad / touch)
+
+Horizontal movement pans the timeline:
+
+Drag left → see later times
+
+Drag right → see earlier times
+
+Time resolution stays constant while panning
+
+Zoom + Pan Combined Behavior
+
+User zooms into a window (e.g. 12:00–1:00 PM at 1-min resolution)
+
+User swipes left
+
+Chart pans to:
+
+1:00–2:00 PM
+
+User continues swiping to explore timeline
+
+Zoom sets resolution. Pan moves the window.
+
+Time Range Boundaries
+
+Panning is constrained to the selected time range:
+
+Day / Week / Month / Year
+
+Cannot pan outside the active range
+
+On boundary hit:
+
+Subtle resistance or stop (no wraparound)
+
+Resolution Rules (Preserved)
+State	Behavior
+Zoomed in	Resolution stays fixed
+Panning	No resolution change
+Reset	Returns to default hourly
+Visual Feedback
+
+Cursor changes to “grab” / “grabbing” on drag
+
+Timeline smoothly translates during pan
+
+Axis labels update continuously
+
+No jump cuts
+
+Supported Metrics
+GM
+
+Sales ($)
+
+Labor cost ($)
+
+Labor %
+
+Prime cost (derived)
+
+Executive Chef
+
+Ticket counts
+
+Green / Yellow / Red ticket zones
+
+Hover + Pan Behavior
+
+Hover still shows tooltip at cursor position
+
+Tooltip updates dynamically as timeline moves
+
+Vertical cursor line stays anchored to cursor
+
+Reset Behavior
+
+Double-click anywhere on chart:
+
+Resets zoom
+
+Resets pan
+
+Returns to full-range hourly view
+
+Data Loading & Performance
+
+Data loads incrementally as user pans
+
+Pre-fetch buffer:
+
+±1 window width (ahead / behind)
+
+Hard cap:
+
+Max 120 minutes visible at 1-minute resolution
+
+Graceful fallback if data unavailable
+
+Mobile / Trackpad Support
+
+Trackpad horizontal swipe = pan
+
+Touch drag = pan
+
+No pinch-to-zoom in v1
+
+Permissions
+Role	Access
+GM	✅
+Executive Chef	✅
+Owner	Optional
+Staff	❌
+Non-Goals (v1)
+
+Infinite scrolling across days
+
+Pinning moments
+
+Auto-scroll playback
+
+Exporting minute-level data
+
+Acceptance Criteria
+
+ User can pan left/right by dragging chart
+
+ Time window moves without changing resolution
+
+ Panning respects selected time range boundaries
+
+ Tooltip and cursor line remain accurate
+
+ Performance remains smooth during pan
+
+ Double-click resets zoom + pan
+
+ No separate slider or controls exist
+
+Notes
+
+This should feel like:
+
+“I’m sliding the timeline itself.”
+
+Not:
+
+“I’m operating a dashboard control.”
+
+This interaction is critical for:
+
+Rush analysis
+
+Ticket bottleneck discovery
+
+Labor mismatch diagnosis
