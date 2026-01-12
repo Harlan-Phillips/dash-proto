@@ -9306,24 +9306,58 @@ export default function PnlRelease() {
                       </div>
 
                       {/* Labor Efficiency Metrics */}
-                      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
-                         <div className="flex items-center justify-between mb-4">
-                            <h3 className="font-semibold text-gray-900">Labor Efficiency Metrics</h3>
-                            <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-0.5">
-                               <button 
-                                  onClick={() => setViewModes({...viewModes, laborEfficiency: "data"})}
-                                  className={cn("px-3 py-1.5 text-xs font-medium rounded-md transition-colors", viewModes.laborEfficiency === "data" ? "bg-white shadow-sm text-gray-900" : "text-gray-500 hover:text-gray-700")}
-                               >
-                                  Data
-                               </button>
-                               <button 
-                                  onClick={() => setViewModes({...viewModes, laborEfficiency: "chart"})}
-                                  className={cn("px-3 py-1.5 text-xs font-medium rounded-md transition-colors", viewModes.laborEfficiency === "chart" ? "bg-white shadow-sm text-gray-900" : "text-gray-500 hover:text-gray-700")}
-                               >
-                                  Chart
-                               </button>
+                      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden mb-6">
+                         <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                               <h3 className="font-semibold text-gray-900">Labor Efficiency Metrics</h3>
+                               {/* Overall status based on how many metrics are on track */}
+                               {(() => {
+                                  const onTrack = [
+                                     getLaborEfficiencyStatus('sales-per-hour').status === 'ON TRACK',
+                                     getLaborEfficiencyStatus('hours-per-guest', true).status === 'ON TRACK',
+                                     getLaborEfficiencyStatus('overtime-pct', true).status === 'ON TRACK'
+                                  ].filter(Boolean).length;
+                                  const statusColor = onTrack === 3 ? 'bg-emerald-50 text-emerald-700' : onTrack >= 2 ? 'bg-amber-50 text-amber-700' : 'bg-red-50 text-red-700';
+                                  const statusText = onTrack === 3 ? '🟢 ALL ON TRACK' : onTrack >= 2 ? '🟡 ATTENTION' : '🔴 ACTION NEEDED';
+                                  return <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium", statusColor)}>{statusText}</span>;
+                               })()}
+                            </div>
+                            <div className="flex items-center gap-3">
+                               {/* Any custom targets indicator */}
+                               {(isCustomEfficiencyTargets['sales-per-hour'] || isCustomEfficiencyTargets['hours-per-guest'] || isCustomEfficiencyTargets['overtime-pct']) && (
+                                  <div className="flex items-center gap-2">
+                                     <span className="px-1.5 py-0.5 rounded text-xs bg-blue-100 text-blue-700">Custom Targets</span>
+                                     {selectedRole === 'owner' && (
+                                        <button
+                                           onClick={() => {
+                                              resetEfficiencyTarget('sales-per-hour');
+                                              resetEfficiencyTarget('hours-per-guest');
+                                              resetEfficiencyTarget('overtime-pct');
+                                           }}
+                                           className="text-xs text-gray-500 hover:text-gray-700 underline"
+                                        >
+                                           Reset All
+                                        </button>
+                                     )}
+                                  </div>
+                               )}
+                               <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-0.5">
+                                  <button 
+                                     onClick={() => setViewModes({...viewModes, laborEfficiency: "data"})}
+                                     className={cn("px-3 py-1.5 text-xs font-medium rounded-md transition-colors", viewModes.laborEfficiency === "data" ? "bg-white shadow-sm text-gray-900" : "text-gray-500 hover:text-gray-700")}
+                                  >
+                                     Data
+                                  </button>
+                                  <button 
+                                     onClick={() => setViewModes({...viewModes, laborEfficiency: "chart"})}
+                                     className={cn("px-3 py-1.5 text-xs font-medium rounded-md transition-colors", viewModes.laborEfficiency === "chart" ? "bg-white shadow-sm text-gray-900" : "text-gray-500 hover:text-gray-700")}
+                                  >
+                                     Chart
+                                  </button>
+                               </div>
                             </div>
                          </div>
+                         <div className="p-6">
                          {viewModes.laborEfficiency === "data" ? (
                             <table className="w-full text-sm">
                                <thead>
@@ -9423,6 +9457,17 @@ export default function PnlRelease() {
                                </ResponsiveContainer>
                             </div>
                          )}
+                         </div>
+                         <div className="px-6 py-3 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
+                            <p className="text-xs text-gray-600">
+                               Efficiency targets measure labor productivity relative to sales and guest volume
+                            </p>
+                            <div className="flex items-center gap-4 text-xs text-gray-500">
+                               <span>Sales/Hr: {laborEfficiencyActuals['sales-per-hour'] >= laborEfficiencyTargets['sales-per-hour'] ? '✓' : '✗'}</span>
+                               <span>Hrs/Guest: {laborEfficiencyActuals['hours-per-guest'] <= laborEfficiencyTargets['hours-per-guest'] ? '✓' : '✗'}</span>
+                               <span>OT%: {laborEfficiencyActuals['overtime-pct'] <= laborEfficiencyTargets['overtime-pct'] ? '✓' : '✗'}</span>
+                            </div>
+                         </div>
                       </div>
 
                       {/* COGS Deep Dive */}
