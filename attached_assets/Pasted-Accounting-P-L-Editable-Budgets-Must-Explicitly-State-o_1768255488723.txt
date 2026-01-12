@@ -1,0 +1,116 @@
+Accounting / P&L – Editable Budgets Must Explicitly State “% of Revenue” Default
+
+Area: Accounting / P&L
+Views: Detailed View & Curated View (where applicable)
+Type: UX / Budget Transparency
+
+Problem
+
+Across Accounting / P&L, several sections allow users to edit budgets (e.g., COGS, Labor, Prime Cost), but it is not always explicit that:
+
+The default budget is calculated as a percentage of revenue
+
+The displayed dollar budget is derived, not manually entered
+
+This can cause confusion, mistrust, and misinterpretation of variances.
+
+Goal
+
+Ensure that anywhere a budget is editable, the UI clearly notes that:
+
+The default budget is calculated as a percentage of revenue.
+
+This applies consistently across all budget-driven sections.
+
+Scope (Applies To)
+
+Any section where a budget is editable, including but not limited to:
+
+COGS Deep Dive
+
+Labor Deep Dive
+
+Prime Cost Analysis
+
+Any future budget-based analysis in Accounting / P&L
+
+Required UI Behavior
+Budget Labeling (Mandatory)
+
+When a budget is displayed or edited, include clear context:
+
+Default state:
+
+“Budget: X% of revenue (Default)”
+
+Custom state:
+
+“Budget: X% of revenue (Custom)”
+
+Edit Modal / Inline Edit Copy
+
+When editing a budget percentage, include helper text:
+
+“This budget is calculated as a percentage of revenue.
+Dollar amounts update automatically based on sales.”
+
+Calculation Rule (Explicit)
+
+For all applicable budgets:
+
+Budget ($) = Revenue × Budget %
+
+
+This rule must be:
+
+Consistent
+
+Implicit in calculations
+
+Explicit in copy
+
+Consistency Requirement (Critical)
+
+No editable budget may appear as a fixed dollar target without clarification
+
+No budget edit surface may omit the “% of revenue” explanation
+
+Language must be consistent across all sections
+
+Permissions (Unchanged)
+Role	View	Edit
+Owner	✅	✅
+Accountant	✅	✅
+GM	✅	❌
+Executive Chef	View-only	❌
+Non-Goals (v1)
+
+Allowing dollar-based budget entry
+
+Period-specific budget overrides
+
+Budget forecasting or planning tools
+
+Acceptance Criteria
+
+ All editable budgets clearly state “% of revenue”
+
+ Default vs custom budgets are labeled consistently
+
+ Edit UI includes explanatory helper text
+
+ Dollar budget values update automatically with revenue
+
+ No ambiguity about how budgets are calculated
+
+Notes
+
+This ticket is about trust and clarity, not new functionality.
+
+Budgets should feel:
+
+“Obvious, consistent, and CFO-correct.”
+
+Not:
+
+“Why did this number change?”

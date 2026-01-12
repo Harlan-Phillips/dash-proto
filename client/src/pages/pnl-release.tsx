@@ -9015,7 +9015,12 @@ export default function PnlRelease() {
                                </span>
                             </div>
                             <div className="flex items-center gap-2">
-                               <span className="text-xs text-gray-500">Labor Budget:</span>
+                               <div className="relative group">
+                                  <span className="text-xs text-gray-500 cursor-help border-b border-dotted border-gray-400">Budget (% of Revenue):</span>
+                                  <div className="absolute right-0 top-full mt-1 w-56 p-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50 shadow-lg">
+                                     Budget is calculated as a percentage of revenue. Dollar amounts update automatically based on sales.
+                                  </div>
+                               </div>
                                {(selectedRole === "owner" || selectedRole === "gm") ? (
                                   <div className="flex items-center gap-1">
                                      <input
@@ -9870,7 +9875,12 @@ export default function PnlRelease() {
                                </span>
                             </div>
                             <div className="flex items-center gap-2">
-                               <span className="text-xs text-gray-500">COGS Budget:</span>
+                               <div className="relative group">
+                                  <span className="text-xs text-gray-500 cursor-help border-b border-dotted border-gray-400">Budget (% of Revenue):</span>
+                                  <div className="absolute right-0 top-full mt-1 w-56 p-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50 shadow-lg">
+                                     Budget is calculated as a percentage of revenue. Dollar amounts update automatically based on sales.
+                                  </div>
+                               </div>
                                {(selectedRole === "owner" || selectedRole === "gm") ? (
                                   <div className="flex items-center gap-1">
                                      <input
