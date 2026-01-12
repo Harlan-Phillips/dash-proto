@@ -5489,12 +5489,6 @@ export default function PnlRelease() {
 
                     <div className="p-8 space-y-10">
 
-                       {/* TEST BANNER - MUST BE VISIBLE */}
-                       <div className="bg-red-600 text-white p-8 rounded-xl text-center">
-                          <h1 className="text-3xl font-bold mb-2">🔴 TEST BANNER - PROFITABILITY COMING BELOW 🔴</h1>
-                          <p className="text-xl">If you see this, the page is rendering correctly</p>
-                       </div>
-
                        {/* Executive Summary Cards - Owner Only */}
                        {selectedRole === "owner" && (
                        <section data-testid="executive-summary-section">
@@ -11450,6 +11444,155 @@ export default function PnlRelease() {
                                </div>
                             </div>
                          </div>
+                      </div>
+                   </section>
+                   )}
+
+                   {/* ===== PROFITABILITY SECTION - Owner Only ===== */}
+                   {selectedRole === "owner" && (
+                   <section data-testid="profitability-section-main" className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl border border-blue-200">
+                      <div className="flex items-center justify-between mb-6">
+                         <div>
+                            <h2 className="text-lg font-serif font-bold text-gray-900 flex items-center gap-2">
+                               <BarChart3 className="h-5 w-5 text-gray-600" />
+                               Profitability
+                            </h2>
+                            <p className="text-sm text-gray-500 mt-1">Month-over-month performance summary (Oct vs Sep 2025)</p>
+                         </div>
+                         
+                         <div className="flex items-center gap-3">
+                            <button
+                               onClick={() => handleInsightClick("Explain my financial health score. What factors determine if I'm Healthy, Watch, or At Risk?")}
+                               className="flex items-center gap-2 px-3 py-1.5 bg-emerald-100 border border-emerald-200 rounded-full hover:bg-emerald-200 transition-colors"
+                               data-testid="badge-financial-health-main"
+                            >
+                               <span className="text-sm">🟢</span>
+                               <span className="text-sm font-semibold text-emerald-800">Healthy</span>
+                               <HelpCircle className="h-3.5 w-3.5 text-emerald-600" />
+                            </button>
+                            
+                            <button
+                               onClick={() => window.print()}
+                               className="flex items-center gap-2 px-3 py-1.5 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium text-gray-700"
+                               data-testid="button-export-profitability-main"
+                            >
+                               <Download className="h-4 w-4" />
+                               Export
+                            </button>
+                         </div>
+                      </div>
+
+                      <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                         <div className="grid grid-cols-6 bg-gray-50 border-b border-gray-200 px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                            <div className="col-span-2">Metric</div>
+                            <div className="text-right">Oct 2025</div>
+                            <div className="text-right">Sep 2025</div>
+                            <div className="text-right">Change</div>
+                            <div className="text-right">Trend</div>
+                         </div>
+
+                         <button 
+                            onClick={() => handleInsightClick("Analyze my Gross Profit change. October: $81,247.54, September: $77,371.95, Change: +$3,875.59 (+5.0%). What drove this?")}
+                            className="grid grid-cols-6 px-4 py-4 border-b border-gray-100 hover:bg-blue-50 transition-colors w-full text-left group"
+                         >
+                            <div className="col-span-2 flex items-center gap-2">
+                               <span className="font-medium text-gray-900">Gross Profit</span>
+                               <HelpCircle className="h-3.5 w-3.5 text-gray-400" />
+                            </div>
+                            <div className="text-right font-semibold text-gray-900">$81,247</div>
+                            <div className="text-right text-gray-500">$77,372</div>
+                            <div className="text-right font-medium text-emerald-600">+$3,876</div>
+                            <div className="text-right"><span className="text-emerald-600 font-medium">+5.0% ↑</span></div>
+                         </button>
+
+                         <button 
+                            onClick={() => handleInsightClick("Analyze my Gross Profit Margin. October: 58.4%, September: 58.2%, Change: +0.2 pts.")}
+                            className="grid grid-cols-6 px-4 py-4 border-b border-gray-100 hover:bg-blue-50 transition-colors w-full text-left group"
+                         >
+                            <div className="col-span-2 flex items-center gap-2">
+                               <span className="font-medium text-gray-900">Gross Profit Margin</span>
+                               <HelpCircle className="h-3.5 w-3.5 text-gray-400" />
+                            </div>
+                            <div className="text-right font-semibold text-gray-900">58.4%</div>
+                            <div className="text-right text-gray-500">58.2%</div>
+                            <div className="text-right font-medium text-emerald-600">+0.2 pts</div>
+                            <div className="text-right"><span className="text-emerald-600 font-medium">↑</span></div>
+                         </button>
+
+                         <button 
+                            onClick={() => handleInsightClick("Analyze my Operating Expenses. October: $57,823, September: $59,650, Change: -$1,826 (-3.1%). What drove the decrease?")}
+                            className="grid grid-cols-6 px-4 py-4 border-b border-gray-100 hover:bg-blue-50 transition-colors w-full text-left group"
+                         >
+                            <div className="col-span-2 flex items-center gap-2">
+                               <span className="font-medium text-gray-900">Operating Expenses</span>
+                               <HelpCircle className="h-3.5 w-3.5 text-gray-400" />
+                            </div>
+                            <div className="text-right font-semibold text-gray-900">$57,823</div>
+                            <div className="text-right text-gray-500">$59,650</div>
+                            <div className="text-right font-medium text-emerald-600">-$1,826</div>
+                            <div className="text-right"><span className="text-emerald-600 font-medium">🟢 ↓</span></div>
+                         </button>
+
+                         <button 
+                            onClick={() => handleInsightClick("Analyze my Operating Expense Ratio. October: 41.5%, September: 44.8%, Change: -3.3 pts.")}
+                            className="grid grid-cols-6 px-4 py-4 border-b border-gray-100 hover:bg-blue-50 transition-colors w-full text-left group"
+                         >
+                            <div className="col-span-2 flex items-center gap-2">
+                               <span className="font-medium text-gray-900">Operating Expense Ratio</span>
+                               <HelpCircle className="h-3.5 w-3.5 text-gray-400" />
+                            </div>
+                            <div className="text-right font-semibold text-gray-900">41.5%</div>
+                            <div className="text-right text-gray-500">44.8%</div>
+                            <div className="text-right font-medium text-emerald-600">-3.3 pts</div>
+                            <div className="text-right"><span className="text-emerald-600 font-medium">🟢 ↓</span></div>
+                         </button>
+
+                         <button 
+                            onClick={() => handleInsightClick("Analyze my Expense as % of Revenue. October: 83.1%, September: 86.7%, Change: -3.6 pts.")}
+                            className="grid grid-cols-6 px-4 py-4 border-b border-gray-100 hover:bg-blue-50 transition-colors w-full text-left group"
+                         >
+                            <div className="col-span-2 flex items-center gap-2">
+                               <span className="font-medium text-gray-900">Expense as % of Revenue</span>
+                               <HelpCircle className="h-3.5 w-3.5 text-gray-400" />
+                            </div>
+                            <div className="text-right font-semibold text-gray-900">83.1%</div>
+                            <div className="text-right text-gray-500">86.7%</div>
+                            <div className="text-right font-medium text-emerald-600">-3.6 pts</div>
+                            <div className="text-right"><span className="text-emerald-600 font-medium">🟢 ↓</span></div>
+                         </button>
+
+                         <button 
+                            onClick={() => handleInsightClick("Analyze my Net Operating Income. October: $23,424, September: $17,722, Change: +$5,702 (+32.2%). This is significant - what drove it?")}
+                            className="grid grid-cols-6 px-4 py-4 border-b border-gray-100 bg-emerald-50/50 hover:bg-emerald-100/50 transition-colors w-full text-left group"
+                         >
+                            <div className="col-span-2 flex items-center gap-2">
+                               <span className="font-bold text-gray-900">Net Operating Income</span>
+                               <HelpCircle className="h-3.5 w-3.5 text-gray-400" />
+                            </div>
+                            <div className="text-right font-bold text-gray-900">$23,424</div>
+                            <div className="text-right text-gray-500">$17,722</div>
+                            <div className="text-right font-bold text-emerald-600">+$5,702</div>
+                            <div className="text-right"><span className="text-emerald-600 font-bold">+32.2% ↑</span></div>
+                         </button>
+
+                         <button 
+                            onClick={() => handleInsightClick("Analyze my Operating Margin. October: 16.8%, September: 13.3%, Change: +3.5 pts. Is this sustainable?")}
+                            className="grid grid-cols-6 px-4 py-4 bg-gray-50/50 hover:bg-blue-50 transition-colors w-full text-left group"
+                         >
+                            <div className="col-span-2 flex items-center gap-2">
+                               <span className="font-bold text-gray-900">Operating Margin</span>
+                               <HelpCircle className="h-3.5 w-3.5 text-gray-400" />
+                            </div>
+                            <div className="text-right font-bold text-gray-900">16.8%</div>
+                            <div className="text-right text-gray-500">13.3%</div>
+                            <div className="text-right font-bold text-emerald-600">+3.5 pts</div>
+                            <div className="text-right"><span className="text-emerald-600 font-bold">🟢 ↑</span></div>
+                         </button>
+                      </div>
+
+                      <div className="mt-3 flex items-center justify-between text-xs text-gray-400">
+                         <span>Data source: 2025_10_SPOT_SM_PL.json vs 2025_09_SPOT_SM_PL.json</span>
+                         <span>Click any row to ask the assistant</span>
                       </div>
                    </section>
                    )}
