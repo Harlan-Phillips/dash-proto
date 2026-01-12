@@ -48,6 +48,7 @@ import { Plus, ChevronRight, Search, UserPlus, Mail, Phone, MapPin, Briefcase, S
 interface Department {
   id: string;
   name: string;
+  locationId: string;
 }
 
 interface JobRole {
@@ -138,21 +139,21 @@ const avatarColors = [
 ];
 
 const initialDepartments: Department[] = [
-  { id: "1", name: "Front of House" },
-  { id: "2", name: "Back of House" },
-  { id: "3", name: "Bar" },
-  { id: "4", name: "Management" },
-  { id: "5", name: "Catering" },
-  { id: "6", name: "Events" },
-  { id: "7", name: "Maintenance" },
-  { id: "8", name: "Marketing" },
-  { id: "9", name: "Finance" },
-  { id: "10", name: "Human Resources" },
-  { id: "11", name: "Operations" },
-  { id: "12", name: "Purchasing" },
-  { id: "13", name: "Training" },
-  { id: "14", name: "Quality Control" },
-  { id: "15", name: "Guest Services" },
+  { id: "1", name: "Front of House", locationId: "1" },
+  { id: "2", name: "Back of House", locationId: "1" },
+  { id: "3", name: "Bar", locationId: "1" },
+  { id: "4", name: "Management", locationId: "1" },
+  { id: "5", name: "Catering", locationId: "2" },
+  { id: "6", name: "Events", locationId: "2" },
+  { id: "7", name: "Front of House", locationId: "2" },
+  { id: "8", name: "Back of House", locationId: "2" },
+  { id: "9", name: "Bar", locationId: "2" },
+  { id: "10", name: "Management", locationId: "2" },
+  { id: "11", name: "Front of House", locationId: "3" },
+  { id: "12", name: "Back of House", locationId: "3" },
+  { id: "13", name: "Bar", locationId: "3" },
+  { id: "14", name: "Management", locationId: "3" },
+  { id: "15", name: "Guest Services", locationId: "3" },
 ];
 
 const initialJobRoles: JobRole[] = [
@@ -175,13 +176,21 @@ const initialJobRoles: JobRole[] = [
 
 const initialStaff: Staff[] = [
   { id: "1", name: "Alice Johnson", initials: "AJ", email: "alice@example.com", phone: "(206) 555-0101", status: "active", role: "manager", jobAssignments: [{ locationId: "1", jobRoleId: "1" }, { locationId: "2", jobRoleId: "1" }, { locationId: "2", jobRoleId: "2" }], posEmployeeIds: ["pos-1", "pos-2"], payrollEmployeeIds: ["pay-1", "pay-2"], startDate: "2023-03-15", avatarColor: avatarColors[0] },
-  { id: "2", name: "Bob Smith", initials: "BS", email: "bob@example.com", phone: "(206) 555-0102", status: "active", role: "employee", jobAssignments: [{ locationId: "1", jobRoleId: "5" }], posEmployeeIds: ["pos-3"], payrollEmployeeIds: ["pay-3"], startDate: "2023-06-01", avatarColor: avatarColors[1] },
-  { id: "3", name: "Charlie Davis", initials: "CD", email: "charlie@example.com", phone: "(206) 555-0103", status: "active", role: "employee", jobAssignments: [{ locationId: "2", jobRoleId: "3" }], posEmployeeIds: ["pos-4", "pos-5", "pos-6"], payrollEmployeeIds: ["pay-4", "pay-5"], startDate: "2023-07-20", avatarColor: avatarColors[2] },
-  { id: "4", name: "Diana Martinez", initials: "DM", email: "diana@example.com", phone: "(206) 555-0104", status: "active", role: "employee", jobAssignments: [{ locationId: "3", jobRoleId: "9" }], posEmployeeIds: ["pos-7"], payrollEmployeeIds: ["pay-6"], startDate: "2024-01-10", avatarColor: avatarColors[3] },
-  { id: "5", name: "Eric Thompson", initials: "ET", email: "eric@example.com", phone: "(206) 555-0105", status: "active", role: "employee", jobAssignments: [{ locationId: "1", jobRoleId: "5" }, { locationId: "3", jobRoleId: "6" }], posEmployeeIds: ["pos-8"], payrollEmployeeIds: ["pay-7", "pay-8"], startDate: "2022-11-05", avatarColor: avatarColors[4] },
-  { id: "6", name: "Fiona Garcia", initials: "FG", email: "fiona@example.com", phone: "(206) 555-0106", status: "active", role: "admin", jobAssignments: [{ locationId: "1", jobRoleId: "11" }, { locationId: "2", jobRoleId: "11" }, { locationId: "3", jobRoleId: "11" }], posEmployeeIds: [], payrollEmployeeIds: [], startDate: "2021-01-15", avatarColor: avatarColors[5] },
+  { id: "2", name: "Bob Smith", initials: "BS", email: "bob@example.com", phone: "(206) 555-0102", status: "active", role: "employee", jobAssignments: [{ locationId: "1", jobRoleId: "1" }], posEmployeeIds: ["pos-3"], payrollEmployeeIds: ["pay-3"], startDate: "2023-06-01", avatarColor: avatarColors[1] },
+  { id: "3", name: "Charlie Davis", initials: "CD", email: "charlie@example.com", phone: "(206) 555-0103", status: "active", role: "employee", jobAssignments: [{ locationId: "1", jobRoleId: "1" }], posEmployeeIds: ["pos-4", "pos-5", "pos-6"], payrollEmployeeIds: ["pay-4", "pay-5"], startDate: "2023-07-20", avatarColor: avatarColors[2] },
+  { id: "4", name: "Diana Martinez", initials: "DM", email: "diana@example.com", phone: "(206) 555-0104", status: "active", role: "employee", jobAssignments: [{ locationId: "1", jobRoleId: "1" }], posEmployeeIds: ["pos-7"], payrollEmployeeIds: ["pay-6"], startDate: "2024-01-10", avatarColor: avatarColors[3] },
+  { id: "5", name: "Eric Thompson", initials: "ET", email: "eric@example.com", phone: "(206) 555-0105", status: "active", role: "employee", jobAssignments: [{ locationId: "1", jobRoleId: "1" }, { locationId: "3", jobRoleId: "6" }], posEmployeeIds: ["pos-8"], payrollEmployeeIds: ["pay-7", "pay-8"], startDate: "2022-11-05", avatarColor: avatarColors[4] },
+  { id: "6", name: "Fiona Garcia", initials: "FG", email: "fiona@example.com", phone: "(206) 555-0106", status: "active", role: "admin", jobAssignments: [{ locationId: "1", jobRoleId: "1" }, { locationId: "2", jobRoleId: "11" }, { locationId: "3", jobRoleId: "11" }], posEmployeeIds: [], payrollEmployeeIds: [], startDate: "2021-01-15", avatarColor: avatarColors[5] },
   { id: "7", name: "George Wilson", initials: "GW", email: "george@example.com", phone: "(206) 555-0107", status: "inactive", role: "employee", jobAssignments: [{ locationId: "2", jobRoleId: "7" }], posEmployeeIds: [], payrollEmployeeIds: [], startDate: "2023-04-01", avatarColor: avatarColors[6] },
   { id: "8", name: "Hannah Brown", initials: "HB", email: "hannah@example.com", phone: "(206) 555-0108", status: "active", role: "employee", jobAssignments: [{ locationId: "1", jobRoleId: "1" }, { locationId: "1", jobRoleId: "2" }], posEmployeeIds: [], payrollEmployeeIds: [], startDate: "2024-02-01", avatarColor: avatarColors[7] },
+  { id: "9", name: "Ivan Petrov", initials: "IP", email: "ivan@example.com", phone: "(206) 555-0109", status: "active", role: "employee", jobAssignments: [{ locationId: "1", jobRoleId: "1" }], posEmployeeIds: [], payrollEmployeeIds: [], startDate: "2024-03-01", avatarColor: avatarColors[0] },
+  { id: "10", name: "Julia Chen", initials: "JC", email: "julia@example.com", phone: "(206) 555-0110", status: "active", role: "employee", jobAssignments: [{ locationId: "1", jobRoleId: "1" }], posEmployeeIds: [], payrollEmployeeIds: [], startDate: "2024-03-15", avatarColor: avatarColors[1] },
+  { id: "11", name: "Kevin O'Brien", initials: "KO", email: "kevin@example.com", phone: "(206) 555-0111", status: "active", role: "employee", jobAssignments: [{ locationId: "1", jobRoleId: "1" }], posEmployeeIds: [], payrollEmployeeIds: [], startDate: "2024-04-01", avatarColor: avatarColors[2] },
+  { id: "12", name: "Laura Kim", initials: "LK", email: "laura@example.com", phone: "(206) 555-0112", status: "active", role: "employee", jobAssignments: [{ locationId: "1", jobRoleId: "1" }], posEmployeeIds: [], payrollEmployeeIds: [], startDate: "2024-04-15", avatarColor: avatarColors[3] },
+  { id: "13", name: "Mike Rodriguez", initials: "MR", email: "mike@example.com", phone: "(206) 555-0113", status: "active", role: "employee", jobAssignments: [{ locationId: "1", jobRoleId: "1" }], posEmployeeIds: [], payrollEmployeeIds: [], startDate: "2024-05-01", avatarColor: avatarColors[4] },
+  { id: "14", name: "Nina Patel", initials: "NP", email: "nina@example.com", phone: "(206) 555-0114", status: "active", role: "employee", jobAssignments: [{ locationId: "1", jobRoleId: "1" }], posEmployeeIds: [], payrollEmployeeIds: [], startDate: "2024-05-15", avatarColor: avatarColors[5] },
+  { id: "15", name: "Oscar Lee", initials: "OL", email: "oscar@example.com", phone: "(206) 555-0115", status: "active", role: "employee", jobAssignments: [{ locationId: "1", jobRoleId: "1" }], posEmployeeIds: [], payrollEmployeeIds: [], startDate: "2024-06-01", avatarColor: avatarColors[6] },
+  { id: "16", name: "Paula Santos", initials: "PS", email: "paula@example.com", phone: "(206) 555-0116", status: "active", role: "employee", jobAssignments: [{ locationId: "1", jobRoleId: "2" }], posEmployeeIds: [], payrollEmployeeIds: [], startDate: "2024-06-15", avatarColor: avatarColors[7] },
 ];
 
 export default function Teams() {
@@ -715,11 +724,10 @@ export default function Teams() {
           <Card data-testid="card-unified-management">
             <CardContent className="p-0">
               <div className="grid grid-cols-12 border-b">
-                {/* Column 1: Departments (Chain-wide) - Narrow */}
+                {/* Column 1: Departments (by Location) */}
                 <div className="col-span-3 border-r">
-                  <div className="px-4 h-11 border-b bg-gray-50 flex items-center justify-between">
+                  <div className="px-4 h-11 border-b bg-gray-50 flex items-center">
                     <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Departments</span>
-                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-200 text-gray-600">Chain-wide</span>
                   </div>
                   <div className="relative border-b h-10 flex items-center">
                     <Search className="absolute left-3 h-3.5 w-3.5 text-muted-foreground" />
@@ -732,32 +740,48 @@ export default function Teams() {
                     />
                   </div>
                   <div className="relative">
-                    <div className="max-h-[400px] overflow-y-auto scrollable-list" onScroll={(e) => handleScroll(e, setDeptScrolledToBottom)}>
-                      {departments.filter(d => d.name.toLowerCase().includes(deptSearch.toLowerCase())).map((dept, index, arr) => (
-                        <button
-                          key={dept.id}
-                          onClick={() => setSelectedDepartment(dept.id)}
-                          className={cn(
-                            "w-full flex items-center justify-between px-4 h-[48px] text-left transition-colors group",
-                            selectedDepartment === dept.id
-                              ? "bg-muted"
-                              : "hover:bg-gray-50",
-                            index !== arr.length - 1 && "border-b"
-                          )}
-                          data-testid={`button-department-${dept.id}`}
-                        >
-                          <span className="font-medium text-sm truncate">{dept.name}</span>
-                          <div className="flex items-center gap-2">
-                            <Edit2 
-                              className="h-3.5 w-3.5 opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-foreground cursor-pointer transition-opacity"
-                              onClick={(e) => { e.stopPropagation(); openEditDepartmentDialog(dept); }}
-                            />
-                            {selectedDepartment === dept.id && (
-                              <ChevronRight className="h-4 w-4 flex-shrink-0" />
+                    <div className="h-[504px] overflow-y-auto scrollable-list" onScroll={(e) => handleScroll(e, setDeptScrolledToBottom)}>
+                      {departments
+                        .filter(d => d.locationId === jobAssignmentLocation && d.name.toLowerCase().includes(deptSearch.toLowerCase()))
+                        .map((dept, index, arr) => (
+                          <button
+                            key={dept.id}
+                            onClick={() => {
+                              setSelectedDepartment(dept.id);
+                              const jobsInDept = jobRoles.filter(j => j.departmentId === dept.id);
+                              if (jobsInDept.length > 0) {
+                                const firstJob = jobsInDept[0];
+                                setSelectedJobRole(firstJob.id);
+                                const staffForJob = staff.filter(s => 
+                                  s.status === "active" && 
+                                  s.jobAssignments.some(ja => ja.jobRoleId === firstJob.id && ja.locationId === jobAssignmentLocation)
+                                );
+                                if (staffForJob.length > 0) {
+                                  setSelectedStaff(staffForJob[0]);
+                                }
+                              }
+                            }}
+                            className={cn(
+                              "w-full flex items-center justify-between px-4 h-[48px] text-left transition-colors group",
+                              selectedDepartment === dept.id
+                                ? "bg-muted"
+                                : "hover:bg-gray-50",
+                              index !== arr.length - 1 && "border-b"
                             )}
-                          </div>
-                        </button>
-                      ))}
+                            data-testid={`button-department-${dept.id}`}
+                          >
+                            <span className="font-medium text-sm truncate">{dept.name}</span>
+                            <div className="flex items-center gap-2">
+                              <Edit2 
+                                className="h-3.5 w-3.5 opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-foreground cursor-pointer transition-opacity"
+                                onClick={(e) => { e.stopPropagation(); openEditDepartmentDialog(dept); }}
+                              />
+                              {selectedDepartment === dept.id && (
+                                <ChevronRight className="h-4 w-4 flex-shrink-0" />
+                              )}
+                            </div>
+                          </button>
+                        ))}
                     </div>
                   </div>
                 </div>
@@ -778,7 +802,7 @@ export default function Teams() {
                     />
                   </div>
                   <div className="relative">
-                    <div className="max-h-[400px] overflow-y-auto scrollable-list" onScroll={(e) => handleScroll(e, setJobScrolledToBottom)}>
+                    <div className="h-[504px] overflow-y-auto scrollable-list" onScroll={(e) => handleScroll(e, setJobScrolledToBottom)}>
                       {filteredJobs.filter(j => j.name.toLowerCase().includes(jobSearch.toLowerCase())).map((job, index, arr) => {
                         const staffAtJob = staff.filter(s => 
                           s.status === "active" && 
@@ -787,7 +811,17 @@ export default function Teams() {
                         return (
                           <button
                             key={job.id}
-                            onClick={() => setSelectedJobRole(job.id)}
+                            onClick={() => {
+                              setSelectedJobRole(job.id);
+                              const staffForJob = staff.filter(s => 
+                                s.status === "active" && 
+                                s.jobAssignments.some(ja => ja.jobRoleId === job.id && ja.locationId === jobAssignmentLocation)
+                              );
+                              if (staffForJob.length > 0) {
+                                setSelectedStaff(staffForJob[0]);
+                                setShowStaffDetail(true);
+                              }
+                            }}
                             className={cn(
                               "w-full flex items-center justify-between px-4 h-[48px] text-left transition-colors group",
                               selectedJobRole === job.id
@@ -846,8 +880,12 @@ export default function Teams() {
                     />
                   </div>
                   <div className="relative">
-                    <div className="max-h-[400px] overflow-y-auto scrollable-list" onScroll={(e) => handleScroll(e, setStaffScrolledToBottom)}>
-                      {staff
+                    <div className="h-[504px] overflow-y-auto scrollable-list" onScroll={(e) => handleScroll(e, setStaffScrolledToBottom)}>
+                      {filteredJobs.length === 0 ? (
+                        <div className="px-4 py-8 text-sm text-muted-foreground text-center">
+                          No jobs to assign staff
+                        </div>
+                      ) : staff
                       .filter(s => s.status === "active" && s.name.toLowerCase().includes(personnelSearch.toLowerCase()))
                       .sort((a, b) => {
                         const aAssigned = a.jobAssignments.some(ja => ja.jobRoleId === selectedJobRole && ja.locationId === jobAssignmentLocation);
