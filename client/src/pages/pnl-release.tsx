@@ -10282,7 +10282,14 @@ export default function PnlRelease() {
                       {/* Daily Metrics Cards */}
                       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                          {/* Sales Card */}
-                         <div className="bg-white border border-gray-200 rounded-xl p-4">
+                         <div className="bg-white border border-gray-200 rounded-xl p-4 relative group">
+                            <button
+                               onClick={() => openTrendModal('net-sales')}
+                               className="absolute top-3 right-3 p-1.5 rounded-lg bg-gray-100 hover:bg-blue-100 text-gray-400 hover:text-blue-600 transition-colors"
+                               title="View trend"
+                            >
+                               <BarChart3 className="h-3.5 w-3.5" />
+                            </button>
                             <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Sales</div>
                             <div className="text-2xl font-bold text-gray-900">$4,820</div>
                             <div className="flex items-center gap-2 mt-2">
@@ -10297,7 +10304,14 @@ export default function PnlRelease() {
                          </div>
 
                          {/* COGS % Card */}
-                         <div className="bg-white border border-gray-200 rounded-xl p-4">
+                         <div className="bg-white border border-gray-200 rounded-xl p-4 relative group">
+                            <button
+                               onClick={() => openTrendModal('cogs')}
+                               className="absolute top-3 right-3 p-1.5 rounded-lg bg-gray-100 hover:bg-blue-100 text-gray-400 hover:text-blue-600 transition-colors"
+                               title="View trend"
+                            >
+                               <BarChart3 className="h-3.5 w-3.5" />
+                            </button>
                             <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">COGS %</div>
                             <div className="text-2xl font-bold text-gray-900">32.4%</div>
                             <div className="flex items-center gap-2 mt-2">
@@ -10312,7 +10326,14 @@ export default function PnlRelease() {
                          </div>
 
                          {/* Labor % Card */}
-                         <div className="bg-white border border-gray-200 rounded-xl p-4">
+                         <div className="bg-white border border-gray-200 rounded-xl p-4 relative group">
+                            <button
+                               onClick={() => openTrendModal('labor')}
+                               className="absolute top-3 right-3 p-1.5 rounded-lg bg-gray-100 hover:bg-blue-100 text-gray-400 hover:text-blue-600 transition-colors"
+                               title="View trend"
+                            >
+                               <BarChart3 className="h-3.5 w-3.5" />
+                            </button>
                             <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Labor %</div>
                             <div className="text-2xl font-bold text-gray-900">31.8%</div>
                             <div className="flex items-center gap-2 mt-2">
@@ -10327,7 +10348,14 @@ export default function PnlRelease() {
                          </div>
 
                          {/* Prime Cost Card - Primary */}
-                         <div className="bg-gradient-to-br from-red-50 to-orange-50 border border-red-200 rounded-xl p-4">
+                         <div className="bg-gradient-to-br from-red-50 to-orange-50 border border-red-200 rounded-xl p-4 relative group">
+                            <button
+                               onClick={() => openTrendModal('prime-cost')}
+                               className="absolute top-3 right-3 p-1.5 rounded-lg bg-red-100 hover:bg-blue-100 text-red-400 hover:text-blue-600 transition-colors"
+                               title="View trend"
+                            >
+                               <BarChart3 className="h-3.5 w-3.5" />
+                            </button>
                             <div className="text-xs font-medium text-red-700 uppercase tracking-wide mb-2">Prime Cost</div>
                             <div className="text-2xl font-bold text-gray-900">64.2%</div>
                             <div className="flex items-center gap-2 mt-2">
