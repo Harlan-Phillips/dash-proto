@@ -10108,29 +10108,186 @@ export default function PnlRelease() {
                             )}
                             {selectedRole === "gm" && (
                                <>
-                                  <div className="p-4 flex justify-between items-center">
-                                     <div className="flex items-center gap-3">
-                                        <div className="h-8 w-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
-                                           <AlertTriangle className="h-4 w-4" />
+                                  {/* FOH Overtime Missed Target with Dropdown */}
+                                  <div>
+                                     <button
+                                        data-testid="toggle-foh-overtime-opportunity"
+                                        onClick={() => setExpandedMissedTarget(expandedMissedTarget === "foh-overtime" ? null : "foh-overtime")}
+                                        className="w-full p-4 flex justify-between items-center hover:bg-gray-50 transition-colors"
+                                     >
+                                        <div className="flex items-center gap-3">
+                                           <div className="h-8 w-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
+                                              <AlertTriangle className="h-4 w-4" />
+                                           </div>
+                                           <div className="text-left">
+                                              <p className="text-sm font-medium text-gray-900">
+                                                 FOH overtime exceeded budget by{' '}
+                                                 <span className="text-amber-700">62 hours</span>
+                                              </p>
+                                              <p className="text-xs text-muted-foreground">Need better scheduling for January</p>
+                                           </div>
                                         </div>
-                                        <div>
-                                           <p className="text-sm font-medium text-gray-900">FOH overtime exceeded budget by 62 hours</p>
-                                           <p className="text-xs text-muted-foreground">Need better scheduling for January</p>
+                                        <div className="flex items-center gap-3">
+                                           <span className="text-sm font-medium text-amber-600">-$1,800</span>
+                                           <ChevronDown className={cn(
+                                              "h-4 w-4 text-gray-400 transition-transform duration-200",
+                                              expandedMissedTarget === "foh-overtime" && "rotate-180"
+                                           )} />
                                         </div>
-                                     </div>
-                                     <span className="text-sm font-medium text-amber-600">-$1,800</span>
+                                     </button>
+                                     <AnimatePresence>
+                                        {expandedMissedTarget === "foh-overtime" && (
+                                           <motion.div
+                                              initial={{ height: 0, opacity: 0 }}
+                                              animate={{ height: "auto", opacity: 1 }}
+                                              exit={{ height: 0, opacity: 0 }}
+                                              transition={{ duration: 0.15 }}
+                                              className="overflow-hidden"
+                                           >
+                                              <div className="px-4 pb-4 pt-1 ml-11 border-l-2 border-indigo-200">
+                                                 <div className="bg-indigo-50 rounded-lg p-3 space-y-3">
+                                                    <div className="flex items-center gap-2 mb-2">
+                                                       <Lightbulb className="h-4 w-4 text-indigo-600" />
+                                                       <span className="text-xs font-medium text-indigo-700 uppercase tracking-wide">Opportunities</span>
+                                                    </div>
+                                                    <div className="flex justify-between items-center">
+                                                       <div>
+                                                          <p className="text-sm font-medium text-gray-900">Implement split-shift scheduling on weekends</p>
+                                                          <p className="text-xs text-gray-500">Scheduling • FOH Staff</p>
+                                                       </div>
+                                                       <span className="text-sm font-semibold text-emerald-600">+$600/mo</span>
+                                                    </div>
+                                                    <div className="flex justify-between items-center pt-2 border-t border-indigo-100">
+                                                       <div>
+                                                          <p className="text-sm font-medium text-gray-900">Cross-train 2 hosts as backup servers</p>
+                                                          <p className="text-xs text-gray-500">Training • Flexibility</p>
+                                                       </div>
+                                                       <span className="text-sm font-semibold text-emerald-600">+$400/mo</span>
+                                                    </div>
+                                                 </div>
+                                              </div>
+                                           </motion.div>
+                                        )}
+                                     </AnimatePresence>
                                   </div>
-                                  <div className="p-4 flex justify-between items-center">
-                                     <div className="flex items-center gap-3">
-                                        <div className="h-8 w-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
-                                           <AlertTriangle className="h-4 w-4" />
+
+                                  {/* Over-scheduled Missed Target with Dropdown */}
+                                  <div>
+                                     <button
+                                        data-testid="toggle-scheduling-opportunity"
+                                        onClick={() => setExpandedMissedTarget(expandedMissedTarget === "scheduling" ? null : "scheduling")}
+                                        className="w-full p-4 flex justify-between items-center hover:bg-gray-50 transition-colors"
+                                     >
+                                        <div className="flex items-center gap-3">
+                                           <div className="h-8 w-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
+                                              <AlertTriangle className="h-4 w-4" />
+                                           </div>
+                                           <div className="text-left">
+                                              <p className="text-sm font-medium text-gray-900">
+                                                 Week 2 over-scheduled by{' '}
+                                                 <span className="text-amber-700">2.1 hrs/day</span>
+                                              </p>
+                                              <p className="text-xs text-muted-foreground">Tighter scheduling alignment with traffic patterns</p>
+                                           </div>
                                         </div>
-                                        <div>
-                                           <p className="text-sm font-medium text-gray-900">Week 2 over-scheduled by 2.1 hrs/day</p>
-                                           <p className="text-xs text-muted-foreground">Tighter scheduling alignment with traffic patterns</p>
+                                        <div className="flex items-center gap-3">
+                                           <span className="text-sm font-medium text-amber-600">-$680</span>
+                                           <ChevronDown className={cn(
+                                              "h-4 w-4 text-gray-400 transition-transform duration-200",
+                                              expandedMissedTarget === "scheduling" && "rotate-180"
+                                           )} />
                                         </div>
-                                     </div>
-                                     <span className="text-sm font-medium text-amber-600">-$680</span>
+                                     </button>
+                                     <AnimatePresence>
+                                        {expandedMissedTarget === "scheduling" && (
+                                           <motion.div
+                                              initial={{ height: 0, opacity: 0 }}
+                                              animate={{ height: "auto", opacity: 1 }}
+                                              exit={{ height: 0, opacity: 0 }}
+                                              transition={{ duration: 0.15 }}
+                                              className="overflow-hidden"
+                                           >
+                                              <div className="px-4 pb-4 pt-1 ml-11 border-l-2 border-indigo-200">
+                                                 <div className="bg-indigo-50 rounded-lg p-3 space-y-3">
+                                                    <div className="flex items-center gap-2 mb-2">
+                                                       <Lightbulb className="h-4 w-4 text-indigo-600" />
+                                                       <span className="text-xs font-medium text-indigo-700 uppercase tracking-wide">Opportunities</span>
+                                                    </div>
+                                                    <div className="flex justify-between items-center">
+                                                       <div>
+                                                          <p className="text-sm font-medium text-gray-900">Use POS traffic data for predictive scheduling</p>
+                                                          <p className="text-xs text-gray-500">Analytics • Scheduling</p>
+                                                       </div>
+                                                       <span className="text-sm font-semibold text-emerald-600">+$350/mo</span>
+                                                    </div>
+                                                    <div className="flex justify-between items-center pt-2 border-t border-indigo-100">
+                                                       <div>
+                                                          <p className="text-sm font-medium text-gray-900">Reduce Tuesday/Wednesday staff by 1 server</p>
+                                                          <p className="text-xs text-gray-500">Scheduling • Low-traffic Days</p>
+                                                       </div>
+                                                       <span className="text-sm font-semibold text-emerald-600">+$280/mo</span>
+                                                    </div>
+                                                 </div>
+                                              </div>
+                                           </motion.div>
+                                        )}
+                                     </AnimatePresence>
+                                  </div>
+
+                                  {/* Table Turn Rate Missed Target with Dropdown */}
+                                  <div>
+                                     <button
+                                        data-testid="toggle-table-turn-opportunity"
+                                        onClick={() => setExpandedMissedTarget(expandedMissedTarget === "table-turn" ? null : "table-turn")}
+                                        className="w-full p-4 flex justify-between items-center hover:bg-gray-50 transition-colors"
+                                     >
+                                        <div className="flex items-center gap-3">
+                                           <div className="h-8 w-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
+                                              <AlertTriangle className="h-4 w-4" />
+                                           </div>
+                                           <div className="text-left">
+                                              <p className="text-sm font-medium text-gray-900">
+                                                 Saturday dinner turns dropped:{' '}
+                                                 <span className="text-amber-700">2.1 vs 2.4 target</span>
+                                              </p>
+                                              <p className="text-xs text-muted-foreground">Average table time up 12 minutes vs prior month</p>
+                                           </div>
+                                        </div>
+                                        <div className="flex items-center gap-3">
+                                           <span className="text-sm font-medium text-amber-600">-$520</span>
+                                           <ChevronDown className={cn(
+                                              "h-4 w-4 text-gray-400 transition-transform duration-200",
+                                              expandedMissedTarget === "table-turn" && "rotate-180"
+                                           )} />
+                                        </div>
+                                     </button>
+                                     <AnimatePresence>
+                                        {expandedMissedTarget === "table-turn" && (
+                                           <motion.div
+                                              initial={{ height: 0, opacity: 0 }}
+                                              animate={{ height: "auto", opacity: 1 }}
+                                              exit={{ height: 0, opacity: 0 }}
+                                              transition={{ duration: 0.15 }}
+                                              className="overflow-hidden"
+                                           >
+                                              <div className="px-4 pb-4 pt-1 ml-11 border-l-2 border-indigo-200">
+                                                 <div className="bg-indigo-50 rounded-lg p-3">
+                                                    <div className="flex items-center gap-2 mb-2">
+                                                       <Lightbulb className="h-4 w-4 text-indigo-600" />
+                                                       <span className="text-xs font-medium text-indigo-700 uppercase tracking-wide">Opportunity</span>
+                                                    </div>
+                                                    <div className="flex justify-between items-center">
+                                                       <div>
+                                                          <p className="text-sm font-medium text-gray-900">Streamline dessert/check drop timing</p>
+                                                          <p className="text-xs text-gray-500">Service Flow • Table Turns</p>
+                                                       </div>
+                                                       <span className="text-sm font-semibold text-emerald-600">+$400/mo</span>
+                                                    </div>
+                                                 </div>
+                                              </div>
+                                           </motion.div>
+                                        )}
+                                     </AnimatePresence>
                                   </div>
                                </>
                             )}
