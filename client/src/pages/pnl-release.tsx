@@ -1627,7 +1627,7 @@ function PnLDashboard({ onInsightClick, highlightedNodeId, onHighlightClear, onT
           <div className="flex items-center gap-6">
             <div className="w-28 text-right">Current</div>
             <div className="w-28 text-right">Prior</div>
-            <div className="w-20 text-right">% Income</div>
+            <div className="w-20 text-right">% Revenue</div>
           </div>
         </div>
 
@@ -1925,7 +1925,7 @@ function TrendChartModal({ isOpen, onClose, metric }: TrendChartModalProps) {
                               <th className="text-left px-4 py-2 font-medium text-gray-500">Sub-Category</th>
                               <th className="text-right px-4 py-2 font-medium text-gray-500">Actual</th>
                               <th className="text-right px-4 py-2 font-medium text-gray-500">Target</th>
-                              <th className="text-right px-4 py-2 font-medium text-gray-500">% Income</th>
+                              <th className="text-right px-4 py-2 font-medium text-gray-500">% Revenue</th>
                               <th className="text-center px-4 py-2 font-medium text-gray-500">Status</th>
                             </tr>
                           </thead>
@@ -5247,7 +5247,7 @@ export default function PnlRelease() {
                                       <th className="text-left px-6 py-3 font-medium text-gray-500">Category</th>
                                       <th className="text-right px-6 py-3 font-medium text-gray-500">Actual</th>
                                       <th className="text-right px-6 py-3 font-medium text-gray-500">Budget</th>
-                                      <th className="text-right px-6 py-3 font-medium text-gray-500">% Income</th>
+                                      <th className="text-right px-6 py-3 font-medium text-gray-500">% Revenue</th>
                                       <th className="text-right px-6 py-3 font-medium text-gray-500">% of Sales</th>
                                    </tr>
                                 </thead>
@@ -5704,7 +5704,7 @@ export default function PnlRelease() {
                                       <th className="text-left px-6 py-3 font-medium text-gray-500">Category</th>
                                       <th className="text-right px-6 py-3 font-medium text-gray-500">Actual</th>
                                       <th className="text-right px-6 py-3 font-medium text-gray-500">Budget</th>
-                                      <th className="text-right px-6 py-3 font-medium text-gray-500">% Income</th>
+                                      <th className="text-right px-6 py-3 font-medium text-gray-500">% Revenue</th>
                                       <th className="text-right px-6 py-3 font-medium text-gray-500">% of Sales</th>
                                    </tr>
                                 </thead>
@@ -5771,7 +5771,7 @@ export default function PnlRelease() {
                                       <th className="text-left px-6 py-3 font-medium text-gray-500">Category</th>
                                       <th className="text-right px-6 py-3 font-medium text-gray-500">Actual</th>
                                       <th className="text-right px-6 py-3 font-medium text-gray-500">Budget</th>
-                                      <th className="text-right px-6 py-3 font-medium text-gray-500">% Income</th>
+                                      <th className="text-right px-6 py-3 font-medium text-gray-500">% Revenue</th>
                                       <th className="text-right px-6 py-3 font-medium text-gray-500">% of Sales</th>
                                    </tr>
                                 </thead>
@@ -5833,7 +5833,7 @@ export default function PnlRelease() {
                                       <th className="text-left px-6 py-3 font-medium text-gray-500">Category</th>
                                       <th className="text-right px-6 py-3 font-medium text-gray-500">Actual</th>
                                       <th className="text-right px-6 py-3 font-medium text-gray-500">Budget</th>
-                                      <th className="text-right px-6 py-3 font-medium text-gray-500">% Income</th>
+                                      <th className="text-right px-6 py-3 font-medium text-gray-500">% Revenue</th>
                                       <th className="text-right px-6 py-3 font-medium text-gray-500">% of Sales</th>
                                    </tr>
                                 </thead>
@@ -7900,7 +7900,7 @@ export default function PnlRelease() {
                                   <th className="text-left px-6 py-3 font-medium text-gray-500">Category</th>
                                   <th className="text-right px-6 py-3 font-medium text-gray-500">Actual</th>
                                   <th className="text-right px-6 py-3 font-medium text-gray-500">Budget</th>
-                                  <th className="text-right px-6 py-3 font-medium text-gray-500">% Income</th>
+                                  <th className="text-right px-6 py-3 font-medium text-gray-500">% Revenue</th>
                                   <th className="text-right px-6 py-3 font-medium text-gray-500">% of Sales</th>
                                </tr>
                             </thead>
@@ -8427,7 +8427,7 @@ export default function PnlRelease() {
                                   <th className="text-left px-6 py-3 font-medium text-gray-500">Category</th>
                                   <th className="text-right px-6 py-3 font-medium text-gray-500">Actual</th>
                                   <th className="text-right px-6 py-3 font-medium text-gray-500">Budget</th>
-                                  <th className="text-right px-6 py-3 font-medium text-gray-500">% Income</th>
+                                  <th className="text-right px-6 py-3 font-medium text-gray-500">% Revenue</th>
                                   <th className="text-right px-6 py-3 font-medium text-gray-500">% of Sales</th>
                                </tr>
                             </thead>
@@ -8496,7 +8496,7 @@ export default function PnlRelease() {
                                   <th className="text-left px-6 py-3 font-medium text-gray-500">Category</th>
                                   <th className="text-right px-6 py-3 font-medium text-gray-500">Actual</th>
                                   <th className="text-right px-6 py-3 font-medium text-gray-500">Budget</th>
-                                  <th className="text-right px-6 py-3 font-medium text-gray-500">% Income</th>
+                                  <th className="text-right px-6 py-3 font-medium text-gray-500">% Revenue</th>
                                   <th className="text-right px-6 py-3 font-medium text-gray-500">% of Sales</th>
                                </tr>
                             </thead>
