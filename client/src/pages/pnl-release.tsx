@@ -5489,6 +5489,12 @@ export default function PnlRelease() {
 
                     <div className="p-8 space-y-10">
 
+                       {/* TEST BANNER - MUST BE VISIBLE */}
+                       <div className="bg-red-600 text-white p-8 rounded-xl text-center">
+                          <h1 className="text-3xl font-bold mb-2">🔴 TEST BANNER - PROFITABILITY COMING BELOW 🔴</h1>
+                          <p className="text-xl">If you see this, the page is rendering correctly</p>
+                       </div>
+
                        {/* Executive Summary Cards - Owner Only */}
                        {selectedRole === "owner" && (
                        <section data-testid="executive-summary-section">
