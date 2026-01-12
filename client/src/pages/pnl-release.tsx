@@ -470,6 +470,85 @@ const healthSnapshotTrendData: MetricTrendData[] = [
         { id: 'cogs', name: 'Total COGS', actual: -55670, target: -57000, variance: 1330, variancePct: -2.3, isOnTrack: true },
       ]
     }
+  },
+  {
+    id: 'marketing',
+    name: 'Marketing Spend',
+    description: 'Total marketing and advertising expenses',
+    unit: 'currency',
+    isInverse: true,
+    data: [
+      { month: 'Jan', year: 2025, actual: 3500, target: 4000, variance: -500, variancePct: -12.5 },
+      { month: 'Feb', year: 2025, actual: 3800, target: 4000, variance: -200, variancePct: -5.0 },
+      { month: 'Mar', year: 2025, actual: 4200, target: 4000, variance: 200, variancePct: 5.0 },
+      { month: 'Apr', year: 2025, actual: 3600, target: 4000, variance: -400, variancePct: -10.0 },
+      { month: 'May', year: 2025, actual: 3400, target: 4000, variance: -600, variancePct: -15.0 },
+      { month: 'Jun', year: 2025, actual: 3900, target: 4000, variance: -100, variancePct: -2.5 },
+      { month: 'Jul', year: 2025, actual: 4100, target: 4000, variance: 100, variancePct: 2.5 },
+      { month: 'Aug', year: 2025, actual: 3700, target: 4000, variance: -300, variancePct: -7.5 },
+      { month: 'Sep', year: 2025, actual: 3200, target: 4000, variance: -800, variancePct: -20.0 },
+    ],
+    drilldown: {
+      title: 'Marketing Channels',
+      items: [
+        { id: 'digital-ads', name: 'Digital Ads', actual: 1800, target: 2000, variance: -200, variancePct: -10.0, isOnTrack: true },
+        { id: 'social-media', name: 'Social Media', actual: 800, target: 1000, variance: -200, variancePct: -20.0, isOnTrack: true },
+        { id: 'local-promo', name: 'Local Promotions', actual: 600, target: 1000, variance: -400, variancePct: -40.0, isOnTrack: true },
+      ]
+    }
+  },
+  {
+    id: 'cash-flow',
+    name: 'Cash Flow',
+    description: 'Net operating cash balance',
+    unit: 'currency',
+    data: [
+      { month: 'Jan', year: 2025, actual: 42000, target: 40000, variance: 2000, variancePct: 5.0 },
+      { month: 'Feb', year: 2025, actual: 38500, target: 40000, variance: -1500, variancePct: -3.8 },
+      { month: 'Mar', year: 2025, actual: 45200, target: 42000, variance: 3200, variancePct: 7.6 },
+      { month: 'Apr', year: 2025, actual: 44800, target: 42000, variance: 2800, variancePct: 6.7 },
+      { month: 'May', year: 2025, actual: 47500, target: 45000, variance: 2500, variancePct: 5.6 },
+      { month: 'Jun', year: 2025, actual: 43200, target: 45000, variance: -1800, variancePct: -4.0 },
+      { month: 'Jul', year: 2025, actual: 39800, target: 42000, variance: -2200, variancePct: -5.2 },
+      { month: 'Aug', year: 2025, actual: 44600, target: 45000, variance: -400, variancePct: -0.9 },
+      { month: 'Sep', year: 2025, actual: 48200, target: 45000, variance: 3200, variancePct: 7.1 },
+    ],
+    drilldown: {
+      title: 'Cash Flow Sources',
+      items: [
+        { id: 'operating-cash', name: 'Operating Cash', actual: 32400, target: 30000, variance: 2400, variancePct: 8.0, isOnTrack: true },
+        { id: 'receivables', name: 'Receivables', actual: 8200, target: 10000, variance: -1800, variancePct: -18.0, isOnTrack: false },
+        { id: 'reserve', name: 'Cash Reserve', actual: 7600, target: 5000, variance: 2600, variancePct: 52.0, isOnTrack: true },
+      ]
+    }
+  },
+  {
+    id: 'controllable-expenses',
+    name: 'Controllable Expenses',
+    description: 'Total controllable operating expenses',
+    unit: 'currency',
+    isInverse: true,
+    data: [
+      { month: 'Jan', year: 2025, actual: 42500, target: 45000, variance: -2500, variancePct: -5.6 },
+      { month: 'Feb', year: 2025, actual: 43800, target: 45000, variance: -1200, variancePct: -2.7 },
+      { month: 'Mar', year: 2025, actual: 41200, target: 45000, variance: -3800, variancePct: -8.4 },
+      { month: 'Apr', year: 2025, actual: 44100, target: 45000, variance: -900, variancePct: -2.0 },
+      { month: 'May', year: 2025, actual: 43600, target: 45000, variance: -1400, variancePct: -3.1 },
+      { month: 'Jun', year: 2025, actual: 46200, target: 45000, variance: 1200, variancePct: 2.7 },
+      { month: 'Jul', year: 2025, actual: 47800, target: 45000, variance: 2800, variancePct: 6.2 },
+      { month: 'Aug', year: 2025, actual: 44900, target: 45000, variance: -100, variancePct: -0.2 },
+      { month: 'Sep', year: 2025, actual: 44500, target: 45000, variance: -500, variancePct: -1.1 },
+    ],
+    drilldown: {
+      title: 'Expense Categories',
+      items: [
+        { id: 'marketing-exp', name: 'Marketing', actual: 3200, target: 4000, variance: -800, variancePct: -20.0, isOnTrack: true },
+        { id: 'repairs-exp', name: 'Repairs & Maintenance', actual: 8400, target: 8000, variance: 400, variancePct: 5.0, isOnTrack: false },
+        { id: 'utilities-exp', name: 'Utilities', actual: 12800, target: 12000, variance: 800, variancePct: 6.7, isOnTrack: false },
+        { id: 'cc-fees-exp', name: 'CC Fees', actual: 5200, target: 5500, variance: -300, variancePct: -5.5, isOnTrack: true },
+        { id: 'delivery-exp', name: 'Delivery Fees', actual: 14900, target: 15500, variance: -600, variancePct: -3.9, isOnTrack: true },
+      ]
+    }
   }
 ];
 
@@ -9953,7 +10032,13 @@ export default function PnlRelease() {
                          <div className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow">
                             <div className="flex items-center justify-between mb-3">
                                <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Income</span>
-                               <DollarSign className="h-4 w-4 text-gray-400" />
+                               <button 
+                                  onClick={() => openTrendModal('net-sales')}
+                                  className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors group"
+                                  data-testid="button-income-trend"
+                               >
+                                  <DollarSign className="h-4 w-4 text-gray-400 group-hover:text-blue-600 transition-colors" />
+                               </button>
                             </div>
                             <div className="text-2xl font-bold text-gray-900">$124,500</div>
                             <div className="flex items-center gap-1 mt-1">
@@ -9967,7 +10052,13 @@ export default function PnlRelease() {
                          <div className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow">
                             <div className="flex items-center justify-between mb-3">
                                <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Marketing</span>
-                               <Target className="h-4 w-4 text-gray-400" />
+                               <button 
+                                  onClick={() => openTrendModal('marketing')}
+                                  className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors group"
+                                  data-testid="button-marketing-trend"
+                               >
+                                  <Target className="h-4 w-4 text-gray-400 group-hover:text-blue-600 transition-colors" />
+                               </button>
                             </div>
                             <div className="text-2xl font-bold text-gray-900">$3,200</div>
                             <div className="flex items-center gap-1 mt-1">
@@ -9980,7 +10071,13 @@ export default function PnlRelease() {
                          <div className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow">
                             <div className="flex items-center justify-between mb-3">
                                <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Op. Expenses</span>
-                               <CreditCard className="h-4 w-4 text-gray-400" />
+                               <button 
+                                  onClick={() => openTrendModal('controllable-expenses')}
+                                  className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors group"
+                                  data-testid="button-opex-trend"
+                               >
+                                  <CreditCard className="h-4 w-4 text-gray-400 group-hover:text-blue-600 transition-colors" />
+                               </button>
                             </div>
                             <div className="text-2xl font-bold text-gray-900">$44,500</div>
                             <div className="flex items-center gap-1 mt-1">
@@ -9993,7 +10090,13 @@ export default function PnlRelease() {
                          <div className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow">
                             <div className="flex items-center justify-between mb-3">
                                <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Growth</span>
-                               <TrendingUp className="h-4 w-4 text-emerald-500" />
+                               <button 
+                                  onClick={() => openTrendModal('net-sales')}
+                                  className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors group"
+                                  data-testid="button-growth-trend"
+                               >
+                                  <TrendingUp className="h-4 w-4 text-emerald-500 group-hover:text-blue-600 transition-colors" />
+                               </button>
                             </div>
                             <div className="flex items-center gap-2">
                                <div className="text-2xl font-bold text-emerald-600">↑ Growing</div>
@@ -10014,7 +10117,13 @@ export default function PnlRelease() {
                                   <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Cash Flow</span>
                                   <span className="px-1.5 py-0.5 bg-blue-100 text-blue-700 text-[10px] font-medium rounded">OWNER ONLY</span>
                                </div>
-                               <Wallet className="h-4 w-4 text-gray-400" />
+                               <button 
+                                  onClick={() => openTrendModal('cash-flow')}
+                                  className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors group"
+                                  data-testid="button-cashflow-trend"
+                               >
+                                  <Wallet className="h-4 w-4 text-gray-400 group-hover:text-blue-600 transition-colors" />
+                               </button>
                             </div>
                             <div className="flex items-center justify-between">
                                <div>
@@ -10046,7 +10155,13 @@ export default function PnlRelease() {
                                   <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Compensation Overview</span>
                                   <span className="px-1.5 py-0.5 bg-blue-100 text-blue-700 text-[10px] font-medium rounded">OWNER ONLY</span>
                                </div>
-                               <Users className="h-4 w-4 text-gray-400" />
+                               <button 
+                                  onClick={() => openTrendModal('labor')}
+                                  className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors group"
+                                  data-testid="button-compensation-trend"
+                               >
+                                  <Users className="h-4 w-4 text-gray-400 group-hover:text-blue-600 transition-colors" />
+                               </button>
                             </div>
                             <div className="space-y-3">
                                <div className="flex items-center justify-between">
