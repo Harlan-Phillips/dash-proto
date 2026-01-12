@@ -3473,22 +3473,14 @@ export default function PnlRelease() {
     }));
   };
 
-  // Editable Labor Deep Dive Budgets (detailed view)
-  const [laborBudgets, setLaborBudgets] = useState({
-    'total-labor': 81220,
-    'boh-labor': 35500,
-    'line-cook': 17000,
-    'prep-cook': 11500,
-    'dishwasher': 7000,
-    'foh-labor': 37800,
-    'server': 19800,
-    'bartender': 10500,
-    'host': 7500,
-    'management': 12600,
-    'gm': 6800,
-    'supervisor': 5800,
-    'payroll-taxes': 9320,
-  });
+  // Editable Labor Deep Dive Budgets - Default 32% of Revenue
+  const DEFAULT_LABOR_TARGET_PCT = 32;
+  
+  const [laborBudgetPct, setLaborBudgetPct] = useState(DEFAULT_LABOR_TARGET_PCT);
+  const [isCustomLaborBudget, setIsCustomLaborBudget] = useState(false);
+  
+  // Calculate budget from percentage (will use PERIOD_REVENUE defined below)
+  const getLaborBudgetAmount = (revenue: number) => Math.round(revenue * (laborBudgetPct / 100));
   
   const laborActuals = {
     'total-labor': 95400,
@@ -3506,39 +3498,110 @@ export default function PnlRelease() {
     'payroll-taxes': 10500,
   };
   
-  const getLaborVariance = (id: string) => {
+  // Category percentages of total Labor for budget breakdown
+  const laborCategoryPcts = {
+    'boh-labor': 0.40, // 40% of labor
+    'line-cook': 0.193,
+    'prep-cook': 0.128,
+    'dishwasher': 0.08,
+    'foh-labor': 0.44, // 44% of labor
+    'server': 0.236,
+    'bartender': 0.124,
+    'host': 0.082,
+    'management': 0.132, // 13.2% of labor
+    'gm': 0.071,
+    'supervisor': 0.061,
+    'payroll-taxes': 0.11, // 11% of labor
+  };
+  
+  const getLaborBudgetForCategory = (id: string, revenue: number) => {
+    const totalBudget = getLaborBudgetAmount(revenue);
+    if (id === 'total-labor') return totalBudget;
+    return Math.round(totalBudget * (laborCategoryPcts[id as keyof typeof laborCategoryPcts] || 0));
+  };
+  
+  const getLaborVariance = (id: string, revenue: number = 293000) => {
     const actual = laborActuals[id as keyof typeof laborActuals] || 0;
-    const budget = laborBudgets[id as keyof typeof laborBudgets] || 0;
-    const variance = actual - budget;
+    const budget = getLaborBudgetForCategory(id, revenue);
+    const varianceDollar = actual - budget;
+    const actualPct = (actual / revenue) * 100;
+    const budgetPct = laborBudgetPct * (id === 'total-labor' ? 1 : (laborCategoryPcts[id as keyof typeof laborCategoryPcts] || 0));
+    const variancePct = actualPct - budgetPct;
     return {
-      variance,
-      formatted: variance === 0 ? '$0' : variance > 0 ? `+$${variance.toLocaleString()}` : `-$${Math.abs(variance).toLocaleString()}`,
-      color: variance > 0 ? 'text-red-600' : variance < 0 ? 'text-emerald-600' : 'text-gray-600'
+      varianceDollar,
+      variancePct,
+      formattedDollar: varianceDollar === 0 ? '$0' : varianceDollar > 0 ? `+$${varianceDollar.toLocaleString()}` : `-$${Math.abs(varianceDollar).toLocaleString()}`,
+      formattedPct: variancePct === 0 ? '0.0%' : variancePct > 0 ? `+${variancePct.toFixed(1)}%` : `${variancePct.toFixed(1)}%`,
+      color: varianceDollar > 0 ? 'text-red-600' : varianceDollar < 0 ? 'text-emerald-600' : 'text-gray-600',
+      status: varianceDollar > budget * 0.05 ? 'over' : varianceDollar < -budget * 0.02 ? 'under' : 'on-target',
+      statusColor: varianceDollar > budget * 0.05 ? 'bg-red-100 text-red-700' : varianceDollar < -budget * 0.02 ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700',
+      statusText: varianceDollar > budget * 0.05 ? 'OVER' : varianceDollar < -budget * 0.02 ? 'UNDER' : 'ON TARGET'
     };
   };
   
-  const updateLaborBudget = (id: string, value: number) => {
-    setLaborBudgets(prev => ({ ...prev, [id]: value }));
+  const handleLaborBudgetChange = (newPct: number) => {
+    if (newPct > 0 && newPct < 100) {
+      setLaborBudgetPct(newPct);
+      setIsCustomLaborBudget(newPct !== DEFAULT_LABOR_TARGET_PCT);
+    }
+  };
+  
+  const resetLaborBudgetToDefault = () => {
+    setLaborBudgetPct(DEFAULT_LABOR_TARGET_PCT);
+    setIsCustomLaborBudget(false);
   };
 
-  // Editable Labor Efficiency Targets
-  const [laborEfficiencyTargets, setLaborEfficiencyTargets] = useState({
+  // Editable Labor Efficiency Targets with Default/Custom tracking
+  const DEFAULT_EFFICIENCY_TARGETS = {
     'sales-per-hour': 50.00,
     'hours-per-guest': 0.68,
     'overtime-pct': 4.0,
+  };
+  
+  const [laborEfficiencyTargets, setLaborEfficiencyTargets] = useState({ ...DEFAULT_EFFICIENCY_TARGETS });
+  const [isCustomEfficiencyTargets, setIsCustomEfficiencyTargets] = useState({
+    'sales-per-hour': false,
+    'hours-per-guest': false,
+    'overtime-pct': false,
   });
+  
   const laborEfficiencyActuals = {
     'sales-per-hour': 48.20,
     'hours-per-guest': 0.71,
     'overtime-pct': 7.4,
   };
+  
+  const handleEfficiencyTargetChange = (id: string, value: number) => {
+    setLaborEfficiencyTargets(prev => ({ ...prev, [id]: value }));
+    setIsCustomEfficiencyTargets(prev => ({
+      ...prev,
+      [id]: value !== DEFAULT_EFFICIENCY_TARGETS[id as keyof typeof DEFAULT_EFFICIENCY_TARGETS]
+    }));
+  };
+  
+  const resetEfficiencyTarget = (id: string) => {
+    const defaultVal = DEFAULT_EFFICIENCY_TARGETS[id as keyof typeof DEFAULT_EFFICIENCY_TARGETS];
+    setLaborEfficiencyTargets(prev => ({ ...prev, [id]: defaultVal }));
+    setIsCustomEfficiencyTargets(prev => ({ ...prev, [id]: false }));
+  };
+  
   const getLaborEfficiencyStatus = (id: string, isInverse: boolean = false) => {
     const actual = laborEfficiencyActuals[id as keyof typeof laborEfficiencyActuals];
     const target = laborEfficiencyTargets[id as keyof typeof laborEfficiencyTargets];
     const diff = isInverse ? actual - target : target - actual;
-    if (diff > 1) return { status: 'ATTENTION', color: 'bg-red-100 text-red-700' };
-    if (diff > 0) return { status: 'MONITOR', color: 'bg-amber-100 text-amber-700' };
-    return { status: 'ON TRACK', color: 'bg-emerald-100 text-emerald-700' };
+    const variance = actual - target;
+    const variancePct = ((actual - target) / target) * 100;
+    return {
+      status: diff > 1 ? 'ATTENTION' : diff > 0 ? 'MONITOR' : 'ON TRACK',
+      color: diff > 1 ? 'bg-red-100 text-red-700' : diff > 0 ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700',
+      variance,
+      variancePct,
+      formattedVariance: id === 'overtime-pct' 
+        ? `${variance >= 0 ? '+' : ''}${variance.toFixed(1)}pts`
+        : id === 'hours-per-guest'
+          ? `${variance >= 0 ? '+' : ''}${variance.toFixed(2)}`
+          : `${variance >= 0 ? '+' : ''}$${variance.toFixed(2)}`
+    };
   };
 
   // Editable COGS Budgets - Default 25% of Revenue per spec
@@ -8384,8 +8447,51 @@ export default function PnlRelease() {
 
                       {/* Labor Deep Dive */}
                       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden mb-6">
-                         <div className="px-6 py-4 border-b border-gray-100">
-                            <h3 className="font-semibold text-gray-900">Labor Deep Dive</h3>
+                         <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                               <h3 className="font-semibold text-gray-900">Labor Deep Dive</h3>
+                               <span className={cn(
+                                  "px-2 py-0.5 rounded-full text-xs font-medium",
+                                  getLaborVariance('total-labor', PERIOD_REVENUE).statusColor
+                               )}>
+                                  {getLaborVariance('total-labor', PERIOD_REVENUE).statusText}
+                               </span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                               <span className="text-xs text-gray-500">Labor Budget:</span>
+                               {(selectedRole === "owner" || selectedRole === "gm") ? (
+                                  <div className="flex items-center gap-1">
+                                     <input
+                                        type="number"
+                                        value={laborBudgetPct}
+                                        onChange={(e) => handleLaborBudgetChange(parseFloat(e.target.value) || 32)}
+                                        min="1"
+                                        max="99"
+                                        className="w-14 px-2 py-1 text-gray-700 bg-gray-50 border border-gray-200 rounded hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors text-sm text-right"
+                                        data-testid="labor-budget-pct"
+                                        disabled={selectedRole === "gm"}
+                                     />
+                                     <span className="text-sm text-gray-600">%</span>
+                                  </div>
+                               ) : (
+                                  <span className="text-sm font-medium text-gray-700">{laborBudgetPct}%</span>
+                               )}
+                               <span className={cn(
+                                  "px-1.5 py-0.5 rounded text-xs",
+                                  isCustomLaborBudget ? "bg-blue-100 text-blue-700" : "bg-gray-100 text-gray-600"
+                               )}>
+                                  {isCustomLaborBudget ? "Custom" : "Default"}
+                               </span>
+                               {isCustomLaborBudget && selectedRole === "owner" && (
+                                  <button
+                                     onClick={resetLaborBudgetToDefault}
+                                     className="text-xs text-gray-500 hover:text-gray-700 underline"
+                                     data-testid="reset-labor-budget"
+                                  >
+                                     Reset
+                                  </button>
+                               )}
+                            </div>
                          </div>
                          <Popover>
                             <PopoverTrigger asChild>
@@ -8486,48 +8592,46 @@ export default function PnlRelease() {
                                   <th className="text-left px-6 py-3 font-medium text-gray-500">Category</th>
                                   <th className="text-right px-6 py-3 font-medium text-gray-500">Actual</th>
                                   <th className="text-right px-6 py-3 font-medium text-gray-500">Budget</th>
-                                  <th className="text-right px-6 py-3 font-medium text-gray-500">% Revenue</th>
-                                  <th className="text-right px-6 py-3 font-medium text-gray-500">% of Sales</th>
+                                  <th className="text-right px-6 py-3 font-medium text-gray-500">Variance $</th>
+                                  <th className="text-right px-6 py-3 font-medium text-gray-500">% of Revenue</th>
+                                  <th className="text-right px-6 py-3 font-medium text-gray-500">Status</th>
                                </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100">
                                <tr className="hover:bg-gray-50 font-semibold bg-gray-50/30">
                                   <td className="px-6 py-4 text-gray-900">Total Labor</td>
                                   <td className="px-6 py-4 text-right">${laborActuals['total-labor'].toLocaleString()}</td>
-                                  <td className="px-6 py-4 text-right">
-                                     <input
-                                        type="text"
-                                        value={`$${laborBudgets['total-labor'].toLocaleString()}`}
-                                        onChange={(e) => {
-                                           const val = e.target.value.replace(/[$,]/g, '');
-                                           const num = parseFloat(val);
-                                           if (!isNaN(num)) updateLaborBudget('total-labor', num);
-                                        }}
-                                        className="w-24 px-2 py-1 text-gray-600 bg-gray-50 border border-gray-200 rounded hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors text-sm text-right"
-                                        data-testid="budget-input-total-labor"
-                                     />
+                                  <td className="px-6 py-4 text-right text-gray-600">${getLaborBudgetForCategory('total-labor', PERIOD_REVENUE).toLocaleString()}</td>
+                                  <td className={cn("px-6 py-4 text-right font-medium", getLaborVariance('total-labor', PERIOD_REVENUE).color)}>
+                                     {getLaborVariance('total-labor', PERIOD_REVENUE).formattedDollar}
                                   </td>
-                                  <td className={cn("px-6 py-4 text-right font-medium", getLaborVariance('total-labor').color)}>{getLaborVariance('total-labor').formatted}</td>
-                                  <td className="px-6 py-4 text-right text-gray-600">32.5%</td>
+                                  <td className="px-6 py-4 text-right text-gray-700">
+                                     {((laborActuals['total-labor'] / PERIOD_REVENUE) * 100).toFixed(1)}%
+                                     <span className={cn("ml-1 text-xs", getLaborVariance('total-labor', PERIOD_REVENUE).color)}>
+                                        ({getLaborVariance('total-labor', PERIOD_REVENUE).formattedPct})
+                                     </span>
+                                  </td>
+                                  <td className="px-6 py-4 text-right">
+                                     <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium", getLaborVariance('total-labor', PERIOD_REVENUE).statusColor)}>
+                                        {getLaborVariance('total-labor', PERIOD_REVENUE).statusText}
+                                     </span>
+                                  </td>
                                </tr>
                                <tr className="hover:bg-gray-50">
                                   <td className="px-6 py-4 text-gray-700 pl-10">BOH Labor</td>
                                   <td className="px-6 py-4 text-right">${laborActuals['boh-labor'].toLocaleString()}</td>
-                                  <td className="px-6 py-4 text-right">
-                                     <input
-                                        type="text"
-                                        value={`$${laborBudgets['boh-labor'].toLocaleString()}`}
-                                        onChange={(e) => {
-                                           const val = e.target.value.replace(/[$,]/g, '');
-                                           const num = parseFloat(val);
-                                           if (!isNaN(num)) updateLaborBudget('boh-labor', num);
-                                        }}
-                                        className="w-24 px-2 py-1 text-gray-600 bg-gray-50 border border-gray-200 rounded hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors text-sm text-right"
-                                        data-testid="budget-input-boh-labor"
-                                     />
+                                  <td className="px-6 py-4 text-right text-gray-500">${getLaborBudgetForCategory('boh-labor', PERIOD_REVENUE).toLocaleString()}</td>
+                                  <td className={cn("px-6 py-4 text-right font-medium", getLaborVariance('boh-labor', PERIOD_REVENUE).color)}>
+                                     {getLaborVariance('boh-labor', PERIOD_REVENUE).formattedDollar}
                                   </td>
-                                  <td className={cn("px-6 py-4 text-right font-medium", getLaborVariance('boh-labor').color)}>{getLaborVariance('boh-labor').formatted}</td>
-                                  <td className="px-6 py-4 text-right text-gray-600">13.0%</td>
+                                  <td className="px-6 py-4 text-right text-gray-600">
+                                     {((laborActuals['boh-labor'] / PERIOD_REVENUE) * 100).toFixed(1)}%
+                                  </td>
+                                  <td className="px-6 py-4 text-right">
+                                     <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium", getLaborVariance('boh-labor', PERIOD_REVENUE).statusColor)}>
+                                        {getLaborVariance('boh-labor', PERIOD_REVENUE).statusText}
+                                     </span>
+                                  </td>
                                </tr>
                                <Popover>
                                   <PopoverTrigger asChild>
@@ -8537,22 +8641,14 @@ export default function PnlRelease() {
                                            <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Elaborated</span>
                                         </td>
                                         <td className="px-6 py-3 text-right text-gray-600">${laborActuals['line-cook'].toLocaleString()}</td>
+                                        <td className="px-6 py-3 text-right text-gray-500">${getLaborBudgetForCategory('line-cook', PERIOD_REVENUE).toLocaleString()}</td>
+                                        <td className={cn("px-6 py-3 text-right text-xs", getLaborVariance('line-cook', PERIOD_REVENUE).color)}>{getLaborVariance('line-cook', PERIOD_REVENUE).formattedDollar}</td>
+                                        <td className="px-6 py-3 text-right text-gray-500">{((laborActuals['line-cook'] / PERIOD_REVENUE) * 100).toFixed(1)}%</td>
                                         <td className="px-6 py-3 text-right">
-                                           <input
-                                              type="text"
-                                              value={`$${laborBudgets['line-cook'].toLocaleString()}`}
-                                              onChange={(e) => {
-                                                 const val = e.target.value.replace(/[$,]/g, '');
-                                                 const num = parseFloat(val);
-                                                 if (!isNaN(num)) updateLaborBudget('line-cook', num);
-                                              }}
-                                              onClick={(e) => e.stopPropagation()}
-                                              className="w-20 px-2 py-0.5 text-gray-500 bg-gray-50 border border-gray-200 rounded hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors text-xs text-right"
-                                              data-testid="budget-input-line-cook"
-                                           />
+                                           <span className={cn("px-1.5 py-0.5 rounded text-[10px] font-medium", getLaborVariance('line-cook', PERIOD_REVENUE).statusColor)}>
+                                              {getLaborVariance('line-cook', PERIOD_REVENUE).statusText}
+                                           </span>
                                         </td>
-                                        <td className={cn("px-6 py-3 text-right text-xs", getLaborVariance('line-cook').color)}>{getLaborVariance('line-cook').formatted}</td>
-                                        <td className="px-6 py-3 text-right text-gray-500">6.3%</td>
                                      </tr>
                                   </PopoverTrigger>
                                   <PopoverContent className="w-[380px] p-0" align="start">
@@ -8601,22 +8697,14 @@ export default function PnlRelease() {
                                            <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Elaborated</span>
                                         </td>
                                         <td className="px-6 py-3 text-right text-gray-600">${laborActuals['prep-cook'].toLocaleString()}</td>
+                                        <td className="px-6 py-3 text-right text-gray-500">${getLaborBudgetForCategory('prep-cook', PERIOD_REVENUE).toLocaleString()}</td>
+                                        <td className={cn("px-6 py-3 text-right text-xs", getLaborVariance('prep-cook', PERIOD_REVENUE).color)}>{getLaborVariance('prep-cook', PERIOD_REVENUE).formattedDollar}</td>
+                                        <td className="px-6 py-3 text-right text-gray-500">{((laborActuals['prep-cook'] / PERIOD_REVENUE) * 100).toFixed(1)}%</td>
                                         <td className="px-6 py-3 text-right">
-                                           <input
-                                              type="text"
-                                              value={`$${laborBudgets['prep-cook'].toLocaleString()}`}
-                                              onChange={(e) => {
-                                                 const val = e.target.value.replace(/[$,]/g, '');
-                                                 const num = parseFloat(val);
-                                                 if (!isNaN(num)) updateLaborBudget('prep-cook', num);
-                                              }}
-                                              onClick={(e) => e.stopPropagation()}
-                                              className="w-20 px-2 py-0.5 text-gray-500 bg-gray-50 border border-gray-200 rounded hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors text-xs text-right"
-                                              data-testid="budget-input-prep-cook"
-                                           />
+                                           <span className={cn("px-1.5 py-0.5 rounded text-[10px] font-medium", getLaborVariance('prep-cook', PERIOD_REVENUE).statusColor)}>
+                                              {getLaborVariance('prep-cook', PERIOD_REVENUE).statusText}
+                                           </span>
                                         </td>
-                                        <td className={cn("px-6 py-3 text-right text-xs", getLaborVariance('prep-cook').color)}>{getLaborVariance('prep-cook').formatted}</td>
-                                        <td className="px-6 py-3 text-right text-gray-500">4.2%</td>
                                      </tr>
                                   </PopoverTrigger>
                                   <PopoverContent className="w-[380px] p-0" align="start">
@@ -8664,22 +8752,14 @@ export default function PnlRelease() {
                                            <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Elaborated</span>
                                         </td>
                                         <td className="px-6 py-3 text-right text-gray-600">${laborActuals['dishwasher'].toLocaleString()}</td>
+                                        <td className="px-6 py-3 text-right text-gray-500">${getLaborBudgetForCategory('dishwasher', PERIOD_REVENUE).toLocaleString()}</td>
+                                        <td className={cn("px-6 py-3 text-right text-xs", getLaborVariance('dishwasher', PERIOD_REVENUE).color)}>{getLaborVariance('dishwasher', PERIOD_REVENUE).formattedDollar}</td>
+                                        <td className="px-6 py-3 text-right text-gray-500">{((laborActuals['dishwasher'] / PERIOD_REVENUE) * 100).toFixed(1)}%</td>
                                         <td className="px-6 py-3 text-right">
-                                           <input
-                                              type="text"
-                                              value={`$${laborBudgets['dishwasher'].toLocaleString()}`}
-                                              onChange={(e) => {
-                                                 const val = e.target.value.replace(/[$,]/g, '');
-                                                 const num = parseFloat(val);
-                                                 if (!isNaN(num)) updateLaborBudget('dishwasher', num);
-                                              }}
-                                              onClick={(e) => e.stopPropagation()}
-                                              className="w-20 px-2 py-0.5 text-gray-500 bg-gray-50 border border-gray-200 rounded hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors text-xs text-right"
-                                              data-testid="budget-input-dishwasher"
-                                           />
+                                           <span className={cn("px-1.5 py-0.5 rounded text-[10px] font-medium", getLaborVariance('dishwasher', PERIOD_REVENUE).statusColor)}>
+                                              {getLaborVariance('dishwasher', PERIOD_REVENUE).statusText}
+                                           </span>
                                         </td>
-                                        <td className={cn("px-6 py-3 text-right text-xs", getLaborVariance('dishwasher').color)}>{getLaborVariance('dishwasher').formatted}</td>
-                                        <td className="px-6 py-3 text-right text-gray-500">2.6%</td>
                                      </tr>
                                   </PopoverTrigger>
                                   <PopoverContent className="w-[380px] p-0" align="start">
@@ -8722,21 +8802,18 @@ export default function PnlRelease() {
                                <tr className="hover:bg-gray-50">
                                   <td className="px-6 py-4 text-gray-700 pl-10">FOH Labor</td>
                                   <td className="px-6 py-4 text-right">${laborActuals['foh-labor'].toLocaleString()}</td>
-                                  <td className="px-6 py-4 text-right">
-                                     <input
-                                        type="text"
-                                        value={`$${laborBudgets['foh-labor'].toLocaleString()}`}
-                                        onChange={(e) => {
-                                           const val = e.target.value.replace(/[$,]/g, '');
-                                           const num = parseFloat(val);
-                                           if (!isNaN(num)) updateLaborBudget('foh-labor', num);
-                                        }}
-                                        className="w-24 px-2 py-1 text-gray-600 bg-gray-50 border border-gray-200 rounded hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors text-sm text-right"
-                                        data-testid="budget-input-foh-labor"
-                                     />
+                                  <td className="px-6 py-4 text-right text-gray-500">${getLaborBudgetForCategory('foh-labor', PERIOD_REVENUE).toLocaleString()}</td>
+                                  <td className={cn("px-6 py-4 text-right font-medium", getLaborVariance('foh-labor', PERIOD_REVENUE).color)}>
+                                     {getLaborVariance('foh-labor', PERIOD_REVENUE).formattedDollar}
                                   </td>
-                                  <td className={cn("px-6 py-4 text-right font-medium", getLaborVariance('foh-labor').color)}>{getLaborVariance('foh-labor').formatted}</td>
-                                  <td className="px-6 py-4 text-right text-gray-600">14.3%</td>
+                                  <td className="px-6 py-4 text-right text-gray-600">
+                                     {((laborActuals['foh-labor'] / PERIOD_REVENUE) * 100).toFixed(1)}%
+                                  </td>
+                                  <td className="px-6 py-4 text-right">
+                                     <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium", getLaborVariance('foh-labor', PERIOD_REVENUE).statusColor)}>
+                                        {getLaborVariance('foh-labor', PERIOD_REVENUE).statusText}
+                                     </span>
+                                  </td>
                                </tr>
                                <Popover>
                                   <PopoverTrigger asChild>
@@ -8746,22 +8823,14 @@ export default function PnlRelease() {
                                            <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Elaborated</span>
                                         </td>
                                         <td className="px-6 py-3 text-right text-gray-600">${laborActuals['server'].toLocaleString()}</td>
+                                        <td className="px-6 py-3 text-right text-gray-500">${getLaborBudgetForCategory('server', PERIOD_REVENUE).toLocaleString()}</td>
+                                        <td className={cn("px-6 py-3 text-right text-xs", getLaborVariance('server', PERIOD_REVENUE).color)}>{getLaborVariance('server', PERIOD_REVENUE).formattedDollar}</td>
+                                        <td className="px-6 py-3 text-right text-gray-500">{((laborActuals['server'] / PERIOD_REVENUE) * 100).toFixed(1)}%</td>
                                         <td className="px-6 py-3 text-right">
-                                           <input
-                                              type="text"
-                                              value={`$${laborBudgets['server'].toLocaleString()}`}
-                                              onChange={(e) => {
-                                                 const val = e.target.value.replace(/[$,]/g, '');
-                                                 const num = parseFloat(val);
-                                                 if (!isNaN(num)) updateLaborBudget('server', num);
-                                              }}
-                                              onClick={(e) => e.stopPropagation()}
-                                              className="w-20 px-2 py-0.5 text-gray-500 bg-gray-50 border border-gray-200 rounded hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors text-xs text-right"
-                                              data-testid="budget-input-server"
-                                           />
+                                           <span className={cn("px-1.5 py-0.5 rounded text-[10px] font-medium", getLaborVariance('server', PERIOD_REVENUE).statusColor)}>
+                                              {getLaborVariance('server', PERIOD_REVENUE).statusText}
+                                           </span>
                                         </td>
-                                        <td className={cn("px-6 py-3 text-right text-xs", getLaborVariance('server').color)}>{getLaborVariance('server').formatted}</td>
-                                        <td className="px-6 py-3 text-right text-gray-500">7.7%</td>
                                      </tr>
                                   </PopoverTrigger>
                                   <PopoverContent className="w-[380px] p-0" align="start">
@@ -8810,22 +8879,14 @@ export default function PnlRelease() {
                                            <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Elaborated</span>
                                         </td>
                                         <td className="px-6 py-3 text-right text-gray-600">${laborActuals['bartender'].toLocaleString()}</td>
+                                        <td className="px-6 py-3 text-right text-gray-500">${getLaborBudgetForCategory('bartender', PERIOD_REVENUE).toLocaleString()}</td>
+                                        <td className={cn("px-6 py-3 text-right text-xs", getLaborVariance('bartender', PERIOD_REVENUE).color)}>{getLaborVariance('bartender', PERIOD_REVENUE).formattedDollar}</td>
+                                        <td className="px-6 py-3 text-right text-gray-500">{((laborActuals['bartender'] / PERIOD_REVENUE) * 100).toFixed(1)}%</td>
                                         <td className="px-6 py-3 text-right">
-                                           <input
-                                              type="text"
-                                              value={`$${laborBudgets['bartender'].toLocaleString()}`}
-                                              onChange={(e) => {
-                                                 const val = e.target.value.replace(/[$,]/g, '');
-                                                 const num = parseFloat(val);
-                                                 if (!isNaN(num)) updateLaborBudget('bartender', num);
-                                              }}
-                                              onClick={(e) => e.stopPropagation()}
-                                              className="w-20 px-2 py-0.5 text-gray-500 bg-gray-50 border border-gray-200 rounded hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors text-xs text-right"
-                                              data-testid="budget-input-bartender"
-                                           />
+                                           <span className={cn("px-1.5 py-0.5 rounded text-[10px] font-medium", getLaborVariance('bartender', PERIOD_REVENUE).statusColor)}>
+                                              {getLaborVariance('bartender', PERIOD_REVENUE).statusText}
+                                           </span>
                                         </td>
-                                        <td className={cn("px-6 py-3 text-right text-xs", getLaborVariance('bartender').color)}>{getLaborVariance('bartender').formatted}</td>
-                                        <td className="px-6 py-3 text-right text-gray-500">4.0%</td>
                                      </tr>
                                   </PopoverTrigger>
                                   <PopoverContent className="w-[380px] p-0" align="start">
@@ -8873,22 +8934,14 @@ export default function PnlRelease() {
                                            <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Elaborated</span>
                                         </td>
                                         <td className="px-6 py-3 text-right text-gray-600">${laborActuals['host'].toLocaleString()}</td>
+                                        <td className="px-6 py-3 text-right text-gray-500">${getLaborBudgetForCategory('host', PERIOD_REVENUE).toLocaleString()}</td>
+                                        <td className={cn("px-6 py-3 text-right text-xs", getLaborVariance('host', PERIOD_REVENUE).color)}>{getLaborVariance('host', PERIOD_REVENUE).formattedDollar}</td>
+                                        <td className="px-6 py-3 text-right text-gray-500">{((laborActuals['host'] / PERIOD_REVENUE) * 100).toFixed(1)}%</td>
                                         <td className="px-6 py-3 text-right">
-                                           <input
-                                              type="text"
-                                              value={`$${laborBudgets['host'].toLocaleString()}`}
-                                              onChange={(e) => {
-                                                 const val = e.target.value.replace(/[$,]/g, '');
-                                                 const num = parseFloat(val);
-                                                 if (!isNaN(num)) updateLaborBudget('host', num);
-                                              }}
-                                              onClick={(e) => e.stopPropagation()}
-                                              className="w-20 px-2 py-0.5 text-gray-500 bg-gray-50 border border-gray-200 rounded hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors text-xs text-right"
-                                              data-testid="budget-input-host"
-                                           />
+                                           <span className={cn("px-1.5 py-0.5 rounded text-[10px] font-medium", getLaborVariance('host', PERIOD_REVENUE).statusColor)}>
+                                              {getLaborVariance('host', PERIOD_REVENUE).statusText}
+                                           </span>
                                         </td>
-                                        <td className={cn("px-6 py-3 text-right text-xs", getLaborVariance('host').color)}>{getLaborVariance('host').formatted}</td>
-                                        <td className="px-6 py-3 text-right text-gray-500">2.7%</td>
                                      </tr>
                                   </PopoverTrigger>
                                   <PopoverContent className="w-[380px] p-0" align="start">
@@ -8931,21 +8984,18 @@ export default function PnlRelease() {
                                <tr className="hover:bg-gray-50">
                                   <td className="px-6 py-4 text-gray-700 pl-10">Management</td>
                                   <td className="px-6 py-4 text-right">${laborActuals['management'].toLocaleString()}</td>
-                                  <td className="px-6 py-4 text-right">
-                                     <input
-                                        type="text"
-                                        value={`$${laborBudgets['management'].toLocaleString()}`}
-                                        onChange={(e) => {
-                                           const val = e.target.value.replace(/[$,]/g, '');
-                                           const num = parseFloat(val);
-                                           if (!isNaN(num)) updateLaborBudget('management', num);
-                                        }}
-                                        className="w-24 px-2 py-1 text-gray-600 bg-gray-50 border border-gray-200 rounded hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors text-sm text-right"
-                                        data-testid="budget-input-management"
-                                     />
+                                  <td className="px-6 py-4 text-right text-gray-500">${getLaborBudgetForCategory('management', PERIOD_REVENUE).toLocaleString()}</td>
+                                  <td className={cn("px-6 py-4 text-right font-medium", getLaborVariance('management', PERIOD_REVENUE).color)}>
+                                     {getLaborVariance('management', PERIOD_REVENUE).formattedDollar}
                                   </td>
-                                  <td className={cn("px-6 py-4 text-right font-medium", getLaborVariance('management').color)}>{getLaborVariance('management').formatted}</td>
-                                  <td className="px-6 py-4 text-right text-gray-600">4.3%</td>
+                                  <td className="px-6 py-4 text-right text-gray-600">
+                                     {((laborActuals['management'] / PERIOD_REVENUE) * 100).toFixed(1)}%
+                                  </td>
+                                  <td className="px-6 py-4 text-right">
+                                     <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium", getLaborVariance('management', PERIOD_REVENUE).statusColor)}>
+                                        {getLaborVariance('management', PERIOD_REVENUE).statusText}
+                                     </span>
+                                  </td>
                                </tr>
                                <Popover>
                                   <PopoverTrigger asChild>
@@ -8955,22 +9005,14 @@ export default function PnlRelease() {
                                            <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Elaborated</span>
                                         </td>
                                         <td className="px-6 py-3 text-right text-gray-600">${laborActuals['gm'].toLocaleString()}</td>
+                                        <td className="px-6 py-3 text-right text-gray-500">${getLaborBudgetForCategory('gm', PERIOD_REVENUE).toLocaleString()}</td>
+                                        <td className={cn("px-6 py-3 text-right text-xs", getLaborVariance('gm', PERIOD_REVENUE).color)}>{getLaborVariance('gm', PERIOD_REVENUE).formattedDollar}</td>
+                                        <td className="px-6 py-3 text-right text-gray-500">{((laborActuals['gm'] / PERIOD_REVENUE) * 100).toFixed(1)}%</td>
                                         <td className="px-6 py-3 text-right">
-                                           <input
-                                              type="text"
-                                              value={`$${laborBudgets['gm'].toLocaleString()}`}
-                                              onChange={(e) => {
-                                                 const val = e.target.value.replace(/[$,]/g, '');
-                                                 const num = parseFloat(val);
-                                                 if (!isNaN(num)) updateLaborBudget('gm', num);
-                                              }}
-                                              onClick={(e) => e.stopPropagation()}
-                                              className="w-20 px-2 py-0.5 text-gray-500 bg-gray-50 border border-gray-200 rounded hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors text-xs text-right"
-                                              data-testid="budget-input-gm"
-                                           />
+                                           <span className={cn("px-1.5 py-0.5 rounded text-[10px] font-medium", getLaborVariance('gm', PERIOD_REVENUE).statusColor)}>
+                                              {getLaborVariance('gm', PERIOD_REVENUE).statusText}
+                                           </span>
                                         </td>
-                                        <td className={cn("px-6 py-3 text-right text-xs", getLaborVariance('gm').color)}>{getLaborVariance('gm').formatted}</td>
-                                        <td className="px-6 py-3 text-right text-gray-500">2.3%</td>
                                      </tr>
                                   </PopoverTrigger>
                                   <PopoverContent className="w-[380px] p-0" align="start">
@@ -9018,22 +9060,14 @@ export default function PnlRelease() {
                                            <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Elaborated</span>
                                         </td>
                                         <td className="px-6 py-3 text-right text-gray-600">${laborActuals['supervisor'].toLocaleString()}</td>
+                                        <td className="px-6 py-3 text-right text-gray-500">${getLaborBudgetForCategory('supervisor', PERIOD_REVENUE).toLocaleString()}</td>
+                                        <td className={cn("px-6 py-3 text-right text-xs", getLaborVariance('supervisor', PERIOD_REVENUE).color)}>{getLaborVariance('supervisor', PERIOD_REVENUE).formattedDollar}</td>
+                                        <td className="px-6 py-3 text-right text-gray-500">{((laborActuals['supervisor'] / PERIOD_REVENUE) * 100).toFixed(1)}%</td>
                                         <td className="px-6 py-3 text-right">
-                                           <input
-                                              type="text"
-                                              value={`$${laborBudgets['supervisor'].toLocaleString()}`}
-                                              onChange={(e) => {
-                                                 const val = e.target.value.replace(/[$,]/g, '');
-                                                 const num = parseFloat(val);
-                                                 if (!isNaN(num)) updateLaborBudget('supervisor', num);
-                                              }}
-                                              onClick={(e) => e.stopPropagation()}
-                                              className="w-20 px-2 py-0.5 text-gray-500 bg-gray-50 border border-gray-200 rounded hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors text-xs text-right"
-                                              data-testid="budget-input-supervisor"
-                                           />
+                                           <span className={cn("px-1.5 py-0.5 rounded text-[10px] font-medium", getLaborVariance('supervisor', PERIOD_REVENUE).statusColor)}>
+                                              {getLaborVariance('supervisor', PERIOD_REVENUE).statusText}
+                                           </span>
                                         </td>
-                                        <td className={cn("px-6 py-3 text-right text-xs", getLaborVariance('supervisor').color)}>{getLaborVariance('supervisor').formatted}</td>
-                                        <td className="px-6 py-3 text-right text-gray-500">2.0%</td>
                                      </tr>
                                   </PopoverTrigger>
                                   <PopoverContent className="w-[380px] p-0" align="start">
@@ -9076,24 +9110,29 @@ export default function PnlRelease() {
                                <tr className="hover:bg-gray-50">
                                   <td className="px-6 py-4 text-gray-700 pl-10">Payroll Taxes & Benefits</td>
                                   <td className="px-6 py-4 text-right">${laborActuals['payroll-taxes'].toLocaleString()}</td>
-                                  <td className="px-6 py-4 text-right">
-                                     <input
-                                        type="text"
-                                        value={`$${laborBudgets['payroll-taxes'].toLocaleString()}`}
-                                        onChange={(e) => {
-                                           const val = e.target.value.replace(/[$,]/g, '');
-                                           const num = parseFloat(val);
-                                           if (!isNaN(num)) updateLaborBudget('payroll-taxes', num);
-                                        }}
-                                        className="w-24 px-2 py-1 text-gray-600 bg-gray-50 border border-gray-200 rounded hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors text-sm text-right"
-                                        data-testid="budget-input-payroll-taxes"
-                                     />
+                                  <td className="px-6 py-4 text-right text-gray-500">${getLaborBudgetForCategory('payroll-taxes', PERIOD_REVENUE).toLocaleString()}</td>
+                                  <td className={cn("px-6 py-4 text-right font-medium", getLaborVariance('payroll-taxes', PERIOD_REVENUE).color)}>
+                                     {getLaborVariance('payroll-taxes', PERIOD_REVENUE).formattedDollar}
                                   </td>
-                                  <td className={cn("px-6 py-4 text-right font-medium", getLaborVariance('payroll-taxes').color)}>{getLaborVariance('payroll-taxes').formatted}</td>
-                                  <td className="px-6 py-4 text-right text-gray-600">3.6%</td>
+                                  <td className="px-6 py-4 text-right text-gray-600">
+                                     {((laborActuals['payroll-taxes'] / PERIOD_REVENUE) * 100).toFixed(1)}%
+                                  </td>
+                                  <td className="px-6 py-4 text-right">
+                                     <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium", getLaborVariance('payroll-taxes', PERIOD_REVENUE).statusColor)}>
+                                        {getLaborVariance('payroll-taxes', PERIOD_REVENUE).statusText}
+                                     </span>
+                                  </td>
                                </tr>
                             </tbody>
                          </table>
+                         <div className="px-6 py-3 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
+                            <p className="text-xs text-gray-600">
+                               Budget calculated as {laborBudgetPct}% of period revenue (${PERIOD_REVENUE.toLocaleString()})
+                            </p>
+                            <p className="text-xs text-gray-500">
+                               Actual Labor: {((laborActuals['total-labor'] / PERIOD_REVENUE) * 100).toFixed(1)}% of revenue
+                            </p>
+                         </div>
                       </div>
 
                       {/* Labor Efficiency Metrics */}
@@ -9130,17 +9169,22 @@ export default function PnlRelease() {
                                      <td className="py-3 text-gray-900">Sales per Labor Hour</td>
                                      <td className="py-3 text-right font-medium">${laborEfficiencyActuals['sales-per-hour'].toFixed(2)}</td>
                                      <td className="py-3 text-right">
-                                        <input
-                                           type="text"
-                                           value={`$${laborEfficiencyTargets['sales-per-hour'].toFixed(2)}`}
-                                           onChange={(e) => {
-                                              const val = e.target.value.replace(/[$,]/g, '');
-                                              const num = parseFloat(val);
-                                              if (!isNaN(num)) setLaborEfficiencyTargets(prev => ({ ...prev, 'sales-per-hour': num }));
-                                           }}
-                                           className="w-20 px-2 py-0.5 text-gray-500 bg-gray-50 border border-gray-200 rounded hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors text-xs text-right"
-                                           data-testid="target-sales-per-hour"
-                                        />
+                                        <div className="flex items-center gap-1">
+                                           <input
+                                              type="text"
+                                              value={`$${laborEfficiencyTargets['sales-per-hour'].toFixed(2)}`}
+                                              onChange={(e) => {
+                                                 const val = e.target.value.replace(/[$,]/g, '');
+                                                 const num = parseFloat(val);
+                                                 if (!isNaN(num)) handleEfficiencyTargetChange('sales-per-hour', num);
+                                              }}
+                                              className="w-16 px-2 py-0.5 text-gray-500 bg-gray-50 border border-gray-200 rounded hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors text-xs text-right"
+                                              data-testid="target-sales-per-hour"
+                                           />
+                                           {isCustomEfficiencyTargets['sales-per-hour'] && (
+                                              <button onClick={() => resetEfficiencyTarget('sales-per-hour')} className="text-[10px] text-gray-400 hover:text-gray-600">↺</button>
+                                           )}
+                                        </div>
                                      </td>
                                      <td className="py-3 text-right"><span className={cn("px-2 py-0.5 rounded-full text-xs font-medium", getLaborEfficiencyStatus('sales-per-hour').color)}>{getLaborEfficiencyStatus('sales-per-hour').status}</span></td>
                                   </tr>
@@ -9148,16 +9192,21 @@ export default function PnlRelease() {
                                      <td className="py-3 text-gray-900">Labor Hours / Guest</td>
                                      <td className="py-3 text-right font-medium">{laborEfficiencyActuals['hours-per-guest'].toFixed(2)}</td>
                                      <td className="py-3 text-right">
-                                        <input
-                                           type="text"
-                                           value={laborEfficiencyTargets['hours-per-guest'].toFixed(2)}
-                                           onChange={(e) => {
-                                              const num = parseFloat(e.target.value);
-                                              if (!isNaN(num)) setLaborEfficiencyTargets(prev => ({ ...prev, 'hours-per-guest': num }));
-                                           }}
-                                           className="w-16 px-2 py-0.5 text-gray-500 bg-gray-50 border border-gray-200 rounded hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors text-xs text-right"
-                                           data-testid="target-hours-per-guest"
-                                        />
+                                        <div className="flex items-center gap-1">
+                                           <input
+                                              type="text"
+                                              value={laborEfficiencyTargets['hours-per-guest'].toFixed(2)}
+                                              onChange={(e) => {
+                                                 const num = parseFloat(e.target.value);
+                                                 if (!isNaN(num)) handleEfficiencyTargetChange('hours-per-guest', num);
+                                              }}
+                                              className="w-14 px-2 py-0.5 text-gray-500 bg-gray-50 border border-gray-200 rounded hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors text-xs text-right"
+                                              data-testid="target-hours-per-guest"
+                                           />
+                                           {isCustomEfficiencyTargets['hours-per-guest'] && (
+                                              <button onClick={() => resetEfficiencyTarget('hours-per-guest')} className="text-[10px] text-gray-400 hover:text-gray-600">↺</button>
+                                           )}
+                                        </div>
                                      </td>
                                      <td className="py-3 text-right"><span className={cn("px-2 py-0.5 rounded-full text-xs font-medium", getLaborEfficiencyStatus('hours-per-guest', true).color)}>{getLaborEfficiencyStatus('hours-per-guest', true).status}</span></td>
                                   </tr>
@@ -9165,17 +9214,22 @@ export default function PnlRelease() {
                                      <td className="py-3 text-gray-900">Overtime % of Total</td>
                                      <td className="py-3 text-right font-medium">{laborEfficiencyActuals['overtime-pct'].toFixed(1)}%</td>
                                      <td className="py-3 text-right">
-                                        <input
-                                           type="text"
-                                           value={`${laborEfficiencyTargets['overtime-pct'].toFixed(1)}%`}
-                                           onChange={(e) => {
-                                              const val = e.target.value.replace(/%/g, '');
-                                              const num = parseFloat(val);
-                                              if (!isNaN(num)) setLaborEfficiencyTargets(prev => ({ ...prev, 'overtime-pct': num }));
-                                           }}
-                                           className="w-16 px-2 py-0.5 text-gray-500 bg-gray-50 border border-gray-200 rounded hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors text-xs text-right"
-                                           data-testid="target-overtime-pct"
-                                        />
+                                        <div className="flex items-center gap-1">
+                                           <input
+                                              type="text"
+                                              value={`${laborEfficiencyTargets['overtime-pct'].toFixed(1)}%`}
+                                              onChange={(e) => {
+                                                 const val = e.target.value.replace(/%/g, '');
+                                                 const num = parseFloat(val);
+                                                 if (!isNaN(num)) handleEfficiencyTargetChange('overtime-pct', num);
+                                              }}
+                                              className="w-14 px-2 py-0.5 text-gray-500 bg-gray-50 border border-gray-200 rounded hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors text-xs text-right"
+                                              data-testid="target-overtime-pct"
+                                           />
+                                           {isCustomEfficiencyTargets['overtime-pct'] && (
+                                              <button onClick={() => resetEfficiencyTarget('overtime-pct')} className="text-[10px] text-gray-400 hover:text-gray-600">↺</button>
+                                           )}
+                                        </div>
                                      </td>
                                      <td className="py-3 text-right"><span className={cn("px-2 py-0.5 rounded-full text-xs font-medium", getLaborEfficiencyStatus('overtime-pct', true).color)}>{getLaborEfficiencyStatus('overtime-pct', true).status}</span></td>
                                   </tr>
