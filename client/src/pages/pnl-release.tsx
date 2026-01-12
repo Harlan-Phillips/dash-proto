@@ -11541,13 +11541,13 @@ export default function PnlRelease() {
                                   >
                                      <ChevronRight className={cn("h-4 w-4 text-gray-500 transition-transform", grossProfitExpanded && "rotate-90")} />
                                   </button>
+                                  <span className="font-medium text-gray-900">Gross Profit</span>
                                   <button 
                                      onClick={() => handleInsightClick("Analyze my Gross Profit change. October: $81,247.54, September: $77,371.95, Change: +$3,875.59 (+5.0%). What drove this?")}
-                                     className="font-medium text-gray-900 hover:text-blue-600 transition-colors"
+                                     className="p-1 rounded-full hover:bg-blue-100 transition-colors"
                                   >
-                                     Gross Profit
+                                     <HelpCircle className="h-3.5 w-3.5 text-gray-400 hover:text-blue-600" />
                                   </button>
-                                  <HelpCircle className="h-3.5 w-3.5 text-gray-400" />
                                </div>
                                <div className="text-right font-semibold text-gray-900">$81,247</div>
                                <div className="text-right text-gray-500">$77,372</div>
@@ -11557,19 +11557,21 @@ export default function PnlRelease() {
                             
                             {/* Gross Profit Margin - Child Row */}
                             {grossProfitExpanded && (
-                               <button 
-                                  onClick={() => handleInsightClick("Analyze my Gross Profit Margin. October: 58.4%, September: 58.2%, Change: +0.2 pts.")}
-                                  className="grid grid-cols-6 px-4 py-3 pl-12 bg-gray-50 hover:bg-blue-50 transition-colors w-full text-left border-t border-gray-100"
-                               >
+                               <div className="grid grid-cols-6 px-4 py-3 pl-12 bg-gray-50 hover:bg-blue-50 transition-colors w-full text-left border-t border-gray-100">
                                   <div className="col-span-2 flex items-center gap-2">
                                      <span className="text-sm text-gray-700">Gross Profit Margin</span>
-                                     <HelpCircle className="h-3 w-3 text-gray-400" />
+                                     <button 
+                                        onClick={() => handleInsightClick("Analyze my Gross Profit Margin. October: 58.4%, September: 58.2%, Change: +0.2 pts.")}
+                                        className="p-1 rounded-full hover:bg-blue-100 transition-colors"
+                                     >
+                                        <HelpCircle className="h-3 w-3 text-gray-400 hover:text-blue-600" />
+                                     </button>
                                   </div>
                                   <div className="text-right text-sm font-medium text-gray-900">58.4%</div>
                                   <div className="text-right text-sm text-gray-500">58.2%</div>
                                   <div className="text-right text-sm font-medium text-emerald-600">+0.2 pts</div>
                                   <div className="text-right"><span className="text-emerald-600 text-sm">↑</span></div>
-                               </button>
+                               </div>
                             )}
                          </div>
 
@@ -11583,13 +11585,13 @@ export default function PnlRelease() {
                                   >
                                      <ChevronRight className={cn("h-4 w-4 text-gray-500 transition-transform", netIncomeExpanded && "rotate-90")} />
                                   </button>
+                                  <span className="font-bold text-gray-900">Net Operating Income</span>
                                   <button 
                                      onClick={() => handleInsightClick("Analyze my Net Operating Income. October: $23,424, September: $17,722, Change: +$5,702 (+32.2%). This is significant - what drove it?")}
-                                     className="font-bold text-gray-900 hover:text-blue-600 transition-colors"
+                                     className="p-1 rounded-full hover:bg-blue-100 transition-colors"
                                   >
-                                     Net Operating Income
+                                     <HelpCircle className="h-3.5 w-3.5 text-gray-400 hover:text-blue-600" />
                                   </button>
-                                  <HelpCircle className="h-3.5 w-3.5 text-gray-400" />
                                </div>
                                <div className="text-right font-bold text-gray-900">$23,424</div>
                                <div className="text-right text-gray-500">$17,722</div>
@@ -11600,65 +11602,73 @@ export default function PnlRelease() {
                             {/* Net Operating Income Children */}
                             {netIncomeExpanded && (
                                <>
-                                  <button 
-                                     onClick={() => handleInsightClick("Analyze my Operating Expenses. October: $57,823, September: $59,650, Change: -$1,826 (-3.1%). What drove the decrease?")}
-                                     className="grid grid-cols-6 px-4 py-3 pl-12 bg-gray-50 hover:bg-blue-50 transition-colors w-full text-left border-t border-gray-100"
-                                  >
+                                  <div className="grid grid-cols-6 px-4 py-3 pl-12 bg-gray-50 hover:bg-blue-50 transition-colors w-full text-left border-t border-gray-100">
                                      <div className="col-span-2 flex items-center gap-2">
                                         <span className="text-sm text-gray-700">Operating Expenses</span>
-                                        <HelpCircle className="h-3 w-3 text-gray-400" />
+                                        <button 
+                                           onClick={() => handleInsightClick("Analyze my Operating Expenses. October: $57,823, September: $59,650, Change: -$1,826 (-3.1%). What drove the decrease?")}
+                                           className="p-1 rounded-full hover:bg-blue-100 transition-colors"
+                                        >
+                                           <HelpCircle className="h-3 w-3 text-gray-400 hover:text-blue-600" />
+                                        </button>
                                      </div>
                                      <div className="text-right text-sm font-medium text-gray-900">$57,823</div>
                                      <div className="text-right text-sm text-gray-500">$59,650</div>
                                      <div className="text-right text-sm font-medium text-emerald-600">-$1,826</div>
                                      <div className="text-right"><span className="text-emerald-600 text-sm">🟢 ↓</span></div>
-                                  </button>
+                                  </div>
                                   
-                                  <button 
-                                     onClick={() => handleInsightClick("Analyze my Operating Expense Ratio. October: 41.5%, September: 44.8%, Change: -3.3 pts.")}
-                                     className="grid grid-cols-6 px-4 py-3 pl-12 bg-gray-50 hover:bg-blue-50 transition-colors w-full text-left border-t border-gray-100"
-                                  >
+                                  <div className="grid grid-cols-6 px-4 py-3 pl-12 bg-gray-50 hover:bg-blue-50 transition-colors w-full text-left border-t border-gray-100">
                                      <div className="col-span-2 flex items-center gap-2">
                                         <span className="text-sm text-gray-700">Operating Expense Ratio</span>
-                                        <HelpCircle className="h-3 w-3 text-gray-400" />
+                                        <button 
+                                           onClick={() => handleInsightClick("Analyze my Operating Expense Ratio. October: 41.5%, September: 44.8%, Change: -3.3 pts.")}
+                                           className="p-1 rounded-full hover:bg-blue-100 transition-colors"
+                                        >
+                                           <HelpCircle className="h-3 w-3 text-gray-400 hover:text-blue-600" />
+                                        </button>
                                      </div>
                                      <div className="text-right text-sm font-medium text-gray-900">41.5%</div>
                                      <div className="text-right text-sm text-gray-500">44.8%</div>
                                      <div className="text-right text-sm font-medium text-emerald-600">-3.3 pts</div>
                                      <div className="text-right"><span className="text-emerald-600 text-sm">🟢 ↓</span></div>
-                                  </button>
+                                  </div>
                                   
-                                  <button 
-                                     onClick={() => handleInsightClick("Analyze my Expense as % of Revenue. October: 83.1%, September: 86.7%, Change: -3.6 pts.")}
-                                     className="grid grid-cols-6 px-4 py-3 pl-12 bg-gray-50 hover:bg-blue-50 transition-colors w-full text-left border-t border-gray-100"
-                                  >
+                                  <div className="grid grid-cols-6 px-4 py-3 pl-12 bg-gray-50 hover:bg-blue-50 transition-colors w-full text-left border-t border-gray-100">
                                      <div className="col-span-2 flex items-center gap-2">
                                         <span className="text-sm text-gray-700">Expense as % of Revenue</span>
-                                        <HelpCircle className="h-3 w-3 text-gray-400" />
+                                        <button 
+                                           onClick={() => handleInsightClick("Analyze my Expense as % of Revenue. October: 83.1%, September: 86.7%, Change: -3.6 pts.")}
+                                           className="p-1 rounded-full hover:bg-blue-100 transition-colors"
+                                        >
+                                           <HelpCircle className="h-3 w-3 text-gray-400 hover:text-blue-600" />
+                                        </button>
                                      </div>
                                      <div className="text-right text-sm font-medium text-gray-900">83.1%</div>
                                      <div className="text-right text-sm text-gray-500">86.7%</div>
                                      <div className="text-right text-sm font-medium text-emerald-600">-3.6 pts</div>
                                      <div className="text-right"><span className="text-emerald-600 text-sm">🟢 ↓</span></div>
-                                  </button>
+                                  </div>
                                </>
                             )}
                          </div>
 
                          {/* Operating Margin - Standalone Row */}
-                         <button 
-                            onClick={() => handleInsightClick("Analyze my Operating Margin. October: 16.8%, September: 13.3%, Change: +3.5 pts. Is this sustainable?")}
-                            className="grid grid-cols-6 px-4 py-4 bg-white hover:bg-blue-50 transition-colors w-full text-left"
-                         >
+                         <div className="grid grid-cols-6 px-4 py-4 bg-white hover:bg-blue-50 transition-colors w-full text-left">
                             <div className="col-span-2 flex items-center gap-2 pl-6">
                                <span className="font-bold text-gray-900">Operating Margin</span>
-                               <HelpCircle className="h-3.5 w-3.5 text-gray-400" />
+                               <button 
+                                  onClick={() => handleInsightClick("Analyze my Operating Margin. October: 16.8%, September: 13.3%, Change: +3.5 pts. Is this sustainable?")}
+                                  className="p-1 rounded-full hover:bg-blue-100 transition-colors"
+                               >
+                                  <HelpCircle className="h-3.5 w-3.5 text-gray-400 hover:text-blue-600" />
+                               </button>
                             </div>
                             <div className="text-right font-bold text-gray-900">16.8%</div>
                             <div className="text-right text-gray-500">13.3%</div>
                             <div className="text-right font-bold text-emerald-600">+3.5 pts</div>
                             <div className="text-right"><span className="text-emerald-600 font-bold">🟢 ↑</span></div>
-                         </button>
+                         </div>
                       </div>
 
                       <div className="mt-3 flex items-center justify-between text-xs text-gray-400">
