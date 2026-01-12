@@ -4204,6 +4204,9 @@ export default function PnlRelease() {
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState<number | null>(null);
   const [dragEnd, setDragEnd] = useState<number | null>(null);
+  const [isPanning, setIsPanning] = useState(false);
+  const [panStartX, setPanStartX] = useState<number | null>(null);
+  const [dataOffset, setDataOffset] = useState(0);
   
   // Generate data at different resolutions
   const generateZoomedData = (baseHour: number, resolution: '15min' | '5min' | '1min') => {
@@ -4237,22 +4240,28 @@ export default function PnlRelease() {
     });
   };
   
-  // Get zoomed data for a window
+  // Generate full day data at current resolution
+  const getFullDayData = (resolution: '15min' | '5min' | '1min') => {
+    let allData: any[] = [];
+    for (let h = 9; h <= 22; h++) {
+      const hourData = generateZoomedData(h, resolution);
+      allData = [...allData, ...hourData];
+    }
+    return allData;
+  };
+  
+  // Get visible window of data based on zoom and pan
   const getZoomedShiftData = () => {
-    if (!shiftZoomWindow || shiftZoomLevel === '60min') {
+    if (shiftZoomLevel === '60min') {
       return shiftBreakdownData[gmTimeRange];
     }
     
-    const startHour = Math.floor(shiftZoomWindow.start);
-    const endHour = Math.ceil(shiftZoomWindow.end);
-    let zoomedData: any[] = [];
+    const fullData = getFullDayData(shiftZoomLevel);
+    const windowSize = shiftZoomLevel === '15min' ? 16 : shiftZoomLevel === '5min' ? 24 : 30;
+    const maxOffset = Math.max(0, fullData.length - windowSize);
+    const clampedOffset = Math.min(Math.max(0, dataOffset), maxOffset);
     
-    for (let h = startHour; h < endHour; h++) {
-      const hourData = generateZoomedData(h, shiftZoomLevel);
-      zoomedData = [...zoomedData, ...hourData];
-    }
-    
-    return zoomedData;
+    return fullData.slice(clampedOffset, clampedOffset + windowSize);
   };
   
   const currentShiftData = getZoomedShiftData();
@@ -4263,18 +4272,42 @@ export default function PnlRelease() {
   useEffect(() => {
     setShiftZoomLevel('60min');
     setShiftZoomWindow(null);
+    setDataOffset(0);
   }, [gmTimeRange]);
   
-  // Handle zoom from drag selection
+  // Get max offset for current zoom level
+  const getMaxOffset = () => {
+    if (shiftZoomLevel === '60min') return 0;
+    const totalPoints = 14 * (shiftZoomLevel === '15min' ? 4 : shiftZoomLevel === '5min' ? 12 : 60);
+    const windowSize = shiftZoomLevel === '15min' ? 16 : shiftZoomLevel === '5min' ? 24 : 30;
+    return Math.max(0, totalPoints - windowSize);
+  };
+  
+  // Handle zoom from drag selection OR pan when zoomed
   const handleShiftChartMouseDown = (e: any) => {
-    if (e && e.activeLabel) {
+    if (shiftZoomLevel !== '60min') {
+      // Pan mode when zoomed
+      setIsPanning(true);
+      setPanStartX(e?.chartX || 0);
+    } else if (e && e.activeLabel) {
+      // Zoom mode at hourly level
       setIsDragging(true);
       setDragStart(e.activeTooltipIndex);
     }
   };
   
   const handleShiftChartMouseMove = (e: any) => {
-    if (isDragging && e && e.activeTooltipIndex !== undefined) {
+    if (isPanning && panStartX !== null && e?.chartX !== undefined) {
+      const delta = panStartX - e.chartX;
+      const sensitivity = shiftZoomLevel === '1min' ? 0.3 : shiftZoomLevel === '5min' ? 0.2 : 0.15;
+      const offsetChange = Math.round(delta * sensitivity);
+      
+      if (Math.abs(offsetChange) >= 1) {
+        const newOffset = Math.min(Math.max(0, dataOffset + offsetChange), getMaxOffset());
+        setDataOffset(newOffset);
+        setPanStartX(e.chartX);
+      }
+    } else if (isDragging && e && e.activeTooltipIndex !== undefined) {
       setDragEnd(e.activeTooltipIndex);
     }
   };
@@ -4284,24 +4317,30 @@ export default function PnlRelease() {
       const start = Math.min(dragStart, dragEnd);
       const end = Math.max(dragStart, dragEnd);
       
-      // Zoom in based on selection width
+      // Zoom in based on selection
       if (shiftZoomLevel === '60min') {
         setShiftZoomLevel('15min');
-        setShiftZoomWindow({ start: start + 9, end: end + 10 }); // 9am offset
+        setDataOffset(start * 4); // Each hour = 4 x 15min
+        setShiftZoomWindow({ start: start + 9, end: end + 10 });
       } else if (shiftZoomLevel === '15min') {
         setShiftZoomLevel('5min');
+        setDataOffset(Math.floor(dataOffset * 3));
       } else if (shiftZoomLevel === '5min') {
         setShiftZoomLevel('1min');
+        setDataOffset(Math.floor(dataOffset * 5));
       }
     }
     setIsDragging(false);
     setDragStart(null);
     setDragEnd(null);
+    setIsPanning(false);
+    setPanStartX(null);
   };
   
   const handleShiftChartDoubleClick = () => {
     setShiftZoomLevel('60min');
     setShiftZoomWindow(null);
+    setDataOffset(0);
   };
   
   // Shift time customization state
@@ -11241,15 +11280,20 @@ export default function PnlRelease() {
                                   <div className="w-2 h-2 rounded-full bg-red-500" />
                                   <span className="text-gray-600">Labor %</span>
                                </div>
-                               {shiftZoomLevel === '60min' && (
+                               {shiftZoomLevel === '60min' ? (
                                   <span className="text-[10px] text-gray-400 italic">Drag to zoom</span>
+                               ) : (
+                                  <span className="text-[10px] text-gray-400 italic">Drag to pan • Double-click to reset</span>
                                )}
                             </div>
                          </div>
                          
                          {/* Combined Bar + Line Chart with Zoom */}
                          <div 
-                            className="h-64 cursor-crosshair select-none" 
+                            className={cn(
+                               "h-64 select-none",
+                               shiftZoomLevel === '60min' ? "cursor-crosshair" : isPanning ? "cursor-grabbing" : "cursor-grab"
+                            )}
                             onDoubleClick={handleShiftChartDoubleClick}
                          >
                             <ResponsiveContainer width="100%" height="100%">
