@@ -59,7 +59,8 @@ import {
   Sun,
   Moon,
   Package,
-  TrendingDown
+  TrendingDown,
+  MessageSquare
 } from "lucide-react";
 import {
   Popover,
@@ -5696,6 +5697,265 @@ export default function PnlRelease() {
                                    </div>
                                 </div>
                              </div>
+                          </div>
+                       </section>
+                       )}
+
+                       {/* ===== PROFITABILITY SECTION - Owner Only ===== */}
+                       {selectedRole === "owner" && (
+                       <section data-testid="profitability-section" className="relative">
+                          <div className="flex items-center justify-between mb-6">
+                             <div>
+                                <h2 className="text-lg font-serif font-bold text-gray-900 flex items-center gap-2">
+                                   <BarChart3 className="h-5 w-5 text-gray-600" />
+                                   Profitability
+                                </h2>
+                                <p className="text-sm text-gray-500 mt-1">Month-over-month performance summary</p>
+                             </div>
+                             
+                             <div className="flex items-center gap-3">
+                                {/* Financial Health Badge */}
+                                <button
+                                   onClick={() => handleInsightClick("Explain my financial health score. What factors determine if I'm Healthy, Watch, or At Risk?")}
+                                   className="flex items-center gap-2 px-3 py-1.5 bg-emerald-100 border border-emerald-200 rounded-full hover:bg-emerald-200 transition-colors"
+                                   data-testid="badge-financial-health"
+                                >
+                                   <span className="text-sm">🟢</span>
+                                   <span className="text-sm font-semibold text-emerald-800">Healthy</span>
+                                   <HelpCircle className="h-3.5 w-3.5 text-emerald-600" />
+                                </button>
+                                
+                                {/* Print/Export Button */}
+                                <button
+                                   onClick={() => window.print()}
+                                   className="flex items-center gap-2 px-3 py-1.5 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium text-gray-700"
+                                   data-testid="button-export-profitability"
+                                >
+                                   <Download className="h-4 w-4" />
+                                   Export
+                                </button>
+                             </div>
+                          </div>
+
+                          {/* Profitability Table */}
+                          <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                             {/* Table Header */}
+                             <div className="grid grid-cols-6 bg-gray-50 border-b border-gray-200 px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                <div className="col-span-2">Metric</div>
+                                <div className="text-right">Oct 2025</div>
+                                <div className="text-right">Sep 2025</div>
+                                <div className="text-right">Change</div>
+                                <div className="text-right">Trend</div>
+                             </div>
+
+                             {/* Gross Profit Row */}
+                             <button 
+                                onClick={() => handleInsightClick("Analyze my Gross Profit change from September to October 2025. October: $81,247.54, September: $77,371.95, Change: +$3,875.59 (+5.0%). What drove this improvement?")}
+                                className="grid grid-cols-6 px-4 py-4 border-b border-gray-100 hover:bg-blue-50 transition-colors w-full text-left group"
+                                data-testid="row-profitability-gross-profit"
+                             >
+                                <div className="col-span-2 flex items-center gap-2">
+                                   <span className="font-medium text-gray-900">Gross Profit</span>
+                                   <div className="relative group/tooltip">
+                                      <HelpCircle className="h-3.5 w-3.5 text-gray-400 cursor-help" />
+                                      <div className="absolute left-0 bottom-full mb-2 w-64 p-3 bg-gray-900 text-white text-xs rounded-lg opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all z-50">
+                                         <p className="font-medium mb-1">Revenue minus Cost of Goods Sold</p>
+                                         <p className="text-gray-300">Shows money remaining after direct costs. Higher is better.</p>
+                                         <p className="text-gray-400 mt-1">Typical range: $50k-$100k for restaurants this size</p>
+                                      </div>
+                                   </div>
+                                   <MessageSquare className="h-3.5 w-3.5 text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                </div>
+                                <div className="text-right font-semibold text-gray-900">$81,247.54</div>
+                                <div className="text-right text-gray-500">$77,371.95</div>
+                                <div className="text-right font-medium text-emerald-600">+$3,875.59</div>
+                                <div className="text-right">
+                                   <span className="inline-flex items-center gap-1 text-emerald-600">
+                                      <TrendingUp className="h-4 w-4" />
+                                      <span className="text-sm font-medium">+5.0%</span>
+                                   </span>
+                                </div>
+                             </button>
+
+                             {/* Gross Profit Margin Row */}
+                             <button 
+                                onClick={() => handleInsightClick("Analyze my Gross Profit Margin change from September to October 2025. October: 58.4%, September: 58.2%, Change: +0.2 pts. Is this a healthy margin for a restaurant?")}
+                                className="grid grid-cols-6 px-4 py-4 border-b border-gray-100 hover:bg-blue-50 transition-colors w-full text-left group"
+                                data-testid="row-profitability-gross-margin"
+                             >
+                                <div className="col-span-2 flex items-center gap-2">
+                                   <span className="font-medium text-gray-900">Gross Profit Margin</span>
+                                   <div className="relative group/tooltip">
+                                      <HelpCircle className="h-3.5 w-3.5 text-gray-400 cursor-help" />
+                                      <div className="absolute left-0 bottom-full mb-2 w-64 p-3 bg-gray-900 text-white text-xs rounded-lg opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all z-50">
+                                         <p className="font-medium mb-1">Gross Profit ÷ Revenue</p>
+                                         <p className="text-gray-300">Percentage of revenue kept after direct costs. Key profitability indicator.</p>
+                                         <p className="text-gray-400 mt-1">Healthy range: 55-65% for full-service restaurants</p>
+                                      </div>
+                                   </div>
+                                   <MessageSquare className="h-3.5 w-3.5 text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                </div>
+                                <div className="text-right font-semibold text-gray-900">58.4%</div>
+                                <div className="text-right text-gray-500">58.2%</div>
+                                <div className="text-right font-medium text-emerald-600">+0.2 pts</div>
+                                <div className="text-right">
+                                   <span className="inline-flex items-center gap-1 text-emerald-600">
+                                      <TrendingUp className="h-4 w-4" />
+                                      <span className="text-sm font-medium">↑</span>
+                                   </span>
+                                </div>
+                             </button>
+
+                             {/* Operating Expenses Row */}
+                             <button 
+                                onClick={() => handleInsightClick("Analyze my Operating Expenses change from September to October 2025. October: $57,823.45, September: $59,649.58, Change: -$1,826.13 (-3.1%). What categories drove this decrease?")}
+                                className="grid grid-cols-6 px-4 py-4 border-b border-gray-100 hover:bg-blue-50 transition-colors w-full text-left group"
+                                data-testid="row-profitability-opex"
+                             >
+                                <div className="col-span-2 flex items-center gap-2">
+                                   <span className="font-medium text-gray-900">Operating Expenses</span>
+                                   <div className="relative group/tooltip">
+                                      <HelpCircle className="h-3.5 w-3.5 text-gray-400 cursor-help" />
+                                      <div className="absolute left-0 bottom-full mb-2 w-64 p-3 bg-gray-900 text-white text-xs rounded-lg opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all z-50">
+                                         <p className="font-medium mb-1">Total non-COGS expenses</p>
+                                         <p className="text-gray-300">Includes payroll, rent, marketing, utilities, and admin costs.</p>
+                                         <p className="text-gray-400 mt-1">Lower is better (without sacrificing quality)</p>
+                                      </div>
+                                   </div>
+                                   <MessageSquare className="h-3.5 w-3.5 text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                </div>
+                                <div className="text-right font-semibold text-gray-900">$57,823.45</div>
+                                <div className="text-right text-gray-500">$59,649.58</div>
+                                <div className="text-right font-medium text-emerald-600">-$1,826.13</div>
+                                <div className="text-right">
+                                   <span className="inline-flex items-center gap-1 text-emerald-600">
+                                      <TrendingDown className="h-4 w-4" />
+                                      <span className="text-sm font-medium">🟢</span>
+                                   </span>
+                                </div>
+                             </button>
+
+                             {/* Operating Expense Ratio Row */}
+                             <button 
+                                onClick={() => handleInsightClick("Analyze my Operating Expense Ratio change from September to October 2025. October: 41.5%, September: 44.8%, Change: -3.3 pts. This seems like a significant improvement - what drove it?")}
+                                className="grid grid-cols-6 px-4 py-4 border-b border-gray-100 hover:bg-blue-50 transition-colors w-full text-left group"
+                                data-testid="row-profitability-opex-ratio"
+                             >
+                                <div className="col-span-2 flex items-center gap-2">
+                                   <span className="font-medium text-gray-900">Operating Expense Ratio</span>
+                                   <div className="relative group/tooltip">
+                                      <HelpCircle className="h-3.5 w-3.5 text-gray-400 cursor-help" />
+                                      <div className="absolute left-0 bottom-full mb-2 w-64 p-3 bg-gray-900 text-white text-xs rounded-lg opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all z-50">
+                                         <p className="font-medium mb-1">Operating Expenses ÷ Revenue</p>
+                                         <p className="text-gray-300">Shows what percentage of revenue goes to operations.</p>
+                                         <p className="text-gray-400 mt-1">Healthy range: 35-45% for restaurants</p>
+                                      </div>
+                                   </div>
+                                   <MessageSquare className="h-3.5 w-3.5 text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                </div>
+                                <div className="text-right font-semibold text-gray-900">41.5%</div>
+                                <div className="text-right text-gray-500">44.8%</div>
+                                <div className="text-right font-medium text-emerald-600">-3.3 pts</div>
+                                <div className="text-right">
+                                   <span className="inline-flex items-center gap-1 text-emerald-600">
+                                      <TrendingDown className="h-4 w-4" />
+                                      <span className="text-sm font-medium">🟢</span>
+                                   </span>
+                                </div>
+                             </button>
+
+                             {/* Expense as % of Revenue Row */}
+                             <button 
+                                onClick={() => handleInsightClick("Analyze my total Expense as % of Revenue from September to October 2025. October: 83.1%, September: 86.7%, Change: -3.6 pts. This is a big improvement - break down what contributed.")}
+                                className="grid grid-cols-6 px-4 py-4 border-b border-gray-100 hover:bg-blue-50 transition-colors w-full text-left group"
+                                data-testid="row-profitability-expense-pct"
+                             >
+                                <div className="col-span-2 flex items-center gap-2">
+                                   <span className="font-medium text-gray-900">Expense as % of Revenue</span>
+                                   <div className="relative group/tooltip">
+                                      <HelpCircle className="h-3.5 w-3.5 text-gray-400 cursor-help" />
+                                      <div className="absolute left-0 bottom-full mb-2 w-64 p-3 bg-gray-900 text-white text-xs rounded-lg opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all z-50">
+                                         <p className="font-medium mb-1">(COGS + Operating Expenses) ÷ Revenue</p>
+                                         <p className="text-gray-300">Total cost burden relative to sales. Lower means more profit.</p>
+                                         <p className="text-gray-400 mt-1">Target: Below 90% for healthy restaurants</p>
+                                      </div>
+                                   </div>
+                                   <MessageSquare className="h-3.5 w-3.5 text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                </div>
+                                <div className="text-right font-semibold text-gray-900">83.1%</div>
+                                <div className="text-right text-gray-500">86.7%</div>
+                                <div className="text-right font-medium text-emerald-600">-3.6 pts</div>
+                                <div className="text-right">
+                                   <span className="inline-flex items-center gap-1 text-emerald-600">
+                                      <TrendingDown className="h-4 w-4" />
+                                      <span className="text-sm font-medium">🟢</span>
+                                   </span>
+                                </div>
+                             </button>
+
+                             {/* Net Operating Income Row - Highlighted */}
+                             <button 
+                                onClick={() => handleInsightClick("Analyze my Net Operating Income change from September to October 2025. October: $23,424.09, September: $17,722.37, Change: +$5,701.72 (+32.2%). This is a significant jump - what are the key drivers?")}
+                                className="grid grid-cols-6 px-4 py-4 border-b border-gray-100 bg-emerald-50/50 hover:bg-emerald-100/50 transition-colors w-full text-left group"
+                                data-testid="row-profitability-noi"
+                             >
+                                <div className="col-span-2 flex items-center gap-2">
+                                   <span className="font-bold text-gray-900">Net Operating Income</span>
+                                   <div className="relative group/tooltip">
+                                      <HelpCircle className="h-3.5 w-3.5 text-gray-400 cursor-help" />
+                                      <div className="absolute left-0 bottom-full mb-2 w-64 p-3 bg-gray-900 text-white text-xs rounded-lg opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all z-50">
+                                         <p className="font-medium mb-1">Gross Profit – Operating Expenses</p>
+                                         <p className="text-gray-300">The bottom line. Money left after all operating costs.</p>
+                                         <p className="text-gray-400 mt-1">This is what pays loans, dividends, and reinvestment</p>
+                                      </div>
+                                   </div>
+                                   <MessageSquare className="h-3.5 w-3.5 text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                </div>
+                                <div className="text-right font-bold text-gray-900">$23,424.09</div>
+                                <div className="text-right text-gray-500">$17,722.37</div>
+                                <div className="text-right font-bold text-emerald-600">+$5,701.72</div>
+                                <div className="text-right">
+                                   <span className="inline-flex items-center gap-1 text-emerald-600">
+                                      <TrendingUp className="h-4 w-4" />
+                                      <span className="text-sm font-bold">+32.2%</span>
+                                   </span>
+                                </div>
+                             </button>
+
+                             {/* Operating Margin Row - Final */}
+                             <button 
+                                onClick={() => handleInsightClick("Analyze my Operating Margin change from September to October 2025. October: 16.8%, September: 13.3%, Change: +3.5 pts. This is a strong improvement - is this sustainable?")}
+                                className="grid grid-cols-6 px-4 py-4 bg-gray-50/50 hover:bg-blue-50 transition-colors w-full text-left group"
+                                data-testid="row-profitability-operating-margin"
+                             >
+                                <div className="col-span-2 flex items-center gap-2">
+                                   <span className="font-bold text-gray-900">Operating Margin</span>
+                                   <div className="relative group/tooltip">
+                                      <HelpCircle className="h-3.5 w-3.5 text-gray-400 cursor-help" />
+                                      <div className="absolute left-0 bottom-full mb-2 w-64 p-3 bg-gray-900 text-white text-xs rounded-lg opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all z-50">
+                                         <p className="font-medium mb-1">Net Operating Income ÷ Revenue</p>
+                                         <p className="text-gray-300">The ultimate profitability metric. What % of sales becomes profit.</p>
+                                         <p className="text-gray-400 mt-1">Industry benchmark: 10-15% is good, 15%+ is excellent</p>
+                                      </div>
+                                   </div>
+                                   <MessageSquare className="h-3.5 w-3.5 text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                </div>
+                                <div className="text-right font-bold text-gray-900">16.8%</div>
+                                <div className="text-right text-gray-500">13.3%</div>
+                                <div className="text-right font-bold text-emerald-600">+3.5 pts</div>
+                                <div className="text-right">
+                                   <span className="inline-flex items-center gap-1 text-emerald-600">
+                                      <TrendingUp className="h-4 w-4" />
+                                      <span className="text-sm font-bold">🟢</span>
+                                   </span>
+                                </div>
+                             </button>
+                          </div>
+
+                          {/* Source Attribution */}
+                          <div className="mt-3 flex items-center justify-between text-xs text-gray-400">
+                             <span>Data source: 2025_10_SPOT_SM_PL.json vs 2025_09_SPOT_SM_PL.json</span>
+                             <span>Click any row to ask the assistant</span>
                           </div>
                        </section>
                        )}

@@ -1,0 +1,259 @@
+Owner Curated View – Add Dedicated “Profitability” Section
+
+Area: Accounting / P&L
+View: Curated View → Owner
+Section: Profitability (New, Dedicated Section)
+Type: Feature / Financial Summary
+
+Context (Current State)
+
+The Owner Curated View already includes:
+
+Income
+
+Marketing
+
+Operating Expenses
+
+Growth
+
+Cash Flow (Owner Only)
+
+Compensation Overview (Owner Only)
+
+These cards surface signals, but owners still lack a single, consolidated profitability view that shows:
+
+Margins
+
+Expense efficiency
+
+Net income
+
+Month-to-month change
+
+Directional health
+
+Goal
+
+Add a dedicated “Profitability” section to the Owner Curated View that provides a CFO-style summary table, clearly answering:
+
+“How profitable are we, and how did that change vs last month?”
+
+This section should:
+
+Be clearly separated from existing cards
+
+Avoid duplicating top-level KPIs already shown elsewhere
+
+Focus on derived profitability metrics and comparisons
+
+Section Placement
+
+Appears below the top summary cards
+
+Above or just before Cash Flow / Compensation (flexible)
+
+Full-width section
+
+Section Title
+
+Profitability
+
+Optional subtext:
+
+“Month-over-month performance summary”
+
+Table Structure (Required)
+Columns (Left → Right)
+
+Metric
+
+Current Period (Oct 2025)
+
+Prior Period (Sep 2025)
+
+Change ($ / pts)
+
+Change (%)
+
+Trend
+
+Metrics Included (Exact Order)
+
+Gross Profit
+
+Gross Profit Margin
+
+Operating Expenses
+
+Operating Expense Ratio
+
+Expense as % of Revenue
+
+Net Operating Income
+
+Operating Margin
+
+(These metrics are not shown together anywhere else, so no duplication.)
+
+Calculation Rules (Locked)
+
+Gross Profit
+Revenue – COGS
+
+Gross Profit Margin
+Gross Profit / Revenue
+
+Operating Expenses
+Total OpEx (excluding COGS)
+
+Operating Expense Ratio
+Operating Expenses / Revenue
+
+Expense as % of Revenue
+(COGS + Operating Expenses) / Revenue
+
+Net Operating Income (NOI)
+Gross Profit – Operating Expenses
+
+Operating Margin
+NOI / Revenue
+
+Comparison Logic (Non-Negotiable)
+
+Current Period: October 2025
+
+Prior Period: September 2025
+
+All values must be read from:
+
+2025_10_SPOT_SM_PL.json
+
+2025_09_SPOT_SM_PL.json
+
+No hardcoded values.
+
+Trend Indicator Rules
+
+Arrow + color reflect financial meaning, not raw direction
+
+Examples:
+
+Gross Margin ↓ → 🔴
+
+Operating Expenses ↑ → 🔴
+
+NOI ↑ → 🟢
+
+Expense % ↓ → 🟢
+
+Interaction Enhancements (Required)
+1️⃣ Action Labels → Chatbot
+
+Each row is clickable.
+
+Clicking opens the chatbot with context:
+
+Metric name
+
+Oct value
+
+Sep value
+
+Delta
+
+Relevant accounts from P&L JSON
+
+Example:
+
+“Why did Operating Margin decline month-over-month?”
+
+2️⃣ Hover Tooltips (Education)
+
+Hover on metric name shows:
+
+Plain-English definition
+
+Why it matters
+
+Typical healthy range (non-prescriptive)
+
+3️⃣ Financial Health Summary (Within Section)
+
+At the top-right of the Profitability section:
+
+Financial Health Badge
+
+🟢 Healthy
+
+🟡 Watch
+
+🔴 At Risk
+
+Derived from:
+
+Operating Margin
+
+Expense as % of Revenue
+
+NOI trend
+
+Clicking badge → chatbot explains score.
+
+4️⃣ Print / Export (Board-Ready)
+
+Add “Print / Export” action for this section only.
+
+Export includes:
+
+Company name
+
+Period (Oct vs Sep 2025)
+
+Profitability table
+
+Financial Health badge
+
+No interactive UI in export.
+
+Permissions
+Role	Access
+Owner	✅
+GM	❌
+Executive Chef	❌
+Staff	❌
+Non-Goals (v1)
+
+Editing values
+
+Budgeting
+
+Forecasting
+
+Multi-month trend tables
+
+Acceptance Criteria
+
+ New “Profitability” section exists in Owner Curated View
+
+ Table matches defined metrics and order
+
+ Oct vs Sep comparisons are accurate
+
+ Trend arrows reflect financial meaning
+
+ Rows open chatbot with correct context
+
+ Financial Health badge is visible and explainable
+
+ Export renders clean, board-ready output
+
+ No duplicated cards or KPIs elsewhere
+
+Notes
+
+This section should feel like:
+
+“The page an owner would screenshot and send to investors.”
+
+Clear, opinionated, and grounded in real financial logic.
