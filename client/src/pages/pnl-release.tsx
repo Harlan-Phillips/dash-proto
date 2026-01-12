@@ -3331,6 +3331,63 @@ export default function PnlRelease() {
   });
   const [healthSnapshotMode, setHealthSnapshotMode] = useState<"percentage" | "actual">("percentage");
   
+  // Editable Health Snapshot Targets (detailed view)
+  const [healthTargets, setHealthTargets] = useState({
+    'net-sales': { pct: 100.0, dollar: 150000 },
+    'prime-cost': { pct: 50.0, dollar: 66521 },
+    'labor': { pct: 12.0, dollar: 15965 },
+    'cogs': { pct: 38.0, dollar: 50556 },
+    'net-income': { pct: 15.0, dollar: 19956 },
+    'gross-profit': { pct: 62.0, dollar: 93000 },
+  });
+  
+  // Health Snapshot actual values (fixed)
+  const healthActuals = {
+    'net-sales': { pct: 100.0, dollar: 133042 },
+    'prime-cost': { pct: 54.0, dollar: 71826 },
+    'labor': { pct: 12.1, dollar: 16156 },
+    'cogs': { pct: 41.8, dollar: 55670 },
+    'net-income': { pct: 13.3, dollar: 17722 },
+    'gross-profit': { pct: 58.2, dollar: 77372 },
+  };
+  
+  // Helper to calculate variance and status for health metrics
+  const getHealthVariance = (metricId: string, isInverse: boolean = false) => {
+    const actual = healthActuals[metricId as keyof typeof healthActuals];
+    const target = healthTargets[metricId as keyof typeof healthTargets];
+    if (!actual || !target) return { variance: 0, variancePct: 0, status: 'ON TRACK' as const };
+    
+    const dollarVar = actual.dollar - target.dollar;
+    const pctVar = actual.pct - target.pct;
+    
+    // Determine status based on variance direction
+    let status: 'ON TRACK' | 'NEEDS ATTENTION' | 'MONITOR' = 'ON TRACK';
+    if (isInverse) {
+      // For costs: lower is better
+      if (actual.pct > target.pct + 2) status = 'NEEDS ATTENTION';
+      else if (actual.pct > target.pct) status = 'MONITOR';
+    } else {
+      // For revenue/profit: higher is better
+      if (actual.pct < target.pct - 2) status = 'NEEDS ATTENTION';
+      else if (actual.pct < target.pct) status = 'MONITOR';
+    }
+    
+    return { 
+      dollarVar, 
+      pctVar, 
+      status,
+      formattedDollarVar: dollarVar >= 0 ? `+$${dollarVar.toLocaleString()}` : `-$${Math.abs(dollarVar).toLocaleString()}`,
+      formattedPctVar: `${pctVar >= 0 ? '+' : ''}${pctVar.toFixed(1)}pts`
+    };
+  };
+  
+  const updateHealthTarget = (metricId: string, field: 'pct' | 'dollar', value: number) => {
+    setHealthTargets(prev => ({
+      ...prev,
+      [metricId]: { ...prev[metricId as keyof typeof prev], [field]: value }
+    }));
+  };
+
   // Report Archive Sidebar State
   const [archiveSidebarWidth, setArchiveSidebarWidth] = useState(256); // default 256px (w-64)
   const [archiveSidebarCollapsed, setArchiveSidebarCollapsed] = useState(false);
@@ -7304,90 +7361,69 @@ export default function PnlRelease() {
                                </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100">
-                               <tr 
-                                  onClick={() => openTrendModal('net-sales')} 
-                                  className="hover:bg-gray-50 cursor-pointer group transition-colors"
-                                  data-testid="health-row-net-sales"
-                               >
-                                  <td className="px-6 py-4 text-gray-900 flex items-center gap-2">
-                                    Net Sales
-                                    <TrendingUp className="h-3.5 w-3.5 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                  </td>
-                                  <td className="px-6 py-4 font-semibold text-gray-900">{healthSnapshotMode === "actual" ? "$133,042" : "100.0%"}</td>
-                                  <td className="px-6 py-4 text-gray-500">{healthSnapshotMode === "actual" ? "$150,000" : "100.0%"}</td>
-                                  <td className="px-6 py-4 text-red-600 font-medium">{healthSnapshotMode === "actual" ? "-$16,958" : "-11.3%"}</td>
-                                  <td className="px-6 py-4 text-right"><span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">NEEDS ATTENTION</span></td>
-                               </tr>
-                               <tr 
-                                  onClick={() => openTrendModal('prime-cost')} 
-                                  className="hover:bg-gray-50 cursor-pointer group transition-colors"
-                                  data-testid="health-row-prime-cost"
-                               >
-                                  <td className="px-6 py-4 text-gray-900 flex items-center gap-2">
-                                    Prime Cost
-                                    <TrendingUp className="h-3.5 w-3.5 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                  </td>
-                                  <td className="px-6 py-4 font-semibold text-gray-900">{healthSnapshotMode === "actual" ? "$71,826" : "54.0%"}</td>
-                                  <td className="px-6 py-4 text-gray-500">{healthSnapshotMode === "actual" ? "$66,521" : "50.0%"}</td>
-                                  <td className="px-6 py-4 text-red-600 font-medium">{healthSnapshotMode === "actual" ? "+$5,305" : "+4.0pts"}</td>
-                                  <td className="px-6 py-4 text-right"><span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">NEEDS ATTENTION</span></td>
-                               </tr>
-                               <tr 
-                                  onClick={() => openTrendModal('labor')} 
-                                  className="hover:bg-gray-50 cursor-pointer group transition-colors"
-                                  data-testid="health-row-labor"
-                               >
-                                  <td className="px-6 py-4 text-gray-900 flex items-center gap-2">
-                                    Labor
-                                    <TrendingUp className="h-3.5 w-3.5 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                  </td>
-                                  <td className="px-6 py-4 font-semibold text-gray-900">{healthSnapshotMode === "actual" ? "$16,156" : "12.1%"}</td>
-                                  <td className="px-6 py-4 text-gray-500">{healthSnapshotMode === "actual" ? "$15,965" : "12.0%"}</td>
-                                  <td className="px-6 py-4 text-amber-600 font-medium">{healthSnapshotMode === "actual" ? "+$191" : "+0.1pts"}</td>
-                                  <td className="px-6 py-4 text-right"><span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700">ON TRACK</span></td>
-                               </tr>
-                               <tr 
-                                  onClick={() => openTrendModal('cogs')} 
-                                  className="hover:bg-gray-50 cursor-pointer group transition-colors"
-                                  data-testid="health-row-cogs"
-                               >
-                                  <td className="px-6 py-4 text-gray-900 flex items-center gap-2">
-                                    COGS
-                                    <TrendingUp className="h-3.5 w-3.5 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                  </td>
-                                  <td className="px-6 py-4 font-semibold text-gray-900">{healthSnapshotMode === "actual" ? "$55,670" : "41.8%"}</td>
-                                  <td className="px-6 py-4 text-gray-500">{healthSnapshotMode === "actual" ? "$50,556" : "38.0%"}</td>
-                                  <td className="px-6 py-4 text-red-600 font-medium">{healthSnapshotMode === "actual" ? "+$5,114" : "+3.8pts"}</td>
-                                  <td className="px-6 py-4 text-right"><span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">NEEDS ATTENTION</span></td>
-                               </tr>
-                               <tr 
-                                  onClick={() => openTrendModal('net-income')} 
-                                  className="hover:bg-gray-50 cursor-pointer group transition-colors"
-                                  data-testid="health-row-net-income"
-                               >
-                                  <td className="px-6 py-4 text-gray-900 flex items-center gap-2">
-                                    Net Margin
-                                    <TrendingUp className="h-3.5 w-3.5 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                  </td>
-                                  <td className="px-6 py-4 font-semibold text-gray-900">{healthSnapshotMode === "actual" ? "$17,722" : "13.3%"}</td>
-                                  <td className="px-6 py-4 text-gray-500">{healthSnapshotMode === "actual" ? "$19,956" : "15.0%"}</td>
-                                  <td className="px-6 py-4 text-red-600 font-medium">{healthSnapshotMode === "actual" ? "-$2,234" : "-1.7pts"}</td>
-                                  <td className="px-6 py-4 text-right"><span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-700">MONITOR</span></td>
-                               </tr>
-                               <tr 
-                                  onClick={() => openTrendModal('gross-profit')} 
-                                  className="hover:bg-gray-50 cursor-pointer group transition-colors"
-                                  data-testid="health-row-gross-profit"
-                               >
-                                  <td className="px-6 py-4 text-gray-900 flex items-center gap-2">
-                                    Gross Profit
-                                    <TrendingUp className="h-3.5 w-3.5 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                  </td>
-                                  <td className="px-6 py-4 font-semibold text-gray-900">{healthSnapshotMode === "actual" ? "$77,372" : "58.2%"}</td>
-                                  <td className="px-6 py-4 text-gray-500">{healthSnapshotMode === "actual" ? "$93,000" : "62.0%"}</td>
-                                  <td className="px-6 py-4 text-red-600 font-medium">{healthSnapshotMode === "actual" ? "-$15,628" : "-3.8pts"}</td>
-                                  <td className="px-6 py-4 text-right"><span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">NEEDS ATTENTION</span></td>
-                               </tr>
+                               {[
+                                 { id: 'net-sales', name: 'Net Sales', isInverse: false },
+                                 { id: 'prime-cost', name: 'Prime Cost', isInverse: true },
+                                 { id: 'labor', name: 'Labor', isInverse: true },
+                                 { id: 'cogs', name: 'COGS', isInverse: true },
+                                 { id: 'net-income', name: 'Net Margin', isInverse: false },
+                                 { id: 'gross-profit', name: 'Gross Profit', isInverse: false },
+                               ].map(metric => {
+                                 const actual = healthActuals[metric.id as keyof typeof healthActuals];
+                                 const target = healthTargets[metric.id as keyof typeof healthTargets];
+                                 const variance = getHealthVariance(metric.id, metric.isInverse);
+                                 const statusColors = {
+                                   'ON TRACK': 'bg-emerald-100 text-emerald-700',
+                                   'MONITOR': 'bg-amber-100 text-amber-700',
+                                   'NEEDS ATTENTION': 'bg-red-100 text-red-700'
+                                 };
+                                 const varianceColor = variance.status === 'ON TRACK' ? 'text-emerald-600' : 
+                                                       variance.status === 'MONITOR' ? 'text-amber-600' : 'text-red-600';
+                                 return (
+                                   <tr 
+                                     key={metric.id}
+                                     className="hover:bg-gray-50 group transition-colors"
+                                     data-testid={`health-row-${metric.id}`}
+                                   >
+                                     <td 
+                                       className="px-6 py-4 text-gray-900 flex items-center gap-2 cursor-pointer"
+                                       onClick={() => openTrendModal(metric.id)}
+                                     >
+                                       {metric.name}
+                                       <TrendingUp className="h-3.5 w-3.5 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                     </td>
+                                     <td className="px-6 py-4 font-semibold text-gray-900">
+                                       {healthSnapshotMode === "actual" ? `$${actual.dollar.toLocaleString()}` : `${actual.pct.toFixed(1)}%`}
+                                     </td>
+                                     <td className="px-6 py-4">
+                                       <input
+                                         type="text"
+                                         value={healthSnapshotMode === "actual" 
+                                           ? `$${target.dollar.toLocaleString()}` 
+                                           : `${target.pct.toFixed(1)}%`}
+                                         onChange={(e) => {
+                                           const val = e.target.value.replace(/[$,%]/g, '').replace(/,/g, '');
+                                           const num = parseFloat(val);
+                                           if (!isNaN(num)) {
+                                             updateHealthTarget(metric.id, healthSnapshotMode === "actual" ? 'dollar' : 'pct', num);
+                                           }
+                                         }}
+                                         onClick={(e) => e.stopPropagation()}
+                                         className="w-24 px-2 py-1 text-gray-600 bg-gray-50 border border-gray-200 rounded hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors text-sm"
+                                         data-testid={`target-input-${metric.id}`}
+                                       />
+                                     </td>
+                                     <td className={cn("px-6 py-4 font-medium", varianceColor)}>
+                                       {healthSnapshotMode === "actual" ? variance.formattedDollarVar : variance.formattedPctVar}
+                                     </td>
+                                     <td className="px-6 py-4 text-right">
+                                       <span className={cn("px-2.5 py-1 rounded-full text-xs font-semibold", statusColors[variance.status])}>
+                                         {variance.status}
+                                       </span>
+                                     </td>
+                                   </tr>
+                                 );
+                               })}
                             </tbody>
                          </table>
                       </div>
