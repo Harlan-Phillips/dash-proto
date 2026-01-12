@@ -2807,7 +2807,7 @@ function SidePanelAssistant({ onClose, triggerQuery }: { onClose: () => void; tr
   };
 
   return (
-    <div className="flex flex-col h-full max-h-full overflow-hidden">
+    <div className="flex flex-col" style={{ height: 'calc(100vh - 64px)' }}>
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 shrink-0 bg-white">
         <div className="flex items-center gap-3">
@@ -2954,7 +2954,7 @@ function SidePanelAssistant({ onClose, triggerQuery }: { onClose: () => void; tr
       </div>
 
       {/* Input - Always visible at bottom */}
-      <div className="p-4 border-t border-gray-100 bg-white shrink-0 mt-auto">
+      <div className="p-4 border-t border-gray-100 bg-white shrink-0">
         <form 
           onSubmit={(e) => { e.preventDefault(); handleSend(input); }}
           className="flex items-center gap-2 bg-gray-100 rounded-xl px-4 py-3"
@@ -10127,8 +10127,8 @@ export default function PnlRelease() {
                 animate={{ width: 380, opacity: 1 }}
                 exit={{ width: 0, opacity: 0 }}
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                className="h-full max-h-full bg-white border-l border-gray-200 flex flex-col shrink-0"
-                style={{ overflow: 'hidden' }}
+                className="bg-white border-l border-gray-200 shrink-0"
+                style={{ height: 'calc(100vh - 64px)', overflow: 'hidden' }}
                 data-testid="assistant-side-panel"
               >
                 <SidePanelAssistant 
