@@ -3966,6 +3966,169 @@ export default function PnlRelease() {
   const [selectedRole, setSelectedRole] = useState<"owner" | "gm" | "chef">(urlRole || "owner");
   const [healthComparisonPeriod, setHealthComparisonPeriod] = useState<"week" | "month" | "quarter" | "year">("month");
   
+  // GM Time Range state (persists when switching locations)
+  const [gmTimeRange, setGmTimeRange] = useState<"today" | "week" | "month" | "year">("today");
+  
+  // GM Time Range data (mock data for different periods)
+  const gmTimeRangeData = {
+    today: {
+      label: "Today",
+      dateLabel: "Monday, Jan 12",
+      sales: { value: 4820, avg: 5180, variance: -6.9, avgLabel: "Avg Monday" },
+      cogs: { value: 32.4, avg: 30.8, variance: 1.6, avgLabel: "Avg Monday" },
+      labor: { value: 31.8, avg: 29.3, variance: 2.5, avgLabel: "Avg Monday" },
+      primeCost: { value: 64.2, avg: 60.1, variance: 4.1, avgLabel: "Avg Monday" }
+    },
+    week: {
+      label: "Week",
+      dateLabel: "Week of Jan 6–12 (WTD)",
+      sales: { value: 28450, avg: 31200, variance: -8.8, avgLabel: "Avg Week" },
+      cogs: { value: 31.2, avg: 30.5, variance: 0.7, avgLabel: "Avg Week" },
+      labor: { value: 30.8, avg: 29.0, variance: 1.8, avgLabel: "Avg Week" },
+      primeCost: { value: 62.0, avg: 59.5, variance: 2.5, avgLabel: "Avg Week" }
+    },
+    month: {
+      label: "Month",
+      dateLabel: "January 2026 (MTD)",
+      sales: { value: 42680, avg: 48500, variance: -12.0, avgLabel: "Avg MTD" },
+      cogs: { value: 30.8, avg: 30.2, variance: 0.6, avgLabel: "Avg MTD" },
+      labor: { value: 30.2, avg: 29.1, variance: 1.1, avgLabel: "Avg MTD" },
+      primeCost: { value: 61.0, avg: 59.3, variance: 1.7, avgLabel: "Avg MTD" }
+    },
+    year: {
+      label: "Year",
+      dateLabel: "2026 (YTD)",
+      sales: { value: 42680, avg: 48500, variance: -12.0, avgLabel: "Avg YTD" },
+      cogs: { value: 30.5, avg: 30.0, variance: 0.5, avgLabel: "Avg YTD" },
+      labor: { value: 29.8, avg: 29.2, variance: 0.6, avgLabel: "Avg YTD" },
+      primeCost: { value: 60.3, avg: 59.2, variance: 1.1, avgLabel: "Avg YTD" }
+    }
+  };
+  
+  const currentGMData = gmTimeRangeData[gmTimeRange];
+  
+  // What Happened narratives by time range
+  const getWhatHappenedNarrative = () => {
+    switch (gmTimeRange) {
+      case 'today':
+        return {
+          issues: [
+            {
+              id: 'lunch-overstaffed',
+              icon: 'users',
+              iconBg: 'bg-red-100',
+              iconColor: 'text-red-600',
+              title: 'Lunch overstaffed vs normal Monday',
+              description: `Labor was +7.2 pts higher than normal for demand — likely overstaffed during Lunch shift.`,
+              tags: [{ label: 'Shift: Lunch', color: 'bg-gray-100 text-gray-600' }, { label: 'Labor % +7.2 pts', color: 'bg-red-100 text-red-700' }],
+              context: `[CONTEXT]\nRole: General Manager\nDay: Monday, Jan 12\nShift: Lunch\nIssue: Lunch was overstaffed vs typical Monday\nMetrics:\n• Labor %: ${lunchData.laborPct}% (+${lunchData.laborVariance} pts vs avg)\n• Sales: $${lunchData.sales.toLocaleString()} (${lunchData.salesVariance}% vs avg)\n\nHelp me understand why lunch was overstaffed today and what I should do about tomorrow's schedule.`
+            },
+            {
+              id: 'sales-below',
+              icon: 'trending-down',
+              iconBg: 'bg-amber-100',
+              iconColor: 'text-amber-600',
+              title: 'Sales below weekday average',
+              description: 'Sales dropped -6.9% versus a typical Monday. Demand issue, not staffing.',
+              tags: [{ label: 'Day: Monday', color: 'bg-gray-100 text-gray-600' }, { label: 'Sales -$360', color: 'bg-amber-100 text-amber-700' }],
+              context: `[CONTEXT]\nRole: General Manager\nDay: Monday, Jan 12\nIssue: Sales below weekday average\nMetrics:\n• Today's Sales: $4,820\n• Avg Monday Sales: $5,180\n• Variance: -6.9% ($360 below average)\n\nHelp me understand why sales were down today and what I can do to improve tomorrow.`
+            },
+            {
+              id: 'high-cogs',
+              icon: 'package',
+              iconBg: 'bg-orange-100',
+              iconColor: 'text-orange-600',
+              title: 'Food cost ran slightly high',
+              description: 'COGS % was +1.6 pts above normal — check waste, comps, or portioning.',
+              tags: [{ label: 'All Day', color: 'bg-gray-100 text-gray-600' }, { label: 'COGS % +1.6 pts', color: 'bg-orange-100 text-orange-700' }],
+              context: `[CONTEXT]\nRole: General Manager\nDay: Monday, Jan 12\nIssue: Food cost ran higher than normal\nMetrics:\n• Today's COGS %: 32.4%\n• Avg Monday COGS %: 30.8%\n• Variance: +1.6 pts above normal\n\nHelp me investigate why food cost was high today.`
+            }
+          ],
+          actions: ['Review Lunch schedule', 'Check portion sizes', 'Monitor afternoon traffic']
+        };
+      case 'week':
+        return {
+          issues: [
+            {
+              id: 'week-labor-pattern',
+              icon: 'users',
+              iconBg: 'bg-red-100',
+              iconColor: 'text-red-600',
+              title: 'Lunch shifts consistently ran above labor targets',
+              description: 'This week, lunch shifts averaged +1.8 pts above target. Today followed the same pattern.',
+              tags: [{ label: 'Week Pattern', color: 'bg-gray-100 text-gray-600' }, { label: 'Labor % +1.8 pts avg', color: 'bg-red-100 text-red-700' }],
+              context: `[CONTEXT]\nRole: General Manager\nPeriod: Week of Jan 6-12\nIssue: Recurring lunch overstaffing pattern\nMetrics:\n• Week Labor %: 30.8% (+1.8 pts vs target)\n• Pattern: Lunch shifts consistently high\n• Today followed the same pattern\n\nHelp me understand this weekly pattern and how to adjust scheduling.`
+            },
+            {
+              id: 'week-sales-trend',
+              icon: 'trending-down',
+              iconBg: 'bg-amber-100',
+              iconColor: 'text-amber-600',
+              title: 'Weekly sales tracking below target',
+              description: 'Week-to-date sales are -8.8% below average. Weekday lunches are the primary driver.',
+              tags: [{ label: 'WTD', color: 'bg-gray-100 text-gray-600' }, { label: 'Sales -8.8%', color: 'bg-amber-100 text-amber-700' }],
+              context: `[CONTEXT]\nRole: General Manager\nPeriod: Week of Jan 6-12\nIssue: Weekly sales below target\nMetrics:\n• WTD Sales: $28,450 (-8.8% vs avg)\n• Primary driver: Weekday lunch traffic\n\nHelp me identify strategies to recover this week's sales gap.`
+            }
+          ],
+          actions: ['Adjust weekly lunch schedule', 'Review weekday promotions', 'Analyze traffic patterns']
+        };
+      case 'month':
+        return {
+          issues: [
+            {
+              id: 'month-prime-cost',
+              icon: 'alert-triangle',
+              iconBg: 'bg-red-100',
+              iconColor: 'text-red-600',
+              title: 'Month-to-date prime cost above target',
+              description: 'MTD prime cost is +1.7 pts above target, driven primarily by weekday labor overages. Today\'s performance did not materially change the trend.',
+              tags: [{ label: 'MTD', color: 'bg-gray-100 text-gray-600' }, { label: 'Prime Cost +1.7 pts', color: 'bg-red-100 text-red-700' }],
+              context: `[CONTEXT]\nRole: General Manager\nPeriod: January 2026 MTD\nIssue: Elevated prime cost for the month\nMetrics:\n• MTD Prime Cost: 61.0% (+1.7 pts vs target)\n• Primary driver: Weekday labor overages\n• Today's result aligned with trend\n\nHelp me develop a plan to bring prime cost back to target this month.`
+            },
+            {
+              id: 'month-sales-gap',
+              icon: 'trending-down',
+              iconBg: 'bg-amber-100',
+              iconColor: 'text-amber-600',
+              title: 'Monthly sales pacing behind budget',
+              description: 'MTD sales are -12% below average. Need strong weekend performance to recover.',
+              tags: [{ label: 'MTD', color: 'bg-gray-100 text-gray-600' }, { label: 'Sales -12%', color: 'bg-amber-100 text-amber-700' }],
+              context: `[CONTEXT]\nRole: General Manager\nPeriod: January 2026 MTD\nIssue: Monthly sales pacing behind\nMetrics:\n• MTD Sales: $42,680 (-12% vs budget)\n• Need weekend recovery\n\nHelp me plan how to recover the sales gap this month.`
+            }
+          ],
+          actions: ['Review monthly staffing model', 'Plan weekend promotions', 'Optimize shift coverage']
+        };
+      case 'year':
+        return {
+          issues: [
+            {
+              id: 'ytd-margins',
+              icon: 'check-circle',
+              iconBg: 'bg-emerald-100',
+              iconColor: 'text-emerald-600',
+              title: 'Year-to-date margins remain healthy',
+              description: 'YTD margins are holding despite recent labor pressure. Today\'s results align with the broader trend.',
+              tags: [{ label: 'YTD', color: 'bg-gray-100 text-gray-600' }, { label: 'Prime Cost +1.1 pts', color: 'bg-amber-100 text-amber-700' }],
+              context: `[CONTEXT]\nRole: General Manager\nPeriod: 2026 YTD\nIssue: Overall margin health check\nMetrics:\n• YTD Prime Cost: 60.3% (+1.1 pts vs target)\n• Margins healthy but showing slight pressure\n• Labor is primary variance driver\n\nHelp me understand the YTD trend and what to watch going forward.`
+            },
+            {
+              id: 'ytd-labor-trend',
+              icon: 'users',
+              iconBg: 'bg-amber-100',
+              iconColor: 'text-amber-600',
+              title: 'Labor costs trending slightly above target',
+              description: 'YTD labor is +0.6 pts above target. Consistent but manageable pressure.',
+              tags: [{ label: 'YTD', color: 'bg-gray-100 text-gray-600' }, { label: 'Labor +0.6 pts', color: 'bg-amber-100 text-amber-700' }],
+              context: `[CONTEXT]\nRole: General Manager\nPeriod: 2026 YTD\nIssue: Labor cost trend\nMetrics:\n• YTD Labor %: 29.8% (+0.6 pts vs target)\n• Trend: Consistent but manageable\n\nHelp me identify opportunities to optimize labor for the rest of the year.`
+            }
+          ],
+          actions: ['Review annual staffing trends', 'Analyze seasonal patterns', 'Plan Q1 optimization']
+        };
+    }
+  };
+  
+  const whatHappenedData = getWhatHappenedNarrative();
+  
   // Shift time customization state
   const [lunchStart, setLunchStart] = useState("11:00");
   const [lunchEnd, setLunchEnd] = useState("16:00");
@@ -10706,16 +10869,36 @@ export default function PnlRelease() {
                       </div>
                    </section>
 
-                   {/* Daily Prime Cost & Auto-Diagnosis - GM Only */}
+                   {/* Performance Summary & Auto-Diagnosis - GM Only */}
                    {selectedRole === "gm" && (
                    <section data-testid="gm-daily-prime-cost-section">
-                      <h2 className="text-lg font-serif font-bold text-gray-900 mb-4 flex items-center gap-2">
-                         <Calendar className="h-5 w-5 text-gray-600" />
-                         Today's Performance
-                         <span className="text-sm font-normal text-gray-500 ml-2">Monday, Jan 12</span>
-                      </h2>
+                      <div className="flex items-center justify-between mb-4">
+                         <h2 className="text-lg font-serif font-bold text-gray-900 flex items-center gap-2">
+                            <Calendar className="h-5 w-5 text-gray-600" />
+                            Performance Summary
+                            <span className="text-sm font-normal text-gray-500 ml-2">{currentGMData.dateLabel}</span>
+                         </h2>
+                         {/* Time Range Selector */}
+                         <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1" data-testid="gm-time-range-selector">
+                            {(['today', 'week', 'month', 'year'] as const).map((range) => (
+                               <button
+                                  key={range}
+                                  onClick={() => setGmTimeRange(range)}
+                                  className={cn(
+                                     "px-3 py-1.5 text-xs font-medium rounded-md transition-all",
+                                     gmTimeRange === range
+                                        ? "bg-white text-gray-900 shadow-sm"
+                                        : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                                  )}
+                                  data-testid={`btn-time-range-${range}`}
+                               >
+                                  {range === 'today' ? 'Today' : range === 'week' ? 'Week' : range === 'month' ? 'Month' : 'Year'}
+                               </button>
+                            ))}
+                         </div>
+                      </div>
                       
-                      {/* Daily Metrics Cards */}
+                      {/* Performance Metrics Cards */}
                       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                          {/* Sales Card */}
                          <div className="bg-white border border-gray-200 rounded-xl p-4 relative group">
@@ -10727,14 +10910,20 @@ export default function PnlRelease() {
                                <BarChart3 className="h-3.5 w-3.5" />
                             </button>
                             <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Sales</div>
-                            <div className="text-2xl font-bold text-gray-900">$4,820</div>
+                            <div className="text-2xl font-bold text-gray-900">${currentGMData.sales.value.toLocaleString()}</div>
                             <div className="flex items-center gap-2 mt-2">
-                               <span className="text-xs text-gray-500">Avg Monday:</span>
-                               <span className="text-xs font-medium text-gray-700">$5,180</span>
+                               <span className="text-xs text-gray-500">{currentGMData.sales.avgLabel}:</span>
+                               <span className="text-xs font-medium text-gray-700">${currentGMData.sales.avg.toLocaleString()}</span>
                             </div>
                             <div className="flex items-center gap-1 mt-1">
-                               <TrendingDown className="h-3 w-3 text-red-500" />
-                               <span className="text-xs font-medium text-red-600">-6.9%</span>
+                               {currentGMData.sales.variance < 0 ? (
+                                  <TrendingDown className="h-3 w-3 text-red-500" />
+                               ) : (
+                                  <TrendingUp className="h-3 w-3 text-emerald-500" />
+                               )}
+                               <span className={cn("text-xs font-medium", currentGMData.sales.variance < 0 ? "text-red-600" : "text-emerald-600")}>
+                                  {currentGMData.sales.variance > 0 ? '+' : ''}{currentGMData.sales.variance}%
+                               </span>
                                <span className="text-xs text-gray-500">vs avg</span>
                             </div>
                          </div>
@@ -10749,14 +10938,20 @@ export default function PnlRelease() {
                                <BarChart3 className="h-3.5 w-3.5" />
                             </button>
                             <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">COGS %</div>
-                            <div className="text-2xl font-bold text-gray-900">32.4%</div>
+                            <div className="text-2xl font-bold text-gray-900">{currentGMData.cogs.value}%</div>
                             <div className="flex items-center gap-2 mt-2">
-                               <span className="text-xs text-gray-500">Avg Monday:</span>
-                               <span className="text-xs font-medium text-gray-700">30.8%</span>
+                               <span className="text-xs text-gray-500">{currentGMData.cogs.avgLabel}:</span>
+                               <span className="text-xs font-medium text-gray-700">{currentGMData.cogs.avg}%</span>
                             </div>
                             <div className="flex items-center gap-1 mt-1">
-                               <TrendingUp className="h-3 w-3 text-red-500" />
-                               <span className="text-xs font-medium text-red-600">+1.6 pts</span>
+                               {currentGMData.cogs.variance > 0 ? (
+                                  <TrendingUp className="h-3 w-3 text-red-500" />
+                               ) : (
+                                  <TrendingDown className="h-3 w-3 text-emerald-500" />
+                               )}
+                               <span className={cn("text-xs font-medium", currentGMData.cogs.variance > 0 ? "text-red-600" : "text-emerald-600")}>
+                                  {currentGMData.cogs.variance > 0 ? '+' : ''}{currentGMData.cogs.variance} pts
+                               </span>
                                <span className="text-xs text-gray-500">vs avg</span>
                             </div>
                          </div>
@@ -10771,36 +10966,67 @@ export default function PnlRelease() {
                                <BarChart3 className="h-3.5 w-3.5" />
                             </button>
                             <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Labor %</div>
-                            <div className="text-2xl font-bold text-gray-900">31.8%</div>
+                            <div className="text-2xl font-bold text-gray-900">{currentGMData.labor.value}%</div>
                             <div className="flex items-center gap-2 mt-2">
-                               <span className="text-xs text-gray-500">Avg Monday:</span>
-                               <span className="text-xs font-medium text-gray-700">29.3%</span>
+                               <span className="text-xs text-gray-500">{currentGMData.labor.avgLabel}:</span>
+                               <span className="text-xs font-medium text-gray-700">{currentGMData.labor.avg}%</span>
                             </div>
                             <div className="flex items-center gap-1 mt-1">
-                               <TrendingUp className="h-3 w-3 text-red-500" />
-                               <span className="text-xs font-medium text-red-600">+2.5 pts</span>
+                               {currentGMData.labor.variance > 0 ? (
+                                  <TrendingUp className="h-3 w-3 text-red-500" />
+                               ) : (
+                                  <TrendingDown className="h-3 w-3 text-emerald-500" />
+                               )}
+                               <span className={cn("text-xs font-medium", currentGMData.labor.variance > 0 ? "text-red-600" : "text-emerald-600")}>
+                                  {currentGMData.labor.variance > 0 ? '+' : ''}{currentGMData.labor.variance} pts
+                               </span>
                                <span className="text-xs text-gray-500">vs avg</span>
                             </div>
                          </div>
 
                          {/* Prime Cost Card - Primary */}
-                         <div className="bg-gradient-to-br from-red-50 to-orange-50 border border-red-200 rounded-xl p-4 relative group">
+                         <div className={cn(
+                            "border rounded-xl p-4 relative group",
+                            currentGMData.primeCost.variance > 2 
+                               ? "bg-gradient-to-br from-red-50 to-orange-50 border-red-200" 
+                               : currentGMData.primeCost.variance > 0 
+                                  ? "bg-gradient-to-br from-amber-50 to-yellow-50 border-amber-200"
+                                  : "bg-gradient-to-br from-emerald-50 to-green-50 border-emerald-200"
+                         )}>
                             <button
                                onClick={() => openTrendModal('prime-cost')}
-                               className="absolute top-3 right-3 p-1.5 rounded-lg bg-red-100 hover:bg-blue-100 text-red-400 hover:text-blue-600 transition-colors"
+                               className={cn(
+                                  "absolute top-3 right-3 p-1.5 rounded-lg hover:bg-blue-100 hover:text-blue-600 transition-colors",
+                                  currentGMData.primeCost.variance > 2 ? "bg-red-100 text-red-400" : currentGMData.primeCost.variance > 0 ? "bg-amber-100 text-amber-400" : "bg-emerald-100 text-emerald-400"
+                               )}
                                title="View trend"
                             >
                                <BarChart3 className="h-3.5 w-3.5" />
                             </button>
-                            <div className="text-xs font-medium text-red-700 uppercase tracking-wide mb-2">Prime Cost</div>
-                            <div className="text-2xl font-bold text-gray-900">64.2%</div>
+                            <div className={cn(
+                               "text-xs font-medium uppercase tracking-wide mb-2",
+                               currentGMData.primeCost.variance > 2 ? "text-red-700" : currentGMData.primeCost.variance > 0 ? "text-amber-700" : "text-emerald-700"
+                            )}>Prime Cost</div>
+                            <div className="text-2xl font-bold text-gray-900">{currentGMData.primeCost.value}%</div>
                             <div className="flex items-center gap-2 mt-2">
-                               <span className="text-xs text-gray-500">Avg Monday:</span>
-                               <span className="text-xs font-medium text-gray-700">60.1%</span>
+                               <span className="text-xs text-gray-500">{currentGMData.primeCost.avgLabel}:</span>
+                               <span className="text-xs font-medium text-gray-700">{currentGMData.primeCost.avg}%</span>
                             </div>
                             <div className="flex items-center gap-1 mt-1">
-                               <AlertTriangle className="h-3 w-3 text-red-500" />
-                               <span className="text-xs font-medium text-red-600">+4.1 pts 🔴</span>
+                               {currentGMData.primeCost.variance > 2 ? (
+                                  <AlertTriangle className="h-3 w-3 text-red-500" />
+                               ) : currentGMData.primeCost.variance > 0 ? (
+                                  <TrendingUp className="h-3 w-3 text-amber-500" />
+                               ) : (
+                                  <CheckCircle2 className="h-3 w-3 text-emerald-500" />
+                               )}
+                               <span className={cn(
+                                  "text-xs font-medium",
+                                  currentGMData.primeCost.variance > 2 ? "text-red-600" : currentGMData.primeCost.variance > 0 ? "text-amber-600" : "text-emerald-600"
+                               )}>
+                                  {currentGMData.primeCost.variance > 0 ? '+' : ''}{currentGMData.primeCost.variance} pts
+                                  {currentGMData.primeCost.variance > 2 ? ' 🔴' : currentGMData.primeCost.variance > 0 ? ' 🟡' : ' 🟢'}
+                               </span>
                             </div>
                          </div>
                       </div>
@@ -10938,155 +11164,69 @@ export default function PnlRelease() {
                          </div>
                       </div>
 
-                      {/* Auto-Diagnosis */}
+                      {/* What Happened - Dynamic based on time range */}
                       <div className="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-5">
                          <h3 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
                             <Lightbulb className="h-4 w-4 text-amber-600" />
-                            What happened today?
+                            What happened{gmTimeRange === 'today' ? ' today' : gmTimeRange === 'week' ? ' this week' : gmTimeRange === 'month' ? ' this month' : ' this year'}?
                             <span className="text-xs font-normal text-gray-500 ml-auto">Click an issue to get guided help</span>
                          </h3>
                          <div className="space-y-3">
-                            {/* Issue 1: Overstaffed Lunch */}
-                            <button 
-                               onClick={() => {
-                                  setFloatingChatTrigger(`[CONTEXT]
-Role: General Manager
-Day: Monday, Jan 12
-Shift: Lunch (${lunchStart}–${lunchEnd})
-Issue: Lunch was overstaffed vs typical Monday
-Metrics:
-• Labor %: ${lunchData.laborPct}% (${parseFloat(lunchData.laborVariance) >= 0 ? '+' : ''}${lunchData.laborVariance} pts vs avg)
-• Sales: $${lunchData.sales.toLocaleString()} (${lunchData.salesVariance}% vs avg)
-• Prime Cost: ${lunchData.primePct}%
-
-Help me understand why lunch was overstaffed today and what I should do about tomorrow's schedule.`);
-                                  setShowChat(true);
-                               }}
-                               className="w-full text-left flex items-start gap-3 bg-white/60 rounded-lg p-3 border border-amber-100 hover:bg-white hover:border-blue-200 hover:shadow-sm transition-all cursor-pointer group"
-                            >
-                               <div className="w-6 h-6 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:bg-blue-100">
-                                  <Users className="h-3.5 w-3.5 text-red-600 group-hover:text-blue-600" />
-                               </div>
-                               <div className="flex-1">
-                                  <div className="text-sm font-medium text-gray-900 group-hover:text-blue-700 flex items-center gap-2">
-                                     Lunch overstaffed vs normal Monday
-                                     <ChevronRight className="h-3.5 w-3.5 text-gray-400 group-hover:text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                            {whatHappenedData.issues.map((issue) => (
+                               <button 
+                                  key={issue.id}
+                                  onClick={() => {
+                                     setFloatingChatTrigger(issue.context);
+                                     setShowChat(true);
+                                  }}
+                                  className="w-full text-left flex items-start gap-3 bg-white/60 rounded-lg p-3 border border-amber-100 hover:bg-white hover:border-blue-200 hover:shadow-sm transition-all cursor-pointer group"
+                               >
+                                  <div className={cn("w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:bg-blue-100", issue.iconBg)}>
+                                     {issue.icon === 'users' && <Users className={cn("h-3.5 w-3.5 group-hover:text-blue-600", issue.iconColor)} />}
+                                     {issue.icon === 'trending-down' && <TrendingDown className={cn("h-3.5 w-3.5 group-hover:text-blue-600", issue.iconColor)} />}
+                                     {issue.icon === 'package' && <Package className={cn("h-3.5 w-3.5 group-hover:text-blue-600", issue.iconColor)} />}
+                                     {issue.icon === 'alert-triangle' && <AlertTriangle className={cn("h-3.5 w-3.5 group-hover:text-blue-600", issue.iconColor)} />}
+                                     {issue.icon === 'check-circle' && <CheckCircle2 className={cn("h-3.5 w-3.5 group-hover:text-blue-600", issue.iconColor)} />}
                                   </div>
-                                  <div className="text-xs text-gray-600 mt-0.5">
-                                     Labor was +7.2 pts higher than normal for demand — likely overstaffed during Lunch shift.
+                                  <div className="flex-1">
+                                     <div className="text-sm font-medium text-gray-900 group-hover:text-blue-700 flex items-center gap-2">
+                                        {issue.title}
+                                        <ChevronRight className="h-3.5 w-3.5 text-gray-400 group-hover:text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                     </div>
+                                     <div className="text-xs text-gray-600 mt-0.5">
+                                        {issue.description}
+                                     </div>
+                                     <div className="flex items-center gap-2 mt-2">
+                                        {issue.tags.map((tag, idx) => (
+                                           <span key={idx} className={cn("px-2 py-0.5 text-xs rounded", tag.color)}>{tag.label}</span>
+                                        ))}
+                                     </div>
                                   </div>
-                                  <div className="flex items-center gap-2 mt-2">
-                                     <span className="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded">Shift: Lunch</span>
-                                     <span className="px-2 py-0.5 bg-red-100 text-red-700 text-xs rounded">Labor % +7.2 pts</span>
-                                  </div>
-                               </div>
-                            </button>
-                            
-                            {/* Issue 2: Sales Below Average */}
-                            <button 
-                               onClick={() => {
-                                  setFloatingChatTrigger(`[CONTEXT]
-Role: General Manager
-Day: Monday, Jan 12
-Issue: Sales below weekday average
-Metrics:
-• Today's Sales: $4,820
-• Avg Monday Sales: $5,180
-• Variance: -6.9% ($360 below average)
-• Weather: Clear, 45°F
-• No major events in area
-
-Help me understand why sales were down today and what I can do to improve afternoon traffic tomorrow.`);
-                                  setShowChat(true);
-                               }}
-                               className="w-full text-left flex items-start gap-3 bg-white/60 rounded-lg p-3 border border-amber-100 hover:bg-white hover:border-blue-200 hover:shadow-sm transition-all cursor-pointer group"
-                            >
-                               <div className="w-6 h-6 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:bg-blue-100">
-                                  <TrendingDown className="h-3.5 w-3.5 text-amber-600 group-hover:text-blue-600" />
-                               </div>
-                               <div className="flex-1">
-                                  <div className="text-sm font-medium text-gray-900 group-hover:text-blue-700 flex items-center gap-2">
-                                     Sales below weekday average
-                                     <ChevronRight className="h-3.5 w-3.5 text-gray-400 group-hover:text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                  </div>
-                                  <div className="text-xs text-gray-600 mt-0.5">
-                                     Sales dropped -6.9% versus a typical Monday. Demand issue, not staffing.
-                                  </div>
-                                  <div className="flex items-center gap-2 mt-2">
-                                     <span className="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded">Day: Monday</span>
-                                     <span className="px-2 py-0.5 bg-amber-100 text-amber-700 text-xs rounded">Sales -$360</span>
-                                  </div>
-                               </div>
-                            </button>
-
-                            {/* Issue 3: High COGS */}
-                            <button 
-                               onClick={() => {
-                                  setFloatingChatTrigger(`[CONTEXT]
-Role: General Manager
-Day: Monday, Jan 12
-Issue: Food cost ran higher than normal
-Metrics:
-• Today's COGS %: 32.4%
-• Avg Monday COGS %: 30.8%
-• Variance: +1.6 pts above normal
-• Possible causes: waste, comps, portioning, theft
-
-Help me investigate why food cost was high today and what specific actions I should take.`);
-                                  setShowChat(true);
-                               }}
-                               className="w-full text-left flex items-start gap-3 bg-white/60 rounded-lg p-3 border border-amber-100 hover:bg-white hover:border-blue-200 hover:shadow-sm transition-all cursor-pointer group"
-                            >
-                               <div className="w-6 h-6 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:bg-blue-100">
-                                  <Package className="h-3.5 w-3.5 text-orange-600 group-hover:text-blue-600" />
-                               </div>
-                               <div className="flex-1">
-                                  <div className="text-sm font-medium text-gray-900 group-hover:text-blue-700 flex items-center gap-2">
-                                     Food cost ran slightly high
-                                     <ChevronRight className="h-3.5 w-3.5 text-gray-400 group-hover:text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                  </div>
-                                  <div className="text-xs text-gray-600 mt-0.5">
-                                     COGS % was +1.6 pts above normal — check waste, comps, or portioning.
-                                  </div>
-                                  <div className="flex items-center gap-2 mt-2">
-                                     <span className="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded">All Day</span>
-                                     <span className="px-2 py-0.5 bg-orange-100 text-orange-700 text-xs rounded">COGS % +1.6 pts</span>
-                                  </div>
-                               </div>
-                            </button>
+                               </button>
+                            ))}
                          </div>
                          
                          {/* Action Summary */}
                          <div className="mt-4 pt-4 border-t border-amber-200">
-                            <div className="text-xs font-medium text-gray-700 mb-2">Recommended Actions for Tomorrow:</div>
+                            <div className="text-xs font-medium text-gray-700 mb-2">
+                               {gmTimeRange === 'today' ? 'Recommended Actions for Tomorrow:' : 
+                                gmTimeRange === 'week' ? 'Recommended Actions This Week:' :
+                                gmTimeRange === 'month' ? 'Recommended Actions This Month:' :
+                                'Strategic Focus Areas:'}
+                            </div>
                             <div className="flex flex-wrap gap-2">
-                               <button 
-                                  onClick={() => {
-                                     setFloatingChatTrigger("How should I optimize the lunch schedule for tomorrow based on today's overstaffing issue?");
-                                     setShowChat(true);
-                                  }}
-                                  className="px-2.5 py-1 bg-white border border-gray-200 text-xs text-gray-700 rounded-full hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 transition-colors cursor-pointer"
-                               >
-                                  Review Lunch schedule
-                               </button>
-                               <button 
-                                  onClick={() => {
-                                     setFloatingChatTrigger("What are the ideal portion sizes for our menu items? Today's COGS was high.");
-                                     setShowChat(true);
-                                  }}
-                                  className="px-2.5 py-1 bg-white border border-gray-200 text-xs text-gray-700 rounded-full hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 transition-colors cursor-pointer"
-                               >
-                                  Check portion sizes
-                               </button>
-                               <button 
-                                  onClick={() => {
-                                     setFloatingChatTrigger("What strategies can I use to increase afternoon traffic? Today's sales were below average.");
-                                     setShowChat(true);
-                                  }}
-                                  className="px-2.5 py-1 bg-white border border-gray-200 text-xs text-gray-700 rounded-full hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 transition-colors cursor-pointer"
-                               >
-                                  Monitor afternoon traffic
-                               </button>
+                               {whatHappenedData.actions.map((action, idx) => (
+                                  <button 
+                                     key={idx}
+                                     onClick={() => {
+                                        setFloatingChatTrigger(`Help me with: ${action}. Period: ${currentGMData.dateLabel}`);
+                                        setShowChat(true);
+                                     }}
+                                     className="px-2.5 py-1 bg-white border border-gray-200 text-xs text-gray-700 rounded-full hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 transition-colors cursor-pointer"
+                                  >
+                                     {action}
+                                  </button>
+                               ))}
                             </div>
                          </div>
                       </div>

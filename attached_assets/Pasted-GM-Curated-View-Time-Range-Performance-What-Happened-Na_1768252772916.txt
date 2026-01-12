@@ -1,0 +1,144 @@
+GM Curated View – Time-Range Performance & “What Happened” Narrative
+
+Area: Accounting / P&L
+View: Curated View → General Manager
+Sections: Performance Summary, What Happened
+Type: Feature / Time Scoping & Narrative Alignment
+
+Problem
+
+The GM Curated View currently focuses on Today’s Performance and “What happened today”, which works for daily operations but breaks down when GMs want to understand:
+
+How the week is shaping up
+
+Whether monthly trends are forming
+
+How year-to-date performance looks
+
+Today, metrics may update, but the narrative framing does not, causing confusion and misinterpretation.
+
+Goal
+
+Upgrade the GM Curated View so that:
+
+Performance metrics can be viewed by Today / Week / Month / Year
+
+The insight section is renamed from “What happened today” → “What happened”
+
+Both numbers and narrative accurately reflect the selected time range
+
+Today’s data is still incorporated when relevant
+
+Core Changes
+1️⃣ Time Range Selector (Required)
+
+Add a time range selector to the Performance Summary section with options:
+
+Today (default)
+
+Week (week-to-date)
+
+Month (month-to-date)
+
+Year (year-to-date)
+
+The selector applies to:
+
+Sales
+
+COGS %
+
+Labor %
+
+Prime Cost %
+
+2️⃣ Section Rename (Required)
+
+Rename:
+
+❌ “What happened today”
+
+✅ “What happened”
+
+This section becomes time-range aware and updates dynamically.
+
+Time Range Definitions (Exact)
+Range	Definition
+Today	Current calendar day
+Week	Week-to-date (Mon → today)
+Month	Month-to-date
+Year	Year-to-date
+Data Consistency Rule (Critical)
+
+Changing the time range only changes the aggregation window — never the metric definitions.
+
+The same underlying data powers all views.
+
+“What Happened” Narrative Logic
+Today (Default)
+
+Behaves exactly like the current “What happened today”
+
+Focuses on:
+
+Intra-day performance
+
+Shift-level deviations
+
+Immediate operational causes
+
+Week / Month / Year
+
+For longer ranges, the “What happened” section must:
+
+Aggregate insights across the selected period
+
+Emphasize patterns and recurring drivers, not single-day noise
+
+Explicitly reference today’s performance when it materially impacts the period
+
+Example Narratives
+
+Week
+
+“This week, lunch shifts consistently ran above labor targets, contributing to elevated prime cost. Today followed the same pattern.”
+
+Month
+
+“Month-to-date prime cost is above target, driven primarily by weekday labor overages. Today’s performance did not materially change the trend.”
+
+Year
+
+“Year-to-date margins remain healthy despite recent labor pressure. Today’s results align with the broader trend.”
+
+Auto-Diagnosis Alignment
+
+Auto-diagnosis rules must:
+
+Re-run using the selected time range
+
+Adjust messaging to reflect scope:
+
+“This week…”
+
+“Month-to-date…”
+
+“Year-to-date…”
+
+Continue to support shift-level attribution where applicable
+
+UX Requirements
+
+Time range selector:
+
+Does not reload the page
+
+Persists when switching locations
+
+“What happened”:
+
+Updates instantly with range changes
+
+Uses time-aware language
+
+Default view remains Today
