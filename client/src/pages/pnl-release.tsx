@@ -2244,17 +2244,19 @@ function GoalProgress({ label, current, target, unit = "%", inverted = false, on
           <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider block mb-1">{label}</span>
           <div className="flex items-baseline gap-2">
             <span className="text-2xl font-bold font-serif">{current}{unit}</span>
-            {onTrendClick && (
-              <button
-                onClick={onTrendClick}
-                className="p-1 rounded hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-300"
-                title={`View ${label} trend`}
-                data-testid={`trend-btn-${label.toLowerCase().replace(/\s+/g, '-')}`}
-              >
-                <BarChart3 className="h-4 w-4" />
-              </button>
-            )}
-            <span className="text-xs text-muted-foreground mb-1">/ {target}{unit} Goal</span>
+            <span className="text-xs text-muted-foreground mb-1 flex items-center gap-1">
+              / {target}{unit} Goal
+              {onTrendClick && (
+                <button
+                  onClick={onTrendClick}
+                  className="p-1 rounded hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-300"
+                  title={`View ${label} trend`}
+                  data-testid={`trend-btn-${label.toLowerCase().replace(/\s+/g, '-')}`}
+                >
+                  <BarChart3 className="h-3.5 w-3.5" />
+                </button>
+              )}
+            </span>
           </div>
         </div>
         <div className={cn(
