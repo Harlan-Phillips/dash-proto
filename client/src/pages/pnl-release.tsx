@@ -10136,29 +10136,186 @@ export default function PnlRelease() {
                             )}
                             {selectedRole === "chef" && (
                                <>
-                                  <div className="p-4 flex justify-between items-center">
-                                     <div className="flex items-center gap-3">
-                                        <div className="h-8 w-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
-                                           <AlertTriangle className="h-4 w-4" />
+                                  {/* Produce Cost Missed Target with Dropdown */}
+                                  <div>
+                                     <button
+                                        data-testid="toggle-produce-opportunity"
+                                        onClick={() => setExpandedMissedTarget(expandedMissedTarget === "produce" ? null : "produce")}
+                                        className="w-full p-4 flex justify-between items-center hover:bg-gray-50 transition-colors"
+                                     >
+                                        <div className="flex items-center gap-3">
+                                           <div className="h-8 w-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
+                                              <AlertTriangle className="h-4 w-4" />
+                                           </div>
+                                           <div className="text-left">
+                                              <p className="text-sm font-medium text-gray-900">
+                                                 Produce costs spiked:{' '}
+                                                 <span className="text-amber-700">Avocados +37%, Limes +28%</span>
+                                              </p>
+                                              <p className="text-xs text-muted-foreground">Evaluate alternative suppliers or menu adjustments</p>
+                                           </div>
                                         </div>
-                                        <div>
-                                           <p className="text-sm font-medium text-gray-900">Produce costs spiked: Avocados +37%, Limes +28%</p>
-                                           <p className="text-xs text-muted-foreground">Evaluate alternative suppliers or menu adjustments</p>
+                                        <div className="flex items-center gap-3">
+                                           <span className="text-sm font-medium text-amber-600">-$800</span>
+                                           <ChevronDown className={cn(
+                                              "h-4 w-4 text-gray-400 transition-transform duration-200",
+                                              expandedMissedTarget === "produce" && "rotate-180"
+                                           )} />
                                         </div>
-                                     </div>
-                                     <span className="text-sm font-medium text-amber-600">-$800</span>
+                                     </button>
+                                     <AnimatePresence>
+                                        {expandedMissedTarget === "produce" && (
+                                           <motion.div
+                                              initial={{ height: 0, opacity: 0 }}
+                                              animate={{ height: "auto", opacity: 1 }}
+                                              exit={{ height: 0, opacity: 0 }}
+                                              transition={{ duration: 0.15 }}
+                                              className="overflow-hidden"
+                                           >
+                                              <div className="px-4 pb-4 pt-1 ml-11 border-l-2 border-indigo-200">
+                                                 <div className="bg-indigo-50 rounded-lg p-3 space-y-3">
+                                                    <div className="flex items-center gap-2 mb-2">
+                                                       <Lightbulb className="h-4 w-4 text-indigo-600" />
+                                                       <span className="text-xs font-medium text-indigo-700 uppercase tracking-wide">Opportunities</span>
+                                                    </div>
+                                                    <div className="flex justify-between items-center">
+                                                       <div>
+                                                          <p className="text-sm font-medium text-gray-900">Switch to Restaurant Depot for avocados</p>
+                                                          <p className="text-xs text-gray-500">Produce • Avocados</p>
+                                                       </div>
+                                                       <span className="text-sm font-semibold text-emerald-600">+$400/mo</span>
+                                                    </div>
+                                                    <div className="flex justify-between items-center pt-2 border-t border-indigo-100">
+                                                       <div>
+                                                          <p className="text-sm font-medium text-gray-900">Feature lime-free specials through Q1</p>
+                                                          <p className="text-xs text-gray-500">Menu Engineering • Seasonal</p>
+                                                       </div>
+                                                       <span className="text-sm font-semibold text-emerald-600">+$200/mo</span>
+                                                    </div>
+                                                 </div>
+                                              </div>
+                                           </motion.div>
+                                        )}
+                                     </AnimatePresence>
                                   </div>
-                                  <div className="p-4 flex justify-between items-center">
-                                     <div className="flex items-center gap-3">
-                                        <div className="h-8 w-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
-                                           <AlertTriangle className="h-4 w-4" />
+
+                                  {/* BOH Overtime Missed Target with Dropdown */}
+                                  <div>
+                                     <button
+                                        data-testid="toggle-boh-overtime-opportunity"
+                                        onClick={() => setExpandedMissedTarget(expandedMissedTarget === "boh-overtime" ? null : "boh-overtime")}
+                                        className="w-full p-4 flex justify-between items-center hover:bg-gray-50 transition-colors"
+                                     >
+                                        <div className="flex items-center gap-3">
+                                           <div className="h-8 w-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
+                                              <AlertTriangle className="h-4 w-4" />
+                                           </div>
+                                           <div className="text-left">
+                                              <p className="text-sm font-medium text-gray-900">
+                                                 BOH overtime:{' '}
+                                                 <span className="text-amber-700">12 unplanned hours</span>
+                                              </p>
+                                              <p className="text-xs text-muted-foreground">Sysco delivery arrived late on 10/14</p>
+                                           </div>
                                         </div>
-                                        <div>
-                                           <p className="text-sm font-medium text-gray-900">BOH overtime: 12 unplanned hours</p>
-                                           <p className="text-xs text-muted-foreground">Sysco delivery arrived late on 10/14</p>
+                                        <div className="flex items-center gap-3">
+                                           <span className="text-sm font-medium text-amber-600">-$350</span>
+                                           <ChevronDown className={cn(
+                                              "h-4 w-4 text-gray-400 transition-transform duration-200",
+                                              expandedMissedTarget === "boh-overtime" && "rotate-180"
+                                           )} />
                                         </div>
-                                     </div>
-                                     <span className="text-sm font-medium text-amber-600">-$350</span>
+                                     </button>
+                                     <AnimatePresence>
+                                        {expandedMissedTarget === "boh-overtime" && (
+                                           <motion.div
+                                              initial={{ height: 0, opacity: 0 }}
+                                              animate={{ height: "auto", opacity: 1 }}
+                                              exit={{ height: 0, opacity: 0 }}
+                                              transition={{ duration: 0.15 }}
+                                              className="overflow-hidden"
+                                           >
+                                              <div className="px-4 pb-4 pt-1 ml-11 border-l-2 border-indigo-200">
+                                                 <div className="bg-indigo-50 rounded-lg p-3 space-y-3">
+                                                    <div className="flex items-center gap-2 mb-2">
+                                                       <Lightbulb className="h-4 w-4 text-indigo-600" />
+                                                       <span className="text-xs font-medium text-indigo-700 uppercase tracking-wide">Opportunities</span>
+                                                    </div>
+                                                    <div className="flex justify-between items-center">
+                                                       <div>
+                                                          <p className="text-sm font-medium text-gray-900">Set Sysco delivery SLA with penalties</p>
+                                                          <p className="text-xs text-gray-500">Vendor Management • Sysco</p>
+                                                       </div>
+                                                       <span className="text-sm font-semibold text-emerald-600">+$150/mo</span>
+                                                    </div>
+                                                    <div className="flex justify-between items-center pt-2 border-t border-indigo-100">
+                                                       <div>
+                                                          <p className="text-sm font-medium text-gray-900">Prep buffer stock for late delivery days</p>
+                                                          <p className="text-xs text-gray-500">Inventory • Prep Planning</p>
+                                                       </div>
+                                                       <span className="text-sm font-semibold text-emerald-600">+$200/mo</span>
+                                                    </div>
+                                                 </div>
+                                              </div>
+                                           </motion.div>
+                                        )}
+                                     </AnimatePresence>
+                                  </div>
+
+                                  {/* Food Cost Missed Target with Dropdown */}
+                                  <div>
+                                     <button
+                                        data-testid="toggle-food-cost-opportunity"
+                                        onClick={() => setExpandedMissedTarget(expandedMissedTarget === "food-cost" ? null : "food-cost")}
+                                        className="w-full p-4 flex justify-between items-center hover:bg-gray-50 transition-colors"
+                                     >
+                                        <div className="flex items-center gap-3">
+                                           <div className="h-8 w-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
+                                              <AlertTriangle className="h-4 w-4" />
+                                           </div>
+                                           <div className="text-left">
+                                              <p className="text-sm font-medium text-gray-900">
+                                                 Food cost % over target:{' '}
+                                                 <span className="text-amber-700">23.3% vs 24%</span>
+                                              </p>
+                                              <p className="text-xs text-muted-foreground">Portion drift detected on protein items</p>
+                                           </div>
+                                        </div>
+                                        <div className="flex items-center gap-3">
+                                           <span className="text-sm font-medium text-amber-600">-$445</span>
+                                           <ChevronDown className={cn(
+                                              "h-4 w-4 text-gray-400 transition-transform duration-200",
+                                              expandedMissedTarget === "food-cost" && "rotate-180"
+                                           )} />
+                                        </div>
+                                     </button>
+                                     <AnimatePresence>
+                                        {expandedMissedTarget === "food-cost" && (
+                                           <motion.div
+                                              initial={{ height: 0, opacity: 0 }}
+                                              animate={{ height: "auto", opacity: 1 }}
+                                              exit={{ height: 0, opacity: 0 }}
+                                              transition={{ duration: 0.15 }}
+                                              className="overflow-hidden"
+                                           >
+                                              <div className="px-4 pb-4 pt-1 ml-11 border-l-2 border-indigo-200">
+                                                 <div className="bg-indigo-50 rounded-lg p-3">
+                                                    <div className="flex items-center gap-2 mb-2">
+                                                       <Lightbulb className="h-4 w-4 text-indigo-600" />
+                                                       <span className="text-xs font-medium text-indigo-700 uppercase tracking-wide">Opportunity</span>
+                                                    </div>
+                                                    <div className="flex justify-between items-center">
+                                                       <div>
+                                                          <p className="text-sm font-medium text-gray-900">Recalibrate protein portion scales</p>
+                                                          <p className="text-xs text-gray-500">Kitchen Ops • Portioning</p>
+                                                       </div>
+                                                       <span className="text-sm font-semibold text-emerald-600">+$300/mo</span>
+                                                    </div>
+                                                 </div>
+                                              </div>
+                                           </motion.div>
+                                        )}
+                                     </AnimatePresence>
                                   </div>
                                </>
                             )}
