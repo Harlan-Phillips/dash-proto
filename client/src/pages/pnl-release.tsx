@@ -3970,6 +3970,79 @@ export default function PnlRelease() {
   // GM Time Range state (persists when switching locations)
   const [gmTimeRange, setGmTimeRange] = useState<"today" | "week" | "month" | "year">("today");
   
+  // Chef Time Range state for Ticket Time Performance
+  const [chefTimeRange, setChefTimeRange] = useState<"today" | "week" | "month" | "year">("today");
+  
+  // Ticket Time Performance data by time range
+  const ticketTimeData = {
+    today: {
+      label: "Day",
+      xAxisKey: "hour",
+      data: [
+        { hour: '10am', green: 12, yellow: 2, red: 0 },
+        { hour: '11am', green: 28, yellow: 5, red: 1 },
+        { hour: '12pm', green: 45, yellow: 12, red: 3 },
+        { hour: '1pm', green: 52, yellow: 15, red: 5 },
+        { hour: '2pm', green: 38, yellow: 8, red: 2 },
+        { hour: '3pm', green: 18, yellow: 4, red: 1 },
+        { hour: '4pm', green: 15, yellow: 3, red: 0 },
+        { hour: '5pm', green: 32, yellow: 6, red: 2 },
+        { hour: '6pm', green: 48, yellow: 14, red: 6 },
+        { hour: '7pm', green: 55, yellow: 18, red: 9 },
+        { hour: '8pm', green: 42, yellow: 12, red: 4 },
+        { hour: '9pm', green: 25, yellow: 6, red: 2 },
+      ],
+      summary: { greenPct: 78, yellowPct: 16, redPct: 6 },
+      xLabel: "Tickets by hour"
+    },
+    week: {
+      label: "Week",
+      xAxisKey: "day",
+      data: [
+        { day: 'Mon', green: 410, yellow: 87, red: 35 },
+        { day: 'Tue', green: 385, yellow: 72, red: 28 },
+        { day: 'Wed', green: 420, yellow: 95, red: 42 },
+        { day: 'Thu', green: 445, yellow: 88, red: 38 },
+        { day: 'Fri', green: 520, yellow: 125, red: 55 },
+        { day: 'Sat', green: 580, yellow: 140, red: 68 },
+        { day: 'Sun', green: 380, yellow: 78, red: 32 },
+      ],
+      summary: { greenPct: 76, yellowPct: 17, redPct: 7 },
+      xLabel: "Tickets by day (WTD)"
+    },
+    month: {
+      label: "Month",
+      xAxisKey: "day",
+      data: [
+        { day: 'Jan 1', green: 385, yellow: 72, red: 28 },
+        { day: 'Jan 2', green: 410, yellow: 87, red: 35 },
+        { day: 'Jan 3', green: 520, yellow: 125, red: 55 },
+        { day: 'Jan 4', green: 580, yellow: 140, red: 68 },
+        { day: 'Jan 5', green: 380, yellow: 78, red: 32 },
+        { day: 'Jan 6', green: 410, yellow: 87, red: 35 },
+        { day: 'Jan 7', green: 385, yellow: 72, red: 28 },
+        { day: 'Jan 8', green: 420, yellow: 95, red: 42 },
+        { day: 'Jan 9', green: 445, yellow: 88, red: 38 },
+        { day: 'Jan 10', green: 520, yellow: 125, red: 55 },
+        { day: 'Jan 11', green: 580, yellow: 140, red: 68 },
+        { day: 'Jan 12', green: 410, yellow: 105, red: 35 },
+      ],
+      summary: { greenPct: 75, yellowPct: 18, redPct: 7 },
+      xLabel: "Tickets by day (MTD)"
+    },
+    year: {
+      label: "Year",
+      xAxisKey: "month",
+      data: [
+        { month: 'Jan', green: 5520, yellow: 1214, red: 519 },
+      ],
+      summary: { greenPct: 76, yellowPct: 17, redPct: 7 },
+      xLabel: "Tickets by month (YTD)"
+    }
+  };
+  
+  const currentTicketData = ticketTimeData[chefTimeRange];
+  
   // GM Time Range data (mock data for different periods)
   const gmTimeRangeData = {
     today: {
@@ -11527,10 +11600,28 @@ export default function PnlRelease() {
                    {/* Ticket Time Zone Bar Graph - Chef Only */}
                    {selectedRole === "chef" && (
                    <section data-testid="ticket-time-zone-section">
-                      <h2 className="text-lg font-serif font-bold text-gray-900 mb-4 flex items-center gap-2">
-                         <Clock className="h-5 w-5 text-gray-600" />
-                         Ticket Time Performance
-                      </h2>
+                      <div className="flex items-center justify-between mb-4">
+                         <h2 className="text-lg font-serif font-bold text-gray-900 flex items-center gap-2">
+                            <Clock className="h-5 w-5 text-gray-600" />
+                            Ticket Time Performance
+                         </h2>
+                         <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-0.5">
+                            {(["today", "week", "month", "year"] as const).map((range) => (
+                               <button
+                                  key={range}
+                                  onClick={() => setChefTimeRange(range)}
+                                  className={cn(
+                                     "px-3 py-1 text-xs font-medium rounded-md transition-all",
+                                     chefTimeRange === range
+                                        ? "bg-white text-gray-900 shadow-sm"
+                                        : "text-gray-600 hover:text-gray-900"
+                                  )}
+                               >
+                                  {range === "today" ? "Day" : range.charAt(0).toUpperCase() + range.slice(1)}
+                               </button>
+                            ))}
+                         </div>
+                      </div>
                       <div className="bg-white border border-gray-200 rounded-xl p-6">
                          <div className="flex items-center justify-between mb-4">
                             <div className="flex items-center gap-4">
@@ -11547,26 +11638,13 @@ export default function PnlRelease() {
                                   <span className="text-xs text-gray-600">Problematic (&gt;10 min)</span>
                                </div>
                             </div>
-                            <span className="text-xs text-gray-500">Tickets by hour</span>
+                            <span className="text-xs text-gray-500">{currentTicketData.xLabel}</span>
                          </div>
                          <div className="h-64">
                             <ResponsiveContainer width="100%" height="100%">
-                               <BarChart data={[
-                                  { hour: '10am', green: 12, yellow: 2, red: 0, total: 14 },
-                                  { hour: '11am', green: 28, yellow: 5, red: 1, total: 34 },
-                                  { hour: '12pm', green: 45, yellow: 12, red: 3, total: 60 },
-                                  { hour: '1pm', green: 52, yellow: 15, red: 5, total: 72 },
-                                  { hour: '2pm', green: 38, yellow: 8, red: 2, total: 48 },
-                                  { hour: '3pm', green: 18, yellow: 4, red: 1, total: 23 },
-                                  { hour: '4pm', green: 15, yellow: 3, red: 0, total: 18 },
-                                  { hour: '5pm', green: 32, yellow: 6, red: 2, total: 40 },
-                                  { hour: '6pm', green: 48, yellow: 14, red: 6, total: 68 },
-                                  { hour: '7pm', green: 55, yellow: 18, red: 9, total: 82 },
-                                  { hour: '8pm', green: 42, yellow: 12, red: 4, total: 58 },
-                                  { hour: '9pm', green: 25, yellow: 6, red: 2, total: 33 },
-                               ]}>
+                               <BarChart data={currentTicketData.data}>
                                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
-                                  <XAxis dataKey="hour" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#6b7280' }} />
+                                  <XAxis dataKey={currentTicketData.xAxisKey} axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#6b7280' }} interval={chefTimeRange === 'month' ? 1 : 0} />
                                   <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#6b7280' }} />
                                   <Tooltip 
                                      content={({ active, payload, label }) => {
@@ -11578,9 +11656,10 @@ export default function PnlRelease() {
                                            const greenPct = total > 0 ? Math.round((green / total) * 100) : 0;
                                            const yellowPct = total > 0 ? Math.round((yellow / total) * 100) : 0;
                                            const redPct = total > 0 ? Math.round((red / total) * 100) : 0;
+                                           const tooltipLabel = chefTimeRange === 'today' ? `${label}:00 – ${label}:59` : label;
                                            return (
                                               <div className="bg-white border border-gray-200 rounded-lg shadow-lg p-3 text-sm">
-                                                 <div className="font-semibold text-gray-900 mb-2">{label}:00 – {label}:59</div>
+                                                 <div className="font-semibold text-gray-900 mb-2">{tooltipLabel}</div>
                                                  <div className="space-y-1.5">
                                                     <div className="flex items-center justify-between gap-4">
                                                        <div className="flex items-center gap-2">
@@ -11622,15 +11701,15 @@ export default function PnlRelease() {
                          <div className="mt-4 pt-4 border-t border-gray-100">
                             <div className="grid grid-cols-3 gap-4 text-center">
                                <div>
-                                  <div className="text-2xl font-bold text-emerald-600">78%</div>
+                                  <div className="text-2xl font-bold text-emerald-600">{currentTicketData.summary.greenPct}%</div>
                                   <div className="text-xs text-gray-500">On-time tickets</div>
                                </div>
                                <div>
-                                  <div className="text-2xl font-bold text-amber-500">16%</div>
+                                  <div className="text-2xl font-bold text-amber-500">{currentTicketData.summary.yellowPct}%</div>
                                   <div className="text-xs text-gray-500">At risk tickets</div>
                                </div>
                                <div>
-                                  <div className="text-2xl font-bold text-red-500">6%</div>
+                                  <div className="text-2xl font-bold text-red-500">{currentTicketData.summary.redPct}%</div>
                                   <div className="text-xs text-gray-500">Problematic tickets</div>
                                </div>
                             </div>

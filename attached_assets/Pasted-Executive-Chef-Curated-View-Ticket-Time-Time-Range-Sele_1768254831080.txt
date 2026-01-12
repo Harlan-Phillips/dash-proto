@@ -1,0 +1,140 @@
+Executive Chef Curated View – Ticket Time Time-Range Selector
+
+Area: Accounting / P&L
+View: Curated View → Executive Chef
+Section: Ticket Time Performance
+Type: Feature / Time-Range Control
+
+Problem
+
+The Ticket Time Performance feature in the Executive Chef Curated View currently reflects a single-day snapshot, limiting the chef’s ability to understand:
+
+Whether delays are isolated to today
+
+If issues repeat across the week
+
+How kitchen performance trends month-to-date or year-to-date
+
+The GM view already supports time-range analysis, creating an inconsistency across roles.
+
+Goal
+
+Add a time-range selector to the Ticket Time Performance section so Executive Chefs can view the same ticket-time metrics across:
+
+Daily
+
+Weekly
+
+Monthly
+
+Yearly
+
+This should behave identically to the GM Performance Summary selector.
+
+Core Behavior
+Time-Range Selector
+
+Add buttons above the Ticket Time chart:
+
+Day (default)
+
+Week
+
+Month
+
+Year
+
+Time-Range Definitions (Exact)
+Range	Definition
+Day	Selected calendar day
+Week	Week-to-date
+Month	Month-to-date
+Year	Year-to-date
+Data Consistency Rule (Critical)
+
+Switching the time range changes only the aggregation window — never the ticket-time definitions or thresholds.
+
+Ticket time zones remain:
+
+🟢 0–7 min
+
+🟡 7–10 min
+
+🔴 >10 min
+
+Chart Behavior by Time Range
+Day (Existing Behavior)
+
+X-axis: Hour-by-hour (12-hour operating window)
+
+Y-axis: Ticket count
+
+Zones stacked by color
+
+Week / Month / Year
+
+Aggregate tickets by day (Week/Month) or month (Year)
+
+Stack zones per bucket
+
+Keep same color logic and hover behavior
+
+Hover / Tooltip Behavior
+
+On hover:
+
+Time bucket label
+
+Ticket count per zone
+
+% of tickets per zone
+
+Total tickets
+
+Percentages must sum to 100%.
+
+UX Requirements
+
+Selector style matches GM Performance Summary
+
+Switching ranges does not reload the page
+
+Selection persists while navigating Curated View
+
+Default remains Day
+
+Permissions
+Role	Access
+Executive Chef	✅
+GM	Optional
+Owner	Optional
+Staff	❌
+Non-Goals (v1)
+
+Custom date ranges
+
+Drill-down to individual tickets
+
+Station-level or cook-level views
+
+Side-by-side comparisons
+
+Acceptance Criteria
+
+ Time-range selector renders above Ticket Time chart
+
+ Day / Week / Month / Year views function correctly
+
+ Ticket thresholds unchanged across ranges
+
+ Hover shows counts + percentages
+
+ Selector behavior matches GM view
+
+Notes
+
+This ensures role consistency across Curated Views and allows Executive Chefs to answer:
+
+“Is this a bad service — or a bad pattern?”
+
+Without leaving Accounting / P&L.
