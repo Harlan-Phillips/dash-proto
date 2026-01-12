@@ -4768,55 +4768,105 @@ export default function PnlRelease() {
                                    </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-100">
-                                   <tr className="hover:bg-gray-50 cursor-pointer group transition-colors" onClick={() => openTrendModal('net-sales')}>
+                                   <tr className="hover:bg-gray-50 group transition-colors">
                                       <td className="px-6 py-4 text-gray-900 flex items-center gap-2">
                                         Net Sales
-                                        <TrendingUp className="h-3.5 w-3.5 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
                                       </td>
                                       <td className="px-6 py-4 font-semibold text-gray-900">{healthSnapshotMode === "actual" ? "$133,042" : "100.0%"}</td>
                                       <td className="px-6 py-4 text-gray-500">{healthSnapshotMode === "actual" ? "$150,000" : "100.0%"}</td>
                                       <td className="px-6 py-4 text-red-600 font-medium">{healthSnapshotMode === "actual" ? "-$16,958" : "-11.3%"}</td>
-                                      <td className="px-6 py-4 text-right"><span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">NEEDS ATTENTION</span></td>
+                                      <td className="px-6 py-4 text-right">
+                                        <button
+                                          onClick={() => openTrendModal('net-sales')}
+                                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700 hover:bg-red-200 hover:scale-105 active:scale-95 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-1"
+                                          data-testid="status-net-sales"
+                                          title="View Net Sales trend"
+                                        >
+                                          <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                                          NEEDS ATTENTION
+                                          <TrendingUp className="h-3 w-3 opacity-70" />
+                                        </button>
+                                      </td>
                                    </tr>
-                                   <tr className="hover:bg-gray-50 cursor-pointer group transition-colors" onClick={() => openTrendModal('prime-cost')}>
+                                   <tr className="hover:bg-gray-50 group transition-colors">
                                       <td className="px-6 py-4 text-gray-900 flex items-center gap-2">
                                         Prime Cost
-                                        <TrendingUp className="h-3.5 w-3.5 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
                                       </td>
                                       <td className="px-6 py-4 font-semibold text-gray-900">{healthSnapshotMode === "actual" ? "$71,826" : "54.0%"}</td>
                                       <td className="px-6 py-4 text-gray-500">{healthSnapshotMode === "actual" ? "$66,521" : "50.0%"}</td>
                                       <td className="px-6 py-4 text-red-600 font-medium">{healthSnapshotMode === "actual" ? "+$5,305" : "+4.0pts"}</td>
-                                      <td className="px-6 py-4 text-right"><span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">NEEDS ATTENTION</span></td>
+                                      <td className="px-6 py-4 text-right">
+                                        <button
+                                          onClick={() => openTrendModal('prime-cost')}
+                                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700 hover:bg-red-200 hover:scale-105 active:scale-95 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-1"
+                                          data-testid="status-prime-cost"
+                                          title="View Prime Cost trend"
+                                        >
+                                          <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                                          NEEDS ATTENTION
+                                          <TrendingUp className="h-3 w-3 opacity-70" />
+                                        </button>
+                                      </td>
                                    </tr>
-                                   <tr className="hover:bg-gray-50 cursor-pointer group transition-colors" onClick={() => openTrendModal('labor')}>
+                                   <tr className="hover:bg-gray-50 group transition-colors">
                                       <td className="px-6 py-4 text-gray-900 flex items-center gap-2">
                                         Labor
-                                        <TrendingUp className="h-3.5 w-3.5 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
                                       </td>
                                       <td className="px-6 py-4 font-semibold text-gray-900">{healthSnapshotMode === "actual" ? "$16,156" : "12.1%"}</td>
                                       <td className="px-6 py-4 text-gray-500">{healthSnapshotMode === "actual" ? "$15,965" : "12.0%"}</td>
                                       <td className="px-6 py-4 text-amber-600 font-medium">{healthSnapshotMode === "actual" ? "+$191" : "+0.1pts"}</td>
-                                      <td className="px-6 py-4 text-right"><span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700">ON TRACK</span></td>
+                                      <td className="px-6 py-4 text-right">
+                                        <button
+                                          onClick={() => openTrendModal('labor')}
+                                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700 hover:bg-emerald-200 hover:scale-105 active:scale-95 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-300 focus:ring-offset-1"
+                                          data-testid="status-labor"
+                                          title="View Labor trend"
+                                        >
+                                          <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                                          ON TRACK
+                                          <TrendingUp className="h-3 w-3 opacity-70" />
+                                        </button>
+                                      </td>
                                    </tr>
-                                   <tr className="hover:bg-gray-50 cursor-pointer group transition-colors" onClick={() => openTrendModal('cogs')}>
+                                   <tr className="hover:bg-gray-50 group transition-colors">
                                       <td className="px-6 py-4 text-gray-900 flex items-center gap-2">
                                         COGS
-                                        <TrendingUp className="h-3.5 w-3.5 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
                                       </td>
                                       <td className="px-6 py-4 font-semibold text-gray-900">{healthSnapshotMode === "actual" ? "$41,243" : "31.0%"}</td>
                                       <td className="px-6 py-4 text-gray-500">{healthSnapshotMode === "actual" ? "$39,913" : "30.0%"}</td>
                                       <td className="px-6 py-4 text-red-600 font-medium">{healthSnapshotMode === "actual" ? "+$1,330" : "+1.0pts"}</td>
-                                      <td className="px-6 py-4 text-right"><span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">NEEDS ATTENTION</span></td>
+                                      <td className="px-6 py-4 text-right">
+                                        <button
+                                          onClick={() => openTrendModal('cogs')}
+                                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700 hover:bg-red-200 hover:scale-105 active:scale-95 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-1"
+                                          data-testid="status-cogs"
+                                          title="View COGS trend"
+                                        >
+                                          <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                                          NEEDS ATTENTION
+                                          <TrendingUp className="h-3 w-3 opacity-70" />
+                                        </button>
+                                      </td>
                                    </tr>
-                                   <tr className="hover:bg-gray-50 cursor-pointer group transition-colors" onClick={() => openTrendModal('net-income')}>
+                                   <tr className="hover:bg-gray-50 group transition-colors">
                                       <td className="px-6 py-4 text-gray-900 flex items-center gap-2">
                                         Net Income
-                                        <TrendingUp className="h-3.5 w-3.5 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
                                       </td>
                                       <td className="px-6 py-4 font-semibold text-gray-900">{healthSnapshotMode === "actual" ? "$17,722" : "13.3%"}</td>
                                       <td className="px-6 py-4 text-gray-500">{healthSnapshotMode === "actual" ? "$15,000" : "10.0%"}</td>
                                       <td className="px-6 py-4 text-emerald-600 font-medium">{healthSnapshotMode === "actual" ? "+$2,722" : "+3.3pts"}</td>
-                                      <td className="px-6 py-4 text-right"><span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700">ON TRACK</span></td>
+                                      <td className="px-6 py-4 text-right">
+                                        <button
+                                          onClick={() => openTrendModal('net-income')}
+                                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700 hover:bg-emerald-200 hover:scale-105 active:scale-95 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-300 focus:ring-offset-1"
+                                          data-testid="status-net-income"
+                                          title="View Net Income trend"
+                                        >
+                                          <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                                          ON TRACK
+                                          <TrendingUp className="h-3 w-3 opacity-70" />
+                                        </button>
+                                      </td>
                                    </tr>
                                 </tbody>
                              </table>
