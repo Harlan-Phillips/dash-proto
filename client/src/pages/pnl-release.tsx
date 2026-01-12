@@ -11531,7 +11531,7 @@ export default function PnlRelease() {
 
                          <button 
                             onClick={() => handleInsightClick("Analyze my Gross Profit change. October: $81,247.54, September: $77,371.95, Change: +$3,875.59 (+5.0%). What drove this?")}
-                            className="grid grid-cols-6 px-4 py-4 border-b border-gray-100 hover:bg-blue-50 transition-colors w-full text-left group"
+                            className="grid grid-cols-6 px-4 py-4 border-b border-gray-100 bg-white hover:bg-blue-50 transition-colors w-full text-left group"
                          >
                             <div className="col-span-2 flex items-center gap-2">
                                <span className="font-medium text-gray-900">Gross Profit</span>
@@ -11545,7 +11545,7 @@ export default function PnlRelease() {
 
                          <button 
                             onClick={() => handleInsightClick("Analyze my Gross Profit Margin. October: 58.4%, September: 58.2%, Change: +0.2 pts.")}
-                            className="grid grid-cols-6 px-4 py-4 border-b border-gray-100 hover:bg-blue-50 transition-colors w-full text-left group"
+                            className="grid grid-cols-6 px-4 py-4 border-b border-gray-100 bg-white hover:bg-blue-50 transition-colors w-full text-left group"
                          >
                             <div className="col-span-2 flex items-center gap-2">
                                <span className="font-medium text-gray-900">Gross Profit Margin</span>
@@ -11559,7 +11559,7 @@ export default function PnlRelease() {
 
                          <button 
                             onClick={() => handleInsightClick("Analyze my Operating Expenses. October: $57,823, September: $59,650, Change: -$1,826 (-3.1%). What drove the decrease?")}
-                            className="grid grid-cols-6 px-4 py-4 border-b border-gray-100 hover:bg-blue-50 transition-colors w-full text-left group"
+                            className="grid grid-cols-6 px-4 py-4 border-b border-gray-100 bg-white hover:bg-blue-50 transition-colors w-full text-left group"
                          >
                             <div className="col-span-2 flex items-center gap-2">
                                <span className="font-medium text-gray-900">Operating Expenses</span>
@@ -11573,7 +11573,7 @@ export default function PnlRelease() {
 
                          <button 
                             onClick={() => handleInsightClick("Analyze my Operating Expense Ratio. October: 41.5%, September: 44.8%, Change: -3.3 pts.")}
-                            className="grid grid-cols-6 px-4 py-4 border-b border-gray-100 hover:bg-blue-50 transition-colors w-full text-left group"
+                            className="grid grid-cols-6 px-4 py-4 border-b border-gray-100 bg-white hover:bg-blue-50 transition-colors w-full text-left group"
                          >
                             <div className="col-span-2 flex items-center gap-2">
                                <span className="font-medium text-gray-900">Operating Expense Ratio</span>
@@ -11587,7 +11587,7 @@ export default function PnlRelease() {
 
                          <button 
                             onClick={() => handleInsightClick("Analyze my Expense as % of Revenue. October: 83.1%, September: 86.7%, Change: -3.6 pts.")}
-                            className="grid grid-cols-6 px-4 py-4 border-b border-gray-100 hover:bg-blue-50 transition-colors w-full text-left group"
+                            className="grid grid-cols-6 px-4 py-4 border-b border-gray-100 bg-white hover:bg-blue-50 transition-colors w-full text-left group"
                          >
                             <div className="col-span-2 flex items-center gap-2">
                                <span className="font-medium text-gray-900">Expense as % of Revenue</span>
@@ -11601,7 +11601,7 @@ export default function PnlRelease() {
 
                          <button 
                             onClick={() => handleInsightClick("Analyze my Net Operating Income. October: $23,424, September: $17,722, Change: +$5,702 (+32.2%). This is significant - what drove it?")}
-                            className="grid grid-cols-6 px-4 py-4 border-b border-gray-100 bg-emerald-50/50 hover:bg-emerald-100/50 transition-colors w-full text-left group"
+                            className="grid grid-cols-6 px-4 py-4 border-b border-gray-100 bg-white hover:bg-blue-50 transition-colors w-full text-left group"
                          >
                             <div className="col-span-2 flex items-center gap-2">
                                <span className="font-bold text-gray-900">Net Operating Income</span>
@@ -11615,7 +11615,7 @@ export default function PnlRelease() {
 
                          <button 
                             onClick={() => handleInsightClick("Analyze my Operating Margin. October: 16.8%, September: 13.3%, Change: +3.5 pts. Is this sustainable?")}
-                            className="grid grid-cols-6 px-4 py-4 bg-gray-50/50 hover:bg-blue-50 transition-colors w-full text-left group"
+                            className="grid grid-cols-6 px-4 py-4 bg-white hover:bg-blue-50 transition-colors w-full text-left group"
                          >
                             <div className="col-span-2 flex items-center gap-2">
                                <span className="font-bold text-gray-900">Operating Margin</span>
