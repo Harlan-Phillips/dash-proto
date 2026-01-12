@@ -3436,6 +3436,104 @@ export default function PnlRelease() {
     setLaborBudgets(prev => ({ ...prev, [id]: value }));
   };
 
+  // Editable Labor Efficiency Targets
+  const [laborEfficiencyTargets, setLaborEfficiencyTargets] = useState({
+    'sales-per-hour': 50.00,
+    'hours-per-guest': 0.68,
+    'overtime-pct': 4.0,
+  });
+  const laborEfficiencyActuals = {
+    'sales-per-hour': 48.20,
+    'hours-per-guest': 0.71,
+    'overtime-pct': 7.4,
+  };
+  const getLaborEfficiencyStatus = (id: string, isInverse: boolean = false) => {
+    const actual = laborEfficiencyActuals[id as keyof typeof laborEfficiencyActuals];
+    const target = laborEfficiencyTargets[id as keyof typeof laborEfficiencyTargets];
+    const diff = isInverse ? actual - target : target - actual;
+    if (diff > 1) return { status: 'ATTENTION', color: 'bg-red-100 text-red-700' };
+    if (diff > 0) return { status: 'MONITOR', color: 'bg-amber-100 text-amber-700' };
+    return { status: 'ON TRACK', color: 'bg-emerald-100 text-emerald-700' };
+  };
+
+  // Editable COGS Budgets
+  const [cogsBudgets, setCogsBudgets] = useState({
+    'total-cogs': 79910,
+    'food-cost': 62880,
+    'beverage-cost': 13100,
+    'paper-supplies': 3930,
+  });
+  const cogsActuals = {
+    'total-cogs': 86800,
+    'food-cost': 68400,
+    'beverage-cost': 14200,
+    'paper-supplies': 4200,
+  };
+  const getCogsVariance = (id: string) => {
+    const actual = cogsActuals[id as keyof typeof cogsActuals] || 0;
+    const budget = cogsBudgets[id as keyof typeof cogsBudgets] || 0;
+    const variance = actual - budget;
+    return {
+      variance,
+      formatted: variance === 0 ? '$0' : variance > 0 ? `+$${variance.toLocaleString()}` : `-$${Math.abs(variance).toLocaleString()}`,
+      color: variance > 0 ? 'text-red-600' : variance < 0 ? 'text-emerald-600' : 'text-gray-600'
+    };
+  };
+
+  // Editable Controllable Expenses Budgets
+  const [controllableBudgets, setControllableBudgets] = useState({
+    'total-controllable': 39800,
+    'marketing': 4500,
+    'repairs': 4000,
+    'utilities': 6200,
+    'cc-fees': 6600,
+    'delivery': 7300,
+  });
+  const controllableActuals = {
+    'total-controllable': 38600,
+    'marketing': 3200,
+    'repairs': 4800,
+    'utilities': 6400,
+    'cc-fees': 7400,
+    'delivery': 8200,
+  };
+  const getControllableVariance = (id: string) => {
+    const actual = controllableActuals[id as keyof typeof controllableActuals] || 0;
+    const budget = controllableBudgets[id as keyof typeof controllableBudgets] || 0;
+    const variance = actual - budget;
+    return {
+      variance,
+      formatted: variance === 0 ? '$0' : variance > 0 ? `+$${variance.toLocaleString()}` : `-$${Math.abs(variance).toLocaleString()}`,
+      color: variance > 0 ? 'text-red-600' : variance < 0 ? 'text-emerald-600' : 'text-gray-600'
+    };
+  };
+
+  // Editable Fixed/Occupancy Budgets
+  const [occupancyBudgets, setOccupancyBudgets] = useState({
+    'total-occupancy': 28500,
+    'rent': 18000,
+    'cam': 4500,
+    'insurance': 3200,
+    'depreciation': 2800,
+  });
+  const occupancyActuals = {
+    'total-occupancy': 28500,
+    'rent': 18000,
+    'cam': 4500,
+    'insurance': 3200,
+    'depreciation': 2800,
+  };
+  const getOccupancyVariance = (id: string) => {
+    const actual = occupancyActuals[id as keyof typeof occupancyActuals] || 0;
+    const budget = occupancyBudgets[id as keyof typeof occupancyBudgets] || 0;
+    const variance = actual - budget;
+    return {
+      variance,
+      formatted: variance === 0 ? '$0' : variance > 0 ? `+$${variance.toLocaleString()}` : `-$${Math.abs(variance).toLocaleString()}`,
+      color: variance > 0 ? 'text-red-600' : variance < 0 ? 'text-emerald-600' : 'text-gray-600'
+    };
+  };
+
   // Report Archive Sidebar State
   const [archiveSidebarWidth, setArchiveSidebarWidth] = useState(256); // default 256px (w-64)
   const [archiveSidebarCollapsed, setArchiveSidebarCollapsed] = useState(false);
@@ -8626,21 +8724,56 @@ export default function PnlRelease() {
                                <tbody className="divide-y divide-gray-100">
                                   <tr>
                                      <td className="py-3 text-gray-900">Sales per Labor Hour</td>
-                                     <td className="py-3 text-right font-medium">$48.20</td>
-                                     <td className="py-3 text-right text-gray-500">$50.00</td>
-                                     <td className="py-3 text-right"><span className="px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-700">MONITOR</span></td>
+                                     <td className="py-3 text-right font-medium">${laborEfficiencyActuals['sales-per-hour'].toFixed(2)}</td>
+                                     <td className="py-3 text-right">
+                                        <input
+                                           type="text"
+                                           value={`$${laborEfficiencyTargets['sales-per-hour'].toFixed(2)}`}
+                                           onChange={(e) => {
+                                              const val = e.target.value.replace(/[$,]/g, '');
+                                              const num = parseFloat(val);
+                                              if (!isNaN(num)) setLaborEfficiencyTargets(prev => ({ ...prev, 'sales-per-hour': num }));
+                                           }}
+                                           className="w-20 px-2 py-0.5 text-gray-500 bg-gray-50 border border-gray-200 rounded hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors text-xs text-right"
+                                           data-testid="target-sales-per-hour"
+                                        />
+                                     </td>
+                                     <td className="py-3 text-right"><span className={cn("px-2 py-0.5 rounded-full text-xs font-medium", getLaborEfficiencyStatus('sales-per-hour').color)}>{getLaborEfficiencyStatus('sales-per-hour').status}</span></td>
                                   </tr>
                                   <tr>
                                      <td className="py-3 text-gray-900">Labor Hours / Guest</td>
-                                     <td className="py-3 text-right font-medium">0.71</td>
-                                     <td className="py-3 text-right text-gray-500">0.68</td>
-                                     <td className="py-3 text-right"><span className="px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-700">MONITOR</span></td>
+                                     <td className="py-3 text-right font-medium">{laborEfficiencyActuals['hours-per-guest'].toFixed(2)}</td>
+                                     <td className="py-3 text-right">
+                                        <input
+                                           type="text"
+                                           value={laborEfficiencyTargets['hours-per-guest'].toFixed(2)}
+                                           onChange={(e) => {
+                                              const num = parseFloat(e.target.value);
+                                              if (!isNaN(num)) setLaborEfficiencyTargets(prev => ({ ...prev, 'hours-per-guest': num }));
+                                           }}
+                                           className="w-16 px-2 py-0.5 text-gray-500 bg-gray-50 border border-gray-200 rounded hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors text-xs text-right"
+                                           data-testid="target-hours-per-guest"
+                                        />
+                                     </td>
+                                     <td className="py-3 text-right"><span className={cn("px-2 py-0.5 rounded-full text-xs font-medium", getLaborEfficiencyStatus('hours-per-guest', true).color)}>{getLaborEfficiencyStatus('hours-per-guest', true).status}</span></td>
                                   </tr>
                                   <tr>
                                      <td className="py-3 text-gray-900">Overtime % of Total</td>
-                                     <td className="py-3 text-right font-medium">7.4%</td>
-                                     <td className="py-3 text-right text-gray-500">4.0%</td>
-                                     <td className="py-3 text-right"><span className="px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700">ATTENTION</span></td>
+                                     <td className="py-3 text-right font-medium">{laborEfficiencyActuals['overtime-pct'].toFixed(1)}%</td>
+                                     <td className="py-3 text-right">
+                                        <input
+                                           type="text"
+                                           value={`${laborEfficiencyTargets['overtime-pct'].toFixed(1)}%`}
+                                           onChange={(e) => {
+                                              const val = e.target.value.replace(/%/g, '');
+                                              const num = parseFloat(val);
+                                              if (!isNaN(num)) setLaborEfficiencyTargets(prev => ({ ...prev, 'overtime-pct': num }));
+                                           }}
+                                           className="w-16 px-2 py-0.5 text-gray-500 bg-gray-50 border border-gray-200 rounded hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors text-xs text-right"
+                                           data-testid="target-overtime-pct"
+                                        />
+                                     </td>
+                                     <td className="py-3 text-right"><span className={cn("px-2 py-0.5 rounded-full text-xs font-medium", getLaborEfficiencyStatus('overtime-pct', true).color)}>{getLaborEfficiencyStatus('overtime-pct', true).status}</span></td>
                                   </tr>
                                </tbody>
                             </table>
@@ -8682,30 +8815,78 @@ export default function PnlRelease() {
                             <tbody className="divide-y divide-gray-100">
                                <tr className="hover:bg-gray-50 font-semibold">
                                   <td className="px-6 py-4 text-gray-900">Total COGS</td>
-                                  <td className="px-6 py-4 text-right">$86,800</td>
-                                  <td className="px-6 py-4 text-right text-gray-500">$79,910</td>
-                                  <td className="px-6 py-4 text-right text-red-600">+$6,890</td>
+                                  <td className="px-6 py-4 text-right">${cogsActuals['total-cogs'].toLocaleString()}</td>
+                                  <td className="px-6 py-4 text-right">
+                                     <input
+                                        type="text"
+                                        value={`$${cogsBudgets['total-cogs'].toLocaleString()}`}
+                                        onChange={(e) => {
+                                           const val = e.target.value.replace(/[$,]/g, '');
+                                           const num = parseFloat(val);
+                                           if (!isNaN(num)) setCogsBudgets(prev => ({ ...prev, 'total-cogs': num }));
+                                        }}
+                                        className="w-24 px-2 py-1 text-gray-600 bg-gray-50 border border-gray-200 rounded hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors text-sm text-right"
+                                        data-testid="budget-total-cogs"
+                                     />
+                                  </td>
+                                  <td className={cn("px-6 py-4 text-right font-medium", getCogsVariance('total-cogs').color)}>{getCogsVariance('total-cogs').formatted}</td>
                                   <td className="px-6 py-4 text-right text-gray-600">29.6%</td>
                                </tr>
                                <tr className="hover:bg-gray-50">
                                   <td className="px-6 py-4 text-gray-700 pl-10">Food Cost</td>
-                                  <td className="px-6 py-4 text-right">$68,400</td>
-                                  <td className="px-6 py-4 text-right text-gray-500">$62,880</td>
-                                  <td className="px-6 py-4 text-right text-red-600">+$5,520</td>
+                                  <td className="px-6 py-4 text-right">${cogsActuals['food-cost'].toLocaleString()}</td>
+                                  <td className="px-6 py-4 text-right">
+                                     <input
+                                        type="text"
+                                        value={`$${cogsBudgets['food-cost'].toLocaleString()}`}
+                                        onChange={(e) => {
+                                           const val = e.target.value.replace(/[$,]/g, '');
+                                           const num = parseFloat(val);
+                                           if (!isNaN(num)) setCogsBudgets(prev => ({ ...prev, 'food-cost': num }));
+                                        }}
+                                        className="w-24 px-2 py-1 text-gray-500 bg-gray-50 border border-gray-200 rounded hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors text-sm text-right"
+                                        data-testid="budget-food-cost"
+                                     />
+                                  </td>
+                                  <td className={cn("px-6 py-4 text-right font-medium", getCogsVariance('food-cost').color)}>{getCogsVariance('food-cost').formatted}</td>
                                   <td className="px-6 py-4 text-right text-gray-600">23.3%</td>
                                </tr>
                                <tr className="hover:bg-gray-50">
                                   <td className="px-6 py-4 text-gray-700 pl-10">Beverage Cost</td>
-                                  <td className="px-6 py-4 text-right">$14,200</td>
-                                  <td className="px-6 py-4 text-right text-gray-500">$13,100</td>
-                                  <td className="px-6 py-4 text-right text-red-600">+$1,100</td>
+                                  <td className="px-6 py-4 text-right">${cogsActuals['beverage-cost'].toLocaleString()}</td>
+                                  <td className="px-6 py-4 text-right">
+                                     <input
+                                        type="text"
+                                        value={`$${cogsBudgets['beverage-cost'].toLocaleString()}`}
+                                        onChange={(e) => {
+                                           const val = e.target.value.replace(/[$,]/g, '');
+                                           const num = parseFloat(val);
+                                           if (!isNaN(num)) setCogsBudgets(prev => ({ ...prev, 'beverage-cost': num }));
+                                        }}
+                                        className="w-24 px-2 py-1 text-gray-500 bg-gray-50 border border-gray-200 rounded hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors text-sm text-right"
+                                        data-testid="budget-beverage-cost"
+                                     />
+                                  </td>
+                                  <td className={cn("px-6 py-4 text-right font-medium", getCogsVariance('beverage-cost').color)}>{getCogsVariance('beverage-cost').formatted}</td>
                                   <td className="px-6 py-4 text-right text-gray-600">4.8%</td>
                                </tr>
                                <tr className="hover:bg-gray-50">
                                   <td className="px-6 py-4 text-gray-700 pl-10">Paper & Supplies</td>
-                                  <td className="px-6 py-4 text-right">$4,200</td>
-                                  <td className="px-6 py-4 text-right text-gray-500">$3,930</td>
-                                  <td className="px-6 py-4 text-right text-red-600">+$270</td>
+                                  <td className="px-6 py-4 text-right">${cogsActuals['paper-supplies'].toLocaleString()}</td>
+                                  <td className="px-6 py-4 text-right">
+                                     <input
+                                        type="text"
+                                        value={`$${cogsBudgets['paper-supplies'].toLocaleString()}`}
+                                        onChange={(e) => {
+                                           const val = e.target.value.replace(/[$,]/g, '');
+                                           const num = parseFloat(val);
+                                           if (!isNaN(num)) setCogsBudgets(prev => ({ ...prev, 'paper-supplies': num }));
+                                        }}
+                                        className="w-24 px-2 py-1 text-gray-500 bg-gray-50 border border-gray-200 rounded hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors text-sm text-right"
+                                        data-testid="budget-paper-supplies"
+                                     />
+                                  </td>
+                                  <td className={cn("px-6 py-4 text-right font-medium", getCogsVariance('paper-supplies').color)}>{getCogsVariance('paper-supplies').formatted}</td>
                                   <td className="px-6 py-4 text-right text-gray-600">1.4%</td>
                                </tr>
                             </tbody>
@@ -8751,44 +8932,116 @@ export default function PnlRelease() {
                             <tbody className="divide-y divide-gray-100">
                                <tr className="hover:bg-gray-50 font-semibold">
                                   <td className="px-6 py-4 text-gray-900">Total Controllable</td>
-                                  <td className="px-6 py-4 text-right">$38,600</td>
-                                  <td className="px-6 py-4 text-right text-gray-500">$39,800</td>
-                                  <td className="px-6 py-4 text-right text-emerald-600">-$1,200</td>
+                                  <td className="px-6 py-4 text-right">${controllableActuals['total-controllable'].toLocaleString()}</td>
+                                  <td className="px-6 py-4 text-right">
+                                     <input
+                                        type="text"
+                                        value={`$${controllableBudgets['total-controllable'].toLocaleString()}`}
+                                        onChange={(e) => {
+                                           const val = e.target.value.replace(/[$,]/g, '');
+                                           const num = parseFloat(val);
+                                           if (!isNaN(num)) setControllableBudgets(prev => ({ ...prev, 'total-controllable': num }));
+                                        }}
+                                        className="w-24 px-2 py-1 text-gray-600 bg-gray-50 border border-gray-200 rounded hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors text-sm text-right"
+                                        data-testid="budget-total-controllable"
+                                     />
+                                  </td>
+                                  <td className={cn("px-6 py-4 text-right font-medium", getControllableVariance('total-controllable').color)}>{getControllableVariance('total-controllable').formatted}</td>
                                   <td className="px-6 py-4 text-right text-gray-600">13.2%</td>
                                </tr>
                                <tr className="hover:bg-gray-50">
                                   <td className="px-6 py-4 text-gray-700 pl-10">Marketing</td>
-                                  <td className="px-6 py-4 text-right">$3,200</td>
-                                  <td className="px-6 py-4 text-right text-gray-500">$4,500</td>
-                                  <td className="px-6 py-4 text-right text-emerald-600">-$1,300</td>
+                                  <td className="px-6 py-4 text-right">${controllableActuals['marketing'].toLocaleString()}</td>
+                                  <td className="px-6 py-4 text-right">
+                                     <input
+                                        type="text"
+                                        value={`$${controllableBudgets['marketing'].toLocaleString()}`}
+                                        onChange={(e) => {
+                                           const val = e.target.value.replace(/[$,]/g, '');
+                                           const num = parseFloat(val);
+                                           if (!isNaN(num)) setControllableBudgets(prev => ({ ...prev, 'marketing': num }));
+                                        }}
+                                        className="w-20 px-2 py-0.5 text-gray-500 bg-gray-50 border border-gray-200 rounded hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors text-xs text-right"
+                                        data-testid="budget-marketing"
+                                     />
+                                  </td>
+                                  <td className={cn("px-6 py-4 text-right font-medium", getControllableVariance('marketing').color)}>{getControllableVariance('marketing').formatted}</td>
                                   <td className="px-6 py-4 text-right text-gray-600">1.1%</td>
                                </tr>
                                <tr className="hover:bg-gray-50">
                                   <td className="px-6 py-4 text-gray-700 pl-10">Repairs & Maintenance</td>
-                                  <td className="px-6 py-4 text-right">$4,800</td>
-                                  <td className="px-6 py-4 text-right text-gray-500">$4,000</td>
-                                  <td className="px-6 py-4 text-right text-red-600">+$800</td>
+                                  <td className="px-6 py-4 text-right">${controllableActuals['repairs'].toLocaleString()}</td>
+                                  <td className="px-6 py-4 text-right">
+                                     <input
+                                        type="text"
+                                        value={`$${controllableBudgets['repairs'].toLocaleString()}`}
+                                        onChange={(e) => {
+                                           const val = e.target.value.replace(/[$,]/g, '');
+                                           const num = parseFloat(val);
+                                           if (!isNaN(num)) setControllableBudgets(prev => ({ ...prev, 'repairs': num }));
+                                        }}
+                                        className="w-20 px-2 py-0.5 text-gray-500 bg-gray-50 border border-gray-200 rounded hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors text-xs text-right"
+                                        data-testid="budget-repairs"
+                                     />
+                                  </td>
+                                  <td className={cn("px-6 py-4 text-right font-medium", getControllableVariance('repairs').color)}>{getControllableVariance('repairs').formatted}</td>
                                   <td className="px-6 py-4 text-right text-gray-600">1.6%</td>
                                </tr>
                                <tr className="hover:bg-gray-50">
                                   <td className="px-6 py-4 text-gray-700 pl-10">Utilities</td>
-                                  <td className="px-6 py-4 text-right">$6,400</td>
-                                  <td className="px-6 py-4 text-right text-gray-500">$6,200</td>
-                                  <td className="px-6 py-4 text-right text-red-600">+$200</td>
+                                  <td className="px-6 py-4 text-right">${controllableActuals['utilities'].toLocaleString()}</td>
+                                  <td className="px-6 py-4 text-right">
+                                     <input
+                                        type="text"
+                                        value={`$${controllableBudgets['utilities'].toLocaleString()}`}
+                                        onChange={(e) => {
+                                           const val = e.target.value.replace(/[$,]/g, '');
+                                           const num = parseFloat(val);
+                                           if (!isNaN(num)) setControllableBudgets(prev => ({ ...prev, 'utilities': num }));
+                                        }}
+                                        className="w-20 px-2 py-0.5 text-gray-500 bg-gray-50 border border-gray-200 rounded hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors text-xs text-right"
+                                        data-testid="budget-utilities"
+                                     />
+                                  </td>
+                                  <td className={cn("px-6 py-4 text-right font-medium", getControllableVariance('utilities').color)}>{getControllableVariance('utilities').formatted}</td>
                                   <td className="px-6 py-4 text-right text-gray-600">2.2%</td>
                                </tr>
                                <tr className="hover:bg-gray-50">
                                   <td className="px-6 py-4 text-gray-700 pl-10">Credit Card Fees</td>
-                                  <td className="px-6 py-4 text-right">$7,400</td>
-                                  <td className="px-6 py-4 text-right text-gray-500">$6,600</td>
-                                  <td className="px-6 py-4 text-right text-red-600">+$800</td>
+                                  <td className="px-6 py-4 text-right">${controllableActuals['cc-fees'].toLocaleString()}</td>
+                                  <td className="px-6 py-4 text-right">
+                                     <input
+                                        type="text"
+                                        value={`$${controllableBudgets['cc-fees'].toLocaleString()}`}
+                                        onChange={(e) => {
+                                           const val = e.target.value.replace(/[$,]/g, '');
+                                           const num = parseFloat(val);
+                                           if (!isNaN(num)) setControllableBudgets(prev => ({ ...prev, 'cc-fees': num }));
+                                        }}
+                                        className="w-20 px-2 py-0.5 text-gray-500 bg-gray-50 border border-gray-200 rounded hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors text-xs text-right"
+                                        data-testid="budget-cc-fees"
+                                     />
+                                  </td>
+                                  <td className={cn("px-6 py-4 text-right font-medium", getControllableVariance('cc-fees').color)}>{getControllableVariance('cc-fees').formatted}</td>
                                   <td className="px-6 py-4 text-right text-gray-600">2.5%</td>
                                </tr>
                                <tr className="hover:bg-gray-50">
                                   <td className="px-6 py-4 text-gray-700 pl-10">Delivery Commissions</td>
-                                  <td className="px-6 py-4 text-right">$8,200</td>
-                                  <td className="px-6 py-4 text-right text-gray-500">$7,300</td>
-                                  <td className="px-6 py-4 text-right text-red-600">+$900</td>
+                                  <td className="px-6 py-4 text-right">${controllableActuals['delivery'].toLocaleString()}</td>
+                                  <td className="px-6 py-4 text-right">
+                                     <input
+                                        type="text"
+                                        value={`$${controllableBudgets['delivery'].toLocaleString()}`}
+                                        onChange={(e) => {
+                                           const val = e.target.value.replace(/[$,]/g, '');
+                                           const num = parseFloat(val);
+                                           if (!isNaN(num)) setControllableBudgets(prev => ({ ...prev, 'delivery': num }));
+                                        }}
+                                        className="w-20 px-2 py-0.5 text-gray-500 bg-gray-50 border border-gray-200 rounded hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors text-xs text-right"
+                                        data-testid="budget-delivery"
+                                     />
+                                  </td>
+                                  <td className={cn("px-6 py-4 text-right font-medium", getControllableVariance('delivery').color)}>{getControllableVariance('delivery').formatted}</td>
                                   <td className="px-6 py-4 text-right text-gray-600">2.8%</td>
                                </tr>
                             </tbody>
@@ -8806,33 +9059,99 @@ export default function PnlRelease() {
                                   <th className="text-left px-6 py-3 font-medium text-gray-500">Category</th>
                                   <th className="text-right px-6 py-3 font-medium text-gray-500">Actual</th>
                                   <th className="text-right px-6 py-3 font-medium text-gray-500">Budget</th>
+                                  <th className="text-right px-6 py-3 font-medium text-gray-500">Variance</th>
                                </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100">
                                <tr className="hover:bg-gray-50 font-semibold">
                                   <td className="px-6 py-4 text-gray-900">Total Occupancy</td>
-                                  <td className="px-6 py-4 text-right">$28,500</td>
-                                  <td className="px-6 py-4 text-right text-gray-500">$28,500</td>
+                                  <td className="px-6 py-4 text-right">${occupancyActuals['total-occupancy'].toLocaleString()}</td>
+                                  <td className="px-6 py-4 text-right">
+                                     <input
+                                        type="text"
+                                        value={`$${occupancyBudgets['total-occupancy'].toLocaleString()}`}
+                                        onChange={(e) => {
+                                           const val = e.target.value.replace(/[$,]/g, '');
+                                           const num = parseFloat(val);
+                                           if (!isNaN(num)) setOccupancyBudgets(prev => ({ ...prev, 'total-occupancy': num }));
+                                        }}
+                                        className="w-24 px-2 py-1 text-gray-600 bg-gray-50 border border-gray-200 rounded hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors text-sm text-right"
+                                        data-testid="budget-total-occupancy"
+                                     />
+                                  </td>
+                                  <td className={cn("px-6 py-4 text-right font-medium", getOccupancyVariance('total-occupancy').color)}>{getOccupancyVariance('total-occupancy').formatted}</td>
                                </tr>
                                <tr className="hover:bg-gray-50">
                                   <td className="px-6 py-4 text-gray-700 pl-10">Rent</td>
-                                  <td className="px-6 py-4 text-right">$18,000</td>
-                                  <td className="px-6 py-4 text-right text-gray-500">$18,000</td>
+                                  <td className="px-6 py-4 text-right">${occupancyActuals['rent'].toLocaleString()}</td>
+                                  <td className="px-6 py-4 text-right">
+                                     <input
+                                        type="text"
+                                        value={`$${occupancyBudgets['rent'].toLocaleString()}`}
+                                        onChange={(e) => {
+                                           const val = e.target.value.replace(/[$,]/g, '');
+                                           const num = parseFloat(val);
+                                           if (!isNaN(num)) setOccupancyBudgets(prev => ({ ...prev, 'rent': num }));
+                                        }}
+                                        className="w-24 px-2 py-1 text-gray-500 bg-gray-50 border border-gray-200 rounded hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors text-sm text-right"
+                                        data-testid="budget-rent"
+                                     />
+                                  </td>
+                                  <td className={cn("px-6 py-4 text-right font-medium", getOccupancyVariance('rent').color)}>{getOccupancyVariance('rent').formatted}</td>
                                </tr>
                                <tr className="hover:bg-gray-50">
                                   <td className="px-6 py-4 text-gray-700 pl-10">CAM / Property Tax</td>
-                                  <td className="px-6 py-4 text-right">$4,500</td>
-                                  <td className="px-6 py-4 text-right text-gray-500">$4,500</td>
+                                  <td className="px-6 py-4 text-right">${occupancyActuals['cam'].toLocaleString()}</td>
+                                  <td className="px-6 py-4 text-right">
+                                     <input
+                                        type="text"
+                                        value={`$${occupancyBudgets['cam'].toLocaleString()}`}
+                                        onChange={(e) => {
+                                           const val = e.target.value.replace(/[$,]/g, '');
+                                           const num = parseFloat(val);
+                                           if (!isNaN(num)) setOccupancyBudgets(prev => ({ ...prev, 'cam': num }));
+                                        }}
+                                        className="w-20 px-2 py-0.5 text-gray-500 bg-gray-50 border border-gray-200 rounded hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors text-xs text-right"
+                                        data-testid="budget-cam"
+                                     />
+                                  </td>
+                                  <td className={cn("px-6 py-4 text-right font-medium", getOccupancyVariance('cam').color)}>{getOccupancyVariance('cam').formatted}</td>
                                </tr>
                                <tr className="hover:bg-gray-50">
                                   <td className="px-6 py-4 text-gray-700 pl-10">Insurance</td>
-                                  <td className="px-6 py-4 text-right">$3,200</td>
-                                  <td className="px-6 py-4 text-right text-gray-500">$3,200</td>
+                                  <td className="px-6 py-4 text-right">${occupancyActuals['insurance'].toLocaleString()}</td>
+                                  <td className="px-6 py-4 text-right">
+                                     <input
+                                        type="text"
+                                        value={`$${occupancyBudgets['insurance'].toLocaleString()}`}
+                                        onChange={(e) => {
+                                           const val = e.target.value.replace(/[$,]/g, '');
+                                           const num = parseFloat(val);
+                                           if (!isNaN(num)) setOccupancyBudgets(prev => ({ ...prev, 'insurance': num }));
+                                        }}
+                                        className="w-20 px-2 py-0.5 text-gray-500 bg-gray-50 border border-gray-200 rounded hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors text-xs text-right"
+                                        data-testid="budget-insurance"
+                                     />
+                                  </td>
+                                  <td className={cn("px-6 py-4 text-right font-medium", getOccupancyVariance('insurance').color)}>{getOccupancyVariance('insurance').formatted}</td>
                                </tr>
                                <tr className="hover:bg-gray-50">
                                   <td className="px-6 py-4 text-gray-700 pl-10">Depreciation</td>
-                                  <td className="px-6 py-4 text-right">$2,800</td>
-                                  <td className="px-6 py-4 text-right text-gray-500">$2,800</td>
+                                  <td className="px-6 py-4 text-right">${occupancyActuals['depreciation'].toLocaleString()}</td>
+                                  <td className="px-6 py-4 text-right">
+                                     <input
+                                        type="text"
+                                        value={`$${occupancyBudgets['depreciation'].toLocaleString()}`}
+                                        onChange={(e) => {
+                                           const val = e.target.value.replace(/[$,]/g, '');
+                                           const num = parseFloat(val);
+                                           if (!isNaN(num)) setOccupancyBudgets(prev => ({ ...prev, 'depreciation': num }));
+                                        }}
+                                        className="w-20 px-2 py-0.5 text-gray-500 bg-gray-50 border border-gray-200 rounded hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors text-xs text-right"
+                                        data-testid="budget-depreciation"
+                                     />
+                                  </td>
+                                  <td className={cn("px-6 py-4 text-right font-medium", getOccupancyVariance('depreciation').color)}>{getOccupancyVariance('depreciation').formatted}</td>
                                </tr>
                             </tbody>
                          </table>
