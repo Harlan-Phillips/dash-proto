@@ -10632,9 +10632,24 @@ export default function PnlRelease() {
                          <div className="mt-4 pt-4 border-t border-amber-200">
                             <div className="text-xs font-medium text-gray-700 mb-2">Recommended Actions for Tomorrow:</div>
                             <div className="flex flex-wrap gap-2">
-                               <span className="px-2.5 py-1 bg-white border border-gray-200 text-xs text-gray-700 rounded-full">Review Lunch schedule</span>
-                               <span className="px-2.5 py-1 bg-white border border-gray-200 text-xs text-gray-700 rounded-full">Check portion sizes</span>
-                               <span className="px-2.5 py-1 bg-white border border-gray-200 text-xs text-gray-700 rounded-full">Monitor afternoon traffic</span>
+                               <button 
+                                  onClick={() => setFloatingChatTrigger("How should I optimize the lunch schedule for tomorrow based on today's overstaffing issue?")}
+                                  className="px-2.5 py-1 bg-white border border-gray-200 text-xs text-gray-700 rounded-full hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 transition-colors cursor-pointer"
+                               >
+                                  Review Lunch schedule
+                               </button>
+                               <button 
+                                  onClick={() => setFloatingChatTrigger("What are the ideal portion sizes for our menu items? Today's COGS was high.")}
+                                  className="px-2.5 py-1 bg-white border border-gray-200 text-xs text-gray-700 rounded-full hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 transition-colors cursor-pointer"
+                               >
+                                  Check portion sizes
+                               </button>
+                               <button 
+                                  onClick={() => setFloatingChatTrigger("What strategies can I use to increase afternoon traffic? Today's sales were below average.")}
+                                  className="px-2.5 py-1 bg-white border border-gray-200 text-xs text-gray-700 rounded-full hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 transition-colors cursor-pointer"
+                               >
+                                  Monitor afternoon traffic
+                               </button>
                             </div>
                          </div>
                       </div>
