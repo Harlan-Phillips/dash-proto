@@ -4021,7 +4021,7 @@ export default function PnlRelease() {
               title: 'Lunch overstaffed vs normal Monday',
               description: `Labor was +7.2 pts higher than normal for demand — likely overstaffed during Lunch shift.`,
               tags: [{ label: 'Shift: Lunch', color: 'bg-gray-100 text-gray-600' }, { label: 'Labor % +7.2 pts', color: 'bg-red-100 text-red-700' }],
-              context: `[CONTEXT]\nRole: General Manager\nDay: Monday, Jan 12\nShift: Lunch\nIssue: Lunch was overstaffed vs typical Monday\nMetrics:\n• Labor %: ${lunchData.laborPct}% (+${lunchData.laborVariance} pts vs avg)\n• Sales: $${lunchData.sales.toLocaleString()} (${lunchData.salesVariance}% vs avg)\n\nHelp me understand why lunch was overstaffed today and what I should do about tomorrow's schedule.`
+              context: `[CONTEXT]\nRole: General Manager\nDay: Monday, Jan 12\nShift: Lunch\nIssue: Lunch was overstaffed vs typical Monday\nMetrics:\n• Labor %: 38.5% (+7.2 pts vs avg)\n• Sales: $1,840 (-8.3% vs avg)\n\nHelp me understand why lunch was overstaffed today and what I should do about tomorrow's schedule.`
             },
             {
               id: 'sales-below',
