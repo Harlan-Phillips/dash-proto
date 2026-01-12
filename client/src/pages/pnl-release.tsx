@@ -2748,6 +2748,222 @@ function FloatingAssistantBar({ triggerQuery }: { triggerQuery?: string | null }
   );
 }
 
+// --- Side Panel Assistant Component ---
+function SidePanelAssistant({ onClose, triggerQuery }: { onClose: () => void; triggerQuery?: string | null }) {
+  const [messages, setMessages] = useState<FloatingMessage[]>([]);
+  const [input, setInput] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [processedTrigger, setProcessedTrigger] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages, isTyping]);
+
+  useEffect(() => {
+    if (triggerQuery && triggerQuery !== processedTrigger) {
+      handleSend(triggerQuery.split(" ").slice(0, -1).join(" "));
+      setProcessedTrigger(triggerQuery);
+    }
+  }, [triggerQuery]);
+
+  const handleSend = async (text: string) => {
+    if (!text.trim()) return;
+
+    const userMsg: FloatingMessage = {
+      id: Date.now().toString(),
+      role: "user",
+      content: text
+    };
+
+    setMessages(prev => [...prev, userMsg]);
+    setInput("");
+    setIsTyping(true);
+
+    setTimeout(() => inputRef.current?.focus(), 50);
+
+    await new Promise(r => setTimeout(r, 1200 + Math.random() * 800));
+
+    const response = generateMockResponse(text);
+    
+    const assistantMsg: FloatingMessage = {
+      id: (Date.now() + 1).toString(),
+      role: "assistant",
+      content: response.content,
+      artifact: response.showArtifact
+    };
+
+    setMessages(prev => [...prev, assistantMsg]);
+    setIsTyping(false);
+  };
+
+  const handleNewChat = () => {
+    setMessages([]);
+    setInput("");
+    setTimeout(() => inputRef.current?.focus(), 50);
+  };
+
+  return (
+    <div className="flex flex-col h-full">
+      {/* Header */}
+      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 shrink-0">
+        <div className="flex items-center gap-3">
+          <div className="h-10 w-10 bg-gray-50 rounded-xl flex items-center justify-center border border-gray-100">
+            <Sparkles className="h-5 w-5 text-gray-600" />
+          </div>
+          <div>
+            <h3 className="font-semibold text-sm text-gray-900">Munch Assistant</h3>
+            <p className="text-xs text-gray-500">Build your action plan</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-1">
+          {messages.length > 0 && (
+            <button 
+              onClick={handleNewChat}
+              className="p-1.5 hover:bg-gray-100 rounded-full transition-colors text-gray-400 hover:text-gray-600"
+              title="Clear chat"
+            >
+              <RotateCcw className="h-4 w-4" />
+            </button>
+          )}
+          <button 
+            onClick={onClose}
+            className="p-1.5 hover:bg-gray-100 rounded-full transition-colors text-gray-400 hover:text-gray-600"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+      </div>
+
+      {/* Chat Content */}
+      <div 
+        ref={scrollRef}
+        className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/50"
+      >
+        {messages.map((msg) => (
+          <div key={msg.id}>
+            {msg.role === "user" ? (
+              <div className="flex justify-end mb-4">
+                <div className="bg-gray-100 rounded-2xl rounded-tr-sm px-4 py-3 max-w-[85%]">
+                  <div className="flex items-center justify-between gap-4 mb-1">
+                    <p className="text-sm text-gray-800">{msg.content}</p>
+                    <span className="text-xs text-gray-500 font-medium shrink-0">You</span>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                <div className="flex items-start gap-3">
+                  <div className="h-8 w-8 bg-gray-100 rounded-lg flex items-center justify-center shrink-0">
+                    <Sparkles className="h-4 w-4 text-gray-600" />
+                  </div>
+                  <div className="text-sm text-gray-700 pt-1.5 whitespace-pre-line">
+                    {msg.content.split(/(\*\*[^*]+\*\*)/).map((part, i) => 
+                      part.startsWith('**') && part.endsWith('**') 
+                        ? <strong key={i} className="font-semibold text-gray-900">{part.slice(2, -2)}</strong>
+                        : <span key={i}>{part}</span>
+                    )}
+                  </div>
+                </div>
+                
+                {/* Action Cards */}
+                {msg.artifact && (
+                  <div className="space-y-2 mt-3">
+                    {[
+                      { id: "switch-avocado", title: "Switch Avocado Supplier", desc: "GreenLeaf offers $48/case vs current $62", impact: 600, icon: "arrow", color: "amber" },
+                      { id: "adjust-delivery", title: "Adjust Delivery Window", desc: "Move Sysco to 8-10AM to avoid overtime", impact: 350, icon: "clock", color: "purple" },
+                      { id: "lock-scheduling", title: "Lock Mid-Shift Cuts", desc: "Make Tue/Wed staffing changes permanent", impact: 480, icon: "users", color: "blue" },
+                    ].map((action) => (
+                      <div 
+                        key={action.id}
+                        className="bg-white border border-gray-200 rounded-xl p-4 flex items-start gap-3 hover:border-gray-300 transition-colors cursor-pointer group"
+                      >
+                        <div className={cn(
+                          "h-10 w-10 rounded-lg flex items-center justify-center shrink-0",
+                          action.color === "amber" ? "bg-amber-50" :
+                          action.color === "purple" ? "bg-purple-50" : "bg-blue-50"
+                        )}>
+                          {action.icon === "arrow" && <ArrowRight className={cn("h-5 w-5", action.color === "amber" ? "text-amber-600" : "text-gray-600")} />}
+                          {action.icon === "clock" && <Clock className="h-5 w-5 text-purple-600" />}
+                          {action.icon === "users" && <Users className="h-5 w-5 text-blue-600" />}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-medium text-sm text-gray-900">{action.title}</h4>
+                          <p className="text-xs text-gray-500 mt-0.5">{action.desc}</p>
+                          <div className="flex items-center gap-1 mt-2 text-emerald-600">
+                            <TrendingUp className="h-3.5 w-3.5" />
+                            <span className="text-xs font-medium">+${action.impact}/mo</span>
+                          </div>
+                        </div>
+                        <div className="h-5 w-5 rounded-full border-2 border-gray-300 group-hover:border-gray-400 shrink-0 mt-1" />
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        ))}
+
+        {isTyping && (
+          <div className="flex items-start gap-3">
+            <div className="h-8 w-8 bg-gray-100 rounded-lg flex items-center justify-center">
+              <Sparkles className="h-4 w-4 text-gray-600" />
+            </div>
+            <div className="flex items-center gap-1 pt-2">
+              <div className="h-2 w-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+              <div className="h-2 w-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+              <div className="h-2 w-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+            </div>
+          </div>
+        )}
+
+        {messages.length === 0 && !isTyping && (
+          <div className="text-center py-8">
+            <div className="h-12 w-12 bg-gray-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+              <Sparkles className="h-6 w-6 text-gray-400" />
+            </div>
+            <p className="text-sm text-gray-500">Ask me anything about your P&L</p>
+          </div>
+        )}
+      </div>
+
+      {/* Input */}
+      <div className="p-4 border-t border-gray-100 bg-white shrink-0">
+        <form 
+          onSubmit={(e) => { e.preventDefault(); handleSend(input); }}
+          className="flex items-center gap-2 bg-gray-100 rounded-xl px-4 py-3"
+        >
+          <input 
+            ref={inputRef}
+            type="text" 
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Ask a follow-up question..."
+            data-testid="input-side-panel-chat"
+            className="flex-1 bg-transparent outline-none text-sm text-gray-900 placeholder:text-gray-400"
+          />
+          <button
+            type="submit"
+            disabled={!input.trim()}
+            className={cn(
+              "h-8 w-8 rounded-full flex items-center justify-center transition-colors",
+              input.trim() 
+                ? "bg-gray-900 text-white hover:bg-gray-800" 
+                : "bg-gray-200 text-gray-400"
+            )}
+          >
+            <Send className="h-4 w-4" />
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 // --- Chat Component for Owner View ---
 function OwnerChat({ isOpen, onClose, triggerQuery }: { isOpen: boolean; onClose: () => void; triggerQuery?: string | null }) {
   const [messages, setMessages] = useState<{ id: string; role: "user" | "assistant"; content: string; actions?: string[] }[]>([]);
@@ -6598,6 +6814,19 @@ export default function PnlRelease() {
                       <button className="flex items-center gap-2 text-sm text-gray-600 hover:text-black px-3 py-2 rounded-md hover:bg-gray-100 transition-colors">
                          <Save className="h-4 w-4" /> Save Draft
                       </button>
+                      <div className="h-6 w-px bg-gray-200" />
+                      <button 
+                         onClick={() => setShowChat(!showChat)}
+                         className={cn(
+                            "flex items-center gap-2 text-sm px-3 py-2 rounded-md transition-colors",
+                            showChat 
+                               ? "bg-gray-900 text-white" 
+                               : "text-gray-600 hover:text-black hover:bg-gray-100"
+                         )}
+                         data-testid="button-toggle-assistant"
+                      >
+                         <Sparkles className="h-4 w-4" /> Assistant
+                      </button>
                       <button 
                          onClick={handleRelease}
                          className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-md text-sm font-medium hover:bg-gray-800 transition-colors shadow-sm"
@@ -9868,13 +10097,24 @@ export default function PnlRelease() {
             )}
           </AnimatePresence>
 
-          <OwnerChat 
-            isOpen={showChat} 
-            onClose={() => setShowChat(false)} 
-            triggerQuery={chatTrigger ? chatTrigger.split(" ").slice(0, -1).join(" ") : null} 
-          />
-
-          <FloatingAssistantBar triggerQuery={floatingChatTrigger} />
+          {/* Side Panel Chat */}
+          <AnimatePresence>
+            {showChat && (
+              <motion.div
+                initial={{ width: 0, opacity: 0 }}
+                animate={{ width: 380, opacity: 1 }}
+                exit={{ width: 0, opacity: 0 }}
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                className="h-full bg-white border-l border-gray-200 flex flex-col overflow-hidden shrink-0"
+                data-testid="assistant-side-panel"
+              >
+                <SidePanelAssistant 
+                  onClose={() => setShowChat(false)} 
+                  triggerQuery={floatingChatTrigger}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
        </div>
     </Layout>
   );
