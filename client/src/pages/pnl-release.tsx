@@ -13013,8 +13013,16 @@ export default function PnlRelease() {
                                         </div>
                                         <span className="text-sm text-gray-500">Kitchen Operations • Food Cost</span>
                                      </div>
-                                     <button className="text-gray-400 group-hover:text-blue-600 transition-colors">
-                                        <ChevronRight className="h-5 w-5" />
+                                     <button
+                                       onClick={(e) => {
+                                          e.stopPropagation();
+                                          setFloatingChatTrigger(`Analyze ${chefPrimaryInsight.metrics[1].label} variance for me`);
+                                          setShowChat(true);
+                                       }} 
+                                       className="px-3 py-1.5 bg-white border border-gray-200 text-gray-700 rounded-lg text-xs font-medium hover:bg-gray-50 flex items-center gap-1.5 shadow-sm transition-colors group-hover:border-blue-200 group-hover:text-blue-700"
+                                     >
+                                       <Sparkles className="h-3.5 w-3.5 text-purple-600" />
+                                       Ask Assistant
                                      </button>
                                   </div>
                                   
