@@ -4869,6 +4869,7 @@ export default function PnlRelease() {
          setActionItems(prev => prev.map(i => i.title === assignModal.actionTitle ? {...i, status: 'assigned', context: `Assigned to ${assignModal.recipients.join(', ')}`} : i));
     }
 
+    setShowChat(true); // Ensure chat panel is open
     closeAssignModal();
     toast({
         title: "Action Assigned",
