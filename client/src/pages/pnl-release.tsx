@@ -8889,7 +8889,7 @@ export default function PnlRelease() {
                          </div>
                          <button 
                             data-testid="learn-executive-narrative"
-                            onClick={() => handleInsightClick("What is an executive narrative in a P&L report? Help me understand how to write and interpret it for my restaurant.")}
+                            onClick={() => handleInsightClick("Explain the Executive Narrative section in depth. Please cover:\n\n1. What this section tells me (Definition)\n2. Key metrics to look for and pay attention to\n3. Actionable steps I can take to improve my store based on this data")}
                             className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-amber-700 bg-amber-50 hover:bg-amber-100 rounded-lg transition-colors"
                             title="Learn about Executive Narrative"
                          >
@@ -8969,7 +8969,7 @@ export default function PnlRelease() {
                          </div>
                          <button 
                             data-testid="learn-bottom-line"
-                            onClick={() => handleInsightClick("What is net income and how do I read a net income walk? Explain how to understand what's eating into my restaurant's profits.")}
+                            onClick={() => handleInsightClick("Explain the Bottom Line (Net Income) section in depth. Please cover:\n\n1. What this section tells me (Definition)\n2. Key metrics to look for and pay attention to (e.g. Net Margin)\n3. Actionable steps I can take to improve my store's profitability based on this data")}
                             className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-amber-700 bg-amber-50 hover:bg-amber-100 rounded-lg transition-colors"
                             title="Learn about Bottom Line"
                          >
@@ -9096,7 +9096,7 @@ export default function PnlRelease() {
                             </div>
                             <button 
                                data-testid="learn-health-snapshot"
-                               onClick={() => handleInsightClick("What are the key KPIs in a restaurant P&L health snapshot? Explain what each metric means and what healthy ranges look like.")}
+                               onClick={() => handleInsightClick("Explain the Health Snapshot section in depth. Please cover:\n\n1. What this section tells me (Definition)\n2. Key KPIs to look for and pay attention to\n3. Actionable steps I can take to improve my store based on these metrics")}
                                className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-amber-700 bg-amber-50 hover:bg-amber-100 rounded-lg transition-colors"
                                title="Learn about Health Snapshot KPIs"
                             >
@@ -9194,7 +9194,7 @@ export default function PnlRelease() {
                          <h2 className="text-xl font-serif font-bold text-gray-900">Revenue Analysis</h2>
                          <button 
                             data-testid="learn-revenue-analysis"
-                            onClick={() => handleInsightClick("How should I analyze revenue in my restaurant P&L? Explain channel mix, average check, and what to look for in revenue trends.")}
+                            onClick={() => handleInsightClick("Explain the Revenue Analysis section in depth. Please cover:\n\n1. What this section tells me (Definition)\n2. Key metrics to look for (Channel Mix, Average Check, Trends)\n3. Actionable steps I can take to drive revenue growth based on this data")}
                             className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-amber-700 bg-amber-50 hover:bg-amber-100 rounded-lg transition-colors"
                             title="Learn about Revenue Analysis"
                          >
@@ -9365,7 +9365,7 @@ export default function PnlRelease() {
                             
                             <button 
                                data-testid="learn-prime-cost"
-                               onClick={() => handleInsightClick("What is prime cost and why is it the most important metric in restaurant P&L? Explain how to calculate it and what's a healthy target.")}
+                               onClick={() => handleInsightClick("Explain the Prime Cost Analysis section in depth. Please cover:\n\n1. What this section tells me (Definition)\n2. Key metrics to look for and pay attention to (Target vs Actual)\n3. Actionable steps I can take to improve my Prime Cost based on this data")}
                                className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-amber-700 bg-amber-50 hover:bg-amber-100 rounded-lg transition-colors"
                                title="Learn about Prime Cost"
                             >
@@ -10764,7 +10764,7 @@ export default function PnlRelease() {
                          <h2 className="text-xl font-serif font-bold text-gray-900">Operating Expenses</h2>
                          <button 
                             data-testid="learn-operating-expenses"
-                            onClick={() => handleInsightClick("What are controllable vs fixed expenses in a restaurant P&L? Explain each category and how to manage them effectively.")}
+                            onClick={() => handleInsightClick("Explain the Operating Expenses section in depth. Please cover:\n\n1. What this section tells me (Definition)\n2. Key metrics to look for (Controllable vs Fixed Expenses)\n3. Actionable steps I can take to reduce operating costs based on this data")}
                             className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-amber-700 bg-amber-50 hover:bg-amber-100 rounded-lg transition-colors"
                             title="Learn about Operating Expenses"
                          >
