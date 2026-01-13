@@ -6947,7 +6947,107 @@ export default function PnlRelease() {
                                 </thead>
                                 <tbody className="divide-y divide-gray-100">
                                    <tr className="hover:bg-gray-50">
-                                      <td className="px-6 py-4 text-gray-900">Food Sales</td>
+                                      <td className="px-6 py-4 text-gray-900">
+                                         <Popover>
+                                            <PopoverTrigger asChild>
+                                               <button className="flex items-center gap-2 text-left hover:text-amber-700 hover:bg-amber-50 rounded px-1.5 -mx-1.5 py-0.5 transition-colors cursor-pointer group">
+                                                  Food Sales
+                                                  <TrendingDown className="h-3.5 w-3.5 text-red-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                               </button>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-[450px] p-0" align="start" sideOffset={5}>
+                                               <div className="p-4 border-b border-gray-100 bg-gray-50/50">
+                                                  <div className="flex items-start gap-3">
+                                                     <div className="p-2 bg-red-100 rounded-lg shrink-0">
+                                                        <TrendingDown className="h-4 w-4 text-red-600" />
+                                                     </div>
+                                                     <div>
+                                                        <h4 className="font-semibold text-gray-900 mb-1">Food Sales Analysis</h4>
+                                                        <p className="text-sm text-gray-700 leading-relaxed">
+                                                           Food sales are down <span className="font-semibold text-red-600">-$17.1k</span> (15.2%). While seasonal patterns account for most of this drop, we're seeing a concerning dip in check averages.
+                                                        </p>
+                                                     </div>
+                                                  </div>
+                                               </div>
+                                               <div className="p-4">
+                                                  <div className="flex items-center justify-between mb-6">
+                                                     <div className="text-xs text-gray-500">Variance Breakdown</div>
+                                                     <div className="flex items-center gap-3 text-xs">
+                                                        <div className="flex items-center gap-1.5">
+                                                           <div className="w-2.5 h-2.5 rounded-[2px] bg-emerald-500"></div>
+                                                           <span className="text-gray-600">Pos</span>
+                                                        </div>
+                                                        <div className="flex items-center gap-1.5">
+                                                           <div className="w-2.5 h-2.5 rounded-[2px] bg-red-500"></div>
+                                                           <span className="text-gray-600">Neg</span>
+                                                        </div>
+                                                        <div className="flex items-center gap-1.5">
+                                                           <div className="w-2.5 h-2.5 rounded-[2px] bg-blue-500"></div>
+                                                           <span className="text-gray-600">Total</span>
+                                                        </div>
+                                                     </div>
+                                                  </div>
+                                                  <div className="h-56">
+                                                     <ResponsiveContainer width="100%" height="100%">
+                                                        <BarChart
+                                                           data={[
+                                                              { name: 'Prior\nMonth', value: 112750, fill: '#3b82f6', isTotal: true },
+                                                              { name: 'Seasonal\nTraffic', value: -12500, fill: '#ef4444', isDecrease: true },
+                                                              { name: 'Check\nAvg', value: -3200, fill: '#ef4444', isDecrease: true },
+                                                              { name: 'Menu\nMix', value: -1436, fill: '#ef4444', isDecrease: true },
+                                                              { name: 'Pricing', value: 0, fill: '#10b981', isIncrease: true },
+                                                              { name: 'Actual', value: 95614, fill: '#3b82f6', isTotal: true },
+                                                           ]}
+                                                           margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
+                                                        >
+                                                           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                                                           <XAxis 
+                                                              dataKey="name" 
+                                                              tick={{ fontSize: 10, fill: '#6b7280' }}
+                                                              axisLine={{ stroke: '#e5e7eb' }}
+                                                              tickLine={false}
+                                                              interval={0}
+                                                           />
+                                                           <YAxis 
+                                                              tick={{ fontSize: 10, fill: '#6b7280' }}
+                                                              axisLine={false}
+                                                              tickLine={false}
+                                                              tickFormatter={(v) => `$${(v/1000).toFixed(0)}k`}
+                                                           />
+                                                           <Tooltip
+                                                              formatter={(value: number) => [`$${Math.abs(value).toLocaleString()}`, value < 0 ? 'Decrease' : 'Amount']}
+                                                              contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                                                              cursor={{ fill: '#f9fafb' }}
+                                                           />
+                                                           <Bar dataKey="value" radius={[4, 4, 0, 0]}>
+                                                              {[
+                                                                 { fill: '#3b82f6' }, // Prior
+                                                                 { fill: '#ef4444' }, // Seasonal
+                                                                 { fill: '#ef4444' }, // Check
+                                                                 { fill: '#ef4444' }, // Mix
+                                                                 { fill: '#10b981' }, // Pricing
+                                                                 { fill: '#3b82f6' }, // Actual
+                                                              ].map((entry, index) => (
+                                                                 <Cell key={`cell-${index}`} fill={entry.fill} />
+                                                              ))}
+                                                           </Bar>
+                                                        </BarChart>
+                                                     </ResponsiveContainer>
+                                                  </div>
+                                                  <div className="mt-4 pt-4 border-t border-gray-100 space-y-2">
+                                                     <div className="flex items-center justify-between text-sm">
+                                                        <span className="text-gray-600">Seasonal Impact</span>
+                                                        <span className="font-medium text-red-600">-$12.5k</span>
+                                                     </div>
+                                                     <div className="flex items-center justify-between text-sm">
+                                                        <span className="text-gray-600">Check Average Impact</span>
+                                                        <span className="font-medium text-red-600">-$3.2k</span>
+                                                     </div>
+                                                  </div>
+                                               </div>
+                                            </PopoverContent>
+                                         </Popover>
+                                      </td>
                                       <td className="px-6 py-4 text-right font-medium">$95,614</td>
                                       <td className="px-6 py-4 text-right text-red-600 font-medium">-15.2%</td>
                                       <td className="px-6 py-4 text-right text-gray-600">71.8%</td>
