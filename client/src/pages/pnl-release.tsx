@@ -7538,9 +7538,9 @@ export default function PnlRelease() {
                                             <div className="mt-3 pt-3 border-t border-gray-100">
                                                <p className="text-xs text-gray-500 mb-2">Ask follow-up questions:</p>
                                                <div className="flex flex-wrap gap-1.5">
-                                                  <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Show overtime breakdown</button>
-                                                  <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Compare to last year</button>
-                                                  <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Which shifts drove this?</button>
+                                                  <button onClick={() => handleInsightClick("Show overtime breakdown")} className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Show overtime breakdown</button>
+                                                  <button onClick={() => handleInsightClick("Compare to last year")} className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Compare to last year</button>
+                                                  <button onClick={() => handleInsightClick("Which shifts drove this?")} className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Which shifts drove this?</button>
                                                </div>
                                             </div>
                                          </div>
@@ -7589,8 +7589,8 @@ export default function PnlRelease() {
                                             <div className="mt-3 pt-3 border-t border-gray-100">
                                                <p className="text-xs text-gray-500 mb-2">Ask follow-up questions:</p>
                                                <div className="flex flex-wrap gap-1.5">
-                                                  <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">When does training end?</button>
-                                                  <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Show headcount trend</button>
+                                                  <button onClick={() => handleInsightClick("When does training end?")} className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">When does training end?</button>
+                                                  <button onClick={() => handleInsightClick("Show headcount trend")} className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Show headcount trend</button>
                                                </div>
                                             </div>
                                          </div>
@@ -7639,8 +7639,8 @@ export default function PnlRelease() {
                                             <div className="mt-3 pt-3 border-t border-gray-100">
                                                <p className="text-xs text-gray-500 mb-2">Ask follow-up questions:</p>
                                                <div className="flex flex-wrap gap-1.5">
-                                                  <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Hours by day of week</button>
-                                                  <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Is this sustainable?</button>
+                                                  <button onClick={() => handleInsightClick("Hours by day of week")} className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Hours by day of week</button>
+                                                  <button onClick={() => handleInsightClick("Is this sustainable?")} className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Is this sustainable?</button>
                                                </div>
                                             </div>
                                          </div>
@@ -7696,9 +7696,9 @@ export default function PnlRelease() {
                                             <div className="mt-3 pt-3 border-t border-gray-100">
                                                <p className="text-xs text-gray-500 mb-2">Ask follow-up questions:</p>
                                                <div className="flex flex-wrap gap-1.5">
-                                                  <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Show patio vs indoor split</button>
-                                                  <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">When to scale back?</button>
-                                                  <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Revenue per server</button>
+                                                  <button onClick={() => handleInsightClick("Show patio vs indoor split")} className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Show patio vs indoor split</button>
+                                                  <button onClick={() => handleInsightClick("When to scale back?")} className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">When to scale back?</button>
+                                                  <button onClick={() => handleInsightClick("Revenue per server")} className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Revenue per server</button>
                                                </div>
                                             </div>
                                          </div>
@@ -7747,8 +7747,8 @@ export default function PnlRelease() {
                                             <div className="mt-3 pt-3 border-t border-gray-100">
                                                <p className="text-xs text-gray-500 mb-2">Ask follow-up questions:</p>
                                                <div className="flex flex-wrap gap-1.5">
-                                                  <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Happy hour revenue impact</button>
-                                                  <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Bar sales per hour</button>
+                                                  <button onClick={() => handleInsightClick("Happy hour revenue impact")} className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Happy hour revenue impact</button>
+                                                  <button onClick={() => handleInsightClick("Bar sales per hour")} className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Bar sales per hour</button>
                                                </div>
                                             </div>
                                          </div>
@@ -7797,8 +7797,8 @@ export default function PnlRelease() {
                                             <div className="mt-3 pt-3 border-t border-gray-100">
                                                <p className="text-xs text-gray-500 mb-2">Ask follow-up questions:</p>
                                                <div className="flex flex-wrap gap-1.5">
-                                                  <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Covers per host hour</button>
-                                                  <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Wait time trends</button>
+                                                  <button onClick={() => handleInsightClick("Covers per host hour")} className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Covers per host hour</button>
+                                                  <button onClick={() => handleInsightClick("Wait time trends")} className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Wait time trends</button>
                                                </div>
                                             </div>
                                          </div>
@@ -7854,8 +7854,8 @@ export default function PnlRelease() {
                                             <div className="mt-3 pt-3 border-t border-gray-100">
                                                <p className="text-xs text-gray-500 mb-2">Ask follow-up questions:</p>
                                                <div className="flex flex-wrap gap-1.5">
-                                                  <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Show bonus structure</button>
-                                                  <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">YoY comparison</button>
+                                                  <button onClick={() => handleInsightClick("Show bonus structure")} className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Show bonus structure</button>
+                                                  <button onClick={() => handleInsightClick("YoY comparison")} className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">YoY comparison</button>
                                                </div>
                                             </div>
                                          </div>
@@ -7904,8 +7904,8 @@ export default function PnlRelease() {
                                             <div className="mt-3 pt-3 border-t border-gray-100">
                                                <p className="text-xs text-gray-500 mb-2">Ask follow-up questions:</p>
                                                <div className="flex flex-wrap gap-1.5">
-                                                  <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Shifts per week</button>
-                                                  <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Coverage efficiency</button>
+                                                  <button onClick={() => handleInsightClick("Shifts per week")} className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Shifts per week</button>
+                                                  <button onClick={() => handleInsightClick("Coverage efficiency")} className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Coverage efficiency</button>
                                                </div>
                                             </div>
                                          </div>
@@ -10140,9 +10140,9 @@ export default function PnlRelease() {
                                         <div className="mt-3 pt-3 border-t border-gray-100">
                                            <p className="text-xs text-gray-500 mb-2">Ask follow-up questions:</p>
                                            <div className="flex flex-wrap gap-1.5">
-                                              <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Show overtime breakdown</button>
-                                              <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Compare to last year</button>
-                                              <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Which shifts drove this?</button>
+                                              <button onClick={() => handleInsightClick("Show overtime breakdown")} className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Show overtime breakdown</button>
+                                              <button onClick={() => handleInsightClick("Compare to last year")} className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Compare to last year</button>
+                                              <button onClick={() => handleInsightClick("Which shifts drove this?")} className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Which shifts drove this?</button>
                                            </div>
                                         </div>
                                      </div>
@@ -10196,8 +10196,8 @@ export default function PnlRelease() {
                                         <div className="mt-3 pt-3 border-t border-gray-100">
                                            <p className="text-xs text-gray-500 mb-2">Ask follow-up questions:</p>
                                            <div className="flex flex-wrap gap-1.5">
-                                              <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">When does training end?</button>
-                                              <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Show headcount trend</button>
+                                              <button onClick={() => handleInsightClick("When does training end?")} className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">When does training end?</button>
+                                              <button onClick={() => handleInsightClick("Show headcount trend")} className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Show headcount trend</button>
                                            </div>
                                         </div>
                                      </div>
@@ -10251,8 +10251,8 @@ export default function PnlRelease() {
                                         <div className="mt-3 pt-3 border-t border-gray-100">
                                            <p className="text-xs text-gray-500 mb-2">Ask follow-up questions:</p>
                                            <div className="flex flex-wrap gap-1.5">
-                                              <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Hours by day of week</button>
-                                              <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Is this sustainable?</button>
+                                              <button onClick={() => handleInsightClick("Hours by day of week")} className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Hours by day of week</button>
+                                              <button onClick={() => handleInsightClick("Is this sustainable?")} className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Is this sustainable?</button>
                                            </div>
                                         </div>
                                      </div>
@@ -10322,9 +10322,9 @@ export default function PnlRelease() {
                                         <div className="mt-3 pt-3 border-t border-gray-100">
                                            <p className="text-xs text-gray-500 mb-2">Ask follow-up questions:</p>
                                            <div className="flex flex-wrap gap-1.5">
-                                              <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Show patio vs indoor split</button>
-                                              <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">When to scale back?</button>
-                                              <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Revenue per server</button>
+                                              <button onClick={() => handleInsightClick("Show patio vs indoor split")} className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Show patio vs indoor split</button>
+                                              <button onClick={() => handleInsightClick("When to scale back?")} className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">When to scale back?</button>
+                                              <button onClick={() => handleInsightClick("Revenue per server")} className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Revenue per server</button>
                                            </div>
                                         </div>
                                      </div>
@@ -10378,8 +10378,8 @@ export default function PnlRelease() {
                                         <div className="mt-3 pt-3 border-t border-gray-100">
                                            <p className="text-xs text-gray-500 mb-2">Ask follow-up questions:</p>
                                            <div className="flex flex-wrap gap-1.5">
-                                              <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Happy hour revenue impact</button>
-                                              <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Bar sales per hour</button>
+                                              <button onClick={() => handleInsightClick("Happy hour revenue impact")} className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Happy hour revenue impact</button>
+                                              <button onClick={() => handleInsightClick("Bar sales per hour")} className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Bar sales per hour</button>
                                            </div>
                                         </div>
                                      </div>
@@ -10433,8 +10433,8 @@ export default function PnlRelease() {
                                         <div className="mt-3 pt-3 border-t border-gray-100">
                                            <p className="text-xs text-gray-500 mb-2">Ask follow-up questions:</p>
                                            <div className="flex flex-wrap gap-1.5">
-                                              <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Covers per host hour</button>
-                                              <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Wait time trends</button>
+                                              <button onClick={() => handleInsightClick("Covers per host hour")} className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Covers per host hour</button>
+                                              <button onClick={() => handleInsightClick("Wait time trends")} className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Wait time trends</button>
                                            </div>
                                         </div>
                                      </div>
@@ -10504,8 +10504,8 @@ export default function PnlRelease() {
                                         <div className="mt-3 pt-3 border-t border-gray-100">
                                            <p className="text-xs text-gray-500 mb-2">Ask follow-up questions:</p>
                                            <div className="flex flex-wrap gap-1.5">
-                                              <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Show bonus structure</button>
-                                              <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">YoY comparison</button>
+                                              <button onClick={() => handleInsightClick("Show bonus structure")} className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Show bonus structure</button>
+                                              <button onClick={() => handleInsightClick("YoY comparison")} className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">YoY comparison</button>
                                            </div>
                                         </div>
                                      </div>
@@ -10559,8 +10559,8 @@ export default function PnlRelease() {
                                         <div className="mt-3 pt-3 border-t border-gray-100">
                                            <p className="text-xs text-gray-500 mb-2">Ask follow-up questions:</p>
                                            <div className="flex flex-wrap gap-1.5">
-                                              <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Shifts per week</button>
-                                              <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Coverage efficiency</button>
+                                              <button onClick={() => handleInsightClick("Shifts per week")} className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Shifts per week</button>
+                                              <button onClick={() => handleInsightClick("Coverage efficiency")} className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Coverage efficiency</button>
                                            </div>
                                         </div>
                                      </div>
@@ -10879,8 +10879,8 @@ export default function PnlRelease() {
                                        <div className="mt-3 pt-3 border-t border-gray-100">
                                           <p className="text-xs text-gray-500 mb-2">Ask follow-up questions:</p>
                                           <div className="flex flex-wrap gap-1.5">
-                                             <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Vendor price trends</button>
-                                             <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Inventory turnover rate</button>
+                                             <button onClick={() => handleInsightClick("Vendor price trends")} className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Vendor price trends</button>
+                                             <button onClick={() => handleInsightClick("Inventory turnover rate")} className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Inventory turnover rate</button>
                                           </div>
                                        </div>
                                     </div>
@@ -10938,8 +10938,8 @@ export default function PnlRelease() {
                                        <div className="mt-3 pt-3 border-t border-gray-100">
                                           <p className="text-xs text-gray-500 mb-2">Ask follow-up questions:</p>
                                           <div className="flex flex-wrap gap-1.5">
-                                             <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Beef price trend</button>
-                                             <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Waste percentage</button>
+                                             <button onClick={() => handleInsightClick("Beef price trend")} className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Beef price trend</button>
+                                             <button onClick={() => handleInsightClick("Waste percentage")} className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Waste percentage</button>
                                           </div>
                                        </div>
                                     </div>
@@ -10997,8 +10997,8 @@ export default function PnlRelease() {
                                        <div className="mt-3 pt-3 border-t border-gray-100">
                                           <p className="text-xs text-gray-500 mb-2">Ask follow-up questions:</p>
                                           <div className="flex flex-wrap gap-1.5">
-                                             <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Cocktail margin analysis</button>
-                                             <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Pour cost report</button>
+                                             <button onClick={() => handleInsightClick("Cocktail margin analysis")} className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Cocktail margin analysis</button>
+                                             <button onClick={() => handleInsightClick("Pour cost report")} className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Pour cost report</button>
                                           </div>
                                        </div>
                                     </div>
@@ -11056,8 +11056,8 @@ export default function PnlRelease() {
                                        <div className="mt-3 pt-3 border-t border-gray-100">
                                           <p className="text-xs text-gray-500 mb-2">Ask follow-up questions:</p>
                                           <div className="flex flex-wrap gap-1.5">
-                                             <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Packaging cost per order</button>
-                                             <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Supplier options</button>
+                                             <button onClick={() => handleInsightClick("Packaging cost per order")} className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Packaging cost per order</button>
+                                             <button onClick={() => handleInsightClick("Supplier options")} className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Supplier options</button>
                                           </div>
                                        </div>
                                     </div>
