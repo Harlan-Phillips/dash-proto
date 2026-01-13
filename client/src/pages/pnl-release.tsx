@@ -4166,6 +4166,7 @@ interface PrimaryInsight {
   direction: "up" | "down" | "flat";
   message: string;
   detail: string;
+  cta?: string;
 }
 
 const getPrimaryInsightForRole = (role: RoleType, trends: MetricTrendData[]): PrimaryInsight | null => {
@@ -4217,42 +4218,19 @@ const getPrimaryInsightForRole = (role: RoleType, trends: MetricTrendData[]): Pr
   // 2. GM Focus: Labor, Sales, Ops
   if (role === "gm") {
     const labor = getMetric("labor");
-    if (labor) {
-      const last = getLastPoint(labor);
-      // Critical: Labor > Target (Inverse)
-      if (last.variancePct >= 5) {
-        return {
-          id: "gm-labor-critical",
-          type: "critical",
-          metric: "Labor Cost",
-          value: `${last.actual.toFixed(1)}%`,
-          target: `${last.target.toFixed(1)}%`,
-          variance: `+${last.variancePct.toFixed(1)}%`,
-          direction: "up",
-          message: `Labor cost is ${last.variancePct.toFixed(1)}% over target`,
-          detail: "Front-of-house overtime has increased by 15% this period, impacting overall labor efficiency."
-        };
-      }
-    }
-
-    const sales = getMetric("net-sales");
-    if (sales) {
-      const last = getLastPoint(sales);
-      // Warning: Sales < Target
-      if (last.variancePct <= -5) {
-        return {
-          id: "gm-sales-warning",
-          type: "warning",
-          metric: "Net Sales",
-          value: `$${(last.actual / 1000).toFixed(1)}k`,
-          target: `$${(last.target / 1000).toFixed(1)}k`,
-          variance: `${last.variancePct.toFixed(1)}%`,
-          direction: "down",
-          message: `Sales are tracking ${Math.abs(last.variancePct).toFixed(1)}% behind target`,
-          detail: "Weekday lunch traffic is down 12%, contributing to the overall revenue shortfall."
-        };
-      }
-    }
+    // Force the specific insight for the mockup scenario
+    return {
+      id: "gm-foh-labor-critical",
+      type: "critical",
+      metric: "FOH Labor",
+      value: "16.4%",
+      target: "14.0%",
+      variance: "+2.4%",
+      direction: "up",
+      message: "FOH Labor is 2.4% Over Budget",
+      detail: "High overtime on weekends contributed to the variance. Schedule optimization recommended.",
+      cta: "Adjust Schedule" 
+    };
   }
 
   // 3. Chef Focus: Food Cost, Waste
@@ -4374,7 +4352,7 @@ const PrimaryInsightCard = ({
           <button 
             onClick={() => {
               onAddAction({
-                title: `Investigate ${primaryInsight.metric} Variance`,
+                title: primaryInsight.cta ? primaryInsight.cta : `Investigate ${primaryInsight.metric} Variance`,
                 source: 'pnl_insight',
                 metric: primaryInsight.metric,
                 context: primaryInsight.message
@@ -4388,7 +4366,7 @@ const PrimaryInsightCard = ({
             )}
           >
             <List className="h-4 w-4" />
-            Add to Actions
+            {primaryInsight.cta || "Add to Actions"}
           </button>
           <button
             onClick={() => onAskAI(`Analyze ${primaryInsight.metric} variance for me`)} 
@@ -4553,6 +4531,8 @@ const getDashboardMetrics = (period: string, trends: MetricTrendData[]) => {
       foodCost: { current: 23.3, target: 24 }, // Mock
       bohLabor: { current: 13, target: 12.5 }, // Mock
       beverageCost: { current: 4.8, target: 5 }, // Mock
+      ticketTime: { current: 14, target: 12 }, // Mock
+      throughput: { current: 85, target: 80 } // Mock
     }
   };
 };
@@ -13081,8 +13061,8 @@ export default function PnlRelease() {
                             <>
                                <GoalProgress label="Total Sales" current={dashboardMetrics.kpis.sales.current} target={dashboardMetrics.kpis.sales.target} unit="k" onTrendClick={() => openTrendModal('net-sales')} />
                                <GoalProgress label="FOH Labor %" current={dashboardMetrics.kpis.fohLabor.current} target={dashboardMetrics.kpis.fohLabor.target} unit="%" inverted={true} onTrendClick={() => openTrendModal('labor')} />
-                               <GoalProgress label="Table Turns" current={2.4} target={2.2} unit="" />
-                               <GoalProgress label="Guest Count" current={8580} target={7800} unit="" />
+                               <GoalProgress label="Ticket Time" current={dashboardMetrics.kpis.ticketTime.current} target={dashboardMetrics.kpis.ticketTime.target} unit="m" inverted={true} />
+                               <GoalProgress label="Throughput" current={dashboardMetrics.kpis.throughput.current} target={dashboardMetrics.kpis.throughput.target} unit="/hr" />
                             </>
                          )}
                          {/* Executive Chef sees COGS, BOH labor */}
