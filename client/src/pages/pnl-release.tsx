@@ -635,12 +635,12 @@ const navigationYears = [
 
 const tocSections = [
   { id: "executive-narrative", label: "Executive Narrative" },
-  { id: "deep-performance", label: "Performance Review" },
   { id: "bottom-line", label: "Bottom Line" },
   { id: "health-snapshot", label: "Health Snapshot" },
   { id: "revenue-analysis", label: "Revenue Analysis" },
   { id: "prime-cost-analysis", label: "Prime Cost Analysis" },
   { id: "operating-expenses", label: "Operating Expenses" },
+  { id: "deep-performance", label: "Performance Review" },
   { id: "accountant-note", label: "Accountant Note" },
 ];
 
@@ -652,12 +652,12 @@ interface EditableSection {
 
 const defaultSections: EditableSection[] = [
   { id: "executive-narrative", label: "Executive Narrative", visible: true },
-  { id: "deep-performance", label: "Performance Review", visible: true },
   { id: "bottom-line", label: "Bottom Line", visible: true },
   { id: "health-snapshot", label: "Health Snapshot", visible: true },
   { id: "revenue-analysis", label: "Revenue Analysis", visible: true },
   { id: "prime-cost-analysis", label: "Prime Cost Analysis", visible: true },
   { id: "operating-expenses", label: "Operating Expenses", visible: true },
+  { id: "deep-performance", label: "Performance Review", visible: true },
   { id: "accountant-note", label: "Accountant Note", visible: true },
 ];
 
