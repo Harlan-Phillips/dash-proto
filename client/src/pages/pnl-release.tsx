@@ -12172,7 +12172,7 @@ export default function PnlRelease() {
                                  <div className="text-right font-bold text-gray-900">16.8%</div>
                                  <div className="text-right text-gray-500">13.3%</div>
                                  <div className="text-right font-bold text-emerald-600">+3.5 pts</div>
-                                 <div className="text-right"><span className="text-emerald-600 font-bold">🟢 ↑</span></div>
+                                 <div className="text-right"><span className="text-emerald-600 font-bold">↑</span></div>
                               </div>
                            </PopoverTrigger>
                            <PopoverContent className="w-[380px] p-0" align="start">
