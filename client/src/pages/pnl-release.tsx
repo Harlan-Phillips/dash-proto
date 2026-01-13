@@ -7839,153 +7839,6 @@ export default function PnlRelease() {
                           </div>
                        </section>
 
-                       {/* 6. Action Items & Recommendations */}
-                       <section id="owner-action-items" className="scroll-mt-4">
-                          <div className="flex items-center justify-between mb-4">
-                             <h2 className="text-xl font-serif font-bold text-gray-900">Action Items & Recommendations</h2>
-                             <div className="flex items-center gap-2 text-sm text-gray-500">
-                                <span className="px-2 py-1 bg-gray-100 rounded-md font-medium">{activeActions.length} active</span>
-                                {completedActions.length > 0 && (
-                                   <span className="px-2 py-1 bg-emerald-100 text-emerald-700 rounded-md font-medium">{completedActions.length} completed</span>
-                                )}
-                             </div>
-                          </div>
-
-                          <div className="bg-white rounded-xl border border-gray-200 p-6">
-                             <div className="space-y-3">
-                                <AnimatePresence mode="popLayout">
-                                   {activeActions.map((item) => (
-                                      <motion.div
-                                         key={item.id}
-                                         layout
-                                         initial={{ opacity: 0, y: -10 }}
-                                         animate={{ 
-                                            opacity: 1, 
-                                            y: 0,
-                                            scale: recentlyCompleted === item.id ? [1, 1.02, 1] : 1
-                                         }}
-                                         exit={{ opacity: 0, x: 50, transition: { duration: 0.3 } }}
-                                         data-testid={`owner-action-item-${item.id}`}
-                                         className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors group"
-                                      >
-                                         <button
-                                            onClick={() => toggleActionComplete(item.id)}
-                                            className={cn(
-                                               "w-5 h-5 rounded border-2 flex items-center justify-center transition-all flex-shrink-0",
-                                               "border-gray-300 hover:border-emerald-500 hover:bg-emerald-50"
-                                            )}
-                                            data-testid={`owner-checkbox-${item.id}`}
-                                         >
-                                         </button>
-                                         <div className={cn(
-                                            "h-2.5 w-2.5 rounded-full flex-shrink-0",
-                                            item.priority === "high" ? "bg-red-500" : item.priority === "medium" ? "bg-amber-500" : "bg-emerald-500"
-                                         )} />
-                                         <div className="flex-1 min-w-0">
-                                            {editingActionId === item.id ? (
-                                               <input
-                                                  type="text"
-                                                  value={editingActionTitle}
-                                                  onChange={(e) => setEditingActionTitle(e.target.value)}
-                                                  onBlur={saveActionEdit}
-                                                  onKeyDown={(e) => e.key === "Enter" && saveActionEdit()}
-                                                  className="w-full font-medium text-gray-900 bg-gray-50 border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-gray-400"
-                                                  autoFocus
-                                                  data-testid={`owner-input-edit-${item.id}`}
-                                               />
-                                            ) : (
-                                               <p
-                                                  onClick={() => startEditingAction(item.id, item.title)}
-                                                  className="font-medium text-gray-900 cursor-pointer hover:text-gray-700"
-                                                  data-testid={`owner-text-action-${item.id}`}
-                                               >
-                                                  {item.title}
-                                               </p>
-                                            )}
-                                            <p className="text-sm text-gray-500">
-                                               Owner: <span className="font-medium">{item.owner}</span> &nbsp;•&nbsp; Impact: {item.impact}
-                                            </p>
-                                         </div>
-                                         <div className="flex items-center gap-2">
-                                            <button
-                                               onClick={() => openAssignModal(item.id, item.title, item.owner)}
-                                               className="px-3 py-1.5 text-sm font-medium border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-                                               data-testid={`owner-button-assign-${item.id}`}
-                                            >
-                                               Assign
-                                            </button>
-                                            <button
-                                               onClick={() => startEditingAction(item.id, item.title)}
-                                               className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
-                                               data-testid={`owner-button-edit-${item.id}`}
-                                            >
-                                               <Pencil className="h-4 w-4" />
-                                            </button>
-                                         </div>
-                                      </motion.div>
-                                   ))}
-                                </AnimatePresence>
-
-                                {activeActions.length === 0 && (
-                                   <div className="text-center py-8 text-gray-500">
-                                      <CheckCircle2 className="h-12 w-12 mx-auto text-emerald-300 mb-2" />
-                                      <p className="font-medium">All action items completed!</p>
-                                   </div>
-                                )}
-                             </div>
-
-                             {/* Completed Actions Collapsible */}
-                             {completedActions.length > 0 && (
-                                <div className="mt-6 pt-4 border-t border-gray-100">
-                                   <button
-                                      onClick={() => setShowCompletedActions(!showCompletedActions)}
-                                      className="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
-                                      data-testid="owner-toggle-completed-actions"
-                                   >
-                                      <ChevronDown className={cn("h-4 w-4 transition-transform", showCompletedActions && "rotate-180")} />
-                                      Completed ({completedActions.length})
-                                   </button>
-                                   <AnimatePresence>
-                                      {showCompletedActions && (
-                                         <motion.div
-                                            initial={{ height: 0, opacity: 0 }}
-                                            animate={{ height: "auto", opacity: 1 }}
-                                            exit={{ height: 0, opacity: 0 }}
-                                            transition={{ duration: 0.2 }}
-                                            className="overflow-hidden"
-                                         >
-                                            <div className="space-y-2 mt-3">
-                                               {completedActions.map((item) => (
-                                                  <motion.div
-                                                     key={item.id}
-                                                     initial={{ opacity: 0, scale: 0.95 }}
-                                                     animate={{ opacity: 1, scale: 1 }}
-                                                     className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg"
-                                                     data-testid={`owner-completed-action-${item.id}`}
-                                                  >
-                                                     <button
-                                                        onClick={() => toggleActionComplete(item.id)}
-                                                        className="w-5 h-5 rounded border-2 border-emerald-500 bg-emerald-500 flex items-center justify-center flex-shrink-0"
-                                                        data-testid={`owner-checkbox-completed-${item.id}`}
-                                                     >
-                                                        <Check className="h-3 w-3 text-white" />
-                                                     </button>
-                                                     <div className="flex-1 min-w-0">
-                                                        <p className="font-medium text-gray-500 line-through">{item.title}</p>
-                                                        <p className="text-xs text-gray-400">
-                                                           Completed {item.completedAt ? new Date(item.completedAt).toLocaleDateString() : 'recently'}
-                                                        </p>
-                                                     </div>
-                                                  </motion.div>
-                                               ))}
-                                            </div>
-                                         </motion.div>
-                                      )}
-                                   </AnimatePresence>
-                                </div>
-                             )}
-                          </div>
-                       </section>
                     </div>
                     )}
                  </div>
@@ -10996,303 +10849,6 @@ export default function PnlRelease() {
                    </section>
                    )}
 
-                   {/* 7. Action Items & Recommendations */}
-                   {isSectionVisible("action-items") && (
-                   <section id="action-items" className="scroll-mt-4" style={{ order: getSectionOrderIndex("action-items") }}>
-                      <div className="flex items-center justify-between mb-4">
-                         <h2 className="text-xl font-serif font-bold text-gray-900">Action Items & Recommendations</h2>
-                         <div className="flex items-center gap-2 text-sm text-gray-500">
-                            <span className="px-2 py-1 bg-gray-100 rounded-md font-medium">{activeActions.length} active</span>
-                            {completedActions.length > 0 && (
-                               <span className="px-2 py-1 bg-emerald-100 text-emerald-700 rounded-md font-medium">{completedActions.length} completed</span>
-                            )}
-                         </div>
-                      </div>
-
-                      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
-                         <div className="space-y-3">
-                            <AnimatePresence mode="popLayout">
-                               {activeActions.map((item) => (
-                                  <motion.div
-                                     key={item.id}
-                                     layout
-                                     initial={{ opacity: 0, y: -10 }}
-                                     animate={{ 
-                                        opacity: 1, 
-                                        y: 0,
-                                        scale: recentlyCompleted === item.id ? [1, 1.02, 1] : 1
-                                     }}
-                                     exit={{ opacity: 0, x: 50, transition: { duration: 0.3 } }}
-                                     data-testid={`action-item-${item.id}`}
-                                     className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors group"
-                                  >
-                                     <button
-                                        onClick={() => toggleActionComplete(item.id)}
-                                        className={cn(
-                                           "w-5 h-5 rounded border-2 flex items-center justify-center transition-all flex-shrink-0",
-                                           "border-gray-300 hover:border-emerald-500 hover:bg-emerald-50"
-                                        )}
-                                        data-testid={`checkbox-${item.id}`}
-                                     >
-                                     </button>
-                                     <div className={cn(
-                                        "h-2.5 w-2.5 rounded-full flex-shrink-0",
-                                        item.priority === "high" ? "bg-red-500" : item.priority === "medium" ? "bg-amber-500" : "bg-emerald-500"
-                                     )} />
-                                     <div className="flex-1 min-w-0">
-                                        {editingActionId === item.id ? (
-                                           <input
-                                              type="text"
-                                              value={editingActionTitle}
-                                              onChange={(e) => setEditingActionTitle(e.target.value)}
-                                              onBlur={saveActionEdit}
-                                              onKeyDown={(e) => e.key === "Enter" && saveActionEdit()}
-                                              className="w-full font-medium text-gray-900 bg-gray-50 border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-gray-400"
-                                              autoFocus
-                                              data-testid={`input-edit-${item.id}`}
-                                           />
-                                        ) : (
-                                           <p
-                                              onClick={() => startEditingAction(item.id, item.title)}
-                                              className="font-medium text-gray-900 cursor-pointer hover:text-gray-700"
-                                              data-testid={`text-action-${item.id}`}
-                                           >
-                                              {item.title}
-                                           </p>
-                                        )}
-                                        <p className="text-sm text-gray-500">
-                                           Owner: <span className="font-medium">{item.owner}</span> &nbsp;•&nbsp; Impact: {item.impact}
-                                        </p>
-                                     </div>
-                                     <div className="flex items-center gap-2">
-                                        <button
-                                           onClick={() => openAssignModal(item.id, item.title, item.owner)}
-                                           className="px-3 py-1.5 text-sm font-medium border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-                                           data-testid={`button-assign-${item.id}`}
-                                        >
-                                           Assign
-                                        </button>
-                                        <button
-                                           onClick={() => startEditingAction(item.id, item.title)}
-                                           className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
-                                           data-testid={`button-edit-${item.id}`}
-                                        >
-                                           <Pencil className="h-4 w-4" />
-                                        </button>
-                                     </div>
-                                  </motion.div>
-                               ))}
-                            </AnimatePresence>
-
-                            {activeActions.length === 0 && (
-                               <div className="text-center py-8 text-gray-500">
-                                  <CheckCircle2 className="h-12 w-12 mx-auto text-emerald-300 mb-2" />
-                                  <p className="font-medium">All action items completed!</p>
-                               </div>
-                            )}
-                         </div>
-
-                         {/* Completed Actions Collapsible */}
-                         {completedActions.length > 0 && (
-                            <div className="mt-6 pt-4 border-t border-gray-100">
-                               <button
-                                  onClick={() => setShowCompletedActions(!showCompletedActions)}
-                                  className="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
-                                  data-testid="toggle-completed-actions"
-                               >
-                                  <ChevronDown className={cn("h-4 w-4 transition-transform", showCompletedActions && "rotate-180")} />
-                                  Completed ({completedActions.length})
-                               </button>
-                               <AnimatePresence>
-                                  {showCompletedActions && (
-                                     <motion.div
-                                        initial={{ height: 0, opacity: 0 }}
-                                        animate={{ height: "auto", opacity: 1 }}
-                                        exit={{ height: 0, opacity: 0 }}
-                                        transition={{ duration: 0.2 }}
-                                        className="overflow-hidden"
-                                     >
-                                        <div className="space-y-2 mt-3">
-                                           {completedActions.map((item) => (
-                                              <motion.div
-                                                 key={item.id}
-                                                 initial={{ opacity: 0, scale: 0.95 }}
-                                                 animate={{ opacity: 1, scale: 1 }}
-                                                 className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg"
-                                                 data-testid={`completed-action-${item.id}`}
-                                              >
-                                                 <button
-                                                    onClick={() => toggleActionComplete(item.id)}
-                                                    className="w-5 h-5 rounded border-2 border-emerald-500 bg-emerald-500 flex items-center justify-center flex-shrink-0"
-                                                    data-testid={`checkbox-completed-${item.id}`}
-                                                 >
-                                                    <Check className="h-3 w-3 text-white" />
-                                                 </button>
-                                                 <div className="flex-1 min-w-0">
-                                                    <p className="font-medium text-gray-500 line-through">{item.title}</p>
-                                                    <p className="text-xs text-gray-400">
-                                                       Completed {item.completedAt ? new Date(item.completedAt).toLocaleDateString() : 'recently'}
-                                                    </p>
-                                                 </div>
-                                              </motion.div>
-                                           ))}
-                                        </div>
-                                     </motion.div>
-                                  )}
-                               </AnimatePresence>
-                            </div>
-                         )}
-                      </div>
-
-                      {/* Recommendation Cards */}
-                      <div className="grid grid-cols-3 gap-4">
-                         <div data-testid="card-recommendation-labor" className="bg-blue-50 border border-blue-100 rounded-xl p-5">
-                            <h4 className="font-semibold text-blue-900 mb-2">January Labor Planning</h4>
-                            <p className="text-sm text-blue-800">Holiday volume won't repeat. Target returning to 31% labor by end of Jan via schedule adjustments.</p>
-                         </div>
-                         <div data-testid="card-recommendation-delivery" className="bg-purple-50 border border-purple-100 rounded-xl p-5">
-                            <h4 className="font-semibold text-purple-900 mb-2">Delivery Channel</h4>
-                            <p className="text-sm text-purple-800">Delivery now 20% of revenue. Model in-house delivery for orders within 2-mile radius to save margin.</p>
-                         </div>
-                         <div data-testid="card-recommendation-marketing" className="bg-orange-50 border border-orange-100 rounded-xl p-5">
-                            <h4 className="font-semibold text-orange-900 mb-2">Marketing Reactivation</h4>
-                            <p className="text-sm text-orange-800">Reinstate marketing spend ($5k budget) focused on weekday traffic for the soft January period.</p>
-                         </div>
-                      </div>
-
-                      {/* Assign Action Item Modal */}
-                      <AnimatePresence>
-                         {assignModal.isOpen && (
-                            <motion.div
-                               initial={{ opacity: 0 }}
-                               animate={{ opacity: 1 }}
-                               exit={{ opacity: 0 }}
-                               className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
-                               onClick={closeAssignModal}
-                            >
-                               <motion.div
-                                  initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                                  exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                                  transition={{ duration: 0.2 }}
-                                  className="bg-white rounded-xl shadow-xl w-full max-w-lg mx-4"
-                                  onClick={(e) => e.stopPropagation()}
-                               >
-                                  <div className="p-6 border-b border-gray-100">
-                                     <div className="flex items-start justify-between">
-                                        <div className="flex items-center gap-3">
-                                           <div className="h-12 w-12 rounded-xl bg-gray-100 flex items-center justify-center">
-                                              <Mail className="h-6 w-6 text-gray-600" />
-                                           </div>
-                                           <div>
-                                              <h3 className="font-semibold text-gray-900">Assign Action Item</h3>
-                                              <p className="text-sm text-gray-500">Send assignment notification</p>
-                                           </div>
-                                        </div>
-                                        <button
-                                           onClick={closeAssignModal}
-                                           className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-                                        >
-                                           <X className="h-5 w-5" />
-                                        </button>
-                                     </div>
-                                  </div>
-
-                                  <div className="p-6 space-y-5">
-                                     <div>
-                                        <label className="block text-sm font-medium text-gray-900 mb-2">Recipients</label>
-                                        <div className="flex flex-wrap gap-2 mb-2">
-                                           {assignModal.recipients.map((email) => (
-                                              <span
-                                                 key={email}
-                                                 className="inline-flex items-center gap-1 px-3 py-1.5 bg-gray-100 text-gray-700 rounded-full text-sm"
-                                              >
-                                                 {email}
-                                                 <button
-                                                    onClick={() => removeAssignRecipient(email)}
-                                                    className="p-0.5 hover:bg-gray-200 rounded-full transition-colors"
-                                                 >
-                                                    <X className="h-3.5 w-3.5" />
-                                                 </button>
-                                              </span>
-                                           ))}
-                                        </div>
-                                        <div className="flex gap-2">
-                                           <input
-                                              type="email"
-                                              value={assignModal.newEmail}
-                                              onChange={(e) => setAssignModal(prev => ({ ...prev, newEmail: e.target.value }))}
-                                              onKeyDown={(e) => e.key === "Enter" && addAssignRecipient()}
-                                              placeholder="Add email address..."
-                                              className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-300"
-                                           />
-                                           <button
-                                              onClick={addAssignRecipient}
-                                              className="px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
-                                           >
-                                              <Plus className="h-4 w-4" />
-                                           </button>
-                                        </div>
-                                     </div>
-
-                                     <div>
-                                        <label className="block text-sm font-medium text-gray-900 mb-2">Subject</label>
-                                        <input
-                                           type="text"
-                                           value={assignModal.subject}
-                                           onChange={(e) => setAssignModal(prev => ({ ...prev, subject: e.target.value }))}
-                                           className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-300"
-                                        />
-                                     </div>
-
-                                     <div>
-                                        <label className="block text-sm font-medium text-gray-900 mb-2">Message (optional)</label>
-                                        <textarea
-                                           value={assignModal.message}
-                                           onChange={(e) => setAssignModal(prev => ({ ...prev, message: e.target.value }))}
-                                           placeholder="Add a personal note..."
-                                           rows={3}
-                                           className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 resize-none"
-                                        />
-                                     </div>
-
-                                     <div className="bg-gray-50 rounded-lg p-4 border-l-4 border-gray-300">
-                                        <div className="flex items-center justify-between mb-2">
-                                           <h4 className="font-medium text-gray-900">Action Item Summary</h4>
-                                           <button className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700">
-                                              <Eye className="h-3.5 w-3.5" />
-                                              Preview
-                                           </button>
-                                        </div>
-                                        <ul className="text-sm text-gray-600 space-y-1">
-                                           <li>• {assignModal.actionTitle}</li>
-                                           <li>• Period: September 2025</li>
-                                           <li>• Location: STMARKS</li>
-                                        </ul>
-                                     </div>
-                                  </div>
-
-                                  <div className="p-6 border-t border-gray-100 flex items-center justify-end gap-3">
-                                     <button
-                                        onClick={closeAssignModal}
-                                        className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-                                     >
-                                        Cancel
-                                     </button>
-                                     <button
-                                        onClick={sendAssignment}
-                                        className="px-4 py-2 text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 rounded-lg transition-colors flex items-center gap-2"
-                                     >
-                                        <Send className="h-4 w-4" />
-                                        Send Assignment
-                                     </button>
-                                  </div>
-                               </motion.div>
-                            </motion.div>
-                         )}
-                      </AnimatePresence>
-                   </section>
-                   )}
 
                    {/* Accountant Note */}
                    {isSectionVisible("accountant-note") && (
@@ -13675,132 +13231,135 @@ export default function PnlRelease() {
                       </div>
                       <div className="bg-white rounded-xl border border-gray-200 p-5">
                          <div className="space-y-3">
-                            {/* Owner Action Items */}
-                            {selectedRole === "owner" && (
-                               <>
-                                  <button 
-                                     data-testid="curated-action-delivery"
-                                     onClick={() => handleInsightClick("Help me renegotiate DoorDash delivery commission to save $400/mo")}
-                                     className="w-full flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50/50 transition-all group text-left"
+                            <AnimatePresence mode="popLayout">
+                               {activeActions
+                                  .filter(item => item.owner === (selectedRole === "owner" ? "Owner" : selectedRole === "gm" ? "GM" : "Executive Chef"))
+                                  .map((item) => (
+                                  <motion.div
+                                     key={item.id}
+                                     layout
+                                     initial={{ opacity: 0, y: -10 }}
+                                     animate={{ 
+                                        opacity: 1, 
+                                        y: 0,
+                                        scale: recentlyCompleted === item.id ? [1, 1.02, 1] : 1
+                                     }}
+                                     exit={{ opacity: 0, x: 50, transition: { duration: 0.3 } }}
+                                     className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors group"
                                   >
-                                     <div className="flex items-start gap-3">
-                                        <div className="h-2.5 w-2.5 rounded-full bg-amber-500 mt-1.5 flex-shrink-0" />
-                                        <div>
-                                           <p className="font-medium text-gray-900 group-hover:text-blue-900">Renegotiate delivery commission with DoorDash</p>
-                                           <p className="text-xs text-gray-500">Impact: $400/mo potential savings</p>
-                                        </div>
+                                     <button
+                                        onClick={() => toggleActionComplete(item.id)}
+                                        className={cn(
+                                           "w-5 h-5 rounded border-2 flex items-center justify-center transition-all flex-shrink-0",
+                                           "border-gray-300 hover:border-emerald-500 hover:bg-emerald-50"
+                                        )}
+                                     >
+                                     </button>
+                                     <div className={cn(
+                                        "h-2.5 w-2.5 rounded-full flex-shrink-0",
+                                        item.priority === "high" ? "bg-red-500" : item.priority === "medium" ? "bg-amber-500" : "bg-emerald-500"
+                                     )} />
+                                     <div className="flex-1 min-w-0">
+                                        {editingActionId === item.id ? (
+                                           <input
+                                              type="text"
+                                              value={editingActionTitle}
+                                              onChange={(e) => setEditingActionTitle(e.target.value)}
+                                              onBlur={saveActionEdit}
+                                              onKeyDown={(e) => e.key === "Enter" && saveActionEdit()}
+                                              className="w-full font-medium text-gray-900 bg-gray-50 border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                                              autoFocus
+                                           />
+                                        ) : (
+                                           <div 
+                                              onClick={() => startEditingAction(item.id, item.title)}
+                                              className="cursor-pointer group/text"
+                                           >
+                                              <p className="font-medium text-gray-900 group-hover/text:text-blue-600 transition-colors">
+                                                 {item.title}
+                                              </p>
+                                              <p className="text-xs text-gray-500">
+                                                 Impact: {item.impact}
+                                              </p>
+                                           </div>
+                                        )}
                                      </div>
-                                     <Sparkles className="h-4 w-4 text-gray-300 group-hover:text-blue-500 flex-shrink-0" />
-                                  </button>
-                                  <button 
-                                     data-testid="curated-action-overview"
-                                     onClick={() => handleInsightClick("Help me prepare for the monthly P&L review meeting with management")}
-                                     className="w-full flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50/50 transition-all group text-left"
-                                  >
-                                     <div className="flex items-start gap-3">
-                                        <div className="h-2.5 w-2.5 rounded-full bg-emerald-500 mt-1.5 flex-shrink-0" />
-                                        <div>
-                                           <p className="font-medium text-gray-900 group-hover:text-blue-900">Review monthly P&L with management team</p>
-                                           <p className="text-xs text-gray-500">Schedule for first week of January</p>
-                                        </div>
+                                     <div className="flex items-center gap-2">
+                                        <button
+                                           onClick={() => handleInsightClick(`Help me with this action item: ${item.title}`)}
+                                           className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                           title="Ask Munch Assistant"
+                                        >
+                                           <Sparkles className="h-4 w-4" />
+                                        </button>
+                                        <button
+                                           onClick={() => openAssignModal(item.id, item.title, item.owner)}
+                                           className="px-3 py-1.5 text-xs font-medium border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                                        >
+                                           Assign
+                                        </button>
+                                        <button
+                                           onClick={() => startEditingAction(item.id, item.title)}
+                                           className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                                        >
+                                           <Pencil className="h-4 w-4" />
+                                        </button>
                                      </div>
-                                     <Sparkles className="h-4 w-4 text-gray-300 group-hover:text-blue-500 flex-shrink-0" />
-                                  </button>
-                               </>
+                                  </motion.div>
+                               ))}
+                            </AnimatePresence>
+                            
+                            {activeActions.filter(item => item.owner === (selectedRole === "owner" ? "Owner" : selectedRole === "gm" ? "GM" : "Executive Chef")).length === 0 && (
+                               <div className="text-center py-8 text-gray-500">
+                                  <CheckCircle2 className="h-12 w-12 mx-auto text-emerald-300 mb-2" />
+                                  <p className="font-medium">All action items completed!</p>
+                               </div>
                             )}
-                            {/* GM Action Items */}
-                            {selectedRole === "gm" && (
-                               <>
-                                  <button 
-                                     data-testid="curated-action-ot"
-                                     onClick={() => handleInsightClick("Analyze our overtime policy and suggest ways to reduce 142 hours of OT")}
-                                     className="w-full flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:border-purple-300 hover:bg-purple-50/50 transition-all group text-left"
+
+                            {/* Completed Actions for Role */}
+                            {completedActions.filter(item => item.owner === (selectedRole === "owner" ? "Owner" : selectedRole === "gm" ? "GM" : "Executive Chef")).length > 0 && (
+                               <div className="mt-4 pt-4 border-t border-gray-100">
+                                  <button
+                                     onClick={() => setShowCompletedActions(!showCompletedActions)}
+                                     className="flex items-center gap-2 text-xs font-medium text-gray-500 hover:text-gray-900 transition-colors"
                                   >
-                                     <div className="flex items-start gap-3">
-                                        <div className="h-2.5 w-2.5 rounded-full bg-red-500 mt-1.5 flex-shrink-0" />
-                                        <div>
-                                           <p className="font-medium text-gray-900 group-hover:text-purple-900">Review OT policy — 142 hours is unsustainable</p>
-                                           <p className="text-xs text-gray-500">Impact: $1,500/mo potential savings</p>
-                                        </div>
-                                     </div>
-                                     <Sparkles className="h-4 w-4 text-gray-300 group-hover:text-purple-500 flex-shrink-0" />
+                                     <ChevronDown className={cn("h-3 w-3 transition-transform", showCompletedActions && "rotate-180")} />
+                                     Completed ({completedActions.filter(item => item.owner === (selectedRole === "owner" ? "Owner" : selectedRole === "gm" ? "GM" : "Executive Chef")).length})
                                   </button>
-                                  <button 
-                                     data-testid="curated-action-hvac"
-                                     onClick={() => handleInsightClick("Help me understand if the HVAC repair is a one-time expense or recurring")}
-                                     className="w-full flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:border-purple-300 hover:bg-purple-50/50 transition-all group text-left"
-                                  >
-                                     <div className="flex items-start gap-3">
-                                        <div className="h-2.5 w-2.5 rounded-full bg-emerald-500 mt-1.5 flex-shrink-0" />
-                                        <div>
-                                           <p className="font-medium text-gray-900 group-hover:text-purple-900">Investigate HVAC repair — one-time or recurring?</p>
-                                           <p className="text-xs text-gray-500">Impact: Budgeting clarity for January</p>
-                                        </div>
-                                     </div>
-                                     <Sparkles className="h-4 w-4 text-gray-300 group-hover:text-purple-500 flex-shrink-0" />
-                                  </button>
-                                  <button 
-                                     data-testid="curated-action-scheduling"
-                                     onClick={() => handleInsightClick("Help me create a tighter FOH schedule to hit 31% labor target")}
-                                     className="w-full flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:border-purple-300 hover:bg-purple-50/50 transition-all group text-left"
-                                  >
-                                     <div className="flex items-start gap-3">
-                                        <div className="h-2.5 w-2.5 rounded-full bg-amber-500 mt-1.5 flex-shrink-0" />
-                                        <div>
-                                           <p className="font-medium text-gray-900 group-hover:text-purple-900">Tighten FOH scheduling for January</p>
-                                           <p className="text-xs text-gray-500">Target 31% labor by end of month</p>
-                                        </div>
-                                     </div>
-                                     <Sparkles className="h-4 w-4 text-gray-300 group-hover:text-purple-500 flex-shrink-0" />
-                                  </button>
-                               </>
-                            )}
-                            {/* Chef Action Items */}
-                            {selectedRole === "chef" && (
-                               <>
-                                  <button 
-                                     data-testid="curated-action-produce"
-                                     onClick={() => handleInsightClick("Find alternative avocado suppliers to reduce costs by $800/mo")}
-                                     className="w-full flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:border-orange-300 hover:bg-orange-50/50 transition-all group text-left"
-                                  >
-                                     <div className="flex items-start gap-3">
-                                        <div className="h-2.5 w-2.5 rounded-full bg-red-500 mt-1.5 flex-shrink-0" />
-                                        <div>
-                                           <p className="font-medium text-gray-900 group-hover:text-orange-900">Review produce supplier pricing — avocado costs up 37%</p>
-                                           <p className="text-xs text-gray-500">Impact: $800/mo potential savings</p>
-                                        </div>
-                                     </div>
-                                     <Sparkles className="h-4 w-4 text-gray-300 group-hover:text-orange-500 flex-shrink-0" />
-                                  </button>
-                                  <button 
-                                     data-testid="curated-action-menu"
-                                     onClick={() => handleInsightClick("Suggest menu changes to reduce high-cost produce items")}
-                                     className="w-full flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:border-orange-300 hover:bg-orange-50/50 transition-all group text-left"
-                                  >
-                                     <div className="flex items-start gap-3">
-                                        <div className="h-2.5 w-2.5 rounded-full bg-amber-500 mt-1.5 flex-shrink-0" />
-                                        <div>
-                                           <p className="font-medium text-gray-900 group-hover:text-orange-900">Evaluate menu adjustments for high-cost produce items</p>
-                                           <p className="text-xs text-gray-500">Consider seasonal alternatives</p>
-                                        </div>
-                                     </div>
-                                     <Sparkles className="h-4 w-4 text-gray-300 group-hover:text-orange-500 flex-shrink-0" />
-                                  </button>
-                                  <button 
-                                     data-testid="curated-action-boh"
-                                     onClick={() => handleInsightClick("Help coordinate with Sysco for better delivery timing to prevent BOH overtime")}
-                                     className="w-full flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:border-orange-300 hover:bg-orange-50/50 transition-all group text-left"
-                                  >
-                                     <div className="flex items-start gap-3">
-                                        <div className="h-2.5 w-2.5 rounded-full bg-emerald-500 mt-1.5 flex-shrink-0" />
-                                        <div>
-                                           <p className="font-medium text-gray-900 group-hover:text-orange-900">Coordinate with Sysco on delivery timing</p>
-                                           <p className="text-xs text-gray-500">Prevent unplanned BOH overtime</p>
-                                        </div>
-                                     </div>
-                                     <Sparkles className="h-4 w-4 text-gray-300 group-hover:text-orange-500 flex-shrink-0" />
-                                  </button>
-                               </>
+                                  <AnimatePresence>
+                                     {showCompletedActions && (
+                                        <motion.div
+                                           initial={{ height: 0, opacity: 0 }}
+                                           animate={{ height: "auto", opacity: 1 }}
+                                           exit={{ height: 0, opacity: 0 }}
+                                           className="overflow-hidden"
+                                        >
+                                           <div className="space-y-2 mt-2">
+                                              {completedActions
+                                                 .filter(item => item.owner === (selectedRole === "owner" ? "Owner" : selectedRole === "gm" ? "GM" : "Executive Chef"))
+                                                 .map((item) => (
+                                                 <motion.div
+                                                    key={item.id}
+                                                    initial={{ opacity: 0, scale: 0.95 }}
+                                                    animate={{ opacity: 1, scale: 1 }}
+                                                    className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg opacity-75"
+                                                 >
+                                                    <button
+                                                       onClick={() => toggleActionComplete(item.id)}
+                                                       className="w-5 h-5 rounded border-2 border-emerald-500 bg-emerald-500 flex items-center justify-center flex-shrink-0"
+                                                    >
+                                                       <Check className="h-3 w-3 text-white" />
+                                                    </button>
+                                                    <div className="flex-1 min-w-0">
+                                                       <p className="font-medium text-gray-500 line-through text-sm">{item.title}</p>
+                                                    </div>
+                                                 </motion.div>
+                                              ))}
+                                           </div>
+                                        </motion.div>
+                                     )}
+                                  </AnimatePresence>
+                               </div>
                             )}
                          </div>
                       </div>
