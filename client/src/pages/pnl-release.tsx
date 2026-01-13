@@ -4224,100 +4224,88 @@ const PrimaryInsightCard = ({
   if (!primaryInsight) return null;
 
   return (
-    <div className={cn(
-      "rounded-xl p-6 mb-8 border-l-4 shadow-sm",
-      primaryInsight.type === "critical" ? "bg-red-50 border-red-500" :
-      primaryInsight.type === "warning" ? "bg-amber-50 border-amber-500" :
-      "bg-emerald-50 border-emerald-500"
-    )}>
-      <div className="flex items-start justify-between">
-        <div className="flex-1">
-          <div className="flex items-center gap-2 mb-2">
-            {primaryInsight.type === "critical" ? (
-              <AlertTriangle className="h-5 w-5 text-red-600" />
-            ) : primaryInsight.type === "warning" ? (
-              <AlertTriangle className="h-5 w-5 text-amber-600" />
-            ) : (
-              <CheckCircle2 className="h-5 w-5 text-emerald-600" />
-            )}
-            <span className={cn(
-              "text-xs font-bold uppercase tracking-wider",
-              primaryInsight.type === "critical" ? "text-red-700" :
-              primaryInsight.type === "warning" ? "text-amber-700" :
-              "text-emerald-700"
-            )}>
-              Primary Insight
-            </span>
-          </div>
-          
-          <h3 className="text-xl font-bold text-gray-900 mb-2">
-            {primaryInsight.message}
-          </h3>
-          
-          <p className="text-gray-700 mb-4 text-base leading-relaxed max-w-3xl">
-            {primaryInsight.detail}
-          </p>
+    <section className="mb-8">
+      <h2 className="text-lg font-serif font-bold text-gray-900 mb-4 flex items-center gap-2">
+        <Lightbulb className="h-5 w-5 text-amber-500" />
+        Primary Insight
+      </h2>
+      <div className={cn(
+        "rounded-xl p-6 border-l-4 shadow-sm",
+        primaryInsight.type === "critical" ? "bg-red-50 border-red-500" :
+        primaryInsight.type === "warning" ? "bg-amber-50 border-amber-500" :
+        "bg-emerald-50 border-emerald-500"
+      )}>
+        <div className="flex items-start justify-between">
+          <div className="flex-1">
+            <h3 className="text-xl font-bold text-gray-900 mb-2">
+              {primaryInsight.message}
+            </h3>
+            
+            <p className="text-gray-700 mb-4 text-base leading-relaxed max-w-3xl">
+              {primaryInsight.detail}
+            </p>
 
-          <div className="flex items-center gap-8">
-            <div>
-              <span className="text-xs text-gray-500 uppercase tracking-wide block mb-0.5">Actual</span>
-              <span className={cn(
-                "text-lg font-bold",
-                primaryInsight.type === "critical" ? "text-red-700" :
-                primaryInsight.type === "warning" ? "text-amber-700" :
-                "text-emerald-700"
-              )}>{primaryInsight.value}</span>
-            </div>
-            <div>
-              <span className="text-xs text-gray-500 uppercase tracking-wide block mb-0.5">Target</span>
-              <span className="text-lg font-medium text-gray-700">{primaryInsight.target}</span>
-            </div>
-            <div>
-              <span className="text-xs text-gray-500 uppercase tracking-wide block mb-0.5">Variance</span>
-              <span className={cn(
-                "text-lg font-bold flex items-center gap-1",
-                primaryInsight.type === "critical" ? "text-red-600" :
-                primaryInsight.type === "warning" ? "text-amber-600" :
-                "text-emerald-600"
-              )}>
-                {primaryInsight.direction === "up" ? <ArrowUp className="h-4 w-4" /> : 
-                  primaryInsight.direction === "down" ? <ArrowDown className="h-4 w-4" /> : null}
-                {primaryInsight.variance}
-              </span>
+            <div className="flex items-center gap-8">
+              <div>
+                <span className="text-xs text-gray-500 uppercase tracking-wide block mb-0.5">Actual</span>
+                <span className={cn(
+                  "text-lg font-bold",
+                  primaryInsight.type === "critical" ? "text-red-700" :
+                  primaryInsight.type === "warning" ? "text-amber-700" :
+                  "text-emerald-700"
+                )}>{primaryInsight.value}</span>
+              </div>
+              <div>
+                <span className="text-xs text-gray-500 uppercase tracking-wide block mb-0.5">Target</span>
+                <span className="text-lg font-medium text-gray-700">{primaryInsight.target}</span>
+              </div>
+              <div>
+                <span className="text-xs text-gray-500 uppercase tracking-wide block mb-0.5">Variance</span>
+                <span className={cn(
+                  "text-lg font-bold flex items-center gap-1",
+                  primaryInsight.type === "critical" ? "text-red-600" :
+                  primaryInsight.type === "warning" ? "text-amber-600" :
+                  "text-emerald-600"
+                )}>
+                  {primaryInsight.direction === "up" ? <ArrowUp className="h-4 w-4" /> : 
+                    primaryInsight.direction === "down" ? <ArrowDown className="h-4 w-4" /> : null}
+                  {primaryInsight.variance}
+                </span>
+              </div>
             </div>
           </div>
-        </div>
-        
-        <div className="flex flex-col gap-2">
-          <button 
-            onClick={() => {
-              onAddAction({
-                title: primaryInsight.cta ? primaryInsight.cta : `Investigate ${primaryInsight.metric} Variance`,
-                source: 'pnl_insight',
-                metric: primaryInsight.metric,
-                context: primaryInsight.message
-              });
-            }}
-            className={cn(
-              "px-4 py-2 rounded-lg text-sm font-medium transition-colors border shadow-sm flex items-center gap-2",
-              primaryInsight.type === "critical" ? "bg-white text-red-700 border-red-200 hover:bg-red-50" :
-              primaryInsight.type === "warning" ? "bg-white text-amber-700 border-amber-200 hover:bg-amber-50" :
-              "bg-white text-emerald-700 border-emerald-200 hover:bg-emerald-50"
-            )}
-          >
-            <List className="h-4 w-4" />
-            {primaryInsight.cta || "Add to Actions"}
-          </button>
-          <button
-            onClick={() => onAskAI(`Analyze ${primaryInsight.metric} variance for me`)} 
-            className="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 flex items-center gap-2 shadow-sm"
-          >
-            <Sparkles className="h-4 w-4 text-purple-600" />
-            Ask Assistant
-          </button>
+          
+          <div className="flex flex-col gap-2">
+            <button 
+              onClick={() => {
+                onAddAction({
+                  title: primaryInsight.cta ? primaryInsight.cta : `Investigate ${primaryInsight.metric} Variance`,
+                  source: 'pnl_insight',
+                  metric: primaryInsight.metric,
+                  context: primaryInsight.message
+                });
+              }}
+              className={cn(
+                "px-4 py-2 rounded-lg text-sm font-medium transition-colors border shadow-sm flex items-center gap-2",
+                primaryInsight.type === "critical" ? "bg-white text-red-700 border-red-200 hover:bg-red-50" :
+                primaryInsight.type === "warning" ? "bg-white text-amber-700 border-amber-200 hover:bg-amber-50" :
+                "bg-white text-emerald-700 border-emerald-200 hover:bg-emerald-50"
+              )}
+            >
+              <List className="h-4 w-4" />
+              {primaryInsight.cta || "Add to Actions"}
+            </button>
+            <button
+              onClick={() => onAskAI(`Analyze ${primaryInsight.metric} variance for me`)} 
+              className="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 flex items-center gap-2 shadow-sm"
+            >
+              <Sparkles className="h-4 w-4 text-purple-600" />
+              Ask Assistant
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
@@ -13014,7 +13002,7 @@ export default function PnlRelease() {
                                Primary Kitchen Insight
                             </h2>
                             <div 
-                               className="bg-white rounded-xl border-l-4 border-l-red-500 shadow-sm border border-gray-200 overflow-hidden cursor-pointer hover:shadow-md transition-shadow group"
+                               className="bg-red-50 rounded-xl border-l-4 border-red-500 shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition-shadow group"
                                onClick={() => setActiveTab("detailed")}
                             >
                                <div className="p-6">
@@ -13051,7 +13039,7 @@ export default function PnlRelease() {
                                      ))}
                                   </div>
                                </div>
-                               <div className="bg-gray-50 px-6 py-3 flex items-center justify-between border-t border-gray-100 group-hover:bg-blue-50/50 transition-colors">
+                               <div className="bg-white/50 px-6 py-3 flex items-center justify-between border-t border-red-100 group-hover:bg-red-100/50 transition-colors">
                                   <span className="text-sm font-medium text-blue-600 flex items-center gap-1">
                                      View kitchen breakdown <ArrowRight className="h-4 w-4" />
                                   </span>
