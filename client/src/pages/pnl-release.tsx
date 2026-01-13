@@ -14151,17 +14151,38 @@ export default function PnlRelease() {
                                         </div>
                                         <div>
                                            <p className="text-sm font-medium text-gray-900">
-                                              Labor % improved:{' '}
+                                              Revenue grew 10.2%:{' '}
                                               <button 
-                                                 onClick={() => { setActiveTab("detailed"); setTimeout(() => navigateToPnlNode('labor'), 100); }}
+                                                 onClick={() => { setActiveTab("detailed"); setTimeout(() => navigateToPnlNode('revenue'), 100); }}
                                                  className="text-emerald-700 hover:text-emerald-900 underline decoration-dotted underline-offset-2"
-                                              >35% → 32%</button>
+                                              >$146.6k vs $133k</button>
                                            </p>
-                                           <p className="text-xs text-muted-foreground">Dinner shifts on Tue/Wed operated with 1 less runner</p>
+                                           <p className="text-xs text-muted-foreground">Strong rebound in Food Sales vs prior month</p>
                                         </div>
                                      </div>
                                      <button 
-                                        onClick={() => { setActiveTab("detailed"); setTimeout(() => navigateToPnlNode('labor'), 100); }}
+                                        onClick={() => { setActiveTab("detailed"); setTimeout(() => navigateToPnlNode('revenue'), 100); }}
+                                        className="text-sm font-medium text-emerald-600 hover:text-emerald-800 hover:underline"
+                                     >+$13,564</button>
+                                  </div>
+                                  <div className="p-4 flex justify-between items-center">
+                                     <div className="flex items-center gap-3">
+                                        <div className="h-8 w-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
+                                           <Check className="h-4 w-4" />
+                                        </div>
+                                        <div>
+                                           <p className="text-sm font-medium text-gray-900">
+                                              UberEats performance:{' '}
+                                              <button 
+                                                 onClick={() => { setActiveTab("detailed"); setTimeout(() => navigateToPnlNode('revenue'), 100); }}
+                                                 className="text-emerald-700 hover:text-emerald-900 underline decoration-dotted underline-offset-2"
+                                              >+22% growth</button>
+                                           </p>
+                                           <p className="text-xs text-muted-foreground">Delivery channel continues to expand share</p>
+                                        </div>
+                                     </div>
+                                     <button 
+                                        onClick={() => { setActiveTab("detailed"); setTimeout(() => navigateToPnlNode('revenue'), 100); }}
                                         className="text-sm font-medium text-emerald-600 hover:text-emerald-800 hover:underline"
                                      >+$2,400</button>
                                   </div>
@@ -14172,40 +14193,19 @@ export default function PnlRelease() {
                                         </div>
                                         <div>
                                            <p className="text-sm font-medium text-gray-900">
-                                              Sales exceeded target:{' '}
+                                              Guest sentiment up:{' '}
                                               <button 
-                                                 onClick={() => { setActiveTab("detailed"); setTimeout(() => navigateToPnlNode('revenue'), 100); }}
+                                                 onClick={() => {}}
                                                  className="text-emerald-700 hover:text-emerald-900 underline decoration-dotted underline-offset-2"
-                                              >$124.5k vs $120k</button> goal
+                                              >4.8 stars</button>
                                            </p>
-                                           <p className="text-xs text-muted-foreground">Weekend brunch traffic was down 13.8%</p>
+                                           <p className="text-xs text-muted-foreground">Positive feedback on new seasonal specials</p>
                                         </div>
                                      </div>
                                      <button 
-                                        onClick={() => { setActiveTab("detailed"); setTimeout(() => navigateToPnlNode('revenue'), 100); }}
+                                        onClick={() => {}}
                                         className="text-sm font-medium text-emerald-600 hover:text-emerald-800 hover:underline"
-                                     >+$4,500</button>
-                                  </div>
-                                  <div className="p-4 flex justify-between items-center">
-                                     <div className="flex items-center gap-3">
-                                        <div className="h-8 w-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
-                                           <Check className="h-4 w-4" />
-                                        </div>
-                                        <div>
-                                           <p className="text-sm font-medium text-gray-900">
-                                              Net Profit up:{' '}
-                                              <button 
-                                                 onClick={() => { setActiveTab("detailed"); setTimeout(() => navigateToPnlNode('net_profit'), 100); }}
-                                                 className="text-emerald-700 hover:text-emerald-900 underline decoration-dotted underline-offset-2"
-                                              >15% → 18%</button>
-                                           </p>
-                                           <p className="text-xs text-muted-foreground">Combined labor savings and strong sales outpaced COGS increase</p>
-                                        </div>
-                                     </div>
-                                     <button 
-                                        onClick={() => { setActiveTab("detailed"); setTimeout(() => navigateToPnlNode('net_profit'), 100); }}
-                                        className="text-sm font-medium text-emerald-600 hover:text-emerald-800 hover:underline"
-                                     >+$3,735</button>
+                                     >+0.3</button>
                                   </div>
                                </>
                             )}
@@ -14217,11 +14217,11 @@ export default function PnlRelease() {
                                            <Check className="h-4 w-4" />
                                         </div>
                                         <div>
-                                           <p className="text-sm font-medium text-gray-900">FOH Labor optimized: Saved 40 hours</p>
-                                           <p className="text-xs text-muted-foreground">Dinner shifts on Tue/Wed operated with 1 less runner</p>
+                                           <p className="text-sm font-medium text-gray-900">Revenue Growth: +10.2%</p>
+                                           <p className="text-xs text-muted-foreground">$146k vs $133k prior month</p>
                                         </div>
                                      </div>
-                                     <span className="text-sm font-medium text-emerald-600">+$1,200</span>
+                                     <span className="text-sm font-medium text-emerald-600">+$13.5k</span>
                                   </div>
                                   <div className="p-4 flex justify-between items-center">
                                      <div className="flex items-center gap-3">
@@ -14241,11 +14241,11 @@ export default function PnlRelease() {
                                            <Check className="h-4 w-4" />
                                         </div>
                                         <div>
-                                           <p className="text-sm font-medium text-gray-900">Table turns improved: 2.4 vs 2.2 target</p>
-                                           <p className="text-xs text-muted-foreground">Faster turnover during peak hours</p>
+                                           <p className="text-sm font-medium text-gray-900">Delivery Sales: +22%</p>
+                                           <p className="text-xs text-muted-foreground">UberEats led growth across channels</p>
                                         </div>
                                      </div>
-                                     <span className="text-sm font-medium text-emerald-600">+9%</span>
+                                     <span className="text-sm font-medium text-emerald-600">+$2.4k</span>
                                   </div>
                                </>
                             )}
@@ -14257,11 +14257,11 @@ export default function PnlRelease() {
                                            <Check className="h-4 w-4" />
                                         </div>
                                         <div>
-                                           <p className="text-sm font-medium text-gray-900">Food cost % on target: 23.3% vs 24% budget</p>
-                                           <p className="text-xs text-muted-foreground">Portion control and waste reduction paid off</p>
+                                           <p className="text-sm font-medium text-gray-900">Food Sales Rebound: $107k</p>
+                                           <p className="text-xs text-muted-foreground">Strong volume recovery vs Sep</p>
                                         </div>
                                      </div>
-                                     <span className="text-sm font-medium text-emerald-600">+$1,100</span>
+                                     <span className="text-sm font-medium text-emerald-600">+$11k</span>
                                   </div>
                                   <div className="p-4 flex justify-between items-center">
                                      <div className="flex items-center gap-3">
@@ -14281,11 +14281,11 @@ export default function PnlRelease() {
                                            <Check className="h-4 w-4" />
                                         </div>
                                         <div>
-                                           <p className="text-sm font-medium text-gray-900">Beverage cost held steady at 4.8%</p>
-                                           <p className="text-xs text-muted-foreground">Good inventory management on bar stock</p>
+                                           <p className="text-sm font-medium text-gray-900">Kitchen Output up 12%</p>
+                                           <p className="text-xs text-muted-foreground">Managed higher volume without labor spike</p>
                                         </div>
                                      </div>
-                                     <span className="text-sm font-medium text-emerald-600">under 5%</span>
+                                     <span className="text-sm font-medium text-emerald-600">High Efficiency</span>
                                   </div>
                                </>
                             )}
