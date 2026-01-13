@@ -5597,7 +5597,7 @@ export default function PnlRelease() {
                           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                              {/* Income Card */}
                              <button 
-                                onClick={() => handleInsightClick("Analyze my Income performance. Current: $124,500 (+3.7% vs prior). What drove this growth?")}
+                                onClick={() => openTrendModal('net-sales')}
                                 className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition-shadow w-full text-left group"
                              >
                                 <div className="flex items-center justify-between mb-4">
@@ -5614,7 +5614,7 @@ export default function PnlRelease() {
 
                              {/* Marketing Spend Card */}
                              <button 
-                                onClick={() => handleInsightClick("Review my Marketing Spend. Current: $3,200 (2.6% of revenue). Is this within budget and effective?")}
+                                onClick={() => openTrendModal('marketing')}
                                 className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition-shadow w-full text-left group"
                              >
                                 <div className="flex items-center justify-between mb-4">
@@ -5630,7 +5630,7 @@ export default function PnlRelease() {
 
                              {/* Operating Expenses Card */}
                              <button 
-                                onClick={() => handleInsightClick("Analyze my Operating Expenses. Current: $44,500 (35.7% of revenue). Identify areas for cost reduction.")}
+                                onClick={() => openTrendModal('net-income')}
                                 className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition-shadow w-full text-left group"
                              >
                                 <div className="flex items-center justify-between mb-4">
@@ -5646,7 +5646,7 @@ export default function PnlRelease() {
 
                              {/* Growth Card */}
                              <button 
-                                onClick={() => handleInsightClick("Provide a Growth Analysis. Revenue up 3.7% YoY. What are the key drivers?")}
+                                onClick={() => openTrendModal('net-sales')}
                                 className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition-shadow w-full text-left group"
                              >
                                 <div className="flex items-center justify-between mb-4">
@@ -5667,7 +5667,7 @@ export default function PnlRelease() {
                           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                              {/* Cash Flow Card */}
                              <button 
-                                onClick={() => handleInsightClick("Analyze my Cash Flow. Balance: $48,200 (+$8,450). Is my 2.4 month coverage sufficient?")}
+                                onClick={() => openTrendModal('cash-flow')}
                                 className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition-shadow w-full text-left group"
                              >
                                 <div className="flex items-center justify-between mb-6">
@@ -5702,7 +5702,7 @@ export default function PnlRelease() {
 
                              {/* Spend Visibility Card */}
                              <button 
-                                onClick={() => handleInsightClick("Review Management Compensation. Total: $31,000. Executive: $12,400, Manager: $18,600. How does this compare to benchmarks?")}
+                                onClick={() => openTrendModal('labor')}
                                 className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition-shadow w-full text-left group"
                              >
                                 <div className="flex items-center justify-between mb-6">
