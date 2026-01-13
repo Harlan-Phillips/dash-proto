@@ -11192,11 +11192,8 @@ export default function PnlRelease() {
                       <div className="bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200 rounded-xl p-6 mb-6">
                          <div className="flex items-start justify-between">
                             <div>
-                               <div className="flex items-center gap-2 mb-1">
-                                  <span className="text-sm font-medium text-emerald-700 uppercase tracking-wide">Financial Health</span>
-                                  <div className="px-2 py-0.5 bg-emerald-500 text-white text-xs font-bold rounded-full">
-                                     🟢 HEALTHY
-                                  </div>
+                               <div className="flex items-center gap-3 mb-2">
+                                  <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Financial Health</span>
                                </div>
                                <div className="flex items-baseline gap-2 mt-2">
                                   <span className="text-5xl font-bold text-gray-900">
