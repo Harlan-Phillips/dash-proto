@@ -3279,10 +3279,16 @@ function SidePanelAssistant({
     const lowerText = text.toLowerCase();
     let reportType: ReportType | null = null;
     
-    if (lowerText.includes("profit") || lowerText.includes("margin") || lowerText.includes("p&l")) reportType = "profitability";
-    else if (lowerText.includes("labor") || lowerText.includes("staff") || lowerText.includes("overtime")) reportType = "labor";
-    else if (lowerText.includes("sales") || lowerText.includes("revenue") || lowerText.includes("perform")) reportType = "sales";
-    else if (lowerText.includes("inventory") || lowerText.includes("stock")) reportType = "inventory";
+    // Expanded intent detection for P&L analysis
+    if (lowerText.includes("profit") || lowerText.includes("margin") || lowerText.includes("p&l") || lowerText.includes("net income") || lowerText.includes("gross") || lowerText.includes("health") || lowerText.includes("score") || lowerText.includes("why") || lowerText.includes("explain") || lowerText.includes("cost") || lowerText.includes("expense")) reportType = "profitability";
+    else if (lowerText.includes("labor") || lowerText.includes("staff") || lowerText.includes("overtime") || lowerText.includes("schedule")) reportType = "labor";
+    else if (lowerText.includes("sales") || lowerText.includes("revenue") || lowerText.includes("perform") || lowerText.includes("growth")) reportType = "sales";
+    else if (lowerText.includes("inventory") || lowerText.includes("stock") || lowerText.includes("waste")) reportType = "inventory";
+
+    // If Report Mode is enabled, strictly enforce prompt (unless it's a comparison)
+    if (isReportMode && !reportType && !lowerText.includes("compare")) {
+       reportType = "profitability";
+    }
 
     if (reportType) {
         // Initial brief answer
@@ -3344,20 +3350,10 @@ function SidePanelAssistant({
     let artifact = false;
     let report = undefined;
 
-    if (isReportMode) {
-         const reportId = `report-${Date.now()}`;
-         content = "I've generated a detailed report analyzing your question. Click below to view the full analysis.";
-         report = {
-                id: reportId,
-                title: text.length > 15 ? text.substring(0, 15) + "..." : text,
-                query: text,
-                content: generateReportContent(text)
-            };
-    } else {
-        const res = generateMockResponse(text);
-        content = res.content;
-        artifact = res.showArtifact || false;
-    }
+    // Use mock response generator for all non-report queries (reinstating decision gate)
+    const res = generateMockResponse(text);
+    content = res.content;
+    artifact = res.showArtifact || false;
     
     const assistantMsg: FloatingMessage = {
       id: (Date.now() + 1).toString(),

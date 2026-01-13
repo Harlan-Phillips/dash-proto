@@ -1,0 +1,208 @@
+Restore “Would You Like a Report?” Chatbot Prompt (Regression Fix)
+Title
+
+Restore Chatbot Prompt to Ask “Would You Like a Report?” Before Generating Reports
+
+Problem Statement (Regression)
+
+The chatbot previously:
+
+Answered a user’s question
+
+Then prompted:
+
+“Would you like a report?”
+
+This behavior has been lost during recent changes related to:
+
+Reports tab routing
+
+Report rendering
+
+Action Cart integration
+
+As a result:
+
+Reports are no longer gated by explicit user confirmation
+
+The UX contract is broken
+
+Report generation may feel automatic or inconsistent
+
+Goal
+
+Restore the explicit, user-confirmed report generation flow without changing:
+
+Report content
+
+Report rendering logic
+
+Reports tab behavior
+
+Action Cart behavior
+
+This ticket reinstates the decision gate, not the report itself.
+
+Required Chatbot Behavior (Authoritative)
+Step 1: User asks a question
+
+Examples:
+
+“How was profitability in October?”
+
+“Why did margins drop?”
+
+“Compare September vs October”
+
+Step 2: Chatbot responds normally
+
+Concise answer
+
+No report generated yet
+
+No UI changes yet
+
+Step 3: Chatbot prompts for report (Mandatory)
+
+If the intent qualifies for reporting, chatbot must ask:
+
+“Would you like a report?”
+
+UI:
+
+Yes / No actions
+
+No auto-generation
+
+Step 4: User chooses
+If No
+
+Chat continues
+
+No report generated
+
+No state changes
+
+If Yes
+
+Existing report generation logic is triggered
+
+Report opens in Reports tab (per prior ticket)
+
+No duplication of logic
+
+Scope Clarification
+
+This ticket applies to:
+
+/accounting/pnl
+
+Any chatbot context where report generation is supported
+
+It does not apply to:
+
+Non-analytical chatbot conversations
+
+Action Cart suggestions
+
+Manual report browsing
+
+Intent Detection Rules (Unchanged)
+
+The prompt should trigger when user intent includes:
+
+Performance analysis
+
+Comparisons
+
+Explanations
+
+Financial summaries
+
+Examples:
+
+profitability
+
+margin
+
+labor %
+
+costs
+
+compare
+
+why / explain
+
+❗ This ticket restores usage of existing intent detection — no new NLP logic.
+
+Explicit Non-Goals
+
+❌ No changes to report content
+
+❌ No changes to Reports tab
+
+❌ No changes to Action Cart
+
+❌ No changes to exports
+
+❌ No new UI components
+
+Technical Notes (Important)
+
+The “Would you like a report?” prompt must:
+
+Occur before report generation
+
+Be the only gateway to report creation
+
+Report generation must never fire automatically for P&L questions
+
+This logic must be centralized (not duplicated per report type)
+
+Acceptance Criteria
+
+ Chatbot answers user question without generating a report
+
+ Chatbot always asks “Would you like a report?” when applicable
+
+ Clicking Yes generates exactly one report
+
+ Clicking No generates no report
+
+ Reports still open in the Reports tab
+
+ No duplicate prompts
+
+ Action Cart remains unaffected
+
+QA Checklist
+
+Ask P&L question → prompt appears
+
+Decline report → no report tab opens
+
+Accept report → report opens in Reports tab
+
+Generate multiple reports → each gated by prompt
+
+Navigate tabs → no re-prompt unless new question is asked
+
+Engineering Guardrail (Important)
+
+Add a regression test or assertion ensuring:
+
+Report generation requires explicit user confirmation
+
+No code path bypasses the confirmation step
+
+Why This Matters
+
+This prompt:
+
+Preserves conversational flow
+
+Prevents report spam
+
+Makes reports feel intentional and valuable
+
+Losing it degrades UX even if reports technically work.
