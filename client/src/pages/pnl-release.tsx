@@ -2979,6 +2979,44 @@ function FloatingAssistantBar({ triggerQuery }: { triggerQuery?: string | null }
   );
 }
 
+// --- Mock Response Generator ---
+function generateMockResponse(query: string): { content: string; showArtifact?: boolean } {
+  const q = query.toLowerCase();
+  
+  if (q.includes("health") || q.includes("score")) {
+    return {
+      content: "Your Financial Health Score is **82/100 (Healthy)**. \n\nThis is driven by strong profitability (16.8% margin) and efficient labor management. However, your stability score is slightly lower due to fluctuating cash reserves.",
+      showArtifact: false
+    };
+  }
+  
+  if (q.includes("margin") || q.includes("profit")) {
+    return {
+      content: "Your **Net Operating Income increased by 32.2%** to $23,424. \n\nKey drivers:\n• COGS dropped 2.1% due to better waste management\n• Labor efficiency improved by 3.3%\n• Revenue grew 3.7% year-over-year",
+      showArtifact: false
+    };
+  }
+
+  if (q.includes("labor") || q.includes("staff")) {
+    return {
+      content: "Labor costs are trending positively at **33% of revenue** (target: 35%). \n\nFront-of-house efficiency has improved significantly since the new schedule implementation. However, overtime usage on weekends is still slightly high.",
+      showArtifact: true
+    };
+  }
+
+  if (q.includes("cost") || q.includes("expense")) {
+    return {
+      content: "Total expenses are down to **83.1% of revenue**. \n\nThe biggest savings came from reduced food waste (-$1,200) and optimized linen service contracts (-$450). Utility costs remain flat.",
+      showArtifact: false
+    };
+  }
+
+  return {
+    content: "I've analyzed that for you. Based on the current period data, performance is **tracking ahead of forecast**. \n\nIs there a specific metric you'd like me to break down further?",
+    showArtifact: false
+  };
+}
+
 // --- Side Panel Assistant Component ---
 function SidePanelAssistant({ onClose, triggerQuery }: { onClose: () => void; triggerQuery?: string | null }) {
   const [messages, setMessages] = useState<FloatingMessage[]>([]);
