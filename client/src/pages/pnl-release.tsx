@@ -5914,13 +5914,13 @@ export default function PnlRelease() {
                        {/* ===== PROFITABILITY SECTION - Always Visible for Testing ===== */}
                        <section data-testid="profitability-section" className="relative bg-gradient-to-r from-red-100 to-red-200 p-6 rounded-xl border-4 border-red-500">
                           <div className="bg-red-600 text-white p-6 rounded-lg mb-4 text-2xl font-bold text-center">
-                             🔴🔴🔴 PROFITABILITY SECTION 🔴🔴🔴
+                             🔴🔴🔴 PROFITABILITY SECTION (UPDATED) 🔴🔴🔴
                           </div>
                           <div className="flex items-center justify-between mb-6">
                              <div>
                                 <h2 className="text-lg font-serif font-bold text-gray-900 flex items-center gap-2">
                                    <BarChart3 className="h-5 w-5 text-gray-600" />
-                                   Profitability
+                                   Profitability Analysis
                                 </h2>
                                 <p className="text-sm text-gray-500 mt-1">Month-over-month performance summary</p>
                              </div>
