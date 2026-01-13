@@ -11942,7 +11942,6 @@ export default function PnlRelease() {
                                    </PopoverContent>
                                 </Popover>
                              )}
-                         </div>
 
                          {/* Net Operating Income - Parent Row */}
                          <Popover>
@@ -12161,7 +12160,6 @@ export default function PnlRelease() {
                                    </Popover>
                                 </>
                              )}
-                         </div>
 
                          {/* Operating Margin - Standalone Row */}
                          <Popover>
