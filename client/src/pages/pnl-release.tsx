@@ -12214,10 +12214,9 @@ export default function PnlRelease() {
                               </div>
                            </PopoverContent>
                         </Popover>
-                        <div className="hidden">
+                        
                       </div>
 
-                      {/* Footer elements removed as requested */}
                    </section>
                    )}
 
