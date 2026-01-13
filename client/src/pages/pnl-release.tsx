@@ -4446,6 +4446,7 @@ export default function PnlRelease() {
   // Action Cart State
   const [actionItems, setActionItems] = useState<ActionItem[]>([]);
   const [showActionCart, setShowActionCart] = useState(false);
+  const [activeGMFilter, setActiveGMFilter] = useState<string | null>(null);
 
   const handleAddActionItem = (item: Omit<ActionItem, 'id' | 'createdAt' | 'status'>) => {
       const newItem: ActionItem = {
@@ -13140,10 +13141,102 @@ export default function PnlRelease() {
                            )}
                          </div>
                       </div>
+
+                      {/* GM Filters */}
+                      <div className="flex flex-wrap gap-3 mb-6">
+                          {/* Sales Filter */}
+                          <button
+                              onClick={() => setActiveGMFilter(activeGMFilter === 'sales' ? null : 'sales')}
+                              className={cn(
+                                  "flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium border transition-all",
+                                  activeGMFilter === 'sales' 
+                                      ? "bg-gray-900 text-white border-gray-900" 
+                                      : "bg-white text-gray-600 border-gray-200 hover:border-gray-300"
+                              )}
+                          >
+                              {currentGMData.sales.variance >= 0 ? (
+                                  <TrendingUp className="h-3.5 w-3.5 text-emerald-500" />
+                              ) : (
+                                  <TrendingDown className="h-3.5 w-3.5 text-red-500" />
+                              )}
+                              Sales {currentGMData.sales.variance >= 0 ? 'Above' : 'Below'} Avg
+                              <span className={cn(
+                                  "ml-1 px-1.5 py-0.5 rounded-full text-[10px]",
+                                  activeGMFilter === 'sales' ? "bg-gray-700 text-white" : "bg-gray-100 text-gray-600"
+                              )}>1</span>
+                          </button>
+
+                          {/* COGS Filter */}
+                          <button
+                              onClick={() => setActiveGMFilter(activeGMFilter === 'cogs' ? null : 'cogs')}
+                              className={cn(
+                                  "flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium border transition-all",
+                                  activeGMFilter === 'cogs' 
+                                      ? "bg-gray-900 text-white border-gray-900" 
+                                      : "bg-white text-gray-600 border-gray-200 hover:border-gray-300"
+                              )}
+                          >
+                              {currentGMData.cogs.variance <= 0 ? (
+                                  <TrendingDown className="h-3.5 w-3.5 text-emerald-500" />
+                              ) : (
+                                  <TrendingUp className="h-3.5 w-3.5 text-red-500" />
+                              )}
+                              COGS {currentGMData.cogs.variance <= 0 ? 'Below' : 'Above'} Avg
+                              <span className={cn(
+                                  "ml-1 px-1.5 py-0.5 rounded-full text-[10px]",
+                                  activeGMFilter === 'cogs' ? "bg-gray-700 text-white" : "bg-gray-100 text-gray-600"
+                              )}>1</span>
+                          </button>
+
+                          {/* Labor Filter */}
+                          <button
+                              onClick={() => setActiveGMFilter(activeGMFilter === 'labor' ? null : 'labor')}
+                              className={cn(
+                                  "flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium border transition-all",
+                                  activeGMFilter === 'labor' 
+                                      ? "bg-gray-900 text-white border-gray-900" 
+                                      : "bg-white text-gray-600 border-gray-200 hover:border-gray-300"
+                              )}
+                          >
+                              {currentGMData.labor.variance <= 0 ? (
+                                  <TrendingDown className="h-3.5 w-3.5 text-emerald-500" />
+                              ) : (
+                                  <TrendingUp className="h-3.5 w-3.5 text-red-500" />
+                              )}
+                              Labor {currentGMData.labor.variance <= 0 ? 'Below' : 'Above'} Avg
+                              <span className={cn(
+                                  "ml-1 px-1.5 py-0.5 rounded-full text-[10px]",
+                                  activeGMFilter === 'labor' ? "bg-gray-700 text-white" : "bg-gray-100 text-gray-600"
+                              )}>1</span>
+                          </button>
+
+                          {/* Prime Cost Filter */}
+                          <button
+                              onClick={() => setActiveGMFilter(activeGMFilter === 'prime' ? null : 'prime')}
+                              className={cn(
+                                  "flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium border transition-all",
+                                  activeGMFilter === 'prime' 
+                                      ? "bg-gray-900 text-white border-gray-900" 
+                                      : "bg-white text-gray-600 border-gray-200 hover:border-gray-300"
+                              )}
+                          >
+                              {currentGMData.primeCost.variance <= 0 ? (
+                                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
+                              ) : (
+                                  <AlertTriangle className="h-3.5 w-3.5 text-amber-500" />
+                              )}
+                              Prime Cost {currentGMData.primeCost.variance <= 0 ? 'On Track' : 'Over Target'}
+                              <span className={cn(
+                                  "ml-1 px-1.5 py-0.5 rounded-full text-[10px]",
+                                  activeGMFilter === 'prime' ? "bg-gray-700 text-white" : "bg-gray-100 text-gray-600"
+                              )}>1</span>
+                          </button>
+                      </div>
                       
                       {/* Performance Metrics Cards */}
                       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                          {/* Sales Card */}
+                         {(!activeGMFilter || activeGMFilter === 'sales') && (
                          <div className="bg-white border border-gray-200 rounded-xl p-4 relative group">
                             <button
                                onClick={() => openTrendModal('net-sales')}
@@ -13170,8 +13263,10 @@ export default function PnlRelease() {
                                <span className="text-xs text-gray-500">vs avg</span>
                             </div>
                          </div>
+                         )}
 
                          {/* COGS % Card */}
+                         {(!activeGMFilter || activeGMFilter === 'cogs') && (
                          <div className="bg-white border border-gray-200 rounded-xl p-4 relative group">
                             <button
                                onClick={() => openTrendModal('cogs')}
@@ -13198,8 +13293,10 @@ export default function PnlRelease() {
                                <span className="text-xs text-gray-500">vs avg</span>
                             </div>
                          </div>
+                         )}
 
                          {/* Labor % Card */}
+                         {(!activeGMFilter || activeGMFilter === 'labor') && (
                          <div className="bg-white border border-gray-200 rounded-xl p-4 relative group">
                             <button
                                onClick={() => openTrendModal('labor')}
@@ -13226,8 +13323,10 @@ export default function PnlRelease() {
                                <span className="text-xs text-gray-500">vs avg</span>
                             </div>
                          </div>
+                         )}
 
                          {/* Prime Cost Card - Primary */}
+                         {(!activeGMFilter || activeGMFilter === 'prime') && (
                          <div className={cn(
                             "border rounded-xl p-4 relative group",
                             currentGMData.primeCost.variance > 2 
@@ -13272,6 +13371,7 @@ export default function PnlRelease() {
                                </span>
                             </div>
                          </div>
+                         )}
                       </div>
 
                       {/* Shift Breakdown Graph */}
