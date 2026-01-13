@@ -3556,7 +3556,24 @@ function SidePanelAssistant({
       {/* Action Cart Panel */}
       {showActionCart && (
           <div className="border-b border-gray-200 bg-gray-50 p-4 space-y-3 max-h-[40vh] overflow-y-auto shadow-inner">
-              <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Action Cart</h4>
+              <div className="flex items-center justify-between mb-2">
+                  <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider">Action Cart</h4>
+                  {actionItems.length > 0 && (
+                      <button 
+                        onClick={() => {
+                            // Mock "Do All" functionality
+                            setActionItems(prev => prev.map(item => ({...item, status: 'assigned', context: item.context || 'Bulk Assigned'})));
+                            toast({
+                                title: "Bulk Assignment",
+                                description: `All ${actionItems.length} items have been processed.`,
+                            });
+                        }}
+                        className="text-[10px] font-medium bg-black text-white px-2 py-1 rounded hover:bg-gray-800 transition-colors"
+                      >
+                          Do All
+                      </button>
+                  )}
+              </div>
               {actionItems.length === 0 ? (
                   <div className="text-center py-4 text-gray-400 text-sm">
                       <p>No actions yet.</p>
@@ -4812,6 +4829,7 @@ export default function PnlRelease() {
   const openAssignModal = (actionId: string, actionTitle: string, owner: string) => {
     // Open chat when modal opens to provide context
     setShowChat(true);
+    setShowActionCart(true); // Open Action Cart panel
 
     const defaultRecipient = owner.toLowerCase().replace(/\s+/g, '') + "@restaurant.com";
     setAssignModal({
