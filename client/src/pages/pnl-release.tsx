@@ -5599,9 +5599,12 @@ export default function PnlRelease() {
                           {/* Summary Cards Grid */}
                           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                              {/* Income Card */}
-                             <button 
+                             <div 
+                                role="button"
+                                tabIndex={0}
                                 onClick={() => openTrendModal('net-sales')}
-                                className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition-shadow w-full text-left group"
+                                onKeyDown={(e) => e.key === 'Enter' && openTrendModal('net-sales')}
+                                className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition-shadow w-full text-left group cursor-pointer"
                              >
                                 <div className="flex items-center justify-between mb-4">
                                    <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">INCOME</span>
@@ -5613,12 +5616,15 @@ export default function PnlRelease() {
                                    <span className="text-xs font-semibold text-emerald-600">+3.7%</span>
                                    <span className="text-xs text-gray-400 font-medium">vs prior</span>
                                 </div>
-                             </button>
+                             </div>
 
                              {/* Marketing Spend Card */}
-                             <button 
+                             <div 
+                                role="button"
+                                tabIndex={0}
                                 onClick={() => openTrendModal('marketing')}
-                                className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition-shadow w-full text-left group"
+                                onKeyDown={(e) => e.key === 'Enter' && openTrendModal('marketing')}
+                                className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition-shadow w-full text-left group cursor-pointer"
                              >
                                 <div className="flex items-center justify-between mb-4">
                                    <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">MARKETING</span>
@@ -5629,12 +5635,15 @@ export default function PnlRelease() {
                                    <span className="text-xs font-semibold text-gray-600">2.6%</span>
                                    <span className="text-xs text-gray-400 font-medium">of revenue</span>
                                 </div>
-                             </button>
+                             </div>
 
                              {/* Operating Expenses Card */}
-                             <button 
+                             <div 
+                                role="button"
+                                tabIndex={0}
                                 onClick={() => openTrendModal('net-income')}
-                                className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition-shadow w-full text-left group"
+                                onKeyDown={(e) => e.key === 'Enter' && openTrendModal('net-income')}
+                                className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition-shadow w-full text-left group cursor-pointer"
                              >
                                 <div className="flex items-center justify-between mb-4">
                                    <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">OP. EXPENSES</span>
@@ -5645,12 +5654,15 @@ export default function PnlRelease() {
                                    <span className="text-xs font-semibold text-amber-500">35.7%</span>
                                    <span className="text-xs text-gray-400 font-medium">of revenue</span>
                                 </div>
-                             </button>
+                             </div>
 
                              {/* Growth Card */}
-                             <button 
+                             <div 
+                                role="button"
+                                tabIndex={0}
                                 onClick={() => openTrendModal('net-sales')}
-                                className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition-shadow w-full text-left group"
+                                onKeyDown={(e) => e.key === 'Enter' && openTrendModal('net-sales')}
+                                className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition-shadow w-full text-left group cursor-pointer"
                              >
                                 <div className="flex items-center justify-between mb-4">
                                    <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">GROWTH</span>
@@ -5663,15 +5675,18 @@ export default function PnlRelease() {
                                    <span className="text-xs font-semibold text-emerald-600">+3.7%</span>
                                    <span className="text-xs text-gray-400 font-medium">revenue YoY</span>
                                 </div>
-                             </button>
+                             </div>
                           </div>
 
                           {/* Second Row - Owner Only Cards */}
                           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                              {/* Cash Flow Card */}
-                             <button 
+                             <div 
+                                role="button"
+                                tabIndex={0}
                                 onClick={() => openTrendModal('cash-flow')}
-                                className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition-shadow w-full text-left group"
+                                onKeyDown={(e) => e.key === 'Enter' && openTrendModal('cash-flow')}
+                                className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition-shadow w-full text-left group cursor-pointer"
                              >
                                 <div className="flex items-center justify-between mb-6">
                                    <div className="flex items-center gap-2">
@@ -5701,12 +5716,15 @@ export default function PnlRelease() {
                                       <span className="text-xs font-medium text-gray-500 whitespace-nowrap">2.4 mo coverage</span>
                                    </div>
                                 </div>
-                             </button>
+                             </div>
 
                              {/* Spend Visibility Card */}
-                             <button 
+                             <div 
+                                role="button"
+                                tabIndex={0}
                                 onClick={() => openTrendModal('labor')}
-                                className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition-shadow w-full text-left group"
+                                onKeyDown={(e) => e.key === 'Enter' && openTrendModal('labor')}
+                                className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition-shadow w-full text-left group cursor-pointer"
                              >
                                 <div className="flex items-center justify-between mb-6">
                                    <div className="flex items-center gap-2">
@@ -5735,7 +5753,7 @@ export default function PnlRelease() {
                                       <span className="text-lg font-bold text-gray-900">$31,000</span>
                                    </div>
                                 </div>
-                             </button>
+                             </div>
                           </div>
                        </section>
                        )}
