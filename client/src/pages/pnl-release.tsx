@@ -5726,7 +5726,6 @@ export default function PnlRelease() {
                                 <div className="flex items-center justify-between mb-6">
                                    <div className="flex items-center gap-2">
                                       <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">CASH FLOW</span>
-                                      <span className="px-1.5 py-0.5 bg-blue-50 text-blue-600 text-[10px] font-bold rounded">OWNER ONLY</span>
                                    </div>
                                    <Wallet className="h-4 w-4 text-gray-300" />
                                 </div>
@@ -5771,7 +5770,6 @@ export default function PnlRelease() {
                                 <div className="flex items-center justify-between mb-6">
                                    <div className="flex items-center gap-2">
                                       <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">COMPENSATION OVERVIEW</span>
-                                      <span className="px-1.5 py-0.5 bg-blue-50 text-blue-600 text-[10px] font-bold rounded">OWNER ONLY</span>
                                    </div>
                                    <Users className="h-4 w-4 text-gray-300" />
                                 </div>
