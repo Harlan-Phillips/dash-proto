@@ -5596,6 +5596,8 @@ export default function PnlRelease() {
                              </div>
                           </div>
 
+                          {/* Summary Cards Grid */}
+                          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                              {/* Income Card */}
                              <div 
                                 className="bg-white border border-gray-100 rounded-xl p-0 hover:shadow-sm transition-shadow w-full text-left group overflow-hidden"
