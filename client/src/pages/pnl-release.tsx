@@ -2458,7 +2458,13 @@ function GoalProgress({ label, current, target, unit = "%", inverted = false, on
   const isGood = inverted ? current <= target : current >= target;
 
   return (
-    <div className="bg-white rounded-lg p-4 border border-gray-100 shadow-sm relative overflow-hidden group hover:border-gray-300 transition-all">
+    <div 
+      onClick={onTrendClick}
+      className={cn(
+        "bg-white rounded-lg p-4 border border-gray-100 shadow-sm relative overflow-hidden group hover:border-gray-300 transition-all",
+        onTrendClick && "cursor-pointer hover:shadow-md"
+      )}
+    >
       <div className="flex justify-between items-end mb-2 relative z-10">
         <div>
           <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider block mb-1">{label}</span>
@@ -2467,14 +2473,7 @@ function GoalProgress({ label, current, target, unit = "%", inverted = false, on
             <span className="text-xs text-muted-foreground mb-1 flex items-center gap-1">
               / {target}{unit} Goal
               {onTrendClick && (
-                <button
-                  onClick={onTrendClick}
-                  className="p-1 rounded hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-300"
-                  title={`View ${label} trend`}
-                  data-testid={`trend-btn-${label.toLowerCase().replace(/\s+/g, '-')}`}
-                >
-                  <BarChart3 className="h-3.5 w-3.5" />
-                </button>
+                <BarChart3 className="h-3.5 w-3.5 text-gray-400 group-hover:text-emerald-600 transition-colors" />
               )}
             </span>
           </div>
