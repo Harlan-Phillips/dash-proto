@@ -4447,6 +4447,7 @@ export default function PnlRelease() {
   const [actionItems, setActionItems] = useState<ActionItem[]>([]);
   const [showActionCart, setShowActionCart] = useState(false);
   const [activeGMFilter, setActiveGMFilter] = useState<string | null>(null);
+  const [isProfitabilityExpanded, setIsProfitabilityExpanded] = useState(false);
 
   const handleAddActionItem = (item: Omit<ActionItem, 'id' | 'createdAt' | 'status'>) => {
       const newItem: ActionItem = {
@@ -12484,166 +12485,189 @@ export default function PnlRelease() {
                                </div>
                             </div>
                          </div>
-                      </div>
 
-                      {/* Primary Insight Card (Role-Based) - Below Health Card for Owner */}
-                      <PrimaryInsightCard 
-                        role={selectedRole}
-                        trends={healthSnapshotTrendData}
-                        onAddAction={handleAddActionItem}
-                        onAskAI={setFloatingChatTrigger}
-                      />
+                        {/* Primary Insight Card (Role-Based) - Nested Inside Health Card */}
+                        <div className="mt-4">
+                           <PrimaryInsightCard 
+                              role={selectedRole}
+                              trends={healthSnapshotTrendData}
+                              onAddAction={handleAddActionItem}
+                              onAskAI={setFloatingChatTrigger}
+                           />
+                        </div>
 
-                      {/* Summary Cards Grid */}
-                      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                         {/* Income Card */}
-                         <div 
-                            onClick={() => openTrendModal('net-sales')}
-                            className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow cursor-pointer group"
-                         >
-                            <div className="flex items-center justify-between mb-3">
-                               <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Income</span>
-                               <div className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
-                                  <DollarSign className="h-4 w-4 text-gray-400 group-hover:text-blue-600 transition-colors" />
-                               </div>
-                            </div>
-                            <div className="text-2xl font-bold text-gray-900">$124,500</div>
-                            <div className="flex items-center gap-1 mt-1">
-                               <TrendingUp className="h-3 w-3 text-emerald-600" />
-                               <span className="text-xs font-medium text-emerald-600">+3.7%</span>
-                               <span className="text-xs text-gray-500">vs prior</span>
-                            </div>
-                         </div>
+                        {/* Profitability Toggle */}
+                        <div className="mt-4 flex justify-center">
+                           <button 
+                              onClick={() => setIsProfitabilityExpanded(!isProfitabilityExpanded)}
+                              className="flex items-center gap-2 px-4 py-2 bg-white/60 hover:bg-white/90 border border-emerald-100 rounded-full text-sm font-medium text-emerald-800 transition-all shadow-sm hover:shadow"
+                           >
+                              Profitability
+                              {isProfitabilityExpanded ? (
+                                 <ChevronUp className="h-4 w-4" />
+                              ) : (
+                                 <ChevronDown className="h-4 w-4" />
+                              )}
+                           </button>
+                        </div>
 
-                         {/* Marketing Spend Card */}
-                         <div 
-                            onClick={() => openTrendModal('marketing')}
-                            className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow cursor-pointer group"
-                         >
-                            <div className="flex items-center justify-between mb-3">
-                               <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Marketing</span>
-                               <div className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
-                                  <Target className="h-4 w-4 text-gray-400 group-hover:text-blue-600 transition-colors" />
-                               </div>
-                            </div>
-                            <div className="text-2xl font-bold text-gray-900">$3,200</div>
-                            <div className="flex items-center gap-1 mt-1">
-                               <span className="text-xs font-medium text-gray-600">2.6%</span>
-                               <span className="text-xs text-gray-500">of revenue</span>
-                            </div>
-                         </div>
+                        {/* Collapsible Profitability Section */}
+                        {isProfitabilityExpanded && (
+                        <div className="mt-6 pt-6 border-t border-emerald-100/50 animate-in fade-in slide-in-from-top-2 duration-300">
+                           {/* Summary Cards Grid */}
+                           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                              {/* Income Card */}
+                              <div 
+                                 onClick={() => openTrendModal('net-sales')}
+                                 className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow cursor-pointer group"
+                              >
+                                 <div className="flex items-center justify-between mb-3">
+                                    <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Income</span>
+                                    <div className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
+                                       <DollarSign className="h-4 w-4 text-gray-400 group-hover:text-blue-600 transition-colors" />
+                                    </div>
+                                 </div>
+                                 <div className="text-2xl font-bold text-gray-900">$124,500</div>
+                                 <div className="flex items-center gap-1 mt-1">
+                                    <TrendingUp className="h-3 w-3 text-emerald-600" />
+                                    <span className="text-xs font-medium text-emerald-600">+3.7%</span>
+                                    <span className="text-xs text-gray-500">vs prior</span>
+                                 </div>
+                              </div>
 
-                         {/* Operating Expenses Card */}
-                         <div 
-                            onClick={() => openTrendModal('controllable-expenses')}
-                            className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow cursor-pointer group"
-                         >
-                            <div className="flex items-center justify-between mb-3">
-                               <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Op. Expenses</span>
-                               <div className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
-                                  <CreditCard className="h-4 w-4 text-gray-400 group-hover:text-blue-600 transition-colors" />
-                               </div>
-                            </div>
-                            <div className="text-2xl font-bold text-gray-900">$44,500</div>
-                            <div className="flex items-center gap-1 mt-1">
-                               <span className="text-xs font-medium text-amber-600">35.7%</span>
-                               <span className="text-xs text-gray-500">of revenue</span>
-                            </div>
-                         </div>
+                              {/* Marketing Spend Card */}
+                              <div 
+                                 onClick={() => openTrendModal('marketing')}
+                                 className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow cursor-pointer group"
+                              >
+                                 <div className="flex items-center justify-between mb-3">
+                                    <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Marketing</span>
+                                    <div className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
+                                       <Target className="h-4 w-4 text-gray-400 group-hover:text-blue-600 transition-colors" />
+                                    </div>
+                                 </div>
+                                 <div className="text-2xl font-bold text-gray-900">$3,200</div>
+                                 <div className="flex items-center gap-1 mt-1">
+                                    <span className="text-xs font-medium text-gray-600">2.6%</span>
+                                    <span className="text-xs text-gray-500">of revenue</span>
+                                 </div>
+                              </div>
 
-                         {/* Growth Card */}
-                         <div 
-                            onClick={() => openTrendModal('net-sales')}
-                            className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow cursor-pointer group"
-                         >
-                            <div className="flex items-center justify-between mb-3">
-                               <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Growth</span>
-                               <div className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
-                                  <TrendingUp className="h-4 w-4 text-emerald-500 group-hover:text-blue-600 transition-colors" />
-                               </div>
-                            </div>
-                            <div className="flex items-center gap-2">
-                               <div className="text-2xl font-bold text-emerald-600">↑ Growing</div>
-                            </div>
-                            <div className="flex items-center gap-1 mt-1">
-                               <span className="text-xs font-medium text-emerald-600">+3.7%</span>
-                               <span className="text-xs text-gray-500">revenue YoY</span>
-                            </div>
-                         </div>
-                      </div>
+                              {/* Operating Expenses Card */}
+                              <div 
+                                 onClick={() => openTrendModal('controllable-expenses')}
+                                 className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow cursor-pointer group"
+                              >
+                                 <div className="flex items-center justify-between mb-3">
+                                    <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Op. Expenses</span>
+                                    <div className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
+                                       <CreditCard className="h-4 w-4 text-gray-400 group-hover:text-blue-600 transition-colors" />
+                                    </div>
+                                 </div>
+                                 <div className="text-2xl font-bold text-gray-900">$44,500</div>
+                                 <div className="flex items-center gap-1 mt-1">
+                                    <span className="text-xs font-medium text-amber-600">35.7%</span>
+                                    <span className="text-xs text-gray-500">of revenue</span>
+                                 </div>
+                              </div>
 
-                      {/* Second Row - Owner Only Cards */}
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                         {/* Cash Flow Card */}
-                         <div 
-                            onClick={() => openTrendModal('cash-flow')}
-                            className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow cursor-pointer group"
-                         >
-                            <div className="flex items-center justify-between mb-3">
-                               <div className="flex items-center gap-2">
-                                  <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Cash Flow</span>
-                               </div>
-                               <div className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
-                                  <Wallet className="h-4 w-4 text-gray-400 group-hover:text-blue-600 transition-colors" />
-                               </div>
-                            </div>
-                            <div className="flex items-center justify-between">
-                               <div>
-                                  <div className="text-xl font-bold text-gray-900">$48,200</div>
-                                  <div className="text-xs text-gray-500">Current balance</div>
-                               </div>
-                               <div className="text-right">
-                                  <div className="flex items-center gap-1 justify-end">
-                                     <TrendingUp className="h-3 w-3 text-emerald-600" />
-                                     <span className="text-sm font-medium text-emerald-600">+$8,450</span>
-                                  </div>
-                                  <div className="text-xs text-gray-500">Net change this period</div>
-                               </div>
-                            </div>
-                            <div className="mt-3 pt-3 border-t border-gray-100">
-                               <div className="flex items-center gap-2">
-                                  <div className="flex-1 bg-gray-100 rounded-full h-2">
-                                     <div className="bg-emerald-500 h-2 rounded-full" style={{ width: '75%' }} />
-                                  </div>
-                                  <span className="text-xs text-gray-600">2.4 mo coverage</span>
-                               </div>
-                            </div>
-                         </div>
+                              {/* Growth Card */}
+                              <div 
+                                 onClick={() => openTrendModal('net-sales')}
+                                 className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow cursor-pointer group"
+                              >
+                                 <div className="flex items-center justify-between mb-3">
+                                    <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Growth</span>
+                                    <div className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
+                                       <TrendingUp className="h-4 w-4 text-emerald-500 group-hover:text-blue-600 transition-colors" />
+                                    </div>
+                                 </div>
+                                 <div className="flex items-center gap-2">
+                                    <div className="text-2xl font-bold text-emerald-600">↑ Growing</div>
+                                 </div>
+                                 <div className="flex items-center gap-1 mt-1">
+                                    <span className="text-xs font-medium text-emerald-600">+3.7%</span>
+                                    <span className="text-xs text-gray-500">revenue YoY</span>
+                                 </div>
+                              </div>
+                           </div>
 
-                         {/* Spend Visibility Card */}
-                         <div 
-                            onClick={() => openTrendModal('labor')}
-                            className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow cursor-pointer group"
-                         >
-                            <div className="flex items-center justify-between mb-3">
-                               <div className="flex items-center gap-2">
-                                  <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Compensation Overview</span>
-                               </div>
-                               <div className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
-                                  <Users className="h-4 w-4 text-gray-400 group-hover:text-blue-600 transition-colors" />
-                               </div>
-                            </div>
-                            <div className="space-y-3">
-                               <div className="flex items-center justify-between">
-                                  <div className="flex items-center gap-2">
-                                     <div className="w-2 h-2 rounded-full bg-indigo-500" />
-                                     <span className="text-sm text-gray-700">Executive Spend</span>
-                                  </div>
-                                  <span className="text-sm font-semibold text-gray-900">$12,400</span>
-                               </div>
-                               <div className="flex items-center justify-between">
-                                  <div className="flex items-center gap-2">
-                                     <div className="w-2 h-2 rounded-full bg-purple-500" />
-                                     <span className="text-sm text-gray-700">Manager Spend</span>
-                                  </div>
-                                  <span className="text-sm font-semibold text-gray-900">$18,600</span>
-                               </div>
-                               <div className="pt-2 border-t border-gray-100 flex items-center justify-between">
-                                  <span className="text-xs text-gray-500">Total Management Compensation</span>
-                                  <span className="text-sm font-bold text-gray-900">$31,000</span>
-                               </div>
-                            </div>
-                         </div>
+                           {/* Second Row - Cash Flow & Compensation */}
+                           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                              {/* Cash Flow Card */}
+                              <div 
+                                 onClick={() => openTrendModal('cash-flow')}
+                                 className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow cursor-pointer group"
+                              >
+                                 <div className="flex items-center justify-between mb-3">
+                                    <div className="flex items-center gap-2">
+                                       <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Cash Flow</span>
+                                    </div>
+                                    <div className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
+                                       <Wallet className="h-4 w-4 text-gray-400 group-hover:text-blue-600 transition-colors" />
+                                    </div>
+                                 </div>
+                                 <div className="flex items-center justify-between">
+                                    <div>
+                                       <div className="text-xl font-bold text-gray-900">$48,200</div>
+                                       <div className="text-xs text-gray-500">Current balance</div>
+                                    </div>
+                                    <div className="text-right">
+                                       <div className="flex items-center gap-1 justify-end">
+                                          <TrendingUp className="h-3 w-3 text-emerald-600" />
+                                          <span className="text-sm font-medium text-emerald-600">+$8,450</span>
+                                       </div>
+                                       <div className="text-xs text-gray-500">Net change this period</div>
+                                    </div>
+                                 </div>
+                                 <div className="mt-3 pt-3 border-t border-gray-100">
+                                    <div className="flex items-center gap-2">
+                                       <div className="flex-1 bg-gray-100 rounded-full h-2">
+                                          <div className="bg-emerald-500 h-2 rounded-full" style={{ width: '75%' }} />
+                                       </div>
+                                       <span className="text-xs text-gray-600">2.4 mo coverage</span>
+                                    </div>
+                                 </div>
+                              </div>
+
+                              {/* Spend Visibility Card */}
+                              <div 
+                                 onClick={() => openTrendModal('labor')}
+                                 className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow cursor-pointer group"
+                              >
+                                 <div className="flex items-center justify-between mb-3">
+                                    <div className="flex items-center gap-2">
+                                       <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Compensation Overview</span>
+                                    </div>
+                                    <div className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
+                                       <Users className="h-4 w-4 text-gray-400 group-hover:text-blue-600 transition-colors" />
+                                    </div>
+                                 </div>
+                                 <div className="space-y-3">
+                                    <div className="flex items-center justify-between">
+                                       <div className="flex items-center gap-2">
+                                          <div className="w-2 h-2 rounded-full bg-indigo-500" />
+                                          <span className="text-sm text-gray-700">Executive Spend</span>
+                                       </div>
+                                       <span className="text-sm font-semibold text-gray-900">$12,400</span>
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                       <div className="flex items-center gap-2">
+                                          <div className="w-2 h-2 rounded-full bg-purple-500" />
+                                          <span className="text-sm text-gray-700">Manager Spend</span>
+                                       </div>
+                                       <span className="text-sm font-semibold text-gray-900">$18,600</span>
+                                    </div>
+                                    <div className="pt-2 border-t border-gray-100 flex items-center justify-between">
+                                       <span className="text-xs text-gray-500">Total Management Compensation</span>
+                                       <span className="text-sm font-bold text-gray-900">$31,000</span>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                        )}
+
                       </div>
                    </section>
                    )}

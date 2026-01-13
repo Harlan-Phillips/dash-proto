@@ -1,0 +1,229 @@
+Curated View — Financial Health Card with Nested Profitability Breakdown
+Title
+
+Curated View: Nest Income, Marketing, OpEx, Growth, and Cash Flow Under Financial Health Card
+
+Problem
+
+Curated view currently:
+
+Displays too many top-level cards at once
+
+Lacks a clear hierarchy
+
+Forces users to scan multiple financial dimensions simultaneously
+
+Makes it unclear where to focus first
+
+Even though the data is valuable, showing everything at once dilutes signal.
+
+Goal
+
+Create a single dominant “Financial Health” card that:
+
+Acts as the primary focus in Curated view
+
+Surfaces the most important financial insight
+
+Nests supporting financial dimensions (Income, Marketing, OpEx, Growth, Cash Flow)
+
+Expands on demand when the user wants deeper context
+
+This preserves all data while restoring clarity.
+
+Definition (Locked)
+
+Curated View shows one primary card by default: Financial Health
+
+All other financial cards:
+
+Are hidden by default
+
+Appear only when the user explicitly expands Profitability
+
+Can be collapsed back into Financial Health
+
+Core UX Behavior
+Default State (On Load)
+
+Curated view shows:
+
+✅ Financial Health (Primary Insight Card)
+
+❌ Income
+
+❌ Marketing
+
+❌ Operating Expenses
+
+❌ Growth
+
+❌ Cash Flow
+
+No other financial cards are visible.
+
+Financial Health Card (Primary)
+
+This card:
+
+Is visually dominant
+
+Summarizes overall performance
+
+Surfaces the role-based primary insight (red / exception-driven)
+
+Example headlines:
+
+“Profitability at risk due to elevated labor costs”
+
+“Prime cost exceeded target by 4.2%”
+
+“Margins improved despite flat sales”
+
+Profitability Toggle Interaction
+
+Within the Financial Health card, include a clear affordance:
+
+Label: “Profitability”
+
+Chevron / expand indicator
+
+On Click:
+
+Financial Health remains visible
+
+A nested section expands below it
+
+The following cards appear grouped together:
+
+Income
+
+Marketing
+
+Operating Expenses
+
+Growth
+
+Cash Flow
+
+These cards:
+
+Are visually subordinate
+
+Appear as a grouped segment
+
+Are clearly contextual to Financial Health
+
+Collapse Behavior
+
+Clicking Profitability again:
+
+Collapses the nested segment
+
+Hides Income / Marketing / OpEx / Growth / Cash Flow
+
+Returns Curated view to a single primary focus
+
+Visual Hierarchy Rules
+
+Financial Health = top-level, dominant
+
+Nested cards = secondary
+
+Nested cards must never visually compete with Financial Health
+
+Grouping must be visually obvious (container, indentation, background)
+
+Data Preservation Rule (Non-Negotiable)
+
+❗ No data may be removed.
+
+All existing data in:
+
+Income
+
+Marketing
+
+Operating Expenses
+
+Growth
+
+Cash Flow
+
+Must still be:
+
+Rendered
+
+Accurate
+
+Accessible via expansion
+
+This is restructuring, not reduction.
+
+Interaction Rules
+
+Expansion is inline, not modal
+
+No page navigation required
+
+State can be session-scoped (v1)
+
+Expanding does NOT change Detailed or Reports tabs
+
+Relationship to Primary Insight
+
+The Primary Insight Card lives inside Financial Health
+
+The insight explains why the nested profitability metrics matter
+
+Nested cards provide supporting evidence
+
+Non-Goals
+
+❌ No changes to metric definitions
+
+❌ No new calculations
+
+❌ No report generation
+
+❌ No chatbot changes
+
+❌ No Detailed view changes
+
+Acceptance Criteria
+
+ Only Financial Health card visible on load
+
+ Income, Marketing, OpEx, Growth, Cash Flow hidden by default
+
+ Clicking “Profitability” expands nested cards
+
+ Nested cards collapse when toggled again
+
+ Financial Health remains dominant at all times
+
+ No data is lost or altered
+
+QA Checklist
+
+Load Curated → only Financial Health visible
+
+Click Profitability → nested cards appear
+
+Collapse → nested cards hidden again
+
+Switch roles → Financial Health insight updates
+
+No visual duplication or clutter
+
+Why This Works
+
+Establishes a clear entry point
+
+Reduces cognitive load
+
+Preserves data richness
+
+Aligns with the mental model:
+
+“Start with health → drill into profitability if needed”
