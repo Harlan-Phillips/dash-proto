@@ -13041,10 +13041,10 @@ export default function PnlRelease() {
                    )}
 
                    {/* Financial Overview - Role-specific KPIs */}
+                   {selectedRole !== "gm" && (
                    <section>
                       <h2 className="text-lg font-serif font-bold text-gray-900 mb-6">
                          {selectedRole === "owner" ? "Financial Overview" : 
-                          selectedRole === "gm" ? "Operations Overview" : 
                           "Kitchen Performance"}
                       </h2>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -13055,15 +13055,6 @@ export default function PnlRelease() {
                                <GoalProgress label="Net Profit %" current={dashboardMetrics.kpis.netProfit.current} target={dashboardMetrics.kpis.netProfit.target} unit="%" onTrendClick={() => openTrendModal('net-income')} />
                                <GoalProgress label="COGS %" current={dashboardMetrics.kpis.cogs.current} target={dashboardMetrics.kpis.cogs.target} unit="%" inverted={true} onTrendClick={() => openTrendModal('cogs')} />
                                <GoalProgress label="Labor %" current={dashboardMetrics.kpis.labor.current} target={dashboardMetrics.kpis.labor.target} unit="%" inverted={true} onTrendClick={() => openTrendModal('labor')} />
-                            </>
-                         )}
-                         {/* GM sees sales, labor (FOH focus), and operations */}
-                         {selectedRole === "gm" && (
-                            <>
-                               <GoalProgress label="Total Sales" current={dashboardMetrics.kpis.sales.current} target={dashboardMetrics.kpis.sales.target} unit="k" onTrendClick={() => openTrendModal('net-sales')} />
-                               <GoalProgress label="FOH Labor %" current={dashboardMetrics.kpis.fohLabor.current} target={dashboardMetrics.kpis.fohLabor.target} unit="%" inverted={true} onTrendClick={() => openTrendModal('labor')} />
-                               <GoalProgress label="Ticket Time" current={dashboardMetrics.kpis.ticketTime.current} target={dashboardMetrics.kpis.ticketTime.target} unit="m" inverted={true} />
-                               <GoalProgress label="Throughput" current={dashboardMetrics.kpis.throughput.current} target={dashboardMetrics.kpis.throughput.target} unit="/hr" />
                             </>
                          )}
                          {/* Executive Chef sees COGS, BOH labor */}
@@ -13077,6 +13068,7 @@ export default function PnlRelease() {
                          )}
                       </div>
                    </section>
+                   )}
 
                    {/* ===== PROFITABILITY SECTION - Owner Only ===== */}
                    {selectedRole === "owner" && (
@@ -13779,6 +13771,19 @@ export default function PnlRelease() {
                                ))}
                             </div>
                          </div>
+                      </div>
+                   </section>
+                   )}
+
+                   {/* Operations Overview - GM Only (Moved to bottom) */}
+                   {selectedRole === "gm" && (
+                   <section>
+                      <h2 className="text-lg font-serif font-bold text-gray-900 mb-6">Operations Overview</h2>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                         <GoalProgress label="Total Sales" current={dashboardMetrics.kpis.sales.current} target={dashboardMetrics.kpis.sales.target} unit="k" onTrendClick={() => openTrendModal('net-sales')} />
+                         <GoalProgress label="FOH Labor %" current={dashboardMetrics.kpis.fohLabor.current} target={dashboardMetrics.kpis.fohLabor.target} unit="%" inverted={true} onTrendClick={() => openTrendModal('labor')} />
+                         <GoalProgress label="Ticket Time" current={dashboardMetrics.kpis.ticketTime.current} target={dashboardMetrics.kpis.ticketTime.target} unit="m" inverted={true} />
+                         <GoalProgress label="Throughput" current={dashboardMetrics.kpis.throughput.current} target={dashboardMetrics.kpis.throughput.target} unit="/hr" />
                       </div>
                    </section>
                    )}
