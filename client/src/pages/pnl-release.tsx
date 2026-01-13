@@ -3598,7 +3598,14 @@ function SidePanelAssistant({
                                  <>
                                     <CheckCircle2 className="h-4 w-4 text-emerald-500" />
                                     <span className="text-muted-foreground">Report Generated</span>
-                                    <button onClick={() => setIsReportPanelOpen(true)} className="ml-1 underline text-emerald-600 hover:text-emerald-700 font-medium">View</button>
+                                    <button onClick={() => {
+                                        const newReport: GeneratedReport = {
+                                            ...(msg.toolCall!.args?.type ? MOCK_REPORTS[msg.toolCall!.args.type as ReportType] : MOCK_REPORTS.profitability),
+                                            id: `report-${msg.id}`,
+                                            createdAt: new Date()
+                                        };
+                                        onOpenReport?.(newReport);
+                                    }} className="ml-1 underline text-emerald-600 hover:text-emerald-700 font-medium">View</button>
                                  </>
                               )}
                            </div>
