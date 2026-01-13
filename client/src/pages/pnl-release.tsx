@@ -13838,7 +13838,7 @@ export default function PnlRelease() {
                    )}
 
                    {/* Ticket Time Zone Bar Graph - Chef Only - Hidden for Simplified View */}
-                   {false && selectedRole === "chef" && (
+                   {selectedRole === "chef" && (
                    <section data-testid="ticket-time-zone-section">
                       <div className="flex items-center justify-between mb-4">
                          <h2 className="text-lg font-serif font-bold text-gray-900 flex items-center gap-2">
