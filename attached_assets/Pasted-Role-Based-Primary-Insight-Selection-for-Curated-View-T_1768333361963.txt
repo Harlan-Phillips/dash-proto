@@ -1,0 +1,204 @@
+Role-Based Primary Insight Selection for Curated View
+Title
+
+Curated View: Surface One Role-Based Primary Insight Using Red / Exception Signals
+
+Problem
+
+Curated view lacks a clear focal point and does not adapt to different user roles.
+Users need Curated to immediately tell them what needs attention, not just show data.
+
+Goal
+
+Make Curated view:
+
+Exception-driven (red, significantly high/low)
+
+Role-aware (Owner, GM, Chef, etc.)
+
+Focused on one primary issue that needs immediate attention
+
+While preserving all existing data
+
+Definition of Primary Insight (Locked)
+
+Primary Insight = the single most critical red / exception item that requires attention for the current user role
+
+“Red” includes:
+
+Over target
+
+Under target
+
+Significant MoM or WoW deviation
+
+Material financial impact
+
+Role-Based Focus (Authoritative)
+
+Curated must select one primary insight per role.
+
+Owner
+
+Focus on:
+
+Prime cost
+
+Net margin
+
+Sales vs target
+
+Overall profitability
+
+Examples:
+
+“Prime cost is 62% (goal: 58%), driven by labor”
+
+“Net margin declined 3.1% MoM”
+
+General Manager (GM)
+
+Focus on:
+
+Labor %
+
+Sales execution
+
+Throughput issues
+
+Staffing efficiency
+
+Examples:
+
+“Labor is 4.2% over target due to overtime”
+
+“Ticket times increased during peak hours”
+
+Chef / Kitchen Lead
+
+Focus on:
+
+Food COGS
+
+Waste
+
+Variance in food cost
+
+Prep inefficiencies
+
+Examples:
+
+“Food cost exceeded target by 3.8%”
+
+“High variance in dairy spend vs sales”
+
+(Extensible for future roles)
+
+Bar Manager → Beverage cost
+
+Ops Manager → Ticket time + labor correlation
+
+Primary Insight Selection Rules
+
+Identify all red / exception signals
+
+Filter by role relevance
+
+Rank by materiality:
+
+Dollar impact
+
+% deviation from target
+
+Select one highest-priority issue
+
+If no red signals exist:
+
+Show top positive win or “All metrics on target”
+
+Data Preservation Rule (Non-Negotiable)
+
+❗ No data may be removed from Curated view.
+
+Instead:
+
+Primary insight is visually dominant
+
+All other data remains visible as:
+
+Supporting context
+
+Secondary grouped metrics
+
+Visual Hierarchy Rules
+
+Primary insight:
+
+Largest visual weight
+
+Clear “needs attention” indicator
+
+Supporting metrics:
+
+Smaller
+
+Clearly subordinate
+
+Red / green used sparingly and meaningfully
+
+Context Requirement
+
+Primary insight must include:
+
+Metric
+
+Direction (↑ / ↓)
+
+Deviation from target or baseline
+
+Brief explanation (if available)
+
+Example:
+
+“Food cost is 3.8% over target, primarily driven by dairy spend”
+
+Non-Goals
+
+❌ No multiple primary insights
+
+❌ No removal of data
+
+❌ No deep analysis
+
+❌ No role switching UX changes
+
+❌ No report generation
+
+Acceptance Criteria
+
+ Exactly one primary insight per role
+
+ Insight is red / exception-based
+
+ Insight changes when role changes
+
+ All existing data remains visible
+
+ User can immediately tell what needs attention
+
+ Curated feels decisional, not exploratory
+
+QA Checklist
+
+Switch roles → primary insight changes
+
+Introduce red metric → becomes primary insight
+
+All metrics on target → show positive confirmation
+
+No metrics disappear from Curated
+
+Why This Matters
+
+This turns Curated from a dashboard into a decision engine.
+Different roles care about different problems — Curated should reflect that.

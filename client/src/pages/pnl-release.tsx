@@ -3212,7 +3212,8 @@ function SidePanelAssistant({
   onAddActionItem,
   onRemoveActionItem,
   showActionCart,
-  onToggleActionCart
+  onToggleActionCart,
+  onUpdateActionItems
 }: { 
   onClose: () => void; 
   triggerQuery?: string | null;
@@ -3223,7 +3224,9 @@ function SidePanelAssistant({
   onRemoveActionItem: (id: string) => void;
   showActionCart: boolean;
   onToggleActionCart: (show: boolean) => void;
+  onUpdateActionItems: (items: ActionItem[]) => void;
 }) {
+  const { toast } = useToast();
   const [messages, setMessages] = useState<FloatingMessage[]>([]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -3566,7 +3569,8 @@ function SidePanelAssistant({
                       <button 
                         onClick={() => {
                             // Mock "Do All" functionality
-                            setActionItems(prev => prev.map(item => ({...item, status: 'assigned', context: item.context || 'Bulk Assigned'})));
+                            const updatedItems = actionItems.map(item => ({...item, status: 'assigned' as const, context: item.context || 'Bulk Assigned'}));
+                            onUpdateActionItems(updatedItems);
                             toast({
                                 title: "Bulk Assignment",
                                 description: `All ${actionItems.length} items have been processed.`,
@@ -4147,6 +4151,143 @@ const PeriodNavigator = ({
 };
 
 // --- Main Page Component ---
+
+// --- Role-Based Primary Insight Logic ---
+
+interface PrimaryInsight {
+  id: string;
+  type: "critical" | "warning" | "positive";
+  metric: string;
+  value: string;
+  target: string;
+  variance: string;
+  direction: "up" | "down" | "flat";
+  message: string;
+  detail: string;
+}
+
+const getPrimaryInsightForRole = (role: RoleType, trends: MetricTrendData[]): PrimaryInsight | null => {
+  // Helper to find metric data
+  const getMetric = (id: string) => trends.find(t => t.id === id);
+  const getLastPoint = (metric: MetricTrendData) => metric.data[metric.data.length - 1];
+
+  // 1. Owner Focus: Prime Cost, Net Margin, Sales
+  if (role === "owner") {
+    const netIncome = getMetric("net-income");
+    if (netIncome) {
+      const last = getLastPoint(netIncome);
+      // Critical: Net Margin < Target significantly (> 10% variance)
+      if (last.variancePct <= -10) {
+        return {
+          id: "owner-margin-critical",
+          type: "critical",
+          metric: "Net Margin",
+          value: `${last.actual.toFixed(1)}%`,
+          target: `${last.target.toFixed(1)}%`,
+          variance: `${last.variancePct.toFixed(1)}%`,
+          direction: "down",
+          message: `Net margin is ${Math.abs(last.variancePct).toFixed(1)}% below target`,
+          detail: "Profitability has dropped significantly due to lower revenue volume and sustained fixed costs."
+        };
+      }
+    }
+
+    const primeCost = getMetric("prime-cost");
+    if (primeCost) {
+      const last = getLastPoint(primeCost);
+      // Critical: Prime Cost > Target (Inverse)
+      if (last.variancePct >= 5) {
+        return {
+          id: "owner-prime-critical",
+          type: "critical",
+          metric: "Prime Cost",
+          value: `${last.actual.toFixed(1)}%`,
+          target: `${last.target.toFixed(1)}%`,
+          variance: `+${last.variancePct.toFixed(1)}%`,
+          direction: "up",
+          message: `Prime cost is ${last.variancePct.toFixed(1)}% over target`,
+          detail: "Combined COGS and Labor costs are exceeding benchmarks, primarily driven by COGS inefficiencies."
+        };
+      }
+    }
+  }
+
+  // 2. GM Focus: Labor, Sales, Ops
+  if (role === "gm") {
+    const labor = getMetric("labor");
+    if (labor) {
+      const last = getLastPoint(labor);
+      // Critical: Labor > Target (Inverse)
+      if (last.variancePct >= 5) {
+        return {
+          id: "gm-labor-critical",
+          type: "critical",
+          metric: "Labor Cost",
+          value: `${last.actual.toFixed(1)}%`,
+          target: `${last.target.toFixed(1)}%`,
+          variance: `+${last.variancePct.toFixed(1)}%`,
+          direction: "up",
+          message: `Labor cost is ${last.variancePct.toFixed(1)}% over target`,
+          detail: "Front-of-house overtime has increased by 15% this period, impacting overall labor efficiency."
+        };
+      }
+    }
+
+    const sales = getMetric("net-sales");
+    if (sales) {
+      const last = getLastPoint(sales);
+      // Warning: Sales < Target
+      if (last.variancePct <= -5) {
+        return {
+          id: "gm-sales-warning",
+          type: "warning",
+          metric: "Net Sales",
+          value: `$${(last.actual / 1000).toFixed(1)}k`,
+          target: `$${(last.target / 1000).toFixed(1)}k`,
+          variance: `${last.variancePct.toFixed(1)}%`,
+          direction: "down",
+          message: `Sales are tracking ${Math.abs(last.variancePct).toFixed(1)}% behind target`,
+          detail: "Weekday lunch traffic is down 12%, contributing to the overall revenue shortfall."
+        };
+      }
+    }
+  }
+
+  // 3. Chef Focus: Food Cost, Waste
+  if (role === "chef") {
+    const cogs = getMetric("cogs");
+    if (cogs) {
+      const last = getLastPoint(cogs);
+      // Critical: COGS > Target (Inverse)
+      if (last.variancePct >= 5) {
+        return {
+          id: "chef-cogs-critical",
+          type: "critical",
+          metric: "Food Cost",
+          value: `${last.actual.toFixed(1)}%`,
+          target: `${last.target.toFixed(1)}%`,
+          variance: `+${last.variancePct.toFixed(1)}%`,
+          direction: "up",
+          message: `Food cost exceeded target by ${last.variancePct.toFixed(1)}%`,
+          detail: "High variance in dairy and protein spend suggests potential waste or portioning issues."
+        };
+      }
+    }
+  }
+
+  // Default Positive Fallback if no critical issues
+  return {
+    id: "all-good",
+    type: "positive",
+    metric: "Overall Health",
+    value: "On Track",
+    target: "-",
+    variance: "0%",
+    direction: "flat",
+    message: "Key metrics are tracking within acceptable ranges",
+    detail: "Great job! Your primary KPIs are stable. Look for opportunities to optimize further in the details below."
+  };
+};
 
 export default function PnlRelease() {
   const [location, setLocation] = useLocation();
@@ -12100,6 +12241,110 @@ export default function PnlRelease() {
                       </div>
                    </div>
 
+                   {/* Primary Insight Card (Role-Based) */}
+                   {(() => {
+                      const primaryInsight = getPrimaryInsightForRole(selectedRole, healthSnapshotTrendData);
+                      if (!primaryInsight) return null;
+
+                      return (
+                         <div className={cn(
+                            "rounded-xl p-6 mb-8 border-l-4 shadow-sm",
+                            primaryInsight.type === "critical" ? "bg-red-50 border-red-500" :
+                            primaryInsight.type === "warning" ? "bg-amber-50 border-amber-500" :
+                            "bg-emerald-50 border-emerald-500"
+                         )}>
+                            <div className="flex items-start justify-between">
+                               <div className="flex-1">
+                                  <div className="flex items-center gap-2 mb-2">
+                                     {primaryInsight.type === "critical" ? (
+                                        <AlertTriangle className="h-5 w-5 text-red-600" />
+                                     ) : primaryInsight.type === "warning" ? (
+                                        <AlertTriangle className="h-5 w-5 text-amber-600" />
+                                     ) : (
+                                        <CheckCircle2 className="h-5 w-5 text-emerald-600" />
+                                     )}
+                                     <span className={cn(
+                                        "text-xs font-bold uppercase tracking-wider",
+                                        primaryInsight.type === "critical" ? "text-red-700" :
+                                        primaryInsight.type === "warning" ? "text-amber-700" :
+                                        "text-emerald-700"
+                                     )}>
+                                        Primary Insight
+                                     </span>
+                                  </div>
+                                  
+                                  <h3 className="text-xl font-bold text-gray-900 mb-2">
+                                     {primaryInsight.message}
+                                  </h3>
+                                  
+                                  <p className="text-gray-700 mb-4 text-base leading-relaxed max-w-3xl">
+                                     {primaryInsight.detail}
+                                  </p>
+
+                                  <div className="flex items-center gap-8">
+                                     <div>
+                                        <span className="text-xs text-gray-500 uppercase tracking-wide block mb-0.5">Actual</span>
+                                        <span className={cn(
+                                           "text-lg font-bold",
+                                           primaryInsight.type === "critical" ? "text-red-700" :
+                                           primaryInsight.type === "warning" ? "text-amber-700" :
+                                           "text-emerald-700"
+                                        )}>{primaryInsight.value}</span>
+                                     </div>
+                                     <div>
+                                        <span className="text-xs text-gray-500 uppercase tracking-wide block mb-0.5">Target</span>
+                                        <span className="text-lg font-medium text-gray-700">{primaryInsight.target}</span>
+                                     </div>
+                                     <div>
+                                        <span className="text-xs text-gray-500 uppercase tracking-wide block mb-0.5">Variance</span>
+                                        <span className={cn(
+                                           "text-lg font-bold flex items-center gap-1",
+                                           primaryInsight.type === "critical" ? "text-red-600" :
+                                           primaryInsight.type === "warning" ? "text-amber-600" :
+                                           "text-emerald-600"
+                                        )}>
+                                           {primaryInsight.direction === "up" ? <ArrowUp className="h-4 w-4" /> : 
+                                            primaryInsight.direction === "down" ? <ArrowDown className="h-4 w-4" /> : null}
+                                           {primaryInsight.variance}
+                                        </span>
+                                     </div>
+                                  </div>
+                               </div>
+                               
+                               <div className="flex flex-col gap-2">
+                                  <button 
+                                     onClick={() => {
+                                        // Add to action cart
+                                        handleAddActionItem({
+                                           title: `Investigate ${primaryInsight.metric} Variance`,
+                                           source: 'pnl_insight',
+                                           metric: primaryInsight.metric,
+                                           context: primaryInsight.message
+                                        });
+                                     }}
+                                     className={cn(
+                                        "px-4 py-2 rounded-lg text-sm font-medium transition-colors border shadow-sm flex items-center gap-2",
+                                        primaryInsight.type === "critical" ? "bg-white text-red-700 border-red-200 hover:bg-red-50" :
+                                        primaryInsight.type === "warning" ? "bg-white text-amber-700 border-amber-200 hover:bg-amber-50" :
+                                        "bg-white text-emerald-700 border-emerald-200 hover:bg-emerald-50"
+                                     )}
+                                  >
+                                     <List className="h-4 w-4" />
+                                     Add to Actions
+                                  </button>
+                                  <button
+                                     onClick={() => setFloatingChatTrigger(`Analyze ${primaryInsight.metric} variance for me`)} 
+                                     className="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 flex items-center gap-2 shadow-sm"
+                                  >
+                                     <Sparkles className="h-4 w-4 text-purple-600" />
+                                     Ask AI
+                                  </button>
+                               </div>
+                            </div>
+                         </div>
+                      );
+                   })()}
+
                    {/* Executive Summary Cards - Owner Only */}
                    {selectedRole === "owner" && (
                    <section data-testid="executive-summary-section-main">
@@ -14876,6 +15121,7 @@ export default function PnlRelease() {
                   onRemoveActionItem={handleRemoveActionItem}
                   showActionCart={showActionCart}
                   onToggleActionCart={setShowActionCart}
+                  onUpdateActionItems={setActionItems}
                 />
               </motion.div>
             )}
