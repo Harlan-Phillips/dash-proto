@@ -121,6 +121,7 @@ import { Progress } from "@/components/ui/progress";
 import { format, addMonths, subMonths, addWeeks, subWeeks, addDays, subDays, startOfWeek, endOfWeek, isSameMonth, isSameWeek, isSameDay } from "date-fns";
 import { ReportPanel } from "@/components/reports/report-panel";
 import { MOCK_REPORTS, ReportData, ReportType } from "@/components/reports/mock-data";
+import { generateComparisonReport } from "@/components/reports/comparison-generator";
 import { Wand } from "@/components/ui/wand";
 
 // --- Mock Data ---
@@ -3210,6 +3211,46 @@ function SidePanelAssistant({
   const [isReportPanelOpen, setIsReportPanelOpen] = useState(false);
   const [currentReport, setCurrentReport] = useState<ReportData | null>(null);
 
+  // Load Mock Files (Simulated)
+  const loadMockComparison = async () => {
+    try {
+        const file1Response = await fetch('/attached_assets/2025_09_SPOT_SM_PL_1768325871185.json');
+        const file2Response = await fetch('/attached_assets/2025_10_SPOT_SM_PL_(1)_1768325550699.json');
+        
+        // In a real app, these would be real fetches. 
+        // For this mockup, we'll assume the files are available via import or we construct a dummy fetch if they aren't served statically.
+        // However, since we can't easily fetch from attached_assets in the browser without a server route, 
+        // we might need to inline a small subset or rely on the "generateComparisonReport" logic to handle dummy data if fetch fails.
+        // Let's try to simulate the data structure directly if fetch fails, or rely on the generator to be robust.
+
+        // Fallback Mock Data if fetch fails (likely in this environment)
+        const mockFile1 = {
+             accounts: [
+                 { account: "400-000 Food Sales", monthly_data: { "September 2025": { current: 103461.46 } } },
+                 { account: "400-200 Beverage Sales", monthly_data: { "September 2025": { current: 17698.00 } } },
+                 { account: "Total Income", monthly_data: { "September 2025": { current: 133042.50 } } }
+             ]
+        };
+        const mockFile2 = {
+            sections: {
+                "Income": {
+                    "400-000 Food Sales": { "Oct 2025": { current: 113360.78 } },
+                    "400-200 Beverage Sales": { "Oct 2025": { current: 19998.35 } },
+                    "Total Income": { "Oct 2025": { current: 142500.00 } }
+                }
+            }
+        };
+
+        const report = await generateComparisonReport(mockFile1, mockFile2);
+        setCurrentReport(report);
+        setIsReportPanelOpen(true);
+        return true;
+    } catch (e) {
+        console.error("Failed to generate comparison", e);
+        return false;
+    }
+  };
+
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -3285,6 +3326,32 @@ function SidePanelAssistant({
         return;
     }
 
+    // Check for Comparison Intent
+    if (lowerText.includes("compare") && lowerText.includes("september") && lowerText.includes("october")) {
+         const initialResponse: FloatingMessage = {
+            id: (Date.now() + 1).toString(),
+            role: "assistant",
+            content: "I can compare the September and October P&L files for you. I found both files in your history."
+        };
+        setMessages(prev => [...prev, initialResponse]);
+        
+        await new Promise(r => setTimeout(r, 600));
+
+        const offerMsg: FloatingMessage = {
+            id: (Date.now() + 2).toString(),
+            role: "assistant",
+            content: "Would you like a side-by-side comparison report?",
+            toolCall: {
+                state: "pending_confirmation",
+                toolName: "generate_comparison",
+                args: { type: "comparison", file1: "Sep 2025", file2: "Oct 2025" }
+            }
+        };
+        setMessages(prev => [...prev, offerMsg]);
+        setIsTyping(false);
+        return;
+    }
+
     let content = "";
     let artifact = false;
     let report = undefined;
@@ -3342,6 +3409,27 @@ function SidePanelAssistant({
         setIsReportPanelOpen(true);
         setIsTyping(false);
         return;
+    }
+
+    // Handle Comparison Generation
+    if (toolName === "generate_comparison") {
+         const success = await loadMockComparison();
+         
+         if (success) {
+             setMessages(prev => prev.map(m => 
+              m.id === msgId 
+                ? { ...m, toolCall: { ...m.toolCall!, state: "completed", result: "Comparison report generated successfully." } }
+                : m
+            ));
+         } else {
+             setMessages(prev => prev.map(m => 
+              m.id === msgId 
+                ? { ...m, toolCall: { ...m.toolCall!, state: "denied", denialReason: "Failed to load files." } }
+                : m
+            ));
+         }
+         setIsTyping(false);
+         return;
     }
   };
 
@@ -3448,10 +3536,16 @@ function SidePanelAssistant({
                               
                               <div className="space-y-3 mb-4">
                                  <div className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Action</div>
-                                 <div className="text-sm font-medium">{msg.toolCall.toolName === "generate_report" ? "Generate Report" : msg.toolCall.toolName}</div>
+                                 <div className="text-sm font-medium">
+                                     {msg.toolCall.toolName === "generate_report" ? "Generate Report" : 
+                                      msg.toolCall.toolName === "generate_comparison" ? "Compare Files" : msg.toolCall.toolName}
+                                 </div>
 
                                  <div className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Type</div>
-                                 <div className="text-sm font-medium capitalize">{msg.toolCall.args?.type || "Standard"}</div>
+                                 <div className="text-sm font-medium capitalize">
+                                     {msg.toolCall.args?.type || "Standard"}
+                                     {msg.toolCall.args?.file1 && <div className="text-xs text-gray-500 mt-1">Files: {msg.toolCall.args.file1} vs {msg.toolCall.args.file2}</div>}
+                                 </div>
                               </div>
 
                               <div className="flex gap-2 pt-2 border-t border-gray-100">
@@ -3465,7 +3559,7 @@ function SidePanelAssistant({
                                     onClick={() => handleConfirmTool(msg.id, msg.toolCall!.toolName, msg.toolCall!.args)}
                                     className="flex-1 py-2 text-xs font-medium bg-black text-white rounded hover:bg-gray-800 transition-colors shadow-sm"
                                   >
-                                    Generate Report
+                                    {msg.toolCall.toolName === 'generate_comparison' ? "Generate Comparison" : "Generate Report"}
                                   </button>
                               </div>
                             </div>

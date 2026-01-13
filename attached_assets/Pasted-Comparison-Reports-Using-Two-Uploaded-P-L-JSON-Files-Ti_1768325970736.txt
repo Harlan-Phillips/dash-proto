@@ -1,0 +1,236 @@
+Comparison Reports Using Two Uploaded P&L JSON Files
+Title
+
+Generate Comparison Reports Using Two Uploaded P&L JSON Files (Sep 2025 vs Oct 2025)
+
+Context
+
+Two P&L JSON files have been uploaded and should be used as the sole comparison sources for AI-generated reports:
+
+File A (Baseline): September 2025 P&L
+
+
+2025_09_SPOT_SM_PL
+
+File B (Comparison): October 2025 P&L (includes Oct + cumulative totals)
+
+
+2025_10_SPOT_SM_PL (1)
+
+The chatbot must read both files, normalize their schemas, and generate a side-panel comparison report when the user confirms they want a report.
+
+Goal
+
+Enable the report engine to:
+
+Load both JSON files
+
+Extract September 2025 vs October 2025
+
+Align accounts across different JSON shapes
+
+Compute deltas, % changes, and margin impact
+
+Generate an exportable comparison report
+
+No live database calls.
+
+Source File Characteristics (Important)
+File A – September P&L
+
+Structure:
+
+accounts[]
+
+monthly_data["September 2025"]
+
+Values include:
+
+current
+
+percent_of_income
+
+Represents monthly snapshot only
+
+File B – October P&L
+
+Structure:
+
+sections → Income / COGS / Expenses
+
+Each account contains:
+
+"Sep 2025"
+
+"Oct 2025"
+
+"Total"
+
+Uses:
+
+current
+
+percent
+
+Represents rolling multi-month P&L
+
+Normalization Rules (Critical)
+Account Matching
+
+Match accounts by:
+
+Account number prefix (e.g. 400-000)
+
+Fallback: exact account name string
+
+Ignore hierarchy differences (nested vs flat)
+
+Period Extraction
+
+From File A:
+
+Use monthly_data["September 2025"].current
+
+From File B:
+
+Use "Oct 2025".current
+
+Do not compare totals or YTD values
+
+Missing Data Handling
+
+If an account exists in one file but not the other:
+
+Treat missing value as 0
+
+Flag in report commentary
+
+Comparison Calculations
+
+For each aligned account:
+
+{
+  "account": "400-000 Food Sales",
+  "sep_2025": 103461.46,
+  "oct_2025": 113360.78,
+  "delta": 9899.32,
+  "delta_pct": 9.57,
+  "direction": "up"
+}
+
+Report Output (Comparison Mode)
+1. Header
+
+Title: “September vs October 2025 Profitability Report”
+
+Company + Location
+
+Basis (Accrual)
+
+2. Executive Summary (AI)
+
+3–5 bullets
+
+Ranked by financial impact
+
+Example:
+
+“Revenue increased 9.6% MoM, driven primarily by food sales”
+
+“Delivery sales mix shifted upward while discounts declined”
+
+3. Comparison Tables
+
+Income
+| Account | Sep | Oct | Δ | Δ% |
+
+COGS
+| Account | Sep | Oct | Δ | Δ% |
+
+Net Impact
+
+Gross profit delta
+
+Margin change (pp)
+
+4. Commentary Rules
+
+Commentary must:
+
+Reference specific dollar changes
+
+Tie % of income shifts to revenue movement
+
+Explicitly note data gaps or structure mismatches
+
+No speculation beyond file contents.
+
+Chatbot Integration Flow
+
+User asks:
+
+“Compare September vs October”
+
+“Why did profitability change?”
+
+Chatbot gives short answer
+
+Chatbot prompts:
+
+“Would you like a detailed comparison report?”
+
+On confirm:
+
+Load both JSON files
+
+Generate comparison report UI
+
+Export Requirements
+
+Report must be exportable as:
+
+PDF
+
+CSV (comparison tables only)
+
+Markdown
+
+Exports must reflect exact report contents, not regenerated text.
+
+Acceptance Criteria
+
+ Both JSON files are loaded successfully
+
+ September and October values extracted correctly
+
+ Accounts normalized despite schema differences
+
+ Accurate deltas and % changes
+
+ Commentary references computed data
+
+ Missing accounts flagged
+
+ No DB calls
+
+ Export matches UI
+
+Non-Goals (v1)
+
+No automatic file selection
+
+No YTD vs month comparison
+
+No multi-location rollups
+
+No more than two files
+
+Follow-Ups (Optional)
+
+Canonical P&L comparison schema
+
+Multi-month trend reports
+
+Saved comparison reports
+
+Bonus / KPI overlays
