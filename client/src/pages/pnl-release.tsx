@@ -878,38 +878,35 @@ const hierarchicalPnlData: PnLLineItem[] = [
           { id: 'marketing-pr', name: 'Marketing & PR', current: 1200, prior: 989.25, type: 'expense' },
         ]
       },
-      { id: 'general-admin', name: 'General & Administrative', current: 5000, prior: 3870.86, type: 'expense' },
-    ]
-  }
-];              { id: 'general-liability', name: 'General Liability Insurance', current: 900, prior: 900, type: 'expense' },
-              { id: 'workers-comp', name: 'Workers Comp', current: 800, prior: 800, type: 'expense' },
-            ]
-          },
-          { id: 'licenses-permits', name: 'Licenses & Permits', current: 125.82, prior: 145.35, type: 'expense',
-            children: [
-              { id: 'health-permit', name: 'Health Permit', current: 125.82, prior: 145.35, type: 'expense' },
-              { id: 'liquor-license', name: 'Liquor License Tax', current: 0, prior: 0, type: 'expense' },
-            ]
-          },
-          { id: 'professional-fees', name: 'Professional Fees', current: 379, prior: 359, type: 'expense',
-            children: [
-              { id: 'accounting', name: 'Accounting', current: 379, prior: 359, type: 'expense' },
-            ]
-          },
-          { id: 'research-development', name: 'Research & Development', current: 0, prior: 0, type: 'expense' },
+      { id: 'general-admin', name: 'General & Administrative', current: 5000, prior: 3870.86, type: 'expense',
+        children: [
+          { id: 'general-liability', name: 'General Liability Insurance', current: 900, prior: 900, type: 'expense' },
+          { id: 'workers-comp', name: 'Workers Comp', current: 800, prior: 800, type: 'expense' },
         ]
       },
-      { id: 'occupancy', name: 'Occupancy', current: 17053.5, prior: 19305.08, type: 'expense',
+      { id: 'licenses-permits', name: 'Licenses & Permits', current: 125.82, prior: 145.35, type: 'expense',
         children: [
-          { id: 'real-estate-taxes', name: 'Real Estate Taxes', current: 1857.65, prior: 3836.5, type: 'expense' },
-          { id: 'rent', name: 'Rent', current: 12000, prior: 12400, type: 'expense' },
-          { id: 'utilities', name: 'Utilities', current: 3195.85, prior: 3068.58, type: 'expense',
-            children: [
-              { id: 'electricity', name: 'Electricity', current: 2195.85, prior: 2068.58, type: 'expense' },
-              { id: 'telephone-internet', name: 'Telephone & Internet', current: 500, prior: 500, type: 'expense' },
-              { id: 'water-sewer', name: 'Water/Sewer', current: 500, prior: 500, type: 'expense' },
-            ]
-          },
+          { id: 'health-permit', name: 'Health Permit', current: 125.82, prior: 145.35, type: 'expense' },
+          { id: 'liquor-license', name: 'Liquor License Tax', current: 0, prior: 0, type: 'expense' },
+        ]
+      },
+      { id: 'professional-fees', name: 'Professional Fees', current: 379, prior: 359, type: 'expense',
+        children: [
+          { id: 'accounting', name: 'Accounting', current: 379, prior: 359, type: 'expense' },
+        ]
+      },
+      { id: 'research-development', name: 'Research & Development', current: 0, prior: 0, type: 'expense' },
+    ]
+  },
+  { id: 'occupancy', name: 'Occupancy', current: 17053.5, prior: 19305.08, type: 'expense',
+    children: [
+      { id: 'real-estate-taxes', name: 'Real Estate Taxes', current: 1857.65, prior: 3836.5, type: 'expense' },
+      { id: 'rent', name: 'Rent', current: 12000, prior: 12400, type: 'expense' },
+      { id: 'utilities', name: 'Utilities', current: 3195.85, prior: 3068.58, type: 'expense',
+        children: [
+          { id: 'electricity', name: 'Electricity', current: 2195.85, prior: 2068.58, type: 'expense' },
+          { id: 'telephone-internet', name: 'Telephone & Internet', current: 500, prior: 500, type: 'expense' },
+          { id: 'water-sewer', name: 'Water/Sewer', current: 500, prior: 500, type: 'expense' },
         ]
       },
     ]
@@ -917,8 +914,8 @@ const hierarchicalPnlData: PnLLineItem[] = [
   {
     id: 'net-income',
     name: 'Net Operating Income',
-    current: 17722.37,
-    prior: 28966.35,
+    current: 5115.55,
+    prior: 19076.17,
     type: 'subtotal',
   }
 ];
