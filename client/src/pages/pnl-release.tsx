@@ -5597,7 +5597,10 @@ export default function PnlRelease() {
                           {/* Summary Cards Grid */}
                           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                              {/* Income Card */}
-                             <div className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition-shadow">
+                             <button 
+                                onClick={() => handleInsightClick("Analyze my Income performance. Current: $124,500 (+3.7% vs prior). What drove this growth?")}
+                                className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition-shadow w-full text-left group"
+                             >
                                 <div className="flex items-center justify-between mb-4">
                                    <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">INCOME</span>
                                    <DollarSign className="h-4 w-4 text-gray-300" />
@@ -5608,10 +5611,13 @@ export default function PnlRelease() {
                                    <span className="text-xs font-semibold text-emerald-600">+3.7%</span>
                                    <span className="text-xs text-gray-400 font-medium">vs prior</span>
                                 </div>
-                             </div>
+                             </button>
 
                              {/* Marketing Spend Card */}
-                             <div className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition-shadow">
+                             <button 
+                                onClick={() => handleInsightClick("Review my Marketing Spend. Current: $3,200 (2.6% of revenue). Is this within budget and effective?")}
+                                className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition-shadow w-full text-left group"
+                             >
                                 <div className="flex items-center justify-between mb-4">
                                    <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">MARKETING</span>
                                    <Target className="h-4 w-4 text-gray-300" />
@@ -5621,10 +5627,13 @@ export default function PnlRelease() {
                                    <span className="text-xs font-semibold text-gray-600">2.6%</span>
                                    <span className="text-xs text-gray-400 font-medium">of revenue</span>
                                 </div>
-                             </div>
+                             </button>
 
                              {/* Operating Expenses Card */}
-                             <div className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition-shadow">
+                             <button 
+                                onClick={() => handleInsightClick("Analyze my Operating Expenses. Current: $44,500 (35.7% of revenue). Identify areas for cost reduction.")}
+                                className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition-shadow w-full text-left group"
+                             >
                                 <div className="flex items-center justify-between mb-4">
                                    <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">OP. EXPENSES</span>
                                    <CreditCard className="h-4 w-4 text-gray-300" />
@@ -5634,10 +5643,13 @@ export default function PnlRelease() {
                                    <span className="text-xs font-semibold text-amber-500">35.7%</span>
                                    <span className="text-xs text-gray-400 font-medium">of revenue</span>
                                 </div>
-                             </div>
+                             </button>
 
                              {/* Growth Card */}
-                             <div className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition-shadow">
+                             <button 
+                                onClick={() => handleInsightClick("Provide a Growth Analysis. Revenue up 3.7% YoY. What are the key drivers?")}
+                                className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition-shadow w-full text-left group"
+                             >
                                 <div className="flex items-center justify-between mb-4">
                                    <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">GROWTH</span>
                                    <TrendingUp className="h-4 w-4 text-emerald-500" />
@@ -5649,13 +5661,16 @@ export default function PnlRelease() {
                                    <span className="text-xs font-semibold text-emerald-600">+3.7%</span>
                                    <span className="text-xs text-gray-400 font-medium">revenue YoY</span>
                                 </div>
-                             </div>
+                             </button>
                           </div>
 
                           {/* Second Row - Owner Only Cards */}
                           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                              {/* Cash Flow Card */}
-                             <div className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition-shadow">
+                             <button 
+                                onClick={() => handleInsightClick("Analyze my Cash Flow. Balance: $48,200 (+$8,450). Is my 2.4 month coverage sufficient?")}
+                                className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition-shadow w-full text-left group"
+                             >
                                 <div className="flex items-center justify-between mb-6">
                                    <div className="flex items-center gap-2">
                                       <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">CASH FLOW</span>
@@ -5684,10 +5699,13 @@ export default function PnlRelease() {
                                       <span className="text-xs font-medium text-gray-500 whitespace-nowrap">2.4 mo coverage</span>
                                    </div>
                                 </div>
-                             </div>
+                             </button>
 
                              {/* Spend Visibility Card */}
-                             <div className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition-shadow">
+                             <button 
+                                onClick={() => handleInsightClick("Review Management Compensation. Total: $31,000. Executive: $12,400, Manager: $18,600. How does this compare to benchmarks?")}
+                                className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition-shadow w-full text-left group"
+                             >
                                 <div className="flex items-center justify-between mb-6">
                                    <div className="flex items-center gap-2">
                                       <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">COMPENSATION OVERVIEW</span>
@@ -5715,7 +5733,7 @@ export default function PnlRelease() {
                                       <span className="text-lg font-bold text-gray-900">$31,000</span>
                                    </div>
                                 </div>
-                             </div>
+                             </button>
                           </div>
                        </section>
                        )}
