@@ -10504,73 +10504,245 @@ export default function PnlRelease() {
                                </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100">
-                               <tr className="hover:bg-gray-50 font-semibold bg-gray-50/30">
-                                  <td className="px-6 py-4 text-gray-900">Total COGS</td>
-                                  <td className="px-6 py-4 text-right">${cogsActuals['total-cogs'].toLocaleString()}</td>
-                                  <td className="px-6 py-4 text-right text-gray-600">${getCogsBudgetForCategory('total-cogs').toLocaleString()}</td>
-                                  <td className={cn("px-6 py-4 text-right font-medium", getCogsVariance('total-cogs').color)}>
-                                     {getCogsVariance('total-cogs').formattedDollar}
-                                  </td>
-                                  <td className="px-6 py-4 text-right text-gray-700">
-                                     {((cogsActuals['total-cogs'] / PERIOD_REVENUE) * 100).toFixed(1)}%
-                                     <span className={cn("ml-1 text-xs", getCogsVariance('total-cogs').color)}>
-                                        ({getCogsVariance('total-cogs').formattedPct})
-                                     </span>
-                                  </td>
-                                  <td className="px-6 py-4 text-right">
-                                     <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium", getCogsVariance('total-cogs').statusColor)}>
-                                        {getCogsVariance('total-cogs').statusText}
-                                     </span>
-                                  </td>
-                               </tr>
-                               <tr className="hover:bg-gray-50">
-                                  <td className="px-6 py-4 text-gray-700 pl-10">Food Cost</td>
-                                  <td className="px-6 py-4 text-right">${cogsActuals['food-cost'].toLocaleString()}</td>
-                                  <td className="px-6 py-4 text-right text-gray-500">${getCogsBudgetForCategory('food-cost').toLocaleString()}</td>
-                                  <td className={cn("px-6 py-4 text-right font-medium", getCogsVariance('food-cost').color)}>
-                                     {getCogsVariance('food-cost').formattedDollar}
-                                  </td>
-                                  <td className="px-6 py-4 text-right text-gray-600">
-                                     {((cogsActuals['food-cost'] / PERIOD_REVENUE) * 100).toFixed(1)}%
-                                  </td>
-                                  <td className="px-6 py-4 text-right">
-                                     <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium", getCogsVariance('food-cost').statusColor)}>
-                                        {getCogsVariance('food-cost').statusText}
-                                     </span>
-                                  </td>
-                               </tr>
-                               <tr className="hover:bg-gray-50">
-                                  <td className="px-6 py-4 text-gray-700 pl-10">Beverage Cost</td>
-                                  <td className="px-6 py-4 text-right">${cogsActuals['beverage-cost'].toLocaleString()}</td>
-                                  <td className="px-6 py-4 text-right text-gray-500">${getCogsBudgetForCategory('beverage-cost').toLocaleString()}</td>
-                                  <td className={cn("px-6 py-4 text-right font-medium", getCogsVariance('beverage-cost').color)}>
-                                     {getCogsVariance('beverage-cost').formattedDollar}
-                                  </td>
-                                  <td className="px-6 py-4 text-right text-gray-600">
-                                     {((cogsActuals['beverage-cost'] / PERIOD_REVENUE) * 100).toFixed(1)}%
-                                  </td>
-                                  <td className="px-6 py-4 text-right">
-                                     <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium", getCogsVariance('beverage-cost').statusColor)}>
-                                        {getCogsVariance('beverage-cost').statusText}
-                                     </span>
-                                  </td>
-                               </tr>
-                               <tr className="hover:bg-gray-50">
-                                  <td className="px-6 py-4 text-gray-700 pl-10">Paper & Supplies</td>
-                                  <td className="px-6 py-4 text-right">${cogsActuals['paper-supplies'].toLocaleString()}</td>
-                                  <td className="px-6 py-4 text-right text-gray-500">${getCogsBudgetForCategory('paper-supplies').toLocaleString()}</td>
-                                  <td className={cn("px-6 py-4 text-right font-medium", getCogsVariance('paper-supplies').color)}>
-                                     {getCogsVariance('paper-supplies').formattedDollar}
-                                  </td>
-                                  <td className="px-6 py-4 text-right text-gray-600">
-                                     {((cogsActuals['paper-supplies'] / PERIOD_REVENUE) * 100).toFixed(1)}%
-                                  </td>
-                                  <td className="px-6 py-4 text-right">
-                                     <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium", getCogsVariance('paper-supplies').statusColor)}>
-                                        {getCogsVariance('paper-supplies').statusText}
-                                     </span>
-                                  </td>
-                               </tr>
+                              <Popover>
+                                 <PopoverTrigger asChild>
+                                    <tr className="hover:bg-amber-50/40 cursor-pointer font-semibold bg-gray-50/30">
+                                       <td className="px-6 py-4 text-gray-900 flex items-center gap-2">
+                                          Total COGS
+                                          <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Elaborated</span>
+                                       </td>
+                                       <td className="px-6 py-4 text-right">${cogsActuals['total-cogs'].toLocaleString()}</td>
+                                       <td className="px-6 py-4 text-right text-gray-600">${getCogsBudgetForCategory('total-cogs').toLocaleString()}</td>
+                                       <td className={cn("px-6 py-4 text-right font-medium", getCogsVariance('total-cogs').color)}>
+                                          {getCogsVariance('total-cogs').formattedDollar}
+                                       </td>
+                                       <td className="px-6 py-4 text-right text-gray-700">
+                                          {((cogsActuals['total-cogs'] / PERIOD_REVENUE) * 100).toFixed(1)}%
+                                          <span className={cn("ml-1 text-xs", getCogsVariance('total-cogs').color)}>
+                                             ({getCogsVariance('total-cogs').formattedPct})
+                                          </span>
+                                       </td>
+                                       <td className="px-6 py-4 text-right">
+                                          <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium", getCogsVariance('total-cogs').statusColor)}>
+                                             {getCogsVariance('total-cogs').statusText}
+                                          </span>
+                                       </td>
+                                    </tr>
+                                 </PopoverTrigger>
+                                 <PopoverContent className="w-[380px] p-0" align="start">
+                                    <div className="p-4 border-b border-gray-100">
+                                       <div className="flex items-start gap-3">
+                                          <div className="p-2 bg-emerald-100 rounded-lg"><Sparkles className="h-4 w-4 text-emerald-600" /></div>
+                                          <div>
+                                             <p className="font-medium text-gray-900 mb-1">Total COGS Analysis</p>
+                                             <p className="text-sm text-gray-600">Overall COGS is under budget due to strategic bulk purchasing in early January.</p>
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <div className="p-4">
+                                       <div className="h-36">
+                                          <ResponsiveContainer width="100%" height="100%">
+                                             <BarChart data={[
+                                                { name: 'Jul', actual: 54000, budget: 56000 },
+                                                { name: 'Aug', actual: 55200, budget: 56000 },
+                                                { name: 'Sep', actual: 55670, budget: 56000 },
+                                             ]} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                                                <XAxis dataKey="name" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+                                                <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${(v/1000).toFixed(0)}k`} />
+                                                <Tooltip formatter={(v: number) => `$${v.toLocaleString()}`} contentStyle={{ fontSize: 12 }} />
+                                                <Bar dataKey="actual" fill="#10b981" name="Actual" radius={[4, 4, 0, 0]} />
+                                                <Bar dataKey="budget" fill="#d1d5db" name="Budget" radius={[4, 4, 0, 0]} />
+                                             </BarChart>
+                                          </ResponsiveContainer>
+                                       </div>
+                                       <div className="mt-3 pt-3 border-t border-gray-100">
+                                          <p className="text-xs text-gray-500 mb-2">Ask follow-up questions:</p>
+                                          <div className="flex flex-wrap gap-1.5">
+                                             <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Vendor price trends</button>
+                                             <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Inventory turnover rate</button>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </PopoverContent>
+                              </Popover>
+                              <Popover>
+                                 <PopoverTrigger asChild>
+                                    <tr className="hover:bg-amber-50/40 cursor-pointer">
+                                       <td className="px-6 py-4 text-gray-700 pl-10 flex items-center gap-2">
+                                          Food Cost
+                                          <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Elaborated</span>
+                                       </td>
+                                       <td className="px-6 py-4 text-right">${cogsActuals['food-cost'].toLocaleString()}</td>
+                                       <td className="px-6 py-4 text-right text-gray-500">${getCogsBudgetForCategory('food-cost').toLocaleString()}</td>
+                                       <td className={cn("px-6 py-4 text-right font-medium", getCogsVariance('food-cost').color)}>
+                                          {getCogsVariance('food-cost').formattedDollar}
+                                       </td>
+                                       <td className="px-6 py-4 text-right text-gray-600">
+                                          {((cogsActuals['food-cost'] / PERIOD_REVENUE) * 100).toFixed(1)}%
+                                       </td>
+                                       <td className="px-6 py-4 text-right">
+                                          <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium", getCogsVariance('food-cost').statusColor)}>
+                                             {getCogsVariance('food-cost').statusText}
+                                          </span>
+                                       </td>
+                                    </tr>
+                                 </PopoverTrigger>
+                                 <PopoverContent className="w-[380px] p-0" align="start">
+                                    <div className="p-4 border-b border-gray-100">
+                                       <div className="flex items-start gap-3">
+                                          <div className="p-2 bg-emerald-100 rounded-lg"><Sparkles className="h-4 w-4 text-emerald-600" /></div>
+                                          <div>
+                                             <p className="font-medium text-gray-900 mb-1">Food Cost Analysis</p>
+                                             <p className="text-sm text-gray-600">Meat prices stabilized, contributing to better margins this month.</p>
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <div className="p-4">
+                                       <div className="h-36">
+                                          <ResponsiveContainer width="100%" height="100%">
+                                             <BarChart data={[
+                                                { name: 'Jul', actual: 38000, budget: 40000 },
+                                                { name: 'Aug', actual: 39500, budget: 40000 },
+                                                { name: 'Sep', actual: 38235, budget: 40000 },
+                                             ]} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                                                <XAxis dataKey="name" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+                                                <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${(v/1000).toFixed(0)}k`} />
+                                                <Tooltip formatter={(v: number) => `$${v.toLocaleString()}`} contentStyle={{ fontSize: 12 }} />
+                                                <Bar dataKey="actual" fill="#10b981" name="Actual" radius={[4, 4, 0, 0]} />
+                                                <Bar dataKey="budget" fill="#d1d5db" name="Budget" radius={[4, 4, 0, 0]} />
+                                             </BarChart>
+                                          </ResponsiveContainer>
+                                       </div>
+                                       <div className="mt-3 pt-3 border-t border-gray-100">
+                                          <p className="text-xs text-gray-500 mb-2">Ask follow-up questions:</p>
+                                          <div className="flex flex-wrap gap-1.5">
+                                             <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Beef price trend</button>
+                                             <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Waste percentage</button>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </PopoverContent>
+                              </Popover>
+                              <Popover>
+                                 <PopoverTrigger asChild>
+                                    <tr className="hover:bg-amber-50/40 cursor-pointer">
+                                       <td className="px-6 py-4 text-gray-700 pl-10 flex items-center gap-2">
+                                          Beverage Cost
+                                          <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Elaborated</span>
+                                       </td>
+                                       <td className="px-6 py-4 text-right">${cogsActuals['beverage-cost'].toLocaleString()}</td>
+                                       <td className="px-6 py-4 text-right text-gray-500">${getCogsBudgetForCategory('beverage-cost').toLocaleString()}</td>
+                                       <td className={cn("px-6 py-4 text-right font-medium", getCogsVariance('beverage-cost').color)}>
+                                          {getCogsVariance('beverage-cost').formattedDollar}
+                                       </td>
+                                       <td className="px-6 py-4 text-right text-gray-600">
+                                          {((cogsActuals['beverage-cost'] / PERIOD_REVENUE) * 100).toFixed(1)}%
+                                       </td>
+                                       <td className="px-6 py-4 text-right">
+                                          <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium", getCogsVariance('beverage-cost').statusColor)}>
+                                             {getCogsVariance('beverage-cost').statusText}
+                                          </span>
+                                       </td>
+                                    </tr>
+                                 </PopoverTrigger>
+                                 <PopoverContent className="w-[380px] p-0" align="start">
+                                    <div className="p-4 border-b border-gray-100">
+                                       <div className="flex items-start gap-3">
+                                          <div className="p-2 bg-amber-100 rounded-lg"><Sparkles className="h-4 w-4 text-amber-600" /></div>
+                                          <div>
+                                             <p className="font-medium text-gray-900 mb-1">Beverage Cost Analysis</p>
+                                             <p className="text-sm text-gray-600">Liquor costs slightly up due to new premium cocktail menu launch.</p>
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <div className="p-4">
+                                       <div className="h-36">
+                                          <ResponsiveContainer width="100%" height="100%">
+                                             <BarChart data={[
+                                                { name: 'Jul', actual: 12000, budget: 13000 },
+                                                { name: 'Aug', actual: 12800, budget: 13000 },
+                                                { name: 'Sep', actual: 13450, budget: 13000 },
+                                             ]} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                                                <XAxis dataKey="name" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+                                                <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${(v/1000).toFixed(0)}k`} />
+                                                <Tooltip formatter={(v: number) => `$${v.toLocaleString()}`} contentStyle={{ fontSize: 12 }} />
+                                                <Bar dataKey="actual" fill="#f59e0b" name="Actual" radius={[4, 4, 0, 0]} />
+                                                <Bar dataKey="budget" fill="#d1d5db" name="Budget" radius={[4, 4, 0, 0]} />
+                                             </BarChart>
+                                          </ResponsiveContainer>
+                                       </div>
+                                       <div className="mt-3 pt-3 border-t border-gray-100">
+                                          <p className="text-xs text-gray-500 mb-2">Ask follow-up questions:</p>
+                                          <div className="flex flex-wrap gap-1.5">
+                                             <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Cocktail margin analysis</button>
+                                             <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Pour cost report</button>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </PopoverContent>
+                              </Popover>
+                              <Popover>
+                                 <PopoverTrigger asChild>
+                                    <tr className="hover:bg-amber-50/40 cursor-pointer">
+                                       <td className="px-6 py-4 text-gray-700 pl-10 flex items-center gap-2">
+                                          Paper & Supplies
+                                          <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 rounded">Elaborated</span>
+                                       </td>
+                                       <td className="px-6 py-4 text-right">${cogsActuals['paper-supplies'].toLocaleString()}</td>
+                                       <td className="px-6 py-4 text-right text-gray-500">${getCogsBudgetForCategory('paper-supplies').toLocaleString()}</td>
+                                       <td className={cn("px-6 py-4 text-right font-medium", getCogsVariance('paper-supplies').color)}>
+                                          {getCogsVariance('paper-supplies').formattedDollar}
+                                       </td>
+                                       <td className="px-6 py-4 text-right text-gray-600">
+                                          {((cogsActuals['paper-supplies'] / PERIOD_REVENUE) * 100).toFixed(1)}%
+                                       </td>
+                                       <td className="px-6 py-4 text-right">
+                                          <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium", getCogsVariance('paper-supplies').statusColor)}>
+                                             {getCogsVariance('paper-supplies').statusText}
+                                          </span>
+                                       </td>
+                                    </tr>
+                                 </PopoverTrigger>
+                                 <PopoverContent className="w-[380px] p-0" align="start">
+                                    <div className="p-4 border-b border-gray-100">
+                                       <div className="flex items-start gap-3">
+                                          <div className="p-2 bg-red-100 rounded-lg"><Sparkles className="h-4 w-4 text-red-600" /></div>
+                                          <div>
+                                             <p className="font-medium text-gray-900 mb-1">Paper & Supplies Cost Analysis</p>
+                                             <p className="text-sm text-gray-600">To-go packaging costs rose with increased delivery volume.</p>
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <div className="p-4">
+                                       <div className="h-36">
+                                          <ResponsiveContainer width="100%" height="100%">
+                                             <BarChart data={[
+                                                { name: 'Jul', actual: 3200, budget: 3000 },
+                                                { name: 'Aug', actual: 3500, budget: 3000 },
+                                                { name: 'Sep', actual: 3985, budget: 3000 },
+                                             ]} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                                                <XAxis dataKey="name" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+                                                <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${(v/1000).toFixed(0)}k`} />
+                                                <Tooltip formatter={(v: number) => `$${v.toLocaleString()}`} contentStyle={{ fontSize: 12 }} />
+                                                <Bar dataKey="actual" fill="#ef4444" name="Actual" radius={[4, 4, 0, 0]} />
+                                                <Bar dataKey="budget" fill="#d1d5db" name="Budget" radius={[4, 4, 0, 0]} />
+                                             </BarChart>
+                                          </ResponsiveContainer>
+                                       </div>
+                                       <div className="mt-3 pt-3 border-t border-gray-100">
+                                          <p className="text-xs text-gray-500 mb-2">Ask follow-up questions:</p>
+                                          <div className="flex flex-wrap gap-1.5">
+                                             <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Packaging cost per order</button>
+                                             <button className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Supplier options</button>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </PopoverContent>
+                              </Popover>
                             </tbody>
                          </table>
                          <div className="px-6 py-3 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
