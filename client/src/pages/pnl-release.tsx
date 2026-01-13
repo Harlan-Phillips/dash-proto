@@ -5505,9 +5505,6 @@ export default function PnlRelease() {
                                 <div>
                                    <div className="flex items-center gap-3 mb-2">
                                       <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Financial Health</span>
-                                      <div className="px-2 py-0.5 bg-emerald-500 text-white text-[10px] font-bold rounded-md tracking-wide">
-                                         HEALTHY
-                                      </div>
                                    </div>
                                    <div className="flex items-baseline gap-2">
                                       <span className="text-6xl font-bold text-gray-900 tracking-tight">82</span>
