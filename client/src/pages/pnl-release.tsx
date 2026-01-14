@@ -4487,12 +4487,14 @@ const PrimaryInsightCard = ({
   role, 
   trends, 
   onAddAction, 
-  onAskAI 
+  onAskAI,
+  onGenerateReport
 }: { 
   role: RoleType; 
   trends: MetricTrendData[]; 
   onAddAction: (item: any) => void; 
-  onAskAI: (query: string) => void; 
+  onAskAI: (query: string) => void;
+  onGenerateReport: (role: RoleType, insight: any) => void;
 }) => {
   const primaryInsight = getPrimaryInsightForRole(role, trends);
   if (!primaryInsight) return null;
@@ -4551,16 +4553,7 @@ const PrimaryInsightCard = ({
           
           <div className="flex flex-col gap-2">
             <button 
-              onClick={() => {
-                // Handle Report Generation based on Role
-                if (role === "chef") {
-                    handleGenerateChefInsightReport();
-                } else if (role === "gm") {
-                    handleGenerateGMInsightReport(primaryInsight);
-                } else if (role === "owner") {
-                    handleGenerateOwnerInsightReport(primaryInsight);
-                }
-              }}
+              onClick={() => onGenerateReport(role, primaryInsight)}
               className={cn(
                 "px-4 py-2 rounded-lg text-sm font-medium transition-colors border shadow-sm flex items-center gap-2",
                 primaryInsight.type === "critical" ? "bg-white text-red-700 border-red-200 hover:bg-red-50" :
@@ -4946,44 +4939,45 @@ export default function PnlRelease() {
       }, 1500);
   };
 
+
   const handleGenerateGMInsightReport = (insight: PrimaryInsight) => {
     toast({
-        title: "Generating Insight Report",
-        description: "Analyzing operational labor variance...",
+        title: "Generating GM Insight Report",
+        description: "Analyzing operational efficiency...",
     });
 
     setTimeout(() => {
         const newReport = {
             id: `report-insight-gm-${Date.now()}`,
-            type: 'labor',
+            type: 'labor', // GM focused on labor often
             data: {
-                title: "Insight Report: Labor Efficiency Analysis",
+                title: "Insight Report: Labor Efficiency",
                 dateRange: "September 2025",
                 entity: locationName,
-                dataSources: ["P&L", "Scheduling", "Time & Attendance"],
+                dataSources: ["POS", "Time Clock"],
                 summary: [
                     insight.message,
                     insight.detail,
-                    "Weekend overtime is the primary driver of the variance."
+                    "Scheduling efficiency has improved, but overtime remains a key variance driver."
                 ],
                 metrics: [
-                    { label: "FOH Labor %", value: "16.4%", change: "+2.4%", trend: "up" },
-                    { label: "Overtime Hours", value: "142 hrs", change: "+45%", trend: "up" },
-                    { label: "Sales / Labor Hr", value: "$45.20", change: "-$4.80", trend: "down" }
+                    { label: "Labor %", value: "23.2%", change: "-0.8%", trend: "down" },
+                    { label: "SPLH", value: "$48.50", change: "+$2.10", trend: "up" },
+                    { label: "Overtime", value: "4.2%", change: "-1.5%", trend: "down" }
                 ],
                 tableData: {
                     headers: ["Role", "Regular Hrs", "OT Hrs", "Variance Cost", "Impact"],
                     rows: [
-                        ["FOH Server", "1,250", "42", "$1,200", "High"],
-                        ["FOH Bar", "420", "15", "$450", "Medium"],
-                        ["FOH Host", "310", "5", "$120", "Low"]
+                        ["Line Cook", "850", "22", "$440", "Medium"],
+                        ["Prep Cook", "420", "5", "$85", "Low"],
+                        ["Dishwasher", "310", "15", "$225", "Low"]
                     ]
                 },
-                analysis: "FOH labor exceeded budget by 2.4% primarily due to unmanaged overtime on Friday and Saturday shifts. Staffing levels remained high during lull periods (2pm-5pm), reducing Sales Per Labor Hour efficiency.",
+                analysis: "BOH labor is trending in the right direction. The new prep schedule has reduced overtime significantly. Focus remains on managing Friday night cuts to maximize flow-through.",
                 recommendations: [
-                    "Implement strict cut times for FOH staff.",
-                    "Review weekend scheduling templates against forecasted sales.",
-                    "Limit overtime approval to GM only."
+                    "Continue new prep schedule pattern.",
+                    "Monitor Friday close times.",
+                    "Cross-train dishwashers for prep support."
                 ]
             },
             createdAt: Date.now(),
@@ -13134,6 +13128,11 @@ export default function PnlRelease() {
                          setFloatingChatTrigger(query);
                          setShowChat(true);
                        }}
+                       onGenerateReport={(role, insight) => {
+                         if (role === 'gm') handleGenerateGMInsightReport(insight);
+                         else if (role === 'chef') handleGenerateChefInsightReport();
+                         else if (role === 'owner') handleGenerateOwnerInsightReport(insight);
+                       }}
                      />
                    )}
 
@@ -13459,6 +13458,11 @@ export default function PnlRelease() {
                             onAskAI={(query) => {
                               setFloatingChatTrigger(query);
                               setShowChat(true);
+                            }}
+                            onGenerateReport={(role, insight) => {
+                                 if (role === 'gm') handleGenerateGMInsightReport(insight);
+                                 else if (role === 'chef') handleGenerateChefInsightReport();
+                                 else if (role === 'owner') handleGenerateOwnerInsightReport(insight);
                             }}
                          />
                       </div>
