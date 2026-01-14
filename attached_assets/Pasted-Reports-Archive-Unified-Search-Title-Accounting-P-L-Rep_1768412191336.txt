@@ -1,0 +1,156 @@
+Reports Archive + Unified Search
+Title
+
+Accounting P&L: Reports Archive with Unified Search
+
+Context
+
+In /accounting/pnl, the Reports tab contains both:
+
+Active reports (current discussions)
+
+Archived reports (closed / historical)
+
+As report volume grows, users need:
+
+A way to close out reports
+
+A way to find any report quickly, regardless of status
+
+Goal
+
+Provide:
+
+A Reports Archive for closed reports
+
+A single search experience that works across Active + Archived
+
+No deletion. No duplication.
+
+Scope
+Affected Area
+
+/accounting/pnl
+
+Reports tab (menu navigation + list view)
+
+Core Features
+1. Archive Reports
+Behavior
+
+Each report in the Active Reports list has an Archive / Close action
+
+When archived:
+
+Report moves out of Active list
+
+Report appears in Archived Reports
+
+2. Archived Reports View
+UI
+
+Add Archived Reports under Reports in the menu
+
+Displays:
+
+Report title
+
+Date created
+
+Source (manual / curated insight)
+
+Role (Owner / GM / Chef)
+
+Insight type (if applicable)
+
+3. Restore (Unarchive)
+Behavior
+
+Archived reports have a Restore action
+
+Restored reports:
+
+Return to Active Reports
+
+Preserve all original metadata
+
+4. Unified Search (Active + Archived)
+Search Behavior
+
+Add a search input at the top of the Reports tab
+
+Search should:
+
+Query both Active and Archived reports
+
+Match against:
+
+Report title
+
+Insight type
+
+Role
+
+Date (human-readable)
+
+Results should clearly indicate:
+
+Report status (Active or Archived)
+
+Search UX Requirements
+
+Search results should not be scoped by current tab
+
+If a search result is Archived:
+
+Clicking it opens the report directly
+
+User remains in context (no forced restore)
+
+Data Model
+
+Reports should support:
+
+{
+  id,
+  title,
+  role,
+  source, // manual | curated_insight
+  insight_type?,
+  created_at,
+  status // active | archived
+}
+
+Non-Goals
+
+❌ No permanent deletion
+
+❌ No auto-archive rules
+
+❌ No role-based archive restrictions
+
+❌ No separate search UIs per tab
+
+Acceptance Criteria
+
+ Reports can be archived from Active list
+
+ Archived Reports menu is accessible
+
+ Archived reports can be restored
+
+ Search returns results from both Active and Archived
+
+ Search results clearly show report status
+
+ Clicking search results opens the correct report
+
+ No data loss or duplication
+
+Product Principle
+
+Search is memory. Archive is hygiene.
+
+Users should never think:
+
+“I know we made this report… where did it go?”

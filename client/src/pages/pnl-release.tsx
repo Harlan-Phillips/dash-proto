@@ -4520,7 +4520,15 @@ export default function PnlRelease() {
   const stateDropdownRef = useRef<HTMLDivElement>(null);
 
   // New Reports Tab State
-  const [reportsList, setReportsList] = useState<Array<{id: string, type: string, data: ReportData, createdAt: number}>>([]);
+  const [reportsList, setReportsList] = useState<Array<{
+      id: string, 
+      type: string, 
+      data: ReportData, 
+      createdAt: number,
+      status: 'active' | 'archived',
+      source?: 'manual' | 'curated_insight',
+      role?: string
+  }>>([]);
   const [activeReportId, setActiveReportId] = useState<string | null>(null);
   
   // Action Cart State
@@ -4528,6 +4536,29 @@ export default function PnlRelease() {
   const [showActionCart, setShowActionCart] = useState(false);
   const [activeGMFilter, setActiveGMFilter] = useState<string | null>(null);
   const [isProfitabilityExpanded, setIsProfitabilityExpanded] = useState(false);
+
+  const handleArchiveReport = (id: string) => {
+      setReportsList(prev => prev.map(report => 
+          report.id === id ? { ...report, status: 'archived' as const } : report
+      ));
+      toast({
+          title: "Report Archived",
+          description: "Report moved to archive.",
+      });
+      if (activeReportId === id) {
+          setActiveReportId(null);
+      }
+  };
+
+  const handleRestoreReport = (id: string) => {
+      setReportsList(prev => prev.map(report => 
+          report.id === id ? { ...report, status: 'active' as const } : report
+      ));
+      toast({
+          title: "Report Restored",
+          description: "Report moved back to active reports.",
+      });
+  };
 
   const handleAddActionItem = (item: Omit<ActionItem, 'id' | 'createdAt' | 'status'>) => {
       const newItem: ActionItem = {
@@ -4551,7 +4582,15 @@ export default function PnlRelease() {
       });
   };
 
-  const handleReportGenerated = (report: {id: string, type: string, data: ReportData, createdAt: number}) => {
+  const handleReportGenerated = (report: {
+      id: string, 
+      type: string, 
+      data: ReportData, 
+      createdAt: number, 
+      status: 'active' | 'archived',
+      source?: 'manual' | 'curated_insight',
+      role?: string
+  }) => {
       setReportsList(prev => [report, ...prev]);
       setActiveReportId(report.id);
       setActiveTab("reports");
@@ -4573,7 +4612,10 @@ export default function PnlRelease() {
               id: `report-${Date.now()}`,
               type,
               data: reportData,
-              createdAt: Date.now()
+              createdAt: Date.now(),
+              status: 'active' as const,
+              source: 'manual' as const,
+              role: 'owner' // Default for manual generation
           };
           handleReportGenerated(newReport);
       }, 1500);
@@ -4587,7 +4629,7 @@ export default function PnlRelease() {
       });
 
       setTimeout(() => {
-          const newReport: {id: string, type: string, data: ReportData, createdAt: number} = {
+          const newReport = {
               id: `report-insight-${Date.now()}`,
               type: 'inventory',
               data: {
@@ -4621,7 +4663,10 @@ export default function PnlRelease() {
                       "Spot check inventory for Condensed Milk."
                   ]
               },
-              createdAt: Date.now()
+              createdAt: Date.now(),
+              status: 'active' as const,
+              source: 'curated_insight' as const,
+              role: 'chef'
           };
           handleReportGenerated(newReport);
       }, 1500);
@@ -4634,7 +4679,7 @@ export default function PnlRelease() {
     });
 
     setTimeout(() => {
-        const newReport: {id: string, type: string, data: ReportData, createdAt: number} = {
+        const newReport = {
             id: `report-insight-gm-${Date.now()}`,
             type: 'labor',
             data: {
@@ -4667,7 +4712,10 @@ export default function PnlRelease() {
                     "Limit overtime approval to GM only."
                 ]
             },
-            createdAt: Date.now()
+            createdAt: Date.now(),
+            status: 'active' as const,
+            source: 'curated_insight' as const,
+            role: 'gm'
         };
         handleReportGenerated(newReport);
     }, 1500);
@@ -4680,7 +4728,7 @@ export default function PnlRelease() {
     });
 
     setTimeout(() => {
-        const newReport: {id: string, type: string, data: ReportData, createdAt: number} = {
+        const newReport = {
             id: `report-insight-owner-${Date.now()}`,
             type: 'profitability',
             data: {
@@ -4714,7 +4762,10 @@ export default function PnlRelease() {
                     "Review menu pricing strategy for low-margin items."
                 ]
             },
-            createdAt: Date.now()
+            createdAt: Date.now(),
+            status: 'active' as const,
+            source: 'curated_insight' as const,
+            role: 'owner'
         };
         handleReportGenerated(newReport);
     }, 1500);
@@ -10206,6 +10257,8 @@ export default function PnlRelease() {
                         activeReportId={activeReportId}
                         onSelectReport={setActiveReportId}
                         onGenerateReport={handleGenerateReportFromTab}
+                        onArchiveReport={handleArchiveReport}
+                        onRestoreReport={handleRestoreReport}
                     />
                 )}
 
