@@ -673,6 +673,7 @@ const tocSections = [
   { id: "prime-cost-analysis", label: "Prime Cost Analysis" },
   { id: "operating-expenses", label: "Operating Expenses" },
   { id: "deep-performance", label: "Performance Review" },
+  { id: "profitability-analysis", label: "Profitability Analysis" },
   { id: "accountant-note", label: "Accountant Note" },
 ];
 
@@ -690,6 +691,7 @@ const defaultSections: EditableSection[] = [
   { id: "prime-cost-analysis", label: "Prime Cost Analysis", visible: true },
   { id: "operating-expenses", label: "Operating Expenses", visible: true },
   { id: "deep-performance", label: "Performance Review", visible: true },
+  { id: "profitability-analysis", label: "Profitability Analysis", visible: true },
   { id: "accountant-note", label: "Accountant Note", visible: true },
 ];
 
@@ -10563,9 +10565,14 @@ export default function PnlRelease() {
                 <div className="p-8">
                       <div className="max-w-5xl mx-auto flex flex-col gap-8">
 
-                   {selectedRole === "owner" && (
-                   <section data-testid="profitability-section-main">
-                      <div className="flex items-center justify-between mb-6">
+                   {selectedRole === "owner" && isSectionVisible("profitability-analysis") && (
+                   <section 
+                      id="profitability-analysis"
+                      className="scroll-mt-4"
+                      style={{ order: getSectionOrderIndex("profitability-analysis") }}
+                      data-testid="profitability-section-main"
+                   >
+                      <div className="flex items-center justify-between mb-4">
                          <div>
                             <h2 className="text-lg font-serif font-bold text-gray-900 flex items-center gap-2">
                                <BarChart3 className="h-5 w-5 text-gray-600" />
