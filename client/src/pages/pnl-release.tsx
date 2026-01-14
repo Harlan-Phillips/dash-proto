@@ -3473,6 +3473,34 @@ function SidePanelAssistant({
         
         await new Promise(r => setTimeout(r, 600));
 
+        // Determine relevant follow-ups
+        let followUpQuestions: FollowUpAction[] = [];
+        if (reportType === 'profitability') {
+            followUpQuestions = [
+                { type: "report", label: "Break down COGS", report_type: "cogs_breakdown", params: { focus: "savings" } },
+                { type: "report", label: "Margin impact analysis", report_type: "margin_decomposition", params: { period: "current" } },
+                { type: "chat", label: "Sustainable?", intent: "Is this margin sustainable next month?" }
+            ];
+        } else if (reportType === 'labor') {
+            followUpQuestions = [
+                { type: "report", label: "Overtime by role", report_type: "overtime_analysis", params: { role_breakdown: true } },
+                { type: "report", label: "Labor efficiency vs LY", report_type: "labor_efficiency", params: { compare: "last_year" } },
+                { type: "chat", label: "Hourly rate changes", intent: "Analyze hourly rate changes" }
+            ];
+        } else if (reportType === 'sales') {
+            followUpQuestions = [
+                { type: "report", label: "Sales growth drivers", report_type: "sales_drivers", params: { decomposition: true } },
+                { type: "report", label: "Forecast validation", report_type: "forecast_validation", params: { horizon: "30d" } },
+                { type: "chat", label: "Lunch vs Dinner", intent: "Compare lunch and dinner performance" }
+            ];
+        } else { // inventory
+             followUpQuestions = [
+                { type: "report", label: "Top 3 expenses", report_type: "expense_ranking", params: { limit: 3 } },
+                { type: "report", label: "Food cost per plate", report_type: "food_cost_per_plate", params: { sort: "variance" } },
+                { type: "chat", label: "Controllable expenses trend", intent: "Analyze controllable expenses trend" }
+            ];
+        }
+
         // Offer Report
         const offerMsg: FloatingMessage = {
             id: (Date.now() + 2).toString(),
@@ -3482,7 +3510,8 @@ function SidePanelAssistant({
                 state: "pending_confirmation",
                 toolName: "generate_report",
                 args: { type: reportType }
-            }
+            },
+            followUpQuestions: followUpQuestions
         };
         setMessages(prev => [...prev, offerMsg]);
         setIsTyping(false);
