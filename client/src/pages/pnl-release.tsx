@@ -13566,6 +13566,293 @@ export default function PnlRelease() {
                    </section>
                    )}
 
+                   <section data-testid="gm-daily-prime-cost-section">
+                      <div className="flex items-center justify-between mb-4">
+                         <h2 className="text-lg font-serif font-bold text-gray-900 flex items-center gap-2">
+                            <Calendar className="h-5 w-5 text-gray-600" />
+                            Performance Summary
+                            <span className="text-sm font-normal text-gray-500 ml-2">{currentGMData.dateLabel}</span>
+                         </h2>
+                         {/* Time Range Selector */}
+                         <div className="flex items-center gap-2">
+                           <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1" data-testid="gm-time-range-selector">
+                              {(['today', 'week', 'month', 'year'] as const).map((range) => (
+                                 <button
+                                    key={range}
+                                    onClick={() => setGmTimeRange(range)}
+                                    className={cn(
+                                       "px-3 py-1.5 text-xs font-medium rounded-md transition-all",
+                                       gmTimeRange === range
+                                          ? "bg-white text-gray-900 shadow-sm"
+                                          : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                                    )}
+                                    data-testid={`btn-time-range-${range}`}
+                                 >
+                                    {range === 'today' ? 'Today' : range === 'week' ? 'Week' : range === 'month' ? 'Month' : 'Year'}
+                                 </button>
+                              ))}
+                           </div>
+
+                           {/* Period Navigator */}
+                           {(gmTimeRange === 'week' || gmTimeRange === 'month') && (
+                             <PeriodNavigator 
+                               cadence={gmTimeRange}
+                               date={selectedGMDate}
+                               onPrev={() => setSelectedGMDate(d => gmTimeRange === 'month' ? subMonths(d, 1) : subWeeks(d, 1))}
+                               onNext={() => setSelectedGMDate(d => gmTimeRange === 'month' ? addMonths(d, 1) : addWeeks(d, 1))}
+                             />
+                           )}
+                         </div>
+                      </div>
+
+                      {/* GM Filters */}
+                      <div className="flex flex-wrap gap-3 mb-6">
+                          {/* Positive Contributors Filter */}
+                          <button
+                              onClick={() => setActiveGMFilter(activeGMFilter === 'positive' ? null : 'positive')}
+                              className={cn(
+                                  "flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium border transition-all",
+                                  activeGMFilter === 'positive' 
+                                      ? "bg-emerald-50 text-emerald-700 border-emerald-200 ring-1 ring-emerald-500" 
+                                      : "bg-white text-gray-600 border-gray-200 hover:border-gray-300 hover:bg-emerald-50/50"
+                              )}
+                          >
+                              <TrendingUp className="h-3.5 w-3.5 text-emerald-500" />
+                              Contributing to Profit
+                          </button>
+
+                          {/* Negative Contributors Filter */}
+                          <button
+                              onClick={() => setActiveGMFilter(activeGMFilter === 'negative' ? null : 'negative')}
+                              className={cn(
+                                  "flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium border transition-all",
+                                  activeGMFilter === 'negative' 
+                                      ? "bg-red-50 text-red-700 border-red-200 ring-1 ring-red-500" 
+                                      : "bg-white text-gray-600 border-gray-200 hover:border-gray-300 hover:bg-red-50/50"
+                              )}
+                          >
+                              <TrendingDown className="h-3.5 w-3.5 text-red-500" />
+                              Dragging Profit
+                          </button>
+                      </div>
+                      
+                      {/* Performance Metrics Cards */}
+                      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                         {/* Sales Card */}
+                         {(!activeGMFilter || 
+                           (activeGMFilter === 'positive' && currentGMData.sales.variance >= 0) || 
+                           (activeGMFilter === 'negative' && currentGMData.sales.variance < 0)) && (
+                         <div className="bg-white border border-gray-200 rounded-xl p-4 relative group">
+                            <button
+                               onClick={() => openTrendModal('net-sales')}
+                               className="absolute top-3 right-3 p-1.5 rounded-lg bg-gray-100 hover:bg-blue-100 text-gray-400 hover:text-blue-600 transition-colors"
+                               title="View trend"
+                            >
+                               <BarChart3 className="h-3.5 w-3.5" />
+                            </button>
+                            <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Sales</div>
+                            <div className="text-2xl font-bold text-gray-900">${currentGMData.sales.value.toLocaleString()}</div>
+                            <div className="flex items-center gap-2 mt-2">
+                               <span className="text-xs text-gray-500">{currentGMData.sales.avgLabel}:</span>
+                               <span className="text-xs font-medium text-gray-700">${currentGMData.sales.avg.toLocaleString()}</span>
+                            </div>
+                            <div className="flex items-center gap-1 mt-1">
+                               {currentGMData.sales.variance < 0 ? (
+                                  <TrendingDown className="h-3 w-3 text-red-500" />
+                               ) : (
+                                  <TrendingUp className="h-3 w-3 text-emerald-500" />
+                               )}
+                               <span className={cn("text-xs font-medium", currentGMData.sales.variance < 0 ? "text-red-600" : "text-emerald-600")}>
+                                  {currentGMData.sales.variance > 0 ? '+' : ''}{currentGMData.sales.variance}%
+                               </span>
+                               <span className="text-xs text-gray-500">vs avg</span>
+                            </div>
+                         </div>
+                         )}
+
+                         {/* COGS % Card */}
+                         {(!activeGMFilter || 
+                           (activeGMFilter === 'positive' && currentGMData.cogs.variance <= 0) || 
+                           (activeGMFilter === 'negative' && currentGMData.cogs.variance > 0)) && (
+                         <div className="bg-white border border-gray-200 rounded-xl p-4 relative group">
+                            <button
+                               onClick={() => openTrendModal('cogs')}
+                               className="absolute top-3 right-3 p-1.5 rounded-lg bg-gray-100 hover:bg-blue-100 text-gray-400 hover:text-blue-600 transition-colors"
+                               title="View trend"
+                            >
+                               <BarChart3 className="h-3.5 w-3.5" />
+                            </button>
+                            <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">COGS %</div>
+                            <div className="text-2xl font-bold text-gray-900">{currentGMData.cogs.value}%</div>
+                            <div className="flex items-center gap-2 mt-2">
+                               <span className="text-xs text-gray-500">{currentGMData.cogs.avgLabel}:</span>
+                               <span className="text-xs font-medium text-gray-700">{currentGMData.cogs.avg}%</span>
+                            </div>
+                            <div className="flex items-center gap-1 mt-1">
+                               {currentGMData.cogs.variance > 0 ? (
+                                  <TrendingUp className="h-3 w-3 text-red-500" />
+                               ) : (
+                                  <TrendingDown className="h-3 w-3 text-emerald-500" />
+                               )}
+                               <span className={cn("text-xs font-medium", currentGMData.cogs.variance > 0 ? "text-red-600" : "text-emerald-600")}>
+                                  {currentGMData.cogs.variance > 0 ? '+' : ''}{currentGMData.cogs.variance} pts
+                               </span>
+                               <span className="text-xs text-gray-500">vs avg</span>
+                            </div>
+                         </div>
+                         )}
+
+                         {/* Labor % Card */}
+                         {(!activeGMFilter || 
+                           (activeGMFilter === 'positive' && currentGMData.labor.variance <= 0) || 
+                           (activeGMFilter === 'negative' && currentGMData.labor.variance > 0)) && (
+                         <div className="bg-white border border-gray-200 rounded-xl p-4 relative group">
+                            <button
+                               onClick={() => openTrendModal('labor')}
+                               className="absolute top-3 right-3 p-1.5 rounded-lg bg-gray-100 hover:bg-blue-100 text-gray-400 hover:text-blue-600 transition-colors"
+                               title="View trend"
+                            >
+                               <BarChart3 className="h-3.5 w-3.5" />
+                            </button>
+                            <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Labor %</div>
+                            <div className="text-2xl font-bold text-gray-900">{currentGMData.labor.value}%</div>
+                            <div className="flex items-center gap-2 mt-2">
+                               <span className="text-xs text-gray-500">{currentGMData.labor.avgLabel}:</span>
+                               <span className="text-xs font-medium text-gray-700">{currentGMData.labor.avg}%</span>
+                            </div>
+                            <div className="flex items-center gap-1 mt-1">
+                               {currentGMData.labor.variance > 0 ? (
+                                  <TrendingUp className="h-3 w-3 text-red-500" />
+                               ) : (
+                                  <TrendingDown className="h-3 w-3 text-emerald-500" />
+                               )}
+                               <span className={cn("text-xs font-medium", currentGMData.labor.variance > 0 ? "text-red-600" : "text-emerald-600")}>
+                                  {currentGMData.labor.variance > 0 ? '+' : ''}{currentGMData.labor.variance} pts
+                               </span>
+                               <span className="text-xs text-gray-500">vs avg</span>
+                            </div>
+                         </div>
+                         )}
+
+                         {/* Prime Cost Card - Primary */}
+                         {(!activeGMFilter || 
+                           (activeGMFilter === 'positive' && currentGMData.primeCost.variance <= 0) || 
+                           (activeGMFilter === 'negative' && currentGMData.primeCost.variance > 0)) && (
+                         <div className={cn(
+                            "border rounded-xl p-4 relative group",
+                            currentGMData.primeCost.variance > 2 
+                               ? "bg-gradient-to-br from-red-50 to-orange-50 border-red-200" 
+                               : currentGMData.primeCost.variance > 0 
+                                  ? "bg-gradient-to-br from-amber-50 to-yellow-50 border-amber-200"
+                                  : "bg-gradient-to-br from-emerald-50 to-green-50 border-emerald-200"
+                         )}>
+                            <button
+                               onClick={() => openTrendModal('prime-cost')}
+                               className={cn(
+                                  "absolute top-3 right-3 p-1.5 rounded-lg hover:bg-blue-100 hover:text-blue-600 transition-colors",
+                                  currentGMData.primeCost.variance > 2 ? "bg-red-100 text-red-400" : currentGMData.primeCost.variance > 0 ? "bg-amber-100 text-amber-400" : "bg-emerald-100 text-emerald-400"
+                               )}
+                               title="View trend"
+                            >
+                               <BarChart3 className="h-3.5 w-3.5" />
+                            </button>
+                            <div className={cn(
+                               "text-xs font-medium uppercase tracking-wide mb-2",
+                               currentGMData.primeCost.variance > 2 ? "text-red-700" : currentGMData.primeCost.variance > 0 ? "text-amber-700" : "text-emerald-700"
+                            )}>Prime Cost</div>
+                            <div className="text-2xl font-bold text-gray-900">{currentGMData.primeCost.value}%</div>
+                            <div className="flex items-center gap-2 mt-2">
+                               <span className="text-xs text-gray-500">{currentGMData.primeCost.avgLabel}:</span>
+                               <span className="text-xs font-medium text-gray-700">{currentGMData.primeCost.avg}%</span>
+                            </div>
+                            <div className="flex items-center gap-1 mt-1">
+                               {currentGMData.primeCost.variance > 2 ? (
+                                  <AlertTriangle className="h-3 w-3 text-red-500" />
+                               ) : currentGMData.primeCost.variance > 0 ? (
+                                  <TrendingUp className="h-3 w-3 text-amber-500" />
+                               ) : (
+                                  <CheckCircle2 className="h-3 w-3 text-emerald-500" />
+                               )}
+                               <span className={cn(
+                                  "text-xs font-medium",
+                                  currentGMData.primeCost.variance > 2 ? "text-red-600" : currentGMData.primeCost.variance > 0 ? "text-amber-600" : "text-emerald-600"
+                               )}>
+                                  {currentGMData.primeCost.variance > 0 ? '+' : ''}{currentGMData.primeCost.variance} pts
+                                  {currentGMData.primeCost.variance > 2 ? ' 🔴' : currentGMData.primeCost.variance > 0 ? ' 🟡' : ' 🟢'}
+                               </span>
+                            </div>
+                         </div>
+                         )}
+                      </div>
+
+                      {/* What Happened - Dynamic based on time range */}
+                      <div className="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-5">
+                         <h3 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                            <Lightbulb className="h-4 w-4 text-amber-600" />
+                            What happened{gmTimeRange === 'today' ? ' today' : gmTimeRange === 'week' ? ' this week' : gmTimeRange === 'month' ? ' this month' : ' this year'}?
+                            <span className="text-xs font-normal text-gray-500 ml-auto">Click an issue to get guided help</span>
+                         </h3>
+                         <div className="space-y-3">
+                            {whatHappenedData.issues.map((issue) => (
+                               <button 
+                                  key={issue.id}
+                                  onClick={() => {
+                                     setFloatingChatTrigger(issue.context);
+                                     setShowChat(true);
+                                  }}
+                                  className="w-full text-left flex items-start gap-3 bg-white/60 rounded-lg p-3 border border-amber-100 hover:bg-white hover:border-blue-200 hover:shadow-sm transition-all cursor-pointer group"
+                               >
+                                  <div className={cn("w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:bg-blue-100", issue.iconBg)}>
+                                     {issue.icon === 'users' && <Users className={cn("h-3.5 w-3.5 group-hover:text-blue-600", issue.iconColor)} />}
+                                     {issue.icon === 'trending-down' && <TrendingDown className={cn("h-3.5 w-3.5 group-hover:text-blue-600", issue.iconColor)} />}
+                                     {issue.icon === 'package' && <Package className={cn("h-3.5 w-3.5 group-hover:text-blue-600", issue.iconColor)} />}
+                                     {issue.icon === 'alert-triangle' && <AlertTriangle className={cn("h-3.5 w-3.5 group-hover:text-blue-600", issue.iconColor)} />}
+                                     {issue.icon === 'check-circle' && <CheckCircle2 className={cn("h-3.5 w-3.5 group-hover:text-blue-600", issue.iconColor)} />}
+                                  </div>
+                                  <div className="flex-1">
+                                     <div className="text-sm font-medium text-gray-900 group-hover:text-blue-700 flex items-center gap-2">
+                                        {issue.title}
+                                        <ChevronRight className="h-3.5 w-3.5 text-gray-400 group-hover:text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                     </div>
+                                     <div className="text-xs text-gray-600 mt-0.5">
+                                        {issue.description}
+                                     </div>
+                                     <div className="flex items-center gap-2 mt-2">
+                                        {issue.tags.map((tag, idx) => (
+                                           <span key={idx} className={cn("px-2 py-0.5 text-xs rounded", tag.color)}>{tag.label}</span>
+                                        ))}
+                                     </div>
+                                  </div>
+                               </button>
+                            ))}
+                         </div>
+                         
+                         {/* Action Summary */}
+                         <div className="mt-4 pt-4 border-t border-amber-200">
+                            <div className="text-xs font-medium text-gray-700 mb-2">
+                               {gmTimeRange === 'today' ? 'Recommended Actions for Tomorrow:' : 
+                                gmTimeRange === 'week' ? 'Recommended Actions This Week:' :
+                                gmTimeRange === 'month' ? 'Recommended Actions This Month:' :
+                                'Strategic Focus Areas:'}
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                               {whatHappenedData.actions.map((action, idx) => (
+                                  <button 
+                                     key={idx}
+                                     onClick={() => {
+                                        setFloatingChatTrigger(`Help me with: ${action}. Period: ${currentGMData.dateLabel}`);
+                                        setShowChat(true);
+                                     }}
+                                     className="px-2.5 py-1 bg-white border border-gray-200 text-xs text-gray-700 rounded-full hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 transition-colors cursor-pointer"
+                                  >
+                                     {action}
+                                  </button>
+                               ))}
+                            </div>
+                         </div>
+                      </div>
+                   </section>
+
                    {/* Accountant Note */}
                    {isSectionVisible("accountant-note") && (
                    <section id="accountant-note" className="scroll-mt-4" style={{ order: getSectionOrderIndex("accountant-note") }}>
@@ -14107,295 +14394,6 @@ export default function PnlRelease() {
                    )}
 
 
-                   {/* Performance Summary & Auto-Diagnosis - GM Only */}
-                   {selectedRole === "gm" && (
-                   <section data-testid="gm-daily-prime-cost-section">
-                      <div className="flex items-center justify-between mb-4">
-                         <h2 className="text-lg font-serif font-bold text-gray-900 flex items-center gap-2">
-                            <Calendar className="h-5 w-5 text-gray-600" />
-                            Performance Summary
-                            <span className="text-sm font-normal text-gray-500 ml-2">{currentGMData.dateLabel}</span>
-                         </h2>
-                         {/* Time Range Selector */}
-                         <div className="flex items-center gap-2">
-                           <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1" data-testid="gm-time-range-selector">
-                              {(['today', 'week', 'month', 'year'] as const).map((range) => (
-                                 <button
-                                    key={range}
-                                    onClick={() => setGmTimeRange(range)}
-                                    className={cn(
-                                       "px-3 py-1.5 text-xs font-medium rounded-md transition-all",
-                                       gmTimeRange === range
-                                          ? "bg-white text-gray-900 shadow-sm"
-                                          : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-                                    )}
-                                    data-testid={`btn-time-range-${range}`}
-                                 >
-                                    {range === 'today' ? 'Today' : range === 'week' ? 'Week' : range === 'month' ? 'Month' : 'Year'}
-                                 </button>
-                              ))}
-                           </div>
-
-                           {/* Period Navigator */}
-                           {(gmTimeRange === 'week' || gmTimeRange === 'month') && (
-                             <PeriodNavigator 
-                               cadence={gmTimeRange}
-                               date={selectedGMDate}
-                               onPrev={() => setSelectedGMDate(d => gmTimeRange === 'month' ? subMonths(d, 1) : subWeeks(d, 1))}
-                               onNext={() => setSelectedGMDate(d => gmTimeRange === 'month' ? addMonths(d, 1) : addWeeks(d, 1))}
-                             />
-                           )}
-                         </div>
-                      </div>
-
-                      {/* GM Filters */}
-                      <div className="flex flex-wrap gap-3 mb-6">
-                          {/* Positive Contributors Filter */}
-                          <button
-                              onClick={() => setActiveGMFilter(activeGMFilter === 'positive' ? null : 'positive')}
-                              className={cn(
-                                  "flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium border transition-all",
-                                  activeGMFilter === 'positive' 
-                                      ? "bg-emerald-50 text-emerald-700 border-emerald-200 ring-1 ring-emerald-500" 
-                                      : "bg-white text-gray-600 border-gray-200 hover:border-gray-300 hover:bg-emerald-50/50"
-                              )}
-                          >
-                              <TrendingUp className="h-3.5 w-3.5 text-emerald-500" />
-                              Contributing to Profit
-                          </button>
-
-                          {/* Negative Contributors Filter */}
-                          <button
-                              onClick={() => setActiveGMFilter(activeGMFilter === 'negative' ? null : 'negative')}
-                              className={cn(
-                                  "flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium border transition-all",
-                                  activeGMFilter === 'negative' 
-                                      ? "bg-red-50 text-red-700 border-red-200 ring-1 ring-red-500" 
-                                      : "bg-white text-gray-600 border-gray-200 hover:border-gray-300 hover:bg-red-50/50"
-                              )}
-                          >
-                              <TrendingDown className="h-3.5 w-3.5 text-red-500" />
-                              Dragging Profit
-                          </button>
-                      </div>
-                      
-                      {/* Performance Metrics Cards */}
-                      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                         {/* Sales Card */}
-                         {(!activeGMFilter || 
-                           (activeGMFilter === 'positive' && currentGMData.sales.variance >= 0) || 
-                           (activeGMFilter === 'negative' && currentGMData.sales.variance < 0)) && (
-                         <div className="bg-white border border-gray-200 rounded-xl p-4 relative group">
-                            <button
-                               onClick={() => openTrendModal('net-sales')}
-                               className="absolute top-3 right-3 p-1.5 rounded-lg bg-gray-100 hover:bg-blue-100 text-gray-400 hover:text-blue-600 transition-colors"
-                               title="View trend"
-                            >
-                               <BarChart3 className="h-3.5 w-3.5" />
-                            </button>
-                            <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Sales</div>
-                            <div className="text-2xl font-bold text-gray-900">${currentGMData.sales.value.toLocaleString()}</div>
-                            <div className="flex items-center gap-2 mt-2">
-                               <span className="text-xs text-gray-500">{currentGMData.sales.avgLabel}:</span>
-                               <span className="text-xs font-medium text-gray-700">${currentGMData.sales.avg.toLocaleString()}</span>
-                            </div>
-                            <div className="flex items-center gap-1 mt-1">
-                               {currentGMData.sales.variance < 0 ? (
-                                  <TrendingDown className="h-3 w-3 text-red-500" />
-                               ) : (
-                                  <TrendingUp className="h-3 w-3 text-emerald-500" />
-                               )}
-                               <span className={cn("text-xs font-medium", currentGMData.sales.variance < 0 ? "text-red-600" : "text-emerald-600")}>
-                                  {currentGMData.sales.variance > 0 ? '+' : ''}{currentGMData.sales.variance}%
-                               </span>
-                               <span className="text-xs text-gray-500">vs avg</span>
-                            </div>
-                         </div>
-                         )}
-
-                         {/* COGS % Card */}
-                         {(!activeGMFilter || 
-                           (activeGMFilter === 'positive' && currentGMData.cogs.variance <= 0) || 
-                           (activeGMFilter === 'negative' && currentGMData.cogs.variance > 0)) && (
-                         <div className="bg-white border border-gray-200 rounded-xl p-4 relative group">
-                            <button
-                               onClick={() => openTrendModal('cogs')}
-                               className="absolute top-3 right-3 p-1.5 rounded-lg bg-gray-100 hover:bg-blue-100 text-gray-400 hover:text-blue-600 transition-colors"
-                               title="View trend"
-                            >
-                               <BarChart3 className="h-3.5 w-3.5" />
-                            </button>
-                            <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">COGS %</div>
-                            <div className="text-2xl font-bold text-gray-900">{currentGMData.cogs.value}%</div>
-                            <div className="flex items-center gap-2 mt-2">
-                               <span className="text-xs text-gray-500">{currentGMData.cogs.avgLabel}:</span>
-                               <span className="text-xs font-medium text-gray-700">{currentGMData.cogs.avg}%</span>
-                            </div>
-                            <div className="flex items-center gap-1 mt-1">
-                               {currentGMData.cogs.variance > 0 ? (
-                                  <TrendingUp className="h-3 w-3 text-red-500" />
-                               ) : (
-                                  <TrendingDown className="h-3 w-3 text-emerald-500" />
-                               )}
-                               <span className={cn("text-xs font-medium", currentGMData.cogs.variance > 0 ? "text-red-600" : "text-emerald-600")}>
-                                  {currentGMData.cogs.variance > 0 ? '+' : ''}{currentGMData.cogs.variance} pts
-                               </span>
-                               <span className="text-xs text-gray-500">vs avg</span>
-                            </div>
-                         </div>
-                         )}
-
-                         {/* Labor % Card */}
-                         {(!activeGMFilter || 
-                           (activeGMFilter === 'positive' && currentGMData.labor.variance <= 0) || 
-                           (activeGMFilter === 'negative' && currentGMData.labor.variance > 0)) && (
-                         <div className="bg-white border border-gray-200 rounded-xl p-4 relative group">
-                            <button
-                               onClick={() => openTrendModal('labor')}
-                               className="absolute top-3 right-3 p-1.5 rounded-lg bg-gray-100 hover:bg-blue-100 text-gray-400 hover:text-blue-600 transition-colors"
-                               title="View trend"
-                            >
-                               <BarChart3 className="h-3.5 w-3.5" />
-                            </button>
-                            <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Labor %</div>
-                            <div className="text-2xl font-bold text-gray-900">{currentGMData.labor.value}%</div>
-                            <div className="flex items-center gap-2 mt-2">
-                               <span className="text-xs text-gray-500">{currentGMData.labor.avgLabel}:</span>
-                               <span className="text-xs font-medium text-gray-700">{currentGMData.labor.avg}%</span>
-                            </div>
-                            <div className="flex items-center gap-1 mt-1">
-                               {currentGMData.labor.variance > 0 ? (
-                                  <TrendingUp className="h-3 w-3 text-red-500" />
-                               ) : (
-                                  <TrendingDown className="h-3 w-3 text-emerald-500" />
-                               )}
-                               <span className={cn("text-xs font-medium", currentGMData.labor.variance > 0 ? "text-red-600" : "text-emerald-600")}>
-                                  {currentGMData.labor.variance > 0 ? '+' : ''}{currentGMData.labor.variance} pts
-                               </span>
-                               <span className="text-xs text-gray-500">vs avg</span>
-                            </div>
-                         </div>
-                         )}
-
-                         {/* Prime Cost Card - Primary */}
-                         {(!activeGMFilter || 
-                           (activeGMFilter === 'positive' && currentGMData.primeCost.variance <= 0) || 
-                           (activeGMFilter === 'negative' && currentGMData.primeCost.variance > 0)) && (
-                         <div className={cn(
-                            "border rounded-xl p-4 relative group",
-                            currentGMData.primeCost.variance > 2 
-                               ? "bg-gradient-to-br from-red-50 to-orange-50 border-red-200" 
-                               : currentGMData.primeCost.variance > 0 
-                                  ? "bg-gradient-to-br from-amber-50 to-yellow-50 border-amber-200"
-                                  : "bg-gradient-to-br from-emerald-50 to-green-50 border-emerald-200"
-                         )}>
-                            <button
-                               onClick={() => openTrendModal('prime-cost')}
-                               className={cn(
-                                  "absolute top-3 right-3 p-1.5 rounded-lg hover:bg-blue-100 hover:text-blue-600 transition-colors",
-                                  currentGMData.primeCost.variance > 2 ? "bg-red-100 text-red-400" : currentGMData.primeCost.variance > 0 ? "bg-amber-100 text-amber-400" : "bg-emerald-100 text-emerald-400"
-                               )}
-                               title="View trend"
-                            >
-                               <BarChart3 className="h-3.5 w-3.5" />
-                            </button>
-                            <div className={cn(
-                               "text-xs font-medium uppercase tracking-wide mb-2",
-                               currentGMData.primeCost.variance > 2 ? "text-red-700" : currentGMData.primeCost.variance > 0 ? "text-amber-700" : "text-emerald-700"
-                            )}>Prime Cost</div>
-                            <div className="text-2xl font-bold text-gray-900">{currentGMData.primeCost.value}%</div>
-                            <div className="flex items-center gap-2 mt-2">
-                               <span className="text-xs text-gray-500">{currentGMData.primeCost.avgLabel}:</span>
-                               <span className="text-xs font-medium text-gray-700">{currentGMData.primeCost.avg}%</span>
-                            </div>
-                            <div className="flex items-center gap-1 mt-1">
-                               {currentGMData.primeCost.variance > 2 ? (
-                                  <AlertTriangle className="h-3 w-3 text-red-500" />
-                               ) : currentGMData.primeCost.variance > 0 ? (
-                                  <TrendingUp className="h-3 w-3 text-amber-500" />
-                               ) : (
-                                  <CheckCircle2 className="h-3 w-3 text-emerald-500" />
-                               )}
-                               <span className={cn(
-                                  "text-xs font-medium",
-                                  currentGMData.primeCost.variance > 2 ? "text-red-600" : currentGMData.primeCost.variance > 0 ? "text-amber-600" : "text-emerald-600"
-                               )}>
-                                  {currentGMData.primeCost.variance > 0 ? '+' : ''}{currentGMData.primeCost.variance} pts
-                                  {currentGMData.primeCost.variance > 2 ? ' 🔴' : currentGMData.primeCost.variance > 0 ? ' 🟡' : ' 🟢'}
-                               </span>
-                            </div>
-                         </div>
-                         )}
-                      </div>
-
-                      {/* What Happened - Dynamic based on time range */}
-                      <div className="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-5">
-                         <h3 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                            <Lightbulb className="h-4 w-4 text-amber-600" />
-                            What happened{gmTimeRange === 'today' ? ' today' : gmTimeRange === 'week' ? ' this week' : gmTimeRange === 'month' ? ' this month' : ' this year'}?
-                            <span className="text-xs font-normal text-gray-500 ml-auto">Click an issue to get guided help</span>
-                         </h3>
-                         <div className="space-y-3">
-                            {whatHappenedData.issues.map((issue) => (
-                               <button 
-                                  key={issue.id}
-                                  onClick={() => {
-                                     setFloatingChatTrigger(issue.context);
-                                     setShowChat(true);
-                                  }}
-                                  className="w-full text-left flex items-start gap-3 bg-white/60 rounded-lg p-3 border border-amber-100 hover:bg-white hover:border-blue-200 hover:shadow-sm transition-all cursor-pointer group"
-                               >
-                                  <div className={cn("w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:bg-blue-100", issue.iconBg)}>
-                                     {issue.icon === 'users' && <Users className={cn("h-3.5 w-3.5 group-hover:text-blue-600", issue.iconColor)} />}
-                                     {issue.icon === 'trending-down' && <TrendingDown className={cn("h-3.5 w-3.5 group-hover:text-blue-600", issue.iconColor)} />}
-                                     {issue.icon === 'package' && <Package className={cn("h-3.5 w-3.5 group-hover:text-blue-600", issue.iconColor)} />}
-                                     {issue.icon === 'alert-triangle' && <AlertTriangle className={cn("h-3.5 w-3.5 group-hover:text-blue-600", issue.iconColor)} />}
-                                     {issue.icon === 'check-circle' && <CheckCircle2 className={cn("h-3.5 w-3.5 group-hover:text-blue-600", issue.iconColor)} />}
-                                  </div>
-                                  <div className="flex-1">
-                                     <div className="text-sm font-medium text-gray-900 group-hover:text-blue-700 flex items-center gap-2">
-                                        {issue.title}
-                                        <ChevronRight className="h-3.5 w-3.5 text-gray-400 group-hover:text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                     </div>
-                                     <div className="text-xs text-gray-600 mt-0.5">
-                                        {issue.description}
-                                     </div>
-                                     <div className="flex items-center gap-2 mt-2">
-                                        {issue.tags.map((tag, idx) => (
-                                           <span key={idx} className={cn("px-2 py-0.5 text-xs rounded", tag.color)}>{tag.label}</span>
-                                        ))}
-                                     </div>
-                                  </div>
-                               </button>
-                            ))}
-                         </div>
-                         
-                         {/* Action Summary */}
-                         <div className="mt-4 pt-4 border-t border-amber-200">
-                            <div className="text-xs font-medium text-gray-700 mb-2">
-                               {gmTimeRange === 'today' ? 'Recommended Actions for Tomorrow:' : 
-                                gmTimeRange === 'week' ? 'Recommended Actions This Week:' :
-                                gmTimeRange === 'month' ? 'Recommended Actions This Month:' :
-                                'Strategic Focus Areas:'}
-                            </div>
-                            <div className="flex flex-wrap gap-2">
-                               {whatHappenedData.actions.map((action, idx) => (
-                                  <button 
-                                     key={idx}
-                                     onClick={() => {
-                                        setFloatingChatTrigger(`Help me with: ${action}. Period: ${currentGMData.dateLabel}`);
-                                        setShowChat(true);
-                                     }}
-                                     className="px-2.5 py-1 bg-white border border-gray-200 text-xs text-gray-700 rounded-full hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 transition-colors cursor-pointer"
-                                  >
-                                     {action}
-                                  </button>
-                               ))}
-                            </div>
-                         </div>
-                      </div>
-                   </section>
-                   )}
 
                    {/* Operations Overview - GM Only (Moved to bottom) */}
                    {selectedRole === "gm" && (
