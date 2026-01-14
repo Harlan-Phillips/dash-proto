@@ -10975,6 +10975,7 @@ export default function PnlRelease() {
 
                       {/* Footer elements removed as requested */}
                    </section>
+                   )}
                    {/* 1. Executive Narrative */}
                    {isSectionVisible("executive-narrative") && (
                    <section id="executive-narrative" className="scroll-mt-4" style={{ order: getSectionOrderIndex("executive-narrative") }}>
