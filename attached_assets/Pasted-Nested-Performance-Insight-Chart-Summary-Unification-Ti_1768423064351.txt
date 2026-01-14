@@ -1,0 +1,216 @@
+Nested Performance Insight (Chart ↔ Summary Unification)
+Title
+
+Unify Performance Review Chart + Performance Summary via Nested Insight Model
+
+Context
+
+We currently surface the same underlying signals in two separate ways:
+
+Performance Review (Shift Breakdown Chart)
+
+Hourly sales, labor cost, labor %
+
+High signal, high density
+
+Strong for pattern recognition
+
+Performance Summary (Insight Cards + “What happened this week?”)
+
+Narrative insights
+
+Clear deltas vs target / avg
+
+Strong for interpretation and action
+
+These views describe the same reality, but live separately and force users to mentally reconcile them.
+
+Goal
+
+Combine these two experiences into one cohesive, nested insight flow, without:
+
+Removing charts
+
+Removing summaries
+
+Duplicating data
+
+Increasing cognitive load
+
+Core Principle
+
+Charts are proof. Summaries are the story.
+They should be nested — not competing.
+
+Proposed Structure (Russian Doll Model)
+🪆 Layer 0 — Performance Summary (Default View)
+What stays visible by default
+
+Performance Summary cards:
+
+Sales
+
+COGS %
+
+Labor %
+
+Prime Cost
+
+“What happened this week?” insight list
+
+This remains the decision surface.
+
+🪆 Layer 1 — Insight Expansion (Click an Insight)
+Trigger
+
+User clicks:
+
+A Performance Summary card
+or
+
+An issue in “What happened this week?”
+
+Behavior
+
+Open a focused insight panel / modal / side sheet
+
+Contextual to the clicked item (e.g. Labor, Sales)
+
+🪆 Layer 2 — Embedded Performance Review Chart (Nested)
+Inside the expanded view, show:
+
+The existing Shift Breakdown chart, scoped and filtered to the insight.
+
+Example: Labor Insight Clicked
+
+Chart auto-filters to:
+
+Labor cost + labor %
+
+Relevant hours (e.g. lunch shifts)
+
+Non-relevant series dimmed or hidden
+
+This preserves all chart data, but only shows what matters for this insight.
+
+🪆 Layer 3 — Explanation + Annotation
+
+Below the chart:
+
+Short explanation tying chart → insight
+
+Example:
+
+Lunch shifts consistently ran above labor targets due to elevated staffing during lower-volume hours.
+
+Annotations can be:
+
+Highlighted hours
+
+Labeled inflection points
+
+Color emphasis (no new chart types required)
+
+🪆 Layer 4 — Action + Next Steps
+
+Still inside the expanded view:
+
+1–3 recommended actions
+
+Optional CTAs:
+
+“Elaborate more”
+
+“Generate report”
+
+“Ask Assistant”
+
+Interaction Summary
+User Action	Result
+View page	Sees summary + insights only
+Click insight	Opens nested view
+View chart	Sees filtered proof
+Click elaborate	Goes deeper
+Generate report	Opens Reports page
+UX Requirements
+
+Nested view can be:
+
+Modal
+
+Side panel
+
+Expandable inline section
+
+Must:
+
+Be dismissible
+
+Preserve page state
+
+Never navigate away unless user chooses
+
+Data & Logic Notes
+
+No new data sources
+
+Reuse:
+
+Shift Breakdown chart
+
+Performance Summary metrics
+
+Nesting is driven by:
+
+insight_type → chart filter config
+
+Example Mapping
+“Lunch shifts ran above labor targets”
+
+→ Nested view shows:
+
+Shift Breakdown chart
+
+Lunch hours emphasized
+
+Labor % highlighted
+
+Sales context retained
+
+“Weekly sales tracking below target”
+
+→ Nested view shows:
+
+Shift Breakdown chart
+
+Sales series emphasized
+
+Low-performing dayparts highlighted
+
+Non-Goals
+
+❌ No new chart types
+
+❌ No duplicated charts on main page
+
+❌ No side-by-side overload
+
+❌ No removing summary cards
+
+Acceptance Criteria
+
+ Performance Summary remains clean
+
+ Clicking an insight reveals chart proof
+
+ Chart is scoped to the insight
+
+ No data or context is lost
+
+ User can clearly see story → proof → action
+
+Product North Star
+
+The summary tells you what happened.
+The chart proves why it happened.
+The nesting makes it obvious.

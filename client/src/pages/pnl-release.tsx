@@ -4804,6 +4804,7 @@ export default function PnlRelease() {
   const [actionItems, setActionItems] = useState<ActionItem[]>([]);
   const [showActionCart, setShowActionCart] = useState(false);
   const [activeGMFilter, setActiveGMFilter] = useState<string | null>(null);
+  const [insightModalMetric, setInsightModalMetric] = useState<string | null>(null);
   const [isProfitabilityExpanded, setIsProfitabilityExpanded] = useState(false);
 
   const handleArchiveReport = (id: string) => {
@@ -13265,173 +13266,10 @@ export default function PnlRelease() {
                          </div>
                       </div>
 
-                      {/* Shift Breakdown Graph (Moved from Curated) */}
-                      <div className="bg-white border border-gray-200 rounded-xl p-5 mb-6" data-testid="shift-breakdown-graph">
-                         <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
-                               <Clock className="h-4 w-4 text-gray-500" />
-                               Shift Breakdown
-                               <span className="text-xs font-normal text-gray-500">
-                                  {gmTimeRange === 'today' ? 'Today' : gmTimeRange === 'week' ? 'This Week (Avg/Day)' : gmTimeRange === 'month' ? 'This Month (Avg/Day)' : 'YTD (Avg/Day)'}
-                               </span>
-                               {shiftZoomLevel !== '60min' && (
-                                  <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-[10px] font-medium rounded-full flex items-center gap-1">
-                                     {shiftZoomLevel === '15min' ? '15-min' : shiftZoomLevel === '5min' ? '5-min' : '1-min'} resolution
-                                     <button 
-                                        onClick={handleShiftChartDoubleClick}
-                                        className="ml-1 hover:text-blue-900"
-                                        title="Reset to hourly view"
-                                     >
-                                        ×
-                                     </button>
-                                  </span>
-                               )}
-                            </h3>
-                            <div className="flex items-center gap-4 text-xs">
-                               <div className="flex items-center gap-1.5">
-                                  <div className="w-3 h-3 rounded-sm bg-blue-500" />
-                                  <span className="text-gray-600">Sales</span>
-                               </div>
-                               <div className="flex items-center gap-1.5">
-                                  <div className="w-3 h-3 rounded-sm bg-orange-400" />
-                                  <span className="text-gray-600">Labor Cost</span>
-                               </div>
-                               <div className="flex items-center gap-1.5">
-                                  <div className="w-2 h-2 rounded-full bg-red-500" />
-                                  <span className="text-gray-600">Labor %</span>
-                               </div>
-                               {shiftZoomLevel === '60min' ? (
-                                  <span className="text-[10px] text-gray-400 italic">Drag to zoom</span>
-                               ) : (
-                                  <div className="flex items-center gap-2">
-                                     {timeWindow && (
-                                        <span className="text-[10px] font-medium text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">
-                                           {timeWindow.start} – {timeWindow.end}
-                                        </span>
-                                     )}
-                                     <span className="text-[10px] text-gray-400 italic">← Drag to pan →</span>
-                                  </div>
-                               )}
-                            </div>
-                         </div>
-                         
-                         {/* Combined Bar + Line Chart with Zoom */}
-                         <div 
-                            className={cn(
-                               "h-64 select-none",
-                               shiftZoomLevel === '60min' ? "cursor-crosshair" : isPanning ? "cursor-grabbing" : "cursor-grab"
-                            )}
-                            onDoubleClick={handleShiftChartDoubleClick}
-                            onMouseDown={handlePanMouseDown}
-                            onMouseMove={handlePanMouseMove}
-                            onMouseUp={handlePanMouseUp}
-                            onMouseLeave={handlePanMouseUp}
-                         >
-                            <ResponsiveContainer width="100%" height="100%">
-                               <ComposedChart 
-                                  data={currentShiftData} 
-                                  margin={{ top: 10, right: 30, left: 0, bottom: 5 }}
-                                  onMouseDown={handleShiftChartMouseDown}
-                                  onMouseMove={handleShiftChartMouseMove}
-                                  onMouseUp={handleShiftChartMouseUp}
-                                  onMouseLeave={handleShiftChartMouseUp}
-                               >
-                                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                                  <XAxis 
-                                     dataKey={shiftZoomLevel === '60min' ? 'hour' : 'time'} 
-                                     tick={{ fontSize: shiftZoomLevel === '1min' ? 8 : 10, fill: '#6b7280' }}
-                                     axisLine={{ stroke: '#e5e7eb' }}
-                                     tickLine={false}
-                                     interval={shiftZoomLevel === '1min' ? 9 : shiftZoomLevel === '5min' ? 2 : 0}
-                                  />
-                                  <YAxis 
-                                     yAxisId="left"
-                                     tick={{ fontSize: 11, fill: '#6b7280' }}
-                                     axisLine={{ stroke: '#e5e7eb' }}
-                                     tickLine={false}
-                                     tickFormatter={(value) => `$${(value / 1000).toFixed(1)}k`}
-                                  />
-                                  <YAxis 
-                                     yAxisId="right"
-                                     orientation="right"
-                                     domain={[0, 50]}
-                                     tick={{ fontSize: 11, fill: '#6b7280' }}
-                                     axisLine={{ stroke: '#e5e7eb' }}
-                                     tickLine={false}
-                                     tickFormatter={(value) => `${value}%`}
-                                  />
-                                  <Tooltip 
-                                     content={({ active, payload, label }) => {
-                                        if (active && payload && payload.length) {
-                                           const data = payload[0].payload;
-                                           const timeLabel = data.time || data.hour;
-                                           return (
-                                              <div className="bg-white border border-gray-200 rounded-lg shadow-lg p-3 text-sm">
-                                                 <div className="font-semibold text-gray-900 mb-2">{timeLabel}</div>
-                                                 <div className="space-y-1">
-                                                    <div className="flex justify-between gap-4">
-                                                       <span className="text-gray-600">Sales:</span>
-                                                       <span className="font-medium text-blue-600">${data.sales.toLocaleString()}</span>
-                                                    </div>
-                                                    <div className="flex justify-between gap-4">
-                                                       <span className="text-gray-600">Labor Cost:</span>
-                                                       <span className="font-medium text-orange-600">${data.labor.toLocaleString()}</span>
-                                                    </div>
-                                                    <div className="flex justify-between gap-4 pt-1 border-t border-gray-100">
-                                                       <span className="text-gray-600">Labor %:</span>
-                                                       <span className={cn(
-                                                          "font-medium",
-                                                          data.laborPct > 35 ? "text-red-600" : data.laborPct > 25 ? "text-amber-600" : "text-emerald-600"
-                                                       )}>{data.laborPct}%</span>
-                                                    </div>
-                                                 </div>
-                                              </div>
-                                           );
-                                        }
-                                        return null;
-                                     }}
-                                  />
-                                  <Bar yAxisId="left" dataKey="sales" fill="#3b82f6" radius={[4, 4, 0, 0]} name="Sales" />
-                                  <Bar yAxisId="left" dataKey="labor" fill="#fb923c" radius={[4, 4, 0, 0]} name="Labor" />
-                                  <Line 
-                                     yAxisId="right" 
-                                     type="monotone" 
-                                     dataKey="laborPct" 
-                                     stroke="#ef4444" 
-                                     strokeWidth={2}
-                                     dot={{ fill: '#ef4444', strokeWidth: 2, r: 4 }}
-                                     name="Labor %"
-                                  />
-                               </ComposedChart>
-                            </ResponsiveContainer>
-                         </div>
-                         
-                         {/* Summary Footer */}
-                         <div className="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-xs">
-                            <div className="flex items-center gap-6">
-                               <div className="flex items-center gap-2">
-                                  <span className="text-gray-500">Total Sales:</span>
-                                  <span className="font-semibold text-gray-900">${shiftTotalSales.toLocaleString()}</span>
-                               </div>
-                               <div className="flex items-center gap-2">
-                                  <span className="text-gray-500">Total Labor:</span>
-                                  <span className="font-semibold text-gray-900">${shiftTotalLabor.toLocaleString()}</span>
-                               </div>
-                               <div className="flex items-center gap-2">
-                                  <span className="text-gray-500">Overall Labor %:</span>
-                                  <span className={cn(
-                                     "font-semibold px-1.5 py-0.5 rounded",
-                                     (shiftTotalLabor / shiftTotalSales * 100) > 32 ? "bg-red-100 text-red-700" : 
-                                     (shiftTotalLabor / shiftTotalSales * 100) > 28 ? "bg-amber-100 text-amber-700" : 
-                                     "bg-emerald-100 text-emerald-700"
-                                  )}>
-                                     {((shiftTotalLabor / shiftTotalSales) * 100).toFixed(1)}%
-                                  </span>
-                               </div>
-                            </div>
-                            <span className="text-gray-400">Synced with Performance Summary</span>
-                         </div>
-                      </div>
+                      {/* Shift Breakdown Graph (Moved to Performance Insight Modal) */}
+                      {/* <div className="bg-white border border-gray-200 rounded-xl p-5 mb-6" data-testid="shift-breakdown-graph">
+                         ... Content removed to avoid duplication ...
+                      </div> */}
                    
                    {/* Ticket Time Performance (Moved from Curated) */}
                    <section data-testid="ticket-time-zone-section" className="mb-6">
@@ -13647,7 +13485,7 @@ export default function PnlRelease() {
                            (activeGMFilter === 'negative' && currentGMData.sales.variance < 0)) && (
                          <div className="bg-white border border-gray-200 rounded-xl p-4 relative group">
                             <button
-                               onClick={() => openTrendModal('net-sales')}
+                               onClick={() => setInsightModalMetric('sales')}
                                className="absolute top-3 right-3 p-1.5 rounded-lg bg-gray-100 hover:bg-blue-100 text-gray-400 hover:text-blue-600 transition-colors"
                                title="View trend"
                             >
@@ -13679,7 +13517,7 @@ export default function PnlRelease() {
                            (activeGMFilter === 'negative' && currentGMData.cogs.variance > 0)) && (
                          <div className="bg-white border border-gray-200 rounded-xl p-4 relative group">
                             <button
-                               onClick={() => openTrendModal('cogs')}
+                               onClick={() => setInsightModalMetric('cogs')}
                                className="absolute top-3 right-3 p-1.5 rounded-lg bg-gray-100 hover:bg-blue-100 text-gray-400 hover:text-blue-600 transition-colors"
                                title="View trend"
                             >
@@ -13711,7 +13549,7 @@ export default function PnlRelease() {
                            (activeGMFilter === 'negative' && currentGMData.labor.variance > 0)) && (
                          <div className="bg-white border border-gray-200 rounded-xl p-4 relative group">
                             <button
-                               onClick={() => openTrendModal('labor')}
+                               onClick={() => setInsightModalMetric('labor')}
                                className="absolute top-3 right-3 p-1.5 rounded-lg bg-gray-100 hover:bg-blue-100 text-gray-400 hover:text-blue-600 transition-colors"
                                title="View trend"
                             >
@@ -13750,7 +13588,7 @@ export default function PnlRelease() {
                                   : "bg-gradient-to-br from-emerald-50 to-green-50 border-emerald-200"
                          )}>
                             <button
-                               onClick={() => openTrendModal('prime-cost')}
+                               onClick={() => setInsightModalMetric('primeCost')}
                                className={cn(
                                   "absolute top-3 right-3 p-1.5 rounded-lg hover:bg-blue-100 hover:text-blue-600 transition-colors",
                                   currentGMData.primeCost.variance > 2 ? "bg-red-100 text-red-400" : currentGMData.primeCost.variance > 0 ? "bg-amber-100 text-amber-400" : "bg-emerald-100 text-emerald-400"
@@ -15514,6 +15352,243 @@ export default function PnlRelease() {
              onClose={() => setTrendModalMetric(null)}
              metric={trendModalMetric}
           />
+
+          {/* Performance Insight Modal (Layer 2) */}
+          {insightModalMetric && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200" onClick={() => setInsightModalMetric(null)}>
+              <div className="bg-white rounded-xl shadow-xl max-w-5xl w-full max-h-[90vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200 mx-4" onClick={e => e.stopPropagation()}>
+                {/* Header */}
+                <div className="flex items-center justify-between p-6 border-b border-gray-100 bg-gray-50/50">
+                  <div className="flex items-center gap-4">
+                    <div className={cn(
+                      "h-12 w-12 rounded-xl flex items-center justify-center shadow-sm",
+                      insightModalMetric === 'sales' ? "bg-blue-100 text-blue-600" :
+                      insightModalMetric === 'labor' ? "bg-orange-100 text-orange-600" :
+                      insightModalMetric === 'cogs' ? "bg-amber-100 text-amber-600" :
+                      "bg-emerald-100 text-emerald-600"
+                    )}>
+                       {insightModalMetric === 'sales' ? <BarChart3 className="h-6 w-6" /> :
+                        insightModalMetric === 'labor' ? <Users className="h-6 w-6" /> :
+                        insightModalMetric === 'cogs' ? <Package className="h-6 w-6" /> :
+                        <TrendingUp className="h-6 w-6" />}
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-serif font-bold text-gray-900">
+                        {insightModalMetric === 'sales' ? 'Sales Performance' :
+                         insightModalMetric === 'labor' ? 'Labor Efficiency' :
+                         insightModalMetric === 'cogs' ? 'COGS Analysis' :
+                         'Prime Cost Breakdown'}
+                      </h2>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-sm text-gray-500">Deep dive into {insightModalMetric === 'primeCost' ? 'Prime Cost' : insightModalMetric} trends and drivers</span>
+                        <span className="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full font-medium">{gmTimeRange === 'today' ? 'Today' : 'This Week'}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <button onClick={() => setInsightModalMetric(null)} className="p-2 hover:bg-gray-100 rounded-lg transition-colors"><X className="h-5 w-5 text-gray-400" /></button>
+                </div>
+
+                <div className="flex-1 overflow-y-auto p-6 bg-gray-50/30">
+                  {/* Layer 2: Embedded Chart */}
+                  <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm mb-6">
+                     <div className="flex items-center justify-between mb-6">
+                        <h3 className="text-base font-semibold text-gray-900 flex items-center gap-2">
+                           <Clock className="h-4 w-4 text-gray-500" />
+                           Shift Breakdown
+                           <span className="text-xs font-normal text-gray-500 ml-2">
+                              {gmTimeRange === 'today' ? 'Today' : gmTimeRange === 'week' ? 'This Week (Avg/Day)' : gmTimeRange === 'month' ? 'This Month (Avg/Day)' : 'YTD (Avg/Day)'}
+                           </span>
+                        </h3>
+                        {/* Legend */}
+                        <div className="flex items-center gap-4 text-xs">
+                           <div className="flex items-center gap-1.5">
+                              <div className="w-3 h-3 rounded-sm bg-blue-500" />
+                              <span className="text-gray-600">Sales</span>
+                           </div>
+                           <div className="flex items-center gap-1.5">
+                              <div className="w-3 h-3 rounded-sm bg-orange-400" />
+                              <span className="text-gray-600">Labor Cost</span>
+                           </div>
+                           <div className="flex items-center gap-1.5">
+                              <div className="w-2 h-2 rounded-full bg-red-500" />
+                              <span className="text-gray-600">Labor %</span>
+                           </div>
+                        </div>
+                     </div>
+                     
+                     {/* Chart Container */}
+                     <div 
+                        className={cn(
+                           "h-72 select-none",
+                           shiftZoomLevel === '60min' ? "cursor-crosshair" : isPanning ? "cursor-grabbing" : "cursor-grab"
+                        )}
+                        onDoubleClick={handleShiftChartDoubleClick}
+                        onMouseDown={handlePanMouseDown}
+                        onMouseMove={handlePanMouseMove}
+                        onMouseUp={handlePanMouseUp}
+                        onMouseLeave={handlePanMouseUp}
+                     >
+                        <ResponsiveContainer width="100%" height="100%">
+                           <ComposedChart 
+                              data={currentShiftData} 
+                              margin={{ top: 10, right: 30, left: 0, bottom: 5 }}
+                              onMouseDown={handleShiftChartMouseDown}
+                              onMouseMove={handleShiftChartMouseMove}
+                              onMouseUp={handleShiftChartMouseUp}
+                              onMouseLeave={handleShiftChartMouseUp}
+                           >
+                              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                              <XAxis 
+                                 dataKey={shiftZoomLevel === '60min' ? 'hour' : 'time'} 
+                                 tick={{ fontSize: 10, fill: '#6b7280' }}
+                                 axisLine={{ stroke: '#e5e7eb' }}
+                                 tickLine={false}
+                                 interval={shiftZoomLevel === '1min' ? 9 : shiftZoomLevel === '5min' ? 2 : 0}
+                              />
+                              <YAxis 
+                                 yAxisId="left"
+                                 tick={{ fontSize: 11, fill: '#6b7280' }}
+                                 axisLine={{ stroke: '#e5e7eb' }}
+                                 tickLine={false}
+                                 tickFormatter={(value) => `$${(value / 1000).toFixed(1)}k`}
+                              />
+                              <YAxis 
+                                 yAxisId="right"
+                                 orientation="right"
+                                 domain={[0, 50]}
+                                 tick={{ fontSize: 11, fill: '#6b7280' }}
+                                 axisLine={{ stroke: '#e5e7eb' }}
+                                 tickLine={false}
+                                 tickFormatter={(value) => `${value}%`}
+                              />
+                              <Tooltip 
+                                 content={({ active, payload, label }) => {
+                                    if (active && payload && payload.length) {
+                                       const data = payload[0].payload;
+                                       const timeLabel = data.time || data.hour;
+                                       return (
+                                          <div className="bg-white border border-gray-200 rounded-lg shadow-lg p-3 text-sm">
+                                             <div className="font-semibold text-gray-900 mb-2">{timeLabel}</div>
+                                             <div className="space-y-1">
+                                                <div className="flex justify-between gap-4">
+                                                   <span className="text-gray-600">Sales:</span>
+                                                   <span className="font-medium text-blue-600">${data.sales.toLocaleString()}</span>
+                                                </div>
+                                                <div className="flex justify-between gap-4">
+                                                   <span className="text-gray-600">Labor Cost:</span>
+                                                   <span className="font-medium text-orange-600">${data.labor.toLocaleString()}</span>
+                                                </div>
+                                                <div className="flex justify-between gap-4 pt-1 border-t border-gray-100">
+                                                   <span className="text-gray-600">Labor %:</span>
+                                                   <span className={cn(
+                                                      "font-medium",
+                                                      data.laborPct > 35 ? "text-red-600" : data.laborPct > 25 ? "text-amber-600" : "text-emerald-600"
+                                                   )}>{data.laborPct}%</span>
+                                                </div>
+                                             </div>
+                                          </div>
+                                       );
+                                    }
+                                    return null;
+                                 }}
+                              />
+                              <Bar yAxisId="left" dataKey="sales" fill="#3b82f6" radius={[4, 4, 0, 0]} name="Sales" barSize={32} fillOpacity={insightModalMetric === 'sales' ? 1 : 0.6} />
+                              <Bar yAxisId="left" dataKey="labor" fill="#fb923c" radius={[4, 4, 0, 0]} name="Labor" barSize={32} fillOpacity={insightModalMetric === 'labor' ? 1 : 0.6} />
+                              <Line 
+                                 yAxisId="right" 
+                                 type="monotone" 
+                                 dataKey="laborPct" 
+                                 stroke="#ef4444" 
+                                 strokeWidth={insightModalMetric === 'labor' ? 3 : 2}
+                                 dot={{ fill: '#ef4444', strokeWidth: 2, r: 4 }}
+                                 name="Labor %"
+                              />
+                           </ComposedChart>
+                        </ResponsiveContainer>
+                     </div>
+                  </div>
+
+                  {/* Layer 3: Narrative Analysis */}
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                     <div className="lg:col-span-2 space-y-4">
+                        <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider">Analysis & Context</h3>
+                        
+                        <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+                           <div className="flex gap-4">
+                              <div className="p-2.5 bg-indigo-50 rounded-lg h-fit shrink-0">
+                                 <Sparkles className="h-5 w-5 text-indigo-600" />
+                              </div>
+                              <div className="space-y-3">
+                                 <h4 className="font-semibold text-gray-900">
+                                    {insightModalMetric === 'sales' ? "Strong Dinner Service Performance" :
+                                     insightModalMetric === 'labor' ? "Labor Variance Detected in Mid-Afternoon" :
+                                     insightModalMetric === 'cogs' ? "Waste Reduction Opportunity" :
+                                     "Prime Cost Optimization"}
+                                 </h4>
+                                 <p className="text-sm text-gray-600 leading-relaxed">
+                                    {insightModalMetric === 'sales' ? 
+                                       "Dinner service (6pm-8pm) is consistently outperforming targets, driven by higher patio turnover and increased check averages. However, lunch service remains flat week-over-week." :
+                                     insightModalMetric === 'labor' ? 
+                                       "Lunch shifts (11am-2pm) are running 4% above labor targets due to fixed staffing levels during variable volume periods. Dinner labor efficiency is excellent at 18%." :
+                                     insightModalMetric === 'cogs' ?
+                                       "Food cost variance is elevated in the Proteins category, specifically correlated with the new steak special. Portion control or waste tracking might need review." :
+                                       "Prime cost is trending favorably overall, but the mix of high labor + high food cost on Tuesdays is dragging down the weekly average."}
+                                 </p>
+                              </div>
+                           </div>
+                        </div>
+
+                        <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+                           <h4 className="font-semibold text-gray-900 mb-3 text-sm">Key Contributing Factors</h4>
+                           <ul className="space-y-2">
+                              {[1, 2, 3].map((i) => (
+                                 <li key={i} className="flex items-start gap-2.5 text-sm text-gray-600">
+                                    <CheckCircle2 className="h-4 w-4 text-emerald-500 mt-0.5 shrink-0" />
+                                    <span>
+                                       {insightModalMetric === 'sales' ? 
+                                          (i===1 ? "Patio seating capacity utilized at 85% (vs 60% avg)" : i===2 ? "New cocktail menu driving beverage mix +2%" : "Friday night event drove record traffic") :
+                                        insightModalMetric === 'labor' ? 
+                                          (i===1 ? "Overstaffed by 1 server on Mon/Tue lunch" : i===2 ? "Kitchen overtime reduced by 15% vs last week" : "Training hours included in labor cost (temp impact)") :
+                                          (i===1 ? "Supplier price increase on beef (+5%)" : i===2 ? "Waste logs show 95% compliance" : "Inventory turnover improved to 4.5 days")}
+                                    </span>
+                                 </li>
+                              ))}
+                           </ul>
+                        </div>
+                     </div>
+
+                     <div className="space-y-4">
+                        <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider">Recommended Actions</h3>
+                        <div className="space-y-3">
+                           {[1, 2, 3].map((i) => (
+                              <button key={i} className="w-full text-left bg-white border border-gray-200 p-4 rounded-xl hover:border-blue-300 hover:shadow-md transition-all group">
+                                 <div className="flex items-center justify-between mb-1">
+                                    <span className="text-xs font-bold text-blue-600 uppercase tracking-wider">
+                                       {i===1 ? "Immediate" : i===2 ? "This Week" : "Strategic"}
+                                    </span>
+                                    <ChevronRight className="h-4 w-4 text-gray-300 group-hover:text-blue-500" />
+                                 </div>
+                                 <p className="font-medium text-gray-900 text-sm mb-1">
+                                    {insightModalMetric === 'sales' ? 
+                                       (i===1 ? "Promote Happy Hour specials" : i===2 ? "Review server upsell training" : "Plan seasonal menu launch") :
+                                     insightModalMetric === 'labor' ? 
+                                       (i===1 ? "Cut 1 server from Tue lunch" : i===2 ? "Adjust out-times for closers" : "Cross-train prep cooks") :
+                                       (i===1 ? "Spot check steak portioning" : i===2 ? "Negotiate pricing with Vendor A" : "Audit inventory process")}
+                                 </p>
+                              </button>
+                           ))}
+                        </div>
+                        
+                        <button className="w-full py-3 bg-gray-900 text-white rounded-xl font-medium text-sm hover:bg-gray-800 transition-colors flex items-center justify-center gap-2">
+                           <MessageSquare className="h-4 w-4" />
+                           Ask Assistant for Details
+                        </button>
+                     </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
 
           {/* Email Report Modal */}
