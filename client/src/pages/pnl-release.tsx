@@ -4564,6 +4564,53 @@ export default function PnlRelease() {
   };
 
 
+  const handleGenerateChefInsightReport = () => {
+      toast({
+          title: "Generating Insight Report",
+          description: "Analyzing food cost drivers...",
+      });
+
+      setTimeout(() => {
+          const newReport: {id: string, type: string, data: ReportData, createdAt: number} = {
+              id: `report-insight-${Date.now()}`,
+              type: 'inventory',
+              data: {
+                  title: "Insight Report: Food Cost Variance",
+                  dateRange: "September 2025",
+                  entity: locationName,
+                  dataSources: ["P&L", "Menu Mix", "Inventory"],
+                  summary: [
+                      chefPrimaryInsight.headline,
+                      chefPrimaryInsight.context,
+                      "Top 3 high-cost items are driving 80% of the variance."
+                  ],
+                  metrics: [
+                      { label: "Food Cost %", value: "31.0%", change: "+3.0%", trend: "up" },
+                      { label: "Avg Plate Cost", value: `$${chefPlateMetrics.avgCost.toFixed(2)}`, change: "+$0.45", trend: "up" },
+                      { label: "Items > Range", value: chefPlateMetrics.aboveRangeCount.toString(), change: "+1", trend: "neutral" }
+                  ],
+                  tableData: {
+                      headers: ["Item", "Cost/Plate", "FC %", "Status"],
+                      rows: chefPlateMetrics.topItems.map(item => [
+                          item.name,
+                          `$${item.cost.toFixed(2)}`,
+                          `${item.pct}%`,
+                          "Critical"
+                      ])
+                  },
+                  analysis: "The 'Milky Puff' item is the primary outlier, running at 31% food cost against a target of 28%. This is driven by recent price increases in dairy and specialty chocolate ingredients that have not been offset by menu price adjustments.",
+                  recommendations: [
+                      "Re-cost the Milky Puff recipe immediately.",
+                      "Audit portioning for Matcha Lava.",
+                      "Spot check inventory for Condensed Milk."
+                  ]
+              },
+              createdAt: Date.now()
+          };
+          handleReportGenerated(newReport);
+      }, 1500);
+  };
+
   // Close TOC dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -13031,7 +13078,7 @@ export default function PnlRelease() {
 
                                   <div className="flex flex-col gap-2">
                                      <button 
-                                        onClick={() => setActiveTab("detailed")}
+                                        onClick={handleGenerateChefInsightReport}
                                         className="px-4 py-2 rounded-lg text-sm font-medium transition-colors border shadow-sm flex items-center gap-2 bg-white text-red-700 border-red-200 hover:bg-red-50"
                                      >
                                         <ArrowRight className="h-4 w-4" />

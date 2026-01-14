@@ -1,0 +1,130 @@
+Chef Curated View → Generate Insight Report
+Title
+
+Chef Curated View: “View Breakdown” Generates Insight Report
+
+Context
+
+We already have a Chef role curated view in /accounting/pnl with Primary Insight Cards.
+Each Primary Insight Card includes a “View Breakdown” button.
+
+We want to extend this button so it generates a report based on the insight shown on the card and opens that report in the existing Report page.
+
+This should reuse our current report generation + report page logic.
+
+Goal
+
+When a Chef clicks “View Breakdown” on a Primary Insight Card:
+
+A contextual report is generated based on that specific insight
+
+The user is navigated to the Report page
+
+The report is pre-populated with the correct data, filters, and narrative for that insight
+
+No new cards, no duplicated UI.
+
+Scope
+Affected Area
+
+/accounting/pnl
+
+Curated View → Chef Role
+
+Primary Insight Card component
+
+Behavior Requirements
+1. Insight-Driven Report Generation
+
+Each Primary Insight Card already contains:
+
+Insight type (ex: food_cost, cost_per_plate, waste, portion_variance)
+
+Time period (current vs comparison period)
+
+Key metric + delta
+
+When View Breakdown is clicked:
+
+Use the insight metadata from the card to generate a report payload:
+
+Insight type
+
+Metric(s)
+
+Date range
+
+Comparison range
+
+Relevant dimensions (menu items, categories, vendors, etc.)
+
+2. Navigation
+
+After generating the report payload:
+
+Route the user to the existing Report page
+
+Open the report in read mode
+
+URL/state should clearly reflect this is an Insight-Generated Report, not a manual one
+
+Example (conceptual):
+
+/reports?source=curated_insight&role=chef&insight=food_cost
+
+
+(Exact routing implementation is flexible)
+
+3. Report Content (Chef-Specific)
+
+The generated report should include:
+
+A clear explanation of WHY the insight triggered
+
+Visuals relevant to Chef decision-making:
+
+Food cost trend
+
+Cost per plate by item
+
+Category contribution
+
+Focus on actionable kitchen levers, not financial accounting jargon
+
+This is not a full P&L export.
+
+Non-Goals
+
+❌ Do not create a new report type UI
+
+❌ Do not duplicate report generation logic
+
+❌ Do not add new insight cards
+
+❌ Do not modify Owner or GM views
+
+Technical Notes
+
+Treat “View Breakdown” as a contextual deep-link into reports
+
+Use existing report generator and visualization components
+
+Insight metadata should be passed, not recomputed
+
+Chef role permissions apply
+
+Acceptance Criteria
+
+ Clicking View Breakdown generates a report tied to the insight
+
+ User is navigated to the Report page
+
+ Report reflects the insight shown on the card
+
+ No loss of data or state on /accounting/pnl
+
+ Works only for Chef curated view
+
+Success Metric
+
+A Chef can go from “Something is off” → “Why it’s happening” in one click.
