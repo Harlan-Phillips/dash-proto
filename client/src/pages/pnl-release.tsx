@@ -10598,7 +10598,7 @@ export default function PnlRelease() {
                 <div className="p-8">
                       <div className="max-w-5xl mx-auto flex flex-col gap-8">
 
-                   {selectedRole === "owner" && isSectionVisible("profitability-analysis") && (
+                   {(selectedRole === "owner" || selectedRole === "gm") && isSectionVisible("profitability-analysis") && (
                    <section 
                       id="profitability-analysis"
                       className="scroll-mt-4"
@@ -13566,7 +13566,10 @@ export default function PnlRelease() {
                    </section>
                    )}
 
-                   <section data-testid="gm-daily-prime-cost-section">
+                   <section 
+                      data-testid="gm-daily-prime-cost-section"
+                      style={{ order: getSectionOrderIndex("accountant-note") }}
+                   >
                       <div className="flex items-center justify-between mb-4">
                          <h2 className="text-lg font-serif font-bold text-gray-900 flex items-center gap-2">
                             <Calendar className="h-5 w-5 text-gray-600" />
