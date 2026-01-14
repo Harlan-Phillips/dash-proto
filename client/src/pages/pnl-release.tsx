@@ -13543,58 +13543,42 @@ export default function PnlRelease() {
                             </div>
                          </section>
 
-                         {/* Food Cost per Plate Analysis */}
+                         {/* Food Cost Analysis */}
                          <section>
                             <h2 className="text-lg font-serif font-bold text-gray-900 mb-4 flex items-center gap-2">
                                <Target className="h-5 w-5 text-gray-700" />
-                               Food Cost per Plate
+                               Food Cost Analysis
                             </h2>
                             <div className="bg-white rounded-xl border border-gray-200 p-6">
-                               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-6">
+                               <div className="flex items-start gap-3 mb-6">
+                                  <div className="p-2 bg-emerald-100 rounded-lg"><Sparkles className="h-4 w-4 text-emerald-600" /></div>
                                   <div>
-                                     <p className="text-sm text-gray-500 mb-1">Average Cost / Plate</p>
-                                     <div className="text-3xl font-bold text-gray-900">${chefPlateMetrics.avgCost.toFixed(2)}</div>
-                                     <div className="text-xs text-gray-400 mt-1">Target: $4.50</div>
-                                  </div>
-                                  <div>
-                                     <p className="text-sm text-gray-500 mb-1">Cost Range</p>
-                                     <div className="text-3xl font-bold text-gray-900">
-                                        ${chefPlateMetrics.range.low.toFixed(2)} - ${chefPlateMetrics.range.high.toFixed(2)}
-                                     </div>
-                                     <div className="text-xs text-gray-400 mt-1">Min - Max across menu</div>
-                                  </div>
-                                  <div>
-                                     <p className="text-sm text-gray-500 mb-1">Items Above Range</p>
-                                     <div className="flex items-center gap-2">
-                                        <div className="text-3xl font-bold text-red-600">{chefPlateMetrics.aboveRangeCount}</div>
-                                        <span className="px-2 py-1 bg-red-100 text-red-700 rounded text-xs font-medium">High Impact</span>
-                                     </div>
+                                     <p className="font-medium text-gray-900 mb-1">Food Cost Analysis</p>
+                                     <p className="text-sm text-gray-600">Meat prices stabilized, contributing to better margins this month.</p>
                                   </div>
                                </div>
-
-                               <div className="space-y-3">
-                                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Top Cost Drivers</p>
-                                  {chefPlateMetrics.topItems.map((item, idx) => (
-                                     <div 
-                                        key={idx}
-                                        onClick={() => setActiveTab("detailed")}
-                                        className="flex items-center justify-between p-3 rounded-lg bg-gray-50 hover:bg-gray-100 cursor-pointer transition-colors"
-                                     >
-                                        <div className="font-medium text-gray-900">{item.name}</div>
-                                        <div className="flex items-center gap-4">
-                                           <div className="text-right">
-                                              <div className="font-semibold text-gray-900">${item.cost.toFixed(2)}</div>
-                                              <div className="text-xs text-gray-500">Cost/Plate</div>
-                                           </div>
-                                           <div className="w-px h-8 bg-gray-200" />
-                                           <div className="text-right w-16">
-                                              <div className="font-semibold text-red-600">{item.pct}%</div>
-                                              <div className="text-xs text-gray-500">Food Cost</div>
-                                           </div>
-                                           <ChevronRight className="h-4 w-4 text-gray-400" />
-                                        </div>
-                                     </div>
-                                  ))}
+                               <div className="h-64">
+                                  <ResponsiveContainer width="100%" height="100%">
+                                     <BarChart data={[
+                                        { name: 'Jul', actual: 38000, budget: 40000 },
+                                        { name: 'Aug', actual: 39500, budget: 40000 },
+                                        { name: 'Sep', actual: 38235, budget: 40000 },
+                                     ]} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                                        <XAxis dataKey="name" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
+                                        <YAxis tick={{ fontSize: 12 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${(v/1000).toFixed(0)}k`} />
+                                        <Tooltip formatter={(v: number) => `$${v.toLocaleString()}`} contentStyle={{ fontSize: 12 }} />
+                                        <Bar dataKey="actual" fill="#10b981" name="Actual" radius={[4, 4, 0, 0]} />
+                                        <Bar dataKey="budget" fill="#d1d5db" name="Budget" radius={[4, 4, 0, 0]} />
+                                     </BarChart>
+                                  </ResponsiveContainer>
+                               </div>
+                               <div className="mt-4 pt-4 border-t border-gray-100">
+                                  <p className="text-xs text-gray-500 mb-2">Ask follow-up questions:</p>
+                                  <div className="flex flex-wrap gap-1.5">
+                                     <button onClick={() => handleInsightClick("Beef price trend")} className="px-3 py-1.5 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Beef price trend</button>
+                                     <button onClick={() => handleInsightClick("Waste percentage")} className="px-3 py-1.5 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Waste percentage</button>
+                                  </div>
                                </div>
                             </div>
                          </section>
