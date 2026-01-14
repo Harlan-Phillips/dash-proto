@@ -1,0 +1,206 @@
+Munch Assistant — Elaborated Responses + Guided Next Steps
+Title
+
+Munch Assistant: Always Provide Insight + Next Steps + Follow-Up Questions
+
+Context
+
+The current Munch Assistant response pattern is:
+
+“I’ve analyzed that for you… performance is tracking ahead of forecast.
+Is there a specific metric you’d like me to break down further?”
+
+This is informational but:
+
+Stops short of explaining why
+
+Puts cognitive load back on the user
+
+Does not guide the user toward actionable next steps
+
+Goal
+
+Every assistant response should:
+
+Explain the result
+
+Highlight what’s driving it
+
+Suggest next steps
+
+Ask smart follow-up questions automatically
+
+No dead ends. No generic “what would you like next?” prompts.
+
+Core Behavior (Applies to ALL Assistant Responses)
+Required Response Structure
+
+Every response from Munch Assistant must follow this structure:
+
+Summary Insight
+
+Key Drivers (Why)
+
+Implications
+
+Suggested Next Actions
+
+Guided Follow-Up Questions (Selectable)
+
+Example: Improved Version of Current Response
+❌ Current
+
+“Performance is tracking ahead of forecast.
+Is there a specific metric you'd like me to break down further?”
+
+✅ Updated (Target Behavior)
+
+You’re currently tracking ahead of forecast for this period.
+
+This outperformance is primarily driven by:
+
+Higher-than-expected sales volume compared to last year
+
+Stable labor costs despite increased revenue
+
+Food costs remaining within target range
+
+What this means:
+You have room to reinvest or protect margin — depending on whether this trend is sustainable.
+
+Recommended next steps:
+
+Validate whether this performance is coming from volume or pricing
+
+Check if labor efficiency is holding as sales increase
+
+Identify any menu items disproportionately driving gains
+
+Want me to look into one of these?
+
+Break down sales growth drivers
+
+Analyze labor efficiency vs last year
+
+Review food cost per plate trends
+
+Generate a summary report
+
+Follow-Up Question Rules
+
+Assistant should always propose 3–5 next questions
+
+Questions must be:
+
+Context-aware
+
+Metric-specific
+
+Action-oriented
+
+Avoid open-ended prompts like:
+
+❌ “What do you want to see?”
+
+❌ “Anything else?”
+
+Role-Aware Follow-Ups
+Chef
+
+Focus on:
+
+Cost per plate
+
+Menu items
+
+Waste / yield
+
+Execution consistency
+
+Example follow-ups:
+
+“Which menu items are driving cost improvements?”
+
+“Do you want to see cost per plate vs last year?”
+
+“Should I flag items with rising ingredient costs?”
+
+GM
+
+Focus on:
+
+Labor deployment
+
+Daypart performance
+
+Staffing vs sales
+
+Example follow-ups:
+
+“Is this driven by better staffing alignment?”
+
+“Want to see sales vs labor by shift?”
+
+“Should I check if overtime is creeping up?”
+
+Owner
+
+Focus on:
+
+Margin impact
+
+Sustainability
+
+Cash implications
+
+Example follow-ups:
+
+“How much of this improvement is margin vs volume?”
+
+“Is this trend consistent month-over-month?”
+
+“Do you want a forecast-adjusted outlook?”
+
+Technical Notes
+
+Assistant should return:
+
+Structured sections (summary, drivers, next steps)
+
+A follow-up question list (rendered as clickable suggestions)
+
+Follow-up selection should:
+
+Trigger a new assistant query
+
+Preserve prior context
+
+Responses should scale with data depth (more data = more specificity)
+
+Non-Goals
+
+❌ No long essays
+
+❌ No raw tables unless requested
+
+❌ No generic advice
+
+❌ No dead-end responses
+
+Acceptance Criteria
+
+ Every assistant response explains why, not just what
+
+ Every response includes recommended next steps
+
+ Every response proposes guided follow-up questions
+
+ Follow-ups are role-aware
+
+ No response ends with a generic question
+
+Product Principle
+
+Munch Assistant should feel like:
+
+A senior operator walking you through the numbers — not a chatbot waiting for instructions.

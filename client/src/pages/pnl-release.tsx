@@ -2600,6 +2600,7 @@ type FloatingMessage = {
   content: string;
   artifact?: boolean;
   report?: any;
+  followUpQuestions?: string[];
   toolCall?: {
     state: "running" | "completed" | "pending_confirmation" | "denied";
     toolName: string;
@@ -3037,40 +3038,129 @@ function FloatingAssistantBar({
 }
 
 // --- Mock Response Generator ---
-function generateMockResponse(query: string): { content: string; showArtifact?: boolean } {
+function generateMockResponse(query: string): { content: string; showArtifact?: boolean; followUpQuestions?: string[] } {
   const q = query.toLowerCase();
   
   if (q.includes("health") || q.includes("score")) {
     return {
-      content: "Your Financial Health Score is **82/100 (Healthy)**. \n\nThis is driven by strong profitability (16.8% margin) and efficient labor management. However, your stability score is slightly lower due to fluctuating cash reserves.",
-      showArtifact: false
+      content: `**Summary Insight**
+Your Financial Health Score is **82/100 (Healthy)**. You are outperforming your peer group by 12 points.
+
+**Key Drivers**
+• **Strong Profitability**: Net margin at 16.8% vs 12% target.
+• **Labor Efficiency**: Sales per Labor Hour is up $4.50 vs last month.
+• **Stability**: Cash reserves have stabilized at 2.1 months of coverage.
+
+**Implications**
+You have the financial buffer to invest in growth initiatives or deferred maintenance without risking cash flow.
+
+**Recommended Next Steps**
+• Review capital expenditure wishlist for potential Q4 investment.
+• Evaluate bonus pool distribution for management team.`,
+      showArtifact: false,
+      followUpQuestions: [
+        "What dragged down the stability score?",
+        "Show me the labor efficiency trend",
+        "Compare health score to last year"
+      ]
     };
   }
   
   if (q.includes("margin") || q.includes("profit")) {
     return {
-      content: "Your **Net Operating Income increased by 32.2%** to $23,424. \n\nKey drivers:\n• COGS dropped 2.1% due to better waste management\n• Labor efficiency improved by 3.3%\n• Revenue grew 3.7% year-over-year",
-      showArtifact: false
+      content: `**Summary Insight**
+Net Operating Income increased by **32.2%** to $23,424 this period.
+
+**Key Drivers**
+• **COGS Reduction**: Down 2.1% due to better waste management and menu engineering.
+• **Labor Efficiency**: Improved by 3.3% driven by optimized scheduling.
+• **Revenue Growth**: Up 3.7% year-over-year, leveraging fixed costs.
+
+**Implications**
+Your operational leverage is working—incremental sales are flowing through to the bottom line at a high rate.
+
+**Recommended Next Steps**
+• Lock in the new schedule template that drove labor savings.
+• Reinvest a portion of profits into marketing to sustain top-line growth.`,
+      showArtifact: false,
+      followUpQuestions: [
+        "Break down the COGS savings",
+        "Is this margin sustainable next month?",
+        "Show net income trend vs budget"
+      ]
     };
   }
 
   if (q.includes("labor") || q.includes("staff")) {
     return {
-      content: "Labor costs are trending positively at **33% of revenue** (target: 35%). \n\nFront-of-house efficiency has improved significantly since the new schedule implementation. However, overtime usage on weekends is still slightly high.",
-      showArtifact: true
+      content: `**Summary Insight**
+Labor costs are trending positively at **33% of revenue** (Target: 35%).
+
+**Key Drivers**
+• **FOH Efficiency**: New zone assignments increased tables per server without impacting service.
+• **Overtime Control**: Scheduled overtime down 40% vs prior month.
+• **Volume variance**: Higher than expected sales leveraged fixed management salaries.
+
+**Implications**
+You are getting more productivity per dollar spent. However, watch for burnout indicators if staffing runs too lean.
+
+**Recommended Next Steps**
+• Monitor guest feedback to ensure service levels aren't slipping.
+• Reward the team for the efficiency gains with a targeted incentive.`,
+      showArtifact: true,
+      followUpQuestions: [
+        "Show overtime usage by role",
+        "Compare FOH vs BOH labor cost",
+        "Analyze hourly rate changes"
+      ]
     };
   }
 
-  if (q.includes("cost") || q.includes("expense")) {
+  if (q.includes("cost") || q.includes("expense") || q.includes("cogs")) {
     return {
-      content: "Total expenses are down to **83.1% of revenue**. \n\nThe biggest savings came from reduced food waste (-$1,200) and optimized linen service contracts (-$450). Utility costs remain flat.",
-      showArtifact: false
+      content: `**Summary Insight**
+Total expenses are down to **83.1% of revenue**, driving improved profitability.
+
+**Key Drivers**
+• **Food Waste**: Reduced by ~$1,200 after implementing the new tracking log.
+• **Linen Contracts**: Renegotiated rates saved $450 this month.
+• **Utility Costs**: Flat year-over-year despite rate increases (usage is down).
+
+**Implications**
+Expense controls are effective. The focus should shift to sustaining these behaviors.
+
+**Recommended Next Steps**
+• Audit the top 10 remaining expense lines for further savings.
+• Share the waste reduction success with the kitchen team.`,
+      showArtifact: false,
+      followUpQuestions: [
+        "What are the top 3 highest expenses?",
+        "Show food cost vs budget",
+        "Analyze controllable expenses trend"
+      ]
     };
   }
 
   return {
-    content: "I've analyzed that for you. Based on the current period data, performance is **tracking ahead of forecast**. \n\nIs there a specific metric you'd like me to break down further?",
-    showArtifact: false
+    content: `**Summary Insight**
+I've analyzed that for you. Based on the current period data, performance is **tracking ahead of forecast**.
+
+**Key Drivers**
+• **Sales Volume**: Tracking 4.2% above projection.
+• **Cost Control**: Prime costs are 1.5% below budget.
+
+**Implications**
+You are on track to exceed quarterly profit targets if this trend continues.
+
+**Recommended Next Steps**
+• Review inventory levels to ensure you can support the higher volume.
+• Check if any deferred maintenance needs attention.`,
+    showArtifact: false,
+    followUpQuestions: [
+      "Break down sales performance",
+      "Show labor vs sales trend",
+      "Analyze top variance items"
+    ]
   };
 }
 
@@ -3331,6 +3421,7 @@ function SidePanelAssistant({
     let content = "";
     let artifact = false;
     let report = undefined;
+    let followUpQuestions: string[] | undefined;
 
     if (isReportMode) {
          const reportId = `report-${Date.now()}`;
@@ -3345,6 +3436,7 @@ function SidePanelAssistant({
         const res = generateMockResponse(text);
         content = res.content;
         artifact = res.showArtifact || false;
+        followUpQuestions = res.followUpQuestions;
     }
     
     const assistantMsg: FloatingMessage = {
@@ -3352,7 +3444,8 @@ function SidePanelAssistant({
       role: "assistant",
       content: content,
       artifact: artifact,
-      report: report
+      report: report,
+      followUpQuestions: followUpQuestions
     };
 
     setMessages(prev => [...prev, assistantMsg]);
@@ -3642,6 +3735,24 @@ function SidePanelAssistant({
                            </div>
                         )}
                      </div>
+                )}
+
+                {/* Follow-up Questions */}
+                {msg.followUpQuestions && msg.followUpQuestions.length > 0 && (
+                   <div className="mt-3 flex flex-col gap-2">
+                      <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Suggested Follow-ups</p>
+                      <div className="flex flex-wrap gap-2">
+                        {msg.followUpQuestions.map((q, idx) => (
+                           <button 
+                             key={idx}
+                             onClick={() => handleSend(q)}
+                             className="text-left px-3 py-2 bg-white border border-gray-200 rounded-lg text-xs text-gray-600 hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-700 transition-colors shadow-sm"
+                           >
+                             {q}
+                           </button>
+                        ))}
+                      </div>
+                   </div>
                 )}
 
                 {/* Action Cards */}
