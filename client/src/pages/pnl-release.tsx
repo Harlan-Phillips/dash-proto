@@ -3473,17 +3473,6 @@ function SidePanelAssistant({
                 <span>Actions {actionItems.length > 0 && `(${actionItems.length})`}</span>
              </button>
 
-             {/* Report Mode Toggle */}
-             <div className="flex items-center gap-2 bg-gray-50 px-2 py-1 rounded-lg border border-gray-100 hidden md:flex">
-                <span className={cn("text-xs font-medium transition-colors", isReportMode ? "text-indigo-600" : "text-gray-500")}>Report Mode</span>
-                <button 
-                    onClick={() => setIsReportMode(!isReportMode)}
-                    className={cn("w-8 h-4 rounded-full transition-colors relative", isReportMode ? "bg-indigo-600" : "bg-gray-300")}
-                >
-                    <div className={cn("absolute top-0.5 left-0.5 w-3 h-3 rounded-full bg-white transition-transform shadow-sm", isReportMode ? "translate-x-4" : "translate-x-0")} />
-                </button>
-             </div>
-
              {messages.length > 0 && (
                <button 
                  onClick={handleNewChat}
