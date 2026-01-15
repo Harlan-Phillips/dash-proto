@@ -14180,45 +14180,6 @@ export default function PnlRelease() {
                             </div>
                          </section>
 
-                         {/* Food Cost Analysis */}
-                         <section>
-                            <h2 className="text-lg font-serif font-bold text-gray-900 mb-4 flex items-center gap-2">
-                               <Target className="h-5 w-5 text-gray-700" />
-                               Food Cost Analysis
-                            </h2>
-                            <div className="bg-white rounded-xl border border-gray-200 p-6">
-                               <div className="flex items-start gap-3 mb-6">
-                                  <div className="p-2 bg-emerald-100 rounded-lg"><Sparkles className="h-4 w-4 text-emerald-600" /></div>
-                                  <div>
-                                     <p className="font-medium text-gray-900 mb-1">Food Cost Analysis</p>
-                                     <p className="text-sm text-gray-600">Meat prices stabilized, contributing to better margins this month.</p>
-                                  </div>
-                               </div>
-                               <div className="h-64">
-                                  <ResponsiveContainer width="100%" height="100%">
-                                     <BarChart data={[
-                                        { name: 'Jul', actual: 38000, budget: 40000 },
-                                        { name: 'Aug', actual: 39500, budget: 40000 },
-                                        { name: 'Sep', actual: 38235, budget: 40000 },
-                                     ]} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-                                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
-                                        <XAxis dataKey="name" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
-                                        <YAxis tick={{ fontSize: 12 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${(v/1000).toFixed(0)}k`} />
-                                        <Tooltip formatter={(v: number) => `$${v.toLocaleString()}`} contentStyle={{ fontSize: 12 }} />
-                                        <Bar dataKey="actual" fill="#10b981" name="Actual" radius={[4, 4, 0, 0]} />
-                                        <Bar dataKey="budget" fill="#d1d5db" name="Budget" radius={[4, 4, 0, 0]} />
-                                     </BarChart>
-                                  </ResponsiveContainer>
-                               </div>
-                               <div className="mt-4 pt-4 border-t border-gray-100">
-                                  <p className="text-xs text-gray-500 mb-2">Ask follow-up questions:</p>
-                                  <div className="flex flex-wrap gap-1.5">
-                                     <button onClick={() => handleInsightClick("Beef price trend")} className="px-3 py-1.5 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Beef price trend</button>
-                                     <button onClick={() => handleInsightClick("Waste percentage")} className="px-3 py-1.5 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors">Waste percentage</button>
-                                  </div>
-                               </div>
-                            </div>
-                         </section>
 
                          {/* Secondary Kitchen Metrics */}
                          <section>
