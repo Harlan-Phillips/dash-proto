@@ -1,0 +1,163 @@
+Attach Data Correlations to Curated View Insight Cards
+Title
+
+Link Curated View Insight Cards to Chat-Based Data Correlation Explanations
+
+Context
+
+Curated View is designed to show only the biggest drivers (the “why this matters” layer), but today insight cards surface outcomes without connected explanations.
+
+Example:
+
+“Labor increased 17.5%”
+
+“Sales missed target”
+
+“Marketing spend increased”
+
+Users naturally ask:
+
+“Why?”
+“Did X cause Y?”
+“What actually drove this?”
+
+We already have (or are adding) correlation logic in the chat assistant. This ticket connects that intelligence directly to Curated View insight cards, so users can move from signal → explanation in one click.
+
+Goal
+
+Allow users to click a Curated View insight card and automatically trigger a chat-based correlation analysis explaining why that insight happened, using available data.
+
+Curated View stays clean.
+Depth lives in chat.
+
+Scope
+
+✅ Curated View
+✅ Chat assistant
+❌ No new cards
+❌ No UI redesign
+
+Interaction Design
+1. Insight Card Trigger
+
+For each Curated View insight card (e.g. Labor, Sales, COGS):
+
+Add a subtle interaction:
+
+Click on the card
+
+OR click on a “Why?” / “Learn more” affordance
+
+This action:
+
+Opens chat
+
+Automatically sends a structured prompt to the assistant
+
+2. Auto-Generated Chat Prompt
+
+The system should generate a prompt based on:
+
+Insight type
+
+Metric direction (up/down)
+
+Time period
+
+Role context (Owner / GM / Chef)
+
+Example (not user-visible):
+
+“Explain why labor increased this month. Correlate labor with sales volume, scheduling, and overtime if available.”
+
+Correlation Behavior (Chat Assistant)
+
+When launched from an insight card, the assistant should:
+
+Identify the primary metric
+
+e.g. Labor ↑ 17.5%
+
+Attempt 1–3 relevant correlations, such as:
+
+Labor ↔ Sales
+
+Labor ↔ Overtime
+
+Labor ↔ SOH / Scheduling
+
+Explain relationships using non-causal language
+
+“correlates with”
+
+“moved alongside”
+
+“was associated with”
+
+Explicitly state uncertainty when applicable
+
+Output Requirements (Chat Response)
+
+The chat response should include:
+
+Plain-language explanation
+
+Directional metric comparison
+
+Optional structured summary, e.g.:
+
+• Labor: +17.5%
+• Sales: +6.2%
+• Overtime hours: +28%
+• Relationship confidence: Medium
+
+
+No charts required in this ticket.
+
+Curated View Constraints
+
+Curated View must:
+
+Remain uncluttered
+
+Show conclusions, not analysis
+
+All analysis lives in chat
+
+No additional numbers added to cards
+
+Out of Scope
+
+❌ Predictive modeling
+
+❌ Recommendations or actions
+
+❌ Auto-generated reports
+
+❌ New insight card types
+
+Acceptance Criteria
+
+✅ Clicking a Curated View insight opens chat
+✅ Chat auto-analyzes relevant metric correlations
+✅ Explanation references the exact insight clicked
+✅ Uses correlation (not causation) language
+✅ Curated View UI remains unchanged
+
+Implementation Notes (for AI Agent)
+
+Use insight metadata to seed chat prompt
+
+Correlation logic must be deterministic + explainable
+
+Prefer fewer strong correlations over many weak ones
+
+If data is insufficient, say so explicitly
+
+Why This Matters
+
+This turns Curated View into:
+
+“Here’s what matters” → “Here’s why it happened”
+
+Without turning the dashboard into a wall of charts.

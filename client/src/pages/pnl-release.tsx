@@ -7318,6 +7318,16 @@ export default function PnlRelease() {
                                    }
                                 }}
                              >
+                                <button 
+                                   onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleInsightClick("Analyze my Income growth of +3.7% ($124,500). Correlate with marketing spend and customer count if available.");
+                                   }}
+                                   className="absolute top-3 right-3 p-1.5 bg-purple-50 text-purple-600 rounded-lg opacity-0 group-hover:opacity-100 transition-all hover:bg-purple-100 z-20"
+                                   title="Explain why"
+                                >
+                                   <Sparkles className="h-3.5 w-3.5" />
+                                </button>
                                 <div className="flex items-center justify-between mb-4">
                                    <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">INCOME</span>
                                    <DollarSign className="h-4 w-4 text-gray-300" />
@@ -7345,6 +7355,16 @@ export default function PnlRelease() {
                                    }
                                 }}
                              >
+                                <button 
+                                   onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleInsightClick("Analyze marketing spend of $3,200 (2.6% of revenue). Correlate with new customer acquisition and sales growth.");
+                                   }}
+                                   className="absolute top-3 right-3 p-1.5 bg-purple-50 text-purple-600 rounded-lg opacity-0 group-hover:opacity-100 transition-all hover:bg-purple-100 z-20"
+                                   title="Explain why"
+                                >
+                                   <Sparkles className="h-3.5 w-3.5" />
+                                </button>
                                 <div className="flex items-center justify-between mb-4">
                                    <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">MARKETING</span>
                                    <Target className="h-4 w-4 text-gray-300" />
@@ -7371,6 +7391,16 @@ export default function PnlRelease() {
                                    }
                                 }}
                              >
+                                <button 
+                                   onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleInsightClick("Analyze Operating Expenses of $44,500 (35.7% of revenue). Correlate with sales volume to check efficiency.");
+                                   }}
+                                   className="absolute top-3 right-3 p-1.5 bg-purple-50 text-purple-600 rounded-lg opacity-0 group-hover:opacity-100 transition-all hover:bg-purple-100 z-20"
+                                   title="Explain why"
+                                >
+                                   <Sparkles className="h-3.5 w-3.5" />
+                                </button>
                                 <div className="flex items-center justify-between mb-4">
                                    <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">OP. EXPENSES</span>
                                    <CreditCard className="h-4 w-4 text-gray-300" />
@@ -7397,6 +7427,16 @@ export default function PnlRelease() {
                                    }
                                 }}
                              >
+                                <button 
+                                   onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleInsightClick("Analyze 3.7% revenue growth YoY. Correlate with marketing initiatives and seasonal trends.");
+                                   }}
+                                   className="absolute top-3 right-3 p-1.5 bg-purple-50 text-purple-600 rounded-lg opacity-0 group-hover:opacity-100 transition-all hover:bg-purple-100 z-20"
+                                   title="Explain why"
+                                >
+                                   <Sparkles className="h-3.5 w-3.5" />
+                                </button>
                                 <div className="flex items-center justify-between mb-4">
                                    <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">GROWTH</span>
                                    <TrendingUp className="h-4 w-4 text-emerald-500" />
@@ -7428,6 +7468,16 @@ export default function PnlRelease() {
                                    }
                                 }}
                              >
+                                <button 
+                                   onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleInsightClick("Analyze Cash Flow positive change of +$8,450. Correlate with NOI and capital expenditures.");
+                                   }}
+                                   className="absolute top-3 right-3 p-1.5 bg-purple-50 text-purple-600 rounded-lg opacity-0 group-hover:opacity-100 transition-all hover:bg-purple-100 z-20"
+                                   title="Explain why"
+                                >
+                                   <Sparkles className="h-3.5 w-3.5" />
+                                </button>
                                 <div className="flex items-center justify-between mb-6">
                                    <div className="flex items-center gap-2">
                                       <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">CASH FLOW</span>
@@ -7472,6 +7522,16 @@ export default function PnlRelease() {
                                    }
                                 }}
                              >
+                                <button 
+                                   onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleInsightClick("Analyze Total Management Compensation of $31,000. Correlate with retention rates and revenue per manager.");
+                                   }}
+                                   className="absolute top-3 right-3 p-1.5 bg-purple-50 text-purple-600 rounded-lg opacity-0 group-hover:opacity-100 transition-all hover:bg-purple-100 z-20"
+                                   title="Explain why"
+                                >
+                                   <Sparkles className="h-3.5 w-3.5" />
+                                </button>
                                 <div className="flex items-center justify-between mb-6">
                                    <div className="flex items-center gap-2">
                                       <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">COMPENSATION OVERVIEW</span>
@@ -7546,14 +7606,14 @@ export default function PnlRelease() {
                                 onQuestionClick={handleInsightClick}
                              >
                                 <div 
-                                   onClick={() => handleInsightClick("Analyze my Gross Profit change from September to October 2025. October: $81,247.54, September: $77,371.95, Change: +$3,875.59 (+5.0%). What drove this improvement?")}
+                                   onClick={() => handleInsightClick("Analyze my Gross Profit change from September to October 2025. October: $81,247.54, September: $77,371.95, Change: +$3,875.59 (+5.0%). Correlate with sales volume and COGS to explain this improvement.")}
                                    className="grid grid-cols-6 px-4 py-4 border-b border-gray-100 hover:bg-blue-50 transition-colors w-full text-left group cursor-pointer relative z-10"
                                    data-testid="row-profitability-gross-profit"
                                    role="button"
                                    tabIndex={0}
                                    onKeyDown={(e) => {
                                       if (e.key === 'Enter' || e.key === ' ') {
-                                         handleInsightClick("Analyze my Gross Profit change from September to October 2025. October: $81,247.54, September: $77,371.95, Change: +$3,875.59 (+5.0%). What drove this improvement?");
+                                         handleInsightClick("Analyze my Gross Profit change from September to October 2025. October: $81,247.54, September: $77,371.95, Change: +$3,875.59 (+5.0%). Correlate with sales volume and COGS to explain this improvement.");
                                       }
                                    }}
                                 >
@@ -7567,7 +7627,10 @@ export default function PnlRelease() {
                                             <p className="text-gray-400 mt-1">Typical range: $50k-$100k for restaurants this size</p>
                                          </div>
                                       </div>
-                                      <MessageSquare className="h-3.5 w-3.5 text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                      <div className="flex items-center bg-purple-50 px-1.5 py-0.5 rounded border border-purple-100 opacity-0 group-hover:opacity-100 transition-opacity">
+                                         <Sparkles className="h-3 w-3 text-purple-600 mr-1" />
+                                         <span className="text-[10px] font-medium text-purple-700">Why?</span>
+                                      </div>
                                    </div>
                                    <div className="text-right font-semibold text-gray-900">$81,247.54</div>
                                    <div className="text-right text-gray-500">$77,371.95</div>
@@ -7594,14 +7657,14 @@ export default function PnlRelease() {
                                 onQuestionClick={handleInsightClick}
                              >
                                 <div 
-                                   onClick={() => handleInsightClick("Analyze my Gross Profit Margin change from September to October 2025. October: 58.4%, September: 58.2%, Change: +0.2 pts. Is this a healthy margin for a restaurant?")}
+                                   onClick={() => handleInsightClick("Analyze my Gross Profit Margin change from September to October 2025. October: 58.4%, September: 58.2%, Change: +0.2 pts. Correlate with labor and COGS changes to explain this margin expansion.")}
                                    className="grid grid-cols-6 px-4 py-4 border-b border-gray-100 hover:bg-blue-50 transition-colors w-full text-left group cursor-pointer relative z-10"
                                    data-testid="row-profitability-gross-margin"
                                    role="button"
                                    tabIndex={0}
                                    onKeyDown={(e) => {
                                       if (e.key === 'Enter' || e.key === ' ') {
-                                         handleInsightClick("Analyze my Gross Profit Margin change from September to October 2025. October: 58.4%, September: 58.2%, Change: +0.2 pts. Is this a healthy margin for a restaurant?");
+                                         handleInsightClick("Analyze my Gross Profit Margin change from September to October 2025. October: 58.4%, September: 58.2%, Change: +0.2 pts. Correlate with labor and COGS changes to explain this margin expansion.");
                                       }
                                    }}
                                 >
@@ -7615,7 +7678,10 @@ export default function PnlRelease() {
                                             <p className="text-gray-400 mt-1">Healthy range: 55-65% for full-service restaurants</p>
                                          </div>
                                       </div>
-                                      <MessageSquare className="h-3.5 w-3.5 text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                      <div className="flex items-center bg-purple-50 px-1.5 py-0.5 rounded border border-purple-100 opacity-0 group-hover:opacity-100 transition-opacity">
+                                         <Sparkles className="h-3 w-3 text-purple-600 mr-1" />
+                                         <span className="text-[10px] font-medium text-purple-700">Why?</span>
+                                      </div>
                                    </div>
                                    <div className="text-right font-semibold text-gray-900">58.4%</div>
                                    <div className="text-right text-gray-500">58.2%</div>
@@ -7642,14 +7708,14 @@ export default function PnlRelease() {
                                 onQuestionClick={handleInsightClick}
                              >
                                 <div 
-                                   onClick={() => handleInsightClick("Analyze my Operating Expenses change from September to October 2025. October: $57,823.45, September: $59,649.58, Change: -$1,826.13 (-3.1%). What categories drove this decrease?")}
+                                   onClick={() => handleInsightClick("Analyze my Operating Expenses change from September to October 2025. October: $57,823.45, September: $59,649.58, Change: -$1,826.13 (-3.1%). Correlate with revenue changes to explain this efficiency improvement.")}
                                    className="grid grid-cols-6 px-4 py-4 border-b border-gray-100 hover:bg-blue-50 transition-colors w-full text-left group cursor-pointer relative z-10"
                                    data-testid="row-profitability-opex"
                                    role="button"
                                    tabIndex={0}
                                    onKeyDown={(e) => {
                                       if (e.key === 'Enter' || e.key === ' ') {
-                                         handleInsightClick("Analyze my Operating Expenses change from September to October 2025. October: $57,823.45, September: $59,649.58, Change: -$1,826.13 (-3.1%). What categories drove this decrease?");
+                                         handleInsightClick("Analyze my Operating Expenses change from September to October 2025. October: $57,823.45, September: $59,649.58, Change: -$1,826.13 (-3.1%). Correlate with revenue changes to explain this efficiency improvement.");
                                       }
                                    }}
                                 >
@@ -7663,7 +7729,10 @@ export default function PnlRelease() {
                                             <p className="text-gray-400 mt-1">Lower is better (without sacrificing quality)</p>
                                          </div>
                                       </div>
-                                      <MessageSquare className="h-3.5 w-3.5 text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                      <div className="flex items-center bg-purple-50 px-1.5 py-0.5 rounded border border-purple-100 opacity-0 group-hover:opacity-100 transition-opacity">
+                                         <Sparkles className="h-3 w-3 text-purple-600 mr-1" />
+                                         <span className="text-[10px] font-medium text-purple-700">Why?</span>
+                                      </div>
                                    </div>
                                    <div className="text-right font-semibold text-gray-900">$57,823.45</div>
                                    <div className="text-right text-gray-500">$59,649.58</div>
@@ -7690,14 +7759,14 @@ export default function PnlRelease() {
                                 onQuestionClick={handleInsightClick}
                              >
                                 <div 
-                                   onClick={() => handleInsightClick("Analyze my Operating Expense Ratio change from September to October 2025. October: 41.5%, September: 44.8%, Change: -3.3 pts. This seems like a significant improvement - what drove it?")}
+                                   onClick={() => handleInsightClick("Analyze my Operating Expense Ratio change from September to October 2025. October: 41.5%, September: 44.8%, Change: -3.3 pts. Correlate with sales volume to explain if this is due to leverage or cost cutting.")}
                                    className="grid grid-cols-6 px-4 py-4 border-b border-gray-100 hover:bg-blue-50 transition-colors w-full text-left group cursor-pointer relative z-10"
                                    data-testid="row-profitability-opex-ratio"
                                    role="button"
                                    tabIndex={0}
                                    onKeyDown={(e) => {
                                       if (e.key === 'Enter' || e.key === ' ') {
-                                         handleInsightClick("Analyze my Operating Expense Ratio change from September to October 2025. October: 41.5%, September: 44.8%, Change: -3.3 pts. This seems like a significant improvement - what drove it?");
+                                         handleInsightClick("Analyze my Operating Expense Ratio change from September to October 2025. October: 41.5%, September: 44.8%, Change: -3.3 pts. Correlate with sales volume to explain if this is due to leverage or cost cutting.");
                                       }
                                    }}
                                 >
@@ -7711,7 +7780,10 @@ export default function PnlRelease() {
                                             <p className="text-gray-400 mt-1">Healthy range: 35-45% for restaurants</p>
                                          </div>
                                       </div>
-                                      <MessageSquare className="h-3.5 w-3.5 text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                      <div className="flex items-center bg-purple-50 px-1.5 py-0.5 rounded border border-purple-100 opacity-0 group-hover:opacity-100 transition-opacity">
+                                         <Sparkles className="h-3 w-3 text-purple-600 mr-1" />
+                                         <span className="text-[10px] font-medium text-purple-700">Why?</span>
+                                      </div>
                                    </div>
                                    <div className="text-right font-semibold text-gray-900">41.5%</div>
                                    <div className="text-right text-gray-500">44.8%</div>
@@ -7738,14 +7810,14 @@ export default function PnlRelease() {
                                 onQuestionClick={handleInsightClick}
                              >
                                 <div 
-                                   onClick={() => handleInsightClick("Analyze my total Expense as % of Revenue from September to October 2025. October: 83.1%, September: 86.7%, Change: -3.6 pts. This is a big improvement - break down what contributed.")}
+                                   onClick={() => handleInsightClick("Analyze my total Expense as % of Revenue from September to October 2025. October: 83.1%, September: 86.7%, Change: -3.6 pts. Correlate with labor efficiency and COGS variance to explain this total cost reduction.")}
                                    className="grid grid-cols-6 px-4 py-4 border-b border-gray-100 hover:bg-blue-50 transition-colors w-full text-left group cursor-pointer relative z-10"
                                    data-testid="row-profitability-expense-pct"
                                    role="button"
                                    tabIndex={0}
                                    onKeyDown={(e) => {
                                       if (e.key === 'Enter' || e.key === ' ') {
-                                         handleInsightClick("Analyze my total Expense as % of Revenue from September to October 2025. October: 83.1%, September: 86.7%, Change: -3.6 pts. This is a big improvement - break down what contributed.");
+                                         handleInsightClick("Analyze my total Expense as % of Revenue from September to October 2025. October: 83.1%, September: 86.7%, Change: -3.6 pts. Correlate with labor efficiency and COGS variance to explain this total cost reduction.");
                                       }
                                    }}
                                 >
@@ -7759,7 +7831,10 @@ export default function PnlRelease() {
                                             <p className="text-gray-400 mt-1">Target: Below 90% for healthy restaurants</p>
                                          </div>
                                       </div>
-                                      <MessageSquare className="h-3.5 w-3.5 text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                      <div className="flex items-center bg-purple-50 px-1.5 py-0.5 rounded border border-purple-100 opacity-0 group-hover:opacity-100 transition-opacity">
+                                         <Sparkles className="h-3 w-3 text-purple-600 mr-1" />
+                                         <span className="text-[10px] font-medium text-purple-700">Why?</span>
+                                      </div>
                                    </div>
                                    <div className="text-right font-semibold text-gray-900">83.1%</div>
                                    <div className="text-right text-gray-500">86.7%</div>
@@ -7786,14 +7861,14 @@ export default function PnlRelease() {
                                 onQuestionClick={handleInsightClick}
                              >
                                 <div 
-                                   onClick={() => handleInsightClick("Analyze my Net Operating Income change from September to October 2025. October: $23,424.09, September: $17,722.37, Change: +$5,701.72 (+32.2%). This is a significant jump - what are the key drivers?")}
+                                   onClick={() => handleInsightClick("Analyze my Net Operating Income change from September to October 2025. October: $23,424.09, September: $17,722.37, Change: +$5,701.72 (+32.2%). Correlate with labor and sales to explain this significant profitability jump.")}
                                    className="grid grid-cols-6 px-4 py-4 border-b border-gray-100 bg-emerald-50/50 hover:bg-emerald-100/50 transition-colors w-full text-left group cursor-pointer relative z-10"
                                    data-testid="row-profitability-noi"
                                    role="button"
                                    tabIndex={0}
                                    onKeyDown={(e) => {
                                       if (e.key === 'Enter' || e.key === ' ') {
-                                         handleInsightClick("Analyze my Net Operating Income change from September to October 2025. October: $23,424.09, September: $17,722.37, Change: +$5,701.72 (+32.2%). This is a significant jump - what are the key drivers?");
+                                         handleInsightClick("Analyze my Net Operating Income change from September to October 2025. October: $23,424.09, September: $17,722.37, Change: +$5,701.72 (+32.2%). Correlate with labor and sales to explain this significant profitability jump.");
                                       }
                                    }}
                                 >
@@ -7807,7 +7882,10 @@ export default function PnlRelease() {
                                             <p className="text-gray-400 mt-1">This is what pays loans, dividends, and reinvestment</p>
                                          </div>
                                       </div>
-                                      <MessageSquare className="h-3.5 w-3.5 text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                      <div className="flex items-center bg-purple-50 px-1.5 py-0.5 rounded border border-purple-100 opacity-0 group-hover:opacity-100 transition-opacity">
+                                         <Sparkles className="h-3 w-3 text-purple-600 mr-1" />
+                                         <span className="text-[10px] font-medium text-purple-700">Why?</span>
+                                      </div>
                                    </div>
                                    <div className="text-right font-bold text-gray-900">$23,424.09</div>
                                    <div className="text-right text-gray-500">$17,722.37</div>

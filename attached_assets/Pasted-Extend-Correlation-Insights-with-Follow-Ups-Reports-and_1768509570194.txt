@@ -1,0 +1,202 @@
+Extend Correlation Insights with Follow-Ups, Reports, and Store Bonuses
+Title
+
+Extend Correlation Insights: Data Drilldown, Report Export, and Store Bonus Integration
+
+Context
+
+We recently added the ability to:
+
+Trigger data correlations from Curated View insight cards
+
+Explain why a metric changed via the chat assistant
+
+Users naturally want to:
+
+Verify the explanation → “Show me the data”
+
+Share the explanation → Export it
+
+Act on the insight → Tie it to Store Bonuses / Rewards
+
+This ticket extends the correlation system to support verification, communication, and incentives, while keeping Curated View clean and chat as the depth layer.
+
+Goal
+
+Turn correlation insights into a full loop:
+
+Insight → Explanation → Evidence → Action
+
+Scope
+
+✅ Chat assistant
+✅ Curated View integration
+✅ Reporting
+✅ Store Bonuses logic
+❌ No predictive modeling
+❌ No new dashboard pages
+
+1️⃣ Follow-Up: “Show Me the Data”
+User Behavior
+
+After receiving a correlation explanation in chat, users can ask:
+
+“Show me the data”
+
+“What numbers is this based on?”
+
+“Break this down”
+
+Expected Assistant Behavior
+
+When this follow-up is detected, the assistant should:
+
+Reveal the underlying metrics used in the correlation
+
+Present them in a clear, minimal structure
+
+Example Chat Output:
+
+Here’s the data behind this insight:
+
+• Marketing Spend: +15.2% (MoM)
+• Total Sales: +8.1% (MoM)
+• Weekday Dinner Sales: +10.4%
+
+These metrics moved in the same direction during the same period.
+
+Data Presentation Rules
+
+Use tables or bullet summaries (no heavy charts required)
+
+Use the same time window as the original insight
+
+No new analysis — just transparency
+
+Acceptance Criteria
+
+✅ Assistant responds correctly to “show me the data”
+✅ Data matches the original correlation logic
+✅ Numbers are readable and traceable
+
+2️⃣ Export Correlation Explanation into a Report
+User Behavior
+
+From the chat explanation, managers can click:
+
+“Export as report”
+
+“Generate report”
+
+Generated Report Should Include
+
+Insight title
+
+Time period
+
+Plain-language explanation
+
+Correlated metrics
+
+Confidence level (Low / Medium / High)
+
+Optional data table (from “show me the data”)
+
+Format
+
+PDF (v1)
+
+Structured for sharing with owners / leadership
+
+Constraints
+
+Reports are read-only
+
+No recommendations or actions added
+
+Same language as chat (no rewriting)
+
+Acceptance Criteria
+
+✅ Report content matches chat explanation
+✅ Export is one-click
+✅ Formatting is clean and manager-ready
+
+3️⃣ Tie Correlations into Store Bonuses / Rewards Logic
+Context
+
+Store Bonuses are based on performance outcomes (sales, labor, COGS, compliance, etc.).
+
+Correlation insights can explain:
+
+Why a bonus was earned
+
+Why it was missed
+
+What metric blocked success
+
+Behavior
+
+When a correlation touches a Store Bonus metric:
+
+The assistant should explicitly reference the bonus
+
+Explain how correlated metrics influenced eligibility
+
+Example Chat Output:
+
+“Labor exceeded the bonus threshold primarily due to a 28% increase in overtime hours, which correlated with higher weekend sales volume.”
+
+Bonus-Aware Correlation Rules
+
+Only reference bonuses when relevant
+
+Never guarantee payout
+
+Frame as explanation, not justification
+
+UI Tie-In
+
+If launched from a Store Bonus context:
+
+The assistant prioritizes bonus-related correlations
+
+Bonus status itself remains unchanged
+
+Acceptance Criteria
+
+✅ Correlation explanations reference bonus metrics when relevant
+✅ Language remains explanatory, not promotional
+✅ No automatic bonus changes occur
+
+Out of Scope
+
+❌ Automatic recommendations
+
+❌ Changing bonus rules
+
+❌ Predictive bonus outcomes
+
+❌ New dashboards
+
+Implementation Notes (for AI Agent)
+
+Treat correlation explanation as a stateful object
+
+Follow-ups (“show me the data”, export) reference the same object
+
+Bonus logic is contextual, not global
+
+Accuracy and traceability > persuasion
+
+Why This Matters
+
+This completes the loop:
+
+Operators understand why
+
+Managers can prove it
+
+Teams are motivated by it
+
+Without turning Munch into a cluttered BI tool.
