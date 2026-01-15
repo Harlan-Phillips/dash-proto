@@ -1,0 +1,90 @@
+
+                     {/* Profitability Analysis Table (Integrated) */}
+                     <div className="mt-6 bg-white border border-gray-200 rounded-xl overflow-hidden" data-testid="profitability-table-gm">
+                        <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+                           <div>
+                              <h3 className="font-semibold text-gray-900">Profitability Analysis</h3>
+                              <p className="text-xs text-gray-500 mt-0.5">
+                                 {gmTimeRange === 'month' ? 'Month-over-month performance summary' : 
+                                  gmTimeRange === 'week' ? 'Week-over-week performance summary' :
+                                  gmTimeRange === 'year' ? 'Year-over-year performance summary' : 'Day-over-day performance summary'}
+                                 {' '}({currentGMData.dateLabel})
+                              </p>
+                           </div>
+                           <button 
+                              onClick={() => { setActiveTab("detailed"); setTimeout(() => navigateToPnlNode('gross-profit'), 100); }}
+                              className="text-xs font-medium text-blue-600 hover:text-blue-700 hover:underline flex items-center gap-1"
+                           >
+                              View Details <ChevronRight className="h-3 w-3" />
+                           </button>
+                        </div>
+                        <table className="w-full text-sm">
+                           <thead>
+                              <tr className="border-b border-gray-100">
+                                 <th className="text-left px-6 py-3 font-medium text-gray-500 uppercase tracking-wider text-xs">Metric</th>
+                                 <th className="text-right px-6 py-3 font-medium text-gray-500 uppercase tracking-wider text-xs">
+                                    {gmTimeRange === 'month' ? 'Oct 2025' : 
+                                     gmTimeRange === 'week' ? 'Week 42' :
+                                     gmTimeRange === 'year' ? '2025' : 'Today'}
+                                 </th>
+                                 <th className="text-right px-6 py-3 font-medium text-gray-500 uppercase tracking-wider text-xs">
+                                    {gmTimeRange === 'month' ? 'Sep 2025' : 
+                                     gmTimeRange === 'week' ? 'Week 41' :
+                                     gmTimeRange === 'year' ? '2024' : 'Yesterday'}
+                                 </th>
+                                 <th className="text-right px-6 py-3 font-medium text-gray-500 uppercase tracking-wider text-xs">Change</th>
+                                 <th className="text-right px-6 py-3 font-medium text-gray-500 uppercase tracking-wider text-xs">Trend</th>
+                              </tr>
+                           </thead>
+                           <tbody className="divide-y divide-gray-100">
+                              {/* Gross Profit */}
+                              <tr 
+                                 onClick={() => openTrendModal('gross-profit')}
+                                 className="hover:bg-gray-50/50 transition-colors group cursor-pointer"
+                              >
+                                 <td className="px-6 py-4 font-medium text-gray-900">Gross Profit</td>
+                                 <td className="px-6 py-4 text-right font-semibold text-gray-900">${hierarchicalPnlData.find(i => i.id === 'gross-profit')?.current.toLocaleString()}</td>
+                                 <td className="px-6 py-4 text-right text-gray-600">${hierarchicalPnlData.find(i => i.id === 'gross-profit')?.prior.toLocaleString()}</td>
+                                 <td className="px-6 py-4 text-right font-medium text-emerald-600">+$81</td>
+                                 <td className="px-6 py-4 text-right">
+                                    <div className="flex items-center justify-end gap-1 text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full w-fit ml-auto">
+                                       <TrendingUp className="h-3 w-3" />
+                                       <span className="text-xs font-bold">0.1%</span>
+                                    </div>
+                                 </td>
+                              </tr>
+                              {/* Net Operating Income */}
+                              <tr 
+                                 onClick={() => openTrendModal('net-income')}
+                                 className="hover:bg-gray-50/50 transition-colors group cursor-pointer"
+                              >
+                                 <td className="px-6 py-4 font-medium text-gray-900">Net Operating Income</td>
+                                 <td className="px-6 py-4 text-right font-semibold text-gray-900">$5,115</td>
+                                 <td className="px-6 py-4 text-right text-gray-600">$19,076</td>
+                                 <td className="px-6 py-4 text-right font-medium text-red-600">-$13,961</td>
+                                 <td className="px-6 py-4 text-right">
+                                    <div className="flex items-center justify-end gap-1 text-red-600 bg-red-50 px-2 py-0.5 rounded-full w-fit ml-auto">
+                                       <TrendingDown className="h-3 w-3" />
+                                       <span className="text-xs font-bold">-73.2%</span>
+                                    </div>
+                                 </td>
+                              </tr>
+                              {/* Operating Margin */}
+                              <tr 
+                                 onClick={() => openTrendModal('net-income')}
+                                 className="hover:bg-gray-50/50 transition-colors group cursor-pointer"
+                              >
+                                 <td className="px-6 py-4 font-medium text-gray-900">Operating Margin</td>
+                                 <td className="px-6 py-4 text-right font-semibold text-gray-900">3.5%</td>
+                                 <td className="px-6 py-4 text-right text-gray-600">14.3%</td>
+                                 <td className="px-6 py-4 text-right font-medium text-red-600">-10.8 pts</td>
+                                 <td className="px-6 py-4 text-right">
+                                    <div className="flex items-center justify-end gap-1 text-red-600 bg-red-50 px-2 py-0.5 rounded-full w-fit ml-auto">
+                                       <TrendingDown className="h-3 w-3" />
+                                       <span className="text-xs font-bold">-75.5%</span>
+                                    </div>
+                                 </td>
+                              </tr>
+                           </tbody>
+                        </table>
+                     </div>
