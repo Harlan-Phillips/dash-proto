@@ -4806,7 +4806,7 @@ export default function PnlRelease() {
   const [activeGMFilter, setActiveGMFilter] = useState<string | null>(null);
   const [insightModalMetric, setInsightModalMetric] = useState<string | null>(null);
   const [isProfitabilityExpanded, setIsProfitabilityExpanded] = useState(false);
-  const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set(["boh-labor"]));
+  const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set(["boh-labor", "foh-labor", "management"]));
 
   const toggleRow = (rowId: string) => {
     const newExpanded = new Set(expandedRows);
@@ -12109,8 +12109,11 @@ export default function PnlRelease() {
                                </Popover>
                                </>
                                )}
-                               <tr className="hover:bg-gray-50">
-                                  <td className="px-6 py-4 text-gray-700 pl-10">FOH Labor</td>
+                               <tr className="hover:bg-gray-50 cursor-pointer" onClick={() => toggleRow("foh-labor")}>
+                                  <td className="px-6 py-4 text-gray-700 pl-10 flex items-center gap-2">
+                                     <ChevronDown className={cn("h-4 w-4 transition-transform", expandedRows.has("foh-labor") ? "rotate-0" : "-rotate-90")} />
+                                     FOH Labor
+                                  </td>
                                   <td className="px-6 py-4 text-right">${laborActuals['foh-labor'].toLocaleString()}</td>
                                   <td className="px-6 py-4 text-right text-gray-500">${getLaborBudgetForCategory('foh-labor', PERIOD_REVENUE).toLocaleString()}</td>
                                   <td className={cn("px-6 py-4 text-right font-medium", getLaborVariance('foh-labor', PERIOD_REVENUE).color)}>
@@ -12125,6 +12128,8 @@ export default function PnlRelease() {
                                      </span>
                                   </td>
                                </tr>
+                               {expandedRows.has("foh-labor") && (
+                               <>
                                <Popover>
                                   <PopoverTrigger asChild>
                                      <tr className="hover:bg-amber-50/40 cursor-pointer">
@@ -12291,8 +12296,13 @@ export default function PnlRelease() {
                                      </div>
                                   </PopoverContent>
                                </Popover>
-                               <tr className="hover:bg-gray-50">
-                                  <td className="px-6 py-4 text-gray-700 pl-10">Management</td>
+                               </>
+                               )}
+                               <tr className="hover:bg-gray-50 cursor-pointer" onClick={() => toggleRow("management")}>
+                                  <td className="px-6 py-4 text-gray-700 pl-10 flex items-center gap-2">
+                                     <ChevronDown className={cn("h-4 w-4 transition-transform", expandedRows.has("management") ? "rotate-0" : "-rotate-90")} />
+                                     Management
+                                  </td>
                                   <td className="px-6 py-4 text-right">${laborActuals['management'].toLocaleString()}</td>
                                   <td className="px-6 py-4 text-right text-gray-500">${getLaborBudgetForCategory('management', PERIOD_REVENUE).toLocaleString()}</td>
                                   <td className={cn("px-6 py-4 text-right font-medium", getLaborVariance('management', PERIOD_REVENUE).color)}>
@@ -12307,6 +12317,8 @@ export default function PnlRelease() {
                                      </span>
                                   </td>
                                </tr>
+                               {expandedRows.has("management") && (
+                               <>
                                <Popover>
                                   <PopoverTrigger asChild>
                                      <tr className="hover:bg-amber-50/40 cursor-pointer">
@@ -12417,6 +12429,8 @@ export default function PnlRelease() {
                                      </div>
                                   </PopoverContent>
                                </Popover>
+                               </>
+                               )}
                                <tr className="hover:bg-gray-50">
                                   <td className="px-6 py-4 text-gray-700 pl-10">Payroll Taxes & Benefits</td>
                                   <td className="px-6 py-4 text-right">${laborActuals['payroll-taxes'].toLocaleString()}</td>
