@@ -5845,20 +5845,29 @@ export default function PnlRelease() {
   });
 
   const openAssignModal = (actionId: string, actionTitle: string, owner: string) => {
-    // Open chat when modal opens to provide context
+    // Open chat to provide context
     setShowChat(true);
     setShowActionCart(true); // Open Action Cart panel
 
-    const defaultRecipient = owner.toLowerCase().replace(/\s+/g, '') + "@restaurant.com";
-    setAssignModal({
-      isOpen: true,
-      actionId,
-      actionTitle,
-      recipients: [defaultRecipient],
-      newEmail: "",
-      subject: `Action Item: ${actionTitle}`,
-      message: ""
-    });
+    // Directly Add to Action Cart (Bypassing Modal)
+    const actionToAdd = {
+        title: actionTitle,
+        source: 'user_click' as const,
+        context: `Assigned to ${owner}`,
+        metric: "Assignment",
+    };
+
+    // Check if already exists
+    const exists = actionItems.some(i => i.title === actionTitle);
+    
+    if (!exists) {
+        handleAddActionItem(actionToAdd);
+    } else {
+        toast({
+            title: "Already in Cart",
+            description: "This item is already in your action plan.",
+        });
+    }
   };
 
   const closeAssignModal = () => {
