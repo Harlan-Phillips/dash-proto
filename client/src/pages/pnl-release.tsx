@@ -5005,6 +5005,56 @@ export default function PnlRelease() {
   };
 
 
+  const handleGenerateOwnerInsightReport = (insight: PrimaryInsight) => {
+    toast({
+        title: "Generating Owner Insight Report",
+        description: "Analyzing business health and profitability...",
+    });
+
+    setTimeout(() => {
+        const newReport = {
+            id: `report-insight-owner-${Date.now()}`,
+            type: 'financial',
+            data: {
+                title: "Insight Report: Financial Health",
+                dateRange: "September 2025",
+                entity: locationName,
+                dataSources: ["P&L", "Balance Sheet", "Sales Data"],
+                summary: [
+                    insight.message,
+                    insight.detail,
+                    "Overall profitability is healthy, with strong revenue growth offsetting minor cost variances."
+                ],
+                metrics: [
+                    { label: "Net Profit", value: "18.5%", change: "+2.1%", trend: "up" },
+                    { label: "Revenue", value: "$145k", change: "+12%", trend: "up" },
+                    { label: "Cash Flow", value: "+$12k", change: "stable", trend: "neutral" }
+                ],
+                tableData: {
+                    headers: ["Category", "Current", "Target", "Variance", "Status"],
+                    rows: [
+                        ["Sales", "$145,230", "$130,000", "+$15,230", "Good"],
+                        ["Labor", "28.5%", "30.0%", "-1.5%", "Good"],
+                        ["COGS", "31.2%", "30.0%", "+1.2%", "Warning"]
+                    ]
+                },
+                analysis: "The business is performing well above targets. Revenue growth is the primary driver of improved net income. COGS requires slight attention but is manageable given the volume increase.",
+                recommendations: [
+                    "Reinvest portion of profit into marketing.",
+                    "Review COGS for potential bulk purchasing savings.",
+                    "Evaluate potential for holiday bonuses."
+                ]
+            },
+            createdAt: Date.now(),
+            status: 'active' as const,
+            source: 'curated_insight' as const,
+            role: 'owner'
+        };
+        handleReportGenerated(newReport);
+    }, 1500);
+  };
+
+
   const handleGenerateGMInsightReport = (insight: PrimaryInsight) => {
     toast({
         title: "Generating GM Insight Report",
