@@ -60,6 +60,7 @@ export function ReportContent({ data }: ReportContentProps) {
         </section>
 
         {/* Main Data Table */}
+        {data.tableData && data.tableData.headers && (
         <section className="space-y-3">
             <h3 className="font-medium text-sm text-foreground flex items-center gap-2">
                 <div className="h-1.5 w-1.5 rounded-full bg-blue-500" />
@@ -88,6 +89,7 @@ export function ReportContent({ data }: ReportContentProps) {
                 </Table>
             </div>
         </section>
+        )}
 
         {/* Analysis & Commentary */}
         <section className="space-y-3">

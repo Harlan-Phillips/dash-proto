@@ -3685,7 +3685,8 @@ function SidePanelAssistant({
                 status: "active" as const,
                 createdAt: Date.now(),
                 type: "analysis",
-                content: generateReportContent(text) // Keep content for compatibility if needed, though interface might not have it
+                content: generateReportContent(text), // Keep content for compatibility if needed, though interface might not have it
+                tableData: { headers: [], rows: [] }
             };
          report = reportData;
     } else {
@@ -3726,7 +3727,8 @@ function SidePanelAssistant({
           metrics: [],
           status: "active" as const,
           createdAt: Date.now(),
-          type: "analysis"
+          type: "analysis",
+          tableData: { headers: [], rows: [] }
       };
       
       setCurrentReport(reportData);
